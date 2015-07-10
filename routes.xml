@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes>
+    <route args="false" method="GET">
+		<request>/([a-z]{2})</request>
+       	<controller>home</controller>
+		<action>index</action>
+	</route>
+	<route args="false" method="GET">
+		<request>/([a-z]{2})/</request>
+       	<controller>home</controller>
+		<action>index</action>
+	</route>
+	<route args="false" method="GET">
+		<request>/index</request>
+       	<controller>home</controller>
+		<action>index</action>
+	</route>
+	<route args="false" method="GET">
+		<request>/home</request>
+       	<controller>user</controller>
+		<action>home</action>
+	</route>
+	<route args="false" method="GET">
+		<request>/player</request>
+       	<controller>about</controller>
+		<action>player</action>
+	</route>
+	<route args="true" method="GET">
+		<request>/player/([_A-Za-z0-9]+)</request>
+       	<controller>about</controller>
+		<action>player</action>
+	</route>
+</routes>
