@@ -6,7 +6,6 @@ class SessionController extends AbstractController{
 	public function login($params){
 		
 		if(session()->is_post()){
-			
 			if(isset($params['user']))
 				$user = htmlspecialchars($params['user']);
 			if(isset($params['pwd']))
@@ -57,10 +56,9 @@ class SessionController extends AbstractController{
 			}
 			
 		}
-		$this->_view->set_title(APP_LOGIN . ' - ' . APP_NAME);
-		$this->_view->set_layout('standard_notop_page');
+		
+		$this->_view->set_title('Login');
 		$this->_view->set_view('session/login');
-		$this->_view->add_script('login');
 		$this->_view->set_response_code(200);
 		$this->_view->draw();
 	}
@@ -76,10 +74,8 @@ class SessionController extends AbstractController{
 		if(session()->is_post()&&!session()->is_logged_in()){
 			/* TODO User registration */
 		}
-		$this->_view->set_title(APP_REGISTER . ' - ' . APP_NAME);
-		$this->_view->set_layout('standard_notop_page');
+		$this->_view->set_title('Sign Up');
 		$this->_view->set_view('session/register');
-		$this->_view->add_script('register');
 		$this->_view->set_response_code(200);
 		$this->_view->draw();
 	}

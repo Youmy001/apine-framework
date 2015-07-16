@@ -66,7 +66,7 @@ class Database{
 
 		if(!isset(self::$_instance)){
 			try{
-				self::$_instance = new PDO(Config::get('database', 'connection_string'), Config::get('database', 'username'), Config::get('database', 'password'));
+				self::$_instance = new PDO(Config::get('database', 'type').':host='.Config::get('databse', 'host').';dbname='.Config::get('database', 'dbname').';charset='.Config::get('database', 'charset'), Config::get('database', 'username'), Config::get('database', 'password'));
 			}catch(PDOException $e){
 				throw new DatabaseException($e->getMessage());
 			}

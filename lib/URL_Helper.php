@@ -109,7 +109,7 @@ class URL_Helper{
 	 */
 	public static function path($path){
 		
-		return $this->write_url($path);
+		return self::write_url($path);
 		
 	}
 	
@@ -124,7 +124,7 @@ class URL_Helper{
 	 */
 	public static function main_path($path){
 		
-		return $this->write_main_url($path);
+		return self::write_main_url($path);
 	
 	}
 	
@@ -139,7 +139,7 @@ class URL_Helper{
 	 */
 	public static function relative_path($path){
 	
-		return $this->write_relative_path($path);
+		return self::write_relative_path($path);
 	
 	}
 }

@@ -96,7 +96,7 @@ class UserSession{
 		// Connect do database
 		self::$dbhandle = $this->get_database_connection();
 		// Check the session cookie (if one)
-		if(self::get_cookie('session') != null){
+		if(Cookie::get_cookie('session') != null){
 			session_id(self::get_cookie('session'));
 		}
 		// Start PHP Session
@@ -109,8 +109,6 @@ class UserSession{
 			$this->user_id = $_SESSION['ID'];
 			$this->session_type = $_SESSION['type'];
 		}
-		// Set session language
-		$this->set_session_language();
 	
 	}
 

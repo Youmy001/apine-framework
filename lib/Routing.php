@@ -5,12 +5,12 @@ require_once ('lib/xml/xml.php');
 class Routing{
 	
 	private static $routes = array(
-		"/index"								=> "/home/index",
-		"/login/restore"						=> "/session/restore",
-		"/login"								=> "/session/login",
-		"/logout"								=> "/session/logout",
-		"/register"							=> "/session/register",
-		"/redirect"							=> "/session/redirect"
+		"/index"			=> "/home/index",
+		"/login/restore"	=> "/session/restore",
+		"/login"			=> "/session/login",
+		"/logout"			=> "/session/logout",
+		"/register"		=> "/session/register",
+		"/redirect"		=> "/session/redirect"
 	);
 	
 	private static function xml_route(){
