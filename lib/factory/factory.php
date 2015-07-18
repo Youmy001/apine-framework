@@ -7,15 +7,15 @@
  * @package apine-framework
  * @subpackage factory
  */
-require_once ('lib/Database.php');
-require_once ('lib/Liste.php');
+require_once ('lib/database.php');
+require_once ('lib/liste.php');
 require_once ('lib/factory/interface/factory_interface.php');
 
 /**
  * This is the implementation of the factory
  * design patern.
  */
-class Factory{
+class ApineFactory{
 
 	/**
 	 * Databse connection instance

@@ -38,17 +38,17 @@
 						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#"><?= Config::get('application', 'title') ?></a>
+				<a class="navbar-brand" href="<?= URL_Helper::path('home') ?>"><?= Config::get('application', 'title') ?></a>
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li class="active"><a href="#">Home</a></li>
+					<li class="active"><a href="<?= URL_Helper::path('home') ?>">Home</a></li>
 					<li><a href="#about">About</a></li>
 					<li><a href="#contact">Contact</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="login">Login</a></li>
-					<li><a href="register">Sign Up</a></li>
+					<li><a href="<?= URL_Helper::path('login');?>">Login</a></li>
+					<li><a href="<?= URL_Helper::path('register');?>">Sign Up</a></li>
 				</ul>
 			</div>
 			<!--/.nav-collapse -->
@@ -67,7 +67,7 @@
     ================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
 	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		src="resources/public/scripts/jquery.min.js"></script>
 	<script src="resources/public/scripts/bootstrap.min.js"></script>
 </body>
 </html>

@@ -6,6 +6,13 @@
 			<div class="panel-heading">
 				<h3 class="panel-title">Login</h3>
 			</div>
+			<?php if ($this->_params->get_item('error_code')) :?>
+			<div class="alert alert-block alert-warning" style="margin:0;border-radius:0;">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<h4><strong>Warning !</strong></h4>
+				<span><?php echo $this->_params->get_item('error_message'); ?></span>
+			</div>
+			<?php endif;?>
 			<div class="panel-body">
 				<form id="content" action="<?php echo URL_Helper::path("login",false);?>"
 					method="post">
@@ -23,9 +30,9 @@
 						<label>
 							<input type="checkbox" name="perm" value="on"> Remember me
 						</label>
+						<button type="submit" class="btn btn-primary pull-right">Login</button>
 					</div>
 					<a href="<?php echo URL_Helper::path("login/restore");?>">Forgot your password?</a>
-					<button type="submit" class="btn btn-primary pull-right">Login</button>
 				</form>
 			</div>
 		</div>

@@ -1,7 +1,7 @@
 <?php
-require_once('lib/mvc/AbstractController.php');
+require_once('lib/mvc/controller.php');
 
-class HomeController extends AbstractController{
+class HomeController extends Controller{
 	
 	public function index(){
 		$this->_view->set_title('Home');

@@ -1,12 +1,13 @@
 <?php
 /**
- * Entity data mapper declaration.
- *
- * This file contains the entity data mapper.
+ * Entity data mapper and basic entity class declaration
+ * 
+ * Exemple class for use of the entity data mapper
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
- * @package bokaro
+ * @package apine-framework
  * @subpackage entity
  */
+
 require_once ('lib/factory/factory.php');
 require_once ('lib/entity/interface/entity_interface.php');
 
@@ -16,7 +17,7 @@ require_once ('lib/entity/interface/entity_interface.php');
  * @abstract
  *
  */
-abstract class AbstractEntity implements EntityInterface{
+abstract class ApineEntityModel implements ApineEntityInterface{
 
 	/**
 	 * In-database entity identifier
@@ -67,8 +68,8 @@ abstract class AbstractEntity implements EntityInterface{
 	protected $loaded = 0;
 	// Methods
 	/**
-	 * Fetch database fields and values for entity
-	 */
+	* Fetch database fields and values for entity
+	*/
 	protected function _load(){
 
 		$this->database_fields = ($this->id !== null)?Factory::get_table_row($this->table_name, $this->id):null;
@@ -80,7 +81,7 @@ abstract class AbstractEntity implements EntityInterface{
 			}
 			$modified = 0;
 		}
-	
+
 	}
 
 	/**
@@ -89,7 +90,7 @@ abstract class AbstractEntity implements EntityInterface{
 	protected function _force_loaded(){
 
 		$this->field_loaded = 1;
-	
+
 	}
 
 	/**
@@ -103,7 +104,7 @@ abstract class AbstractEntity implements EntityInterface{
 		if($this->field_loaded == 0)
 			$this->_load();
 		return $this->database_fields[$a_field];
-	
+
 	}
 
 	/**
@@ -115,7 +116,7 @@ abstract class AbstractEntity implements EntityInterface{
 		if($this->field_loaded == 0)
 			$this->_load();
 		return $this->database_fields;
-	
+
 	}
 
 	/**
@@ -125,7 +126,7 @@ abstract class AbstractEntity implements EntityInterface{
 	protected function _get_id(){
 
 		return $this->id;
-	
+
 	}
 
 	/**
@@ -136,7 +137,7 @@ abstract class AbstractEntity implements EntityInterface{
 	protected function _set_id($id){
 
 		$this->id = $id;
-	
+
 	}
 
 	/**
@@ -146,7 +147,7 @@ abstract class AbstractEntity implements EntityInterface{
 	protected function _get_table_name(){
 
 		return $this->table_name;
-	
+
 	}
 
 	/**
@@ -157,7 +158,7 @@ abstract class AbstractEntity implements EntityInterface{
 	protected function _set_table_name($table){
 
 		$this->table_name = $table;
-	
+
 	}
 
 	/**
@@ -171,7 +172,7 @@ abstract class AbstractEntity implements EntityInterface{
 
 		$this->table_name = $table_name;
 		$this->id = $tuple_id;
-	
+
 	}
 
 	/**
@@ -188,7 +189,7 @@ abstract class AbstractEntity implements EntityInterface{
 		$this->database_fields[$field] = $value;
 		$this->modified = 1;
 		$this->modified_fields[$field] = true;
-	
+
 	}
 
 	/**
@@ -201,7 +202,7 @@ abstract class AbstractEntity implements EntityInterface{
 							'ID' => $this->id
 			));
 		}
-	
+
 	}
 
 	/**
@@ -224,7 +225,7 @@ abstract class AbstractEntity implements EntityInterface{
 				$this->id = Factory::set_table_row($this->table_name, $new_dbf);
 			}
 			/*$this->field_loaded = 1;
-			$this->loaded = 1;*/
+			 $this->loaded = 1;*/
 			$this->_load();
 		}else{
 			// This is an already existing entity
@@ -244,8 +245,129 @@ abstract class AbstractEntity implements EntityInterface{
 							'ID' => $this->id
 			));
 		}
+
+	}
+
+}
+
+
+class ApineEntity extends ApineEntityModel{
+
+	/**
+	 * Entity constructor
+	 * @param string $a_table
+	 *        The table name on which the entity
+	 *        is saved on
+	 * @param string $a_id
+	 *        identifier of the entity in the
+	 *        table
+	 */
+	public function __construct($a_table = null, $a_id = null){
+
+		if($a_table != null){
+			$this->_initialize($a_table, $a_id);
+			$this->loaded = true;
+		}
+	
+	}
+
+	/**
+	 * Initialize the entity
+	 * @param string $a_table        
+	 * @param string $a_id        
+	 */
+	public function initialize($a_table, $a_id = null){
+
+		if(!$this->loaded){
+			$this->_initialize($a_table, $a_id);
+		}else{
+			if($a_id != null){
+				$this->_set_id($a_id);
+			}
+			$this->_set_table_name($a_table);
+		}
+	
+	}
+
+	/**
+	 * @see ApineEntityModel::_get_id()
+	 */
+	public function get_id(){
+
+		return $this->_get_id();
+	
+	}
+
+	/**
+	 * @see ApineEntityModel::_set_id()
+	 * @param string $a_id
+	 *        Entity Identifier
+	 */
+	public function set_id($id){
+
+		$this->_set_id($id);
+	
+	}
+
+	/**
+	 *
+	 * @see ApineEntityModel::_get_field()
+	 * @param string $a_field        
+	 * @return mixed
+	 */
+	public function get_field($a_field){
+
+		if($a_table != null){
+			return $this->_get_field($a_field);
+		}
+	
+	}
+
+	/**
+	 *
+	 * @see ApineEntityModel::_set_field()
+	 * @param string $a_field
+	 *        Field Name
+	 * @param mixed $a_value
+	 *        Field Value
+	 */
+	public function set_field($a_field, $a_value){
+
+		if($a_table != null){
+			return $this->_set_field($a_field, $a_value);
+		}
+	
+	}
+
+	/**
+	 *
+	 * @see ApineEntityInterface::load()
+	 */
+	public function load(){
+
+		$this->_load;
+	
+	}
+
+	/**
+	 *
+	 * @see ApineEntityInterface::save()
+	 */
+	public function save(){
+
+		$this->_save();
+	
+	}
+
+	/**
+	 *
+	 * @see ApineEntityInterface::delete()
+	 */
+	public function delete(){
+
+		$this->_destroy();
 	
 	}
 
 }
-?>
+

@@ -9,7 +9,7 @@
  * @package bokaro
  * @subpackage entity
  */
-interface EntityInterface{
+interface ApineEntityInterface{
 
 	/**
 	 * Loading procedure that must contain

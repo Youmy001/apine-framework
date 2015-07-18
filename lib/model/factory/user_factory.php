@@ -8,9 +8,9 @@
  * @subpackage system
  */
 require_once ('lib/factory/factory.php');
-require_once ('lib/model/User.php');
+require_once ('lib/model/user.php');
 
-class UserFactory extends Factory implements FactoryInterface{
+class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 
 	/**
 	 * Verify if the identifier exists

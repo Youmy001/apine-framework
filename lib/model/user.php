@@ -5,13 +5,13 @@
  * @package apine-framework
  * @subpackage system
  */
-require_once ('lib/entity/AbstractEntity.php');
+require_once ('lib/entity/entity.php');
 require_once ('lib/model/factory/user_factory.php');
 
 /**
  * Implementation of the database representation of users
  */
-class Apine_User extends AbstractEntity{
+class ApineUser extends ApineEntityModel{
 
 	/**
 	 * User identifier in database
@@ -231,7 +231,7 @@ class Apine_User extends AbstractEntity{
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see EntityInterface::load()
+	 * @see ApineEntityInterface::load()
 	 */
 	public function load(){
 
@@ -248,7 +248,7 @@ class Apine_User extends AbstractEntity{
 
 	/**
 	 * (non-PHPdoc)
-	 * @see EntityInterface::save()
+	 * @see ApineEntityInterface::save()
 	 */
 	public function save(){
 
@@ -259,7 +259,7 @@ class Apine_User extends AbstractEntity{
 
 	/**
 	 * (non-PHPdoc)
-	 * @see EntityInterface::delete()
+	 * @see ApineEntityInterface::delete()
 	 */
 	public function delete(){
 

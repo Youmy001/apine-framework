@@ -1,7 +1,7 @@
 <?php
-require_once('lib/mvc/View.php');
+require_once('lib/mvc/view.php');
 
-abstract class AbstractController{
+abstract class Controller{
 	
 	protected $_view;
 	

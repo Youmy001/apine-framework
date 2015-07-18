@@ -1,8 +1,8 @@
 <?php
-require_once('lib/Liste.php');
-require_once('lib/URL_Helper.php');
+require_once('lib/liste.php');
+require_once('lib/url_helper.php');
 
-abstract class AbstractView{
+abstract class View{
 	
 	protected $_params;
 	
@@ -98,7 +98,7 @@ abstract class AbstractView{
 	abstract function draw();
 }
 
-class HTTPView extends AbstractView{
+class HTTPView extends View{
 	
 	protected $_headers;
 	
@@ -220,7 +220,7 @@ class FileView extends HTTPView{
 	}
 }
 
-class JSONView extends AbstractView{
+class JSONView extends View{
 	
 	public function draw(){
 		header('Content-type: application/json');

@@ -8,10 +8,10 @@
  * @subpackage system
  */
 require_once ('lib/factory/factory.php');
-require_once ('lib/model/User.php');
-require_once ('lib/model/Image.php');
+require_once ('lib/model/user.php');
+require_once ('lib/model/image.php');
 
-class ImageFactory extends Factory implements FactoryInterface{
+class ApineImageFactory extends ApineFactory implements ApineFactoryInterface{
 
 	/**
 	 * Verify if the identifier exists
@@ -61,7 +61,7 @@ class ImageFactory extends Factory implements FactoryInterface{
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
-				$liste->add_item(new Image($item['ID']));
+				$liste->add_item(new ApineImage($item['ID']));
 			}
 		}
 		return $liste;
@@ -80,7 +80,7 @@ class ImageFactory extends Factory implements FactoryInterface{
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
-				$liste->add_item(new Image($item['ID']));
+				$liste->add_item(new ApineImage($item['ID']));
 			}
 		}
 		return $liste;
@@ -123,7 +123,7 @@ class ImageFactory extends Factory implements FactoryInterface{
 		if($ar_sql){
 			$item_id = end($ar_sql);
 			$item_id = $item_id['ID'];
-			$item = new Image($item_id);
+			$item = new ApineImage($item_id);
 		}else{
 			$item = null;
 		}
@@ -143,7 +143,7 @@ class ImageFactory extends Factory implements FactoryInterface{
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
-				$liste->add_item(new Image($item['ID']));
+				$liste->add_item(new ApineImage($item['ID']));
 			}
 		}
 		return $liste;
@@ -164,7 +164,7 @@ class ImageFactory extends Factory implements FactoryInterface{
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
-				$liste->add_item(new Image($item['ID']));
+				$liste->add_item(new ApineImage($item['ID']));
 			}
 		}
 		return $liste;
@@ -183,7 +183,7 @@ class ImageFactory extends Factory implements FactoryInterface{
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
-				$liste->add_item(new Image($item['ID']));
+				$liste->add_item(new ApineImage($item['ID']));
 			}
 		}
 		return $liste;
@@ -209,7 +209,7 @@ class ImageFactory extends Factory implements FactoryInterface{
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
-				$liste->add_item(new Image($item['ID']));
+				$liste->add_item(new ApineImage($item['ID']));
 			}
 		}
 		return $liste;
@@ -227,7 +227,7 @@ class ImageFactory extends Factory implements FactoryInterface{
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
-				$liste->add_item(new Image($item['ID']));
+				$liste->add_item(new ApineImage($item['ID']));
 			}
 		}
 		return $liste;

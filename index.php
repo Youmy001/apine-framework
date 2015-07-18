@@ -24,16 +24,16 @@ if(!defined('URL_BASE'))
 if(!defined('URL_CURRENT'))
     define('URL_CURRENT','http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']);
 
-require_once('lib/Session.php');
-require_once('lib/Config.php');
-require_once('lib/Routing.php');
+require_once('lib/session.php');
+require_once('lib/config.php');
+require_once('lib/routing.php');
 
 function session(){
 	// Start Session
 	static $session;
 	
 	if($session==null){
-		$session=new UserSession();
+		$session=new ApineSession();
 		//print 'session ';
 	}
 	return $session;

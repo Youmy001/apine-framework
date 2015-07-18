@@ -5,9 +5,9 @@
  * @package apine-framework
  * @subpackage system
  */
-require_once ('lib/model/User.php');
-require_once ('lib/Cookie.php');
-require_once ('lib/Config.php');
+require_once ('lib/model/user.php');
+require_once ('lib/cookie.php');
+require_once ('lib/config.php');
 /**
  * #@+
  * Constants
@@ -30,7 +30,7 @@ define('SESSION_GUEST', 40);
  * This class also include URL writing and
  * cookie gestion functionnalities.
  */
-class UserSession{
+class ApineSession{
 
 	/**
 	 * PHP session's Id
@@ -256,7 +256,7 @@ class UserSession{
 
 		if(!$this->is_logged_in()){
 			$encode_pass = hash('sha256', $password);
-			$user_id = UserFactory::Authentication($user_name, $encode_pass);
+			$user_id = Apine_UserFactory::Authentication($user_name, $encode_pass);
 			if($user_id){
 				$this->user_id = $user_id;
 				$this->logged_in = true;

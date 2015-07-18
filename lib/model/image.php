@@ -6,14 +6,14 @@
  * @subpackage system
  */
 require_once ('lib/model/factory/image_factory.php');
-require_once ('lib/model/User.php');
-require_once ('lib/File_Image.php');
-require_once ('lib/entity/AbstractEntity.php');
+require_once ('lib/model/user.php');
+require_once ('lib/file_image.php');
+require_once ('lib/entity/entity.php');
 
 /**
  * Database representation of uploaded images
  */
-class Image extends AbstractEntity{
+class ApineImage extends ApineEntityModel{
 
 	/**
 	 * Image identifier in database
@@ -245,7 +245,7 @@ class Image extends AbstractEntity{
 
 	/**
 	 * (non-PHPdoc)
-	 * @see EntityInterface::load()
+	 * @see ApineEntityInterface::load()
 	 */
 	public function load(){
 
@@ -262,7 +262,7 @@ class Image extends AbstractEntity{
 
 	/**
 	 * (non-PHPdoc)
-	 * @see EntityInterface::save()
+	 * @see ApineEntityInterface::save()
 	 */
 	public function save(){
 
@@ -272,7 +272,7 @@ class Image extends AbstractEntity{
 
 	/**
 	 * (non-PHPdoc)
-	 * @see EntityInterface::delete()
+	 * @see ApineEntityInterface::delete()
 	 */
 	public function delete(){
 
