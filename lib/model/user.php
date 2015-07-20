@@ -5,8 +5,6 @@
  * @package apine-framework
  * @subpackage system
  */
-require_once ('lib/entity/entity.php');
-require_once ('lib/model/factory/user_factory.php');
 
 /**
  * Implementation of the database representation of users

@@ -5,9 +5,7 @@
  * @package apine-framework
  * @subpackage system
  */
-require_once ('lib/model/user.php');
-require_once ('lib/cookie.php');
-require_once ('lib/config.php');
+
 /**
  * #@+
  * Constants

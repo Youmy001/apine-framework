@@ -5,7 +5,6 @@
  * @package apine-framework
  * @subpackage system
  */
-require_once ('lib/liste_iterator.php');
 
 /**
  * Traversable collection that mimics an array while providing easy to

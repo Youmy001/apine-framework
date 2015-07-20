@@ -1,5 +1,4 @@
 <?php
-require_once('lib/mvc/controller.php');
 
 class HomeController extends Controller{
 	

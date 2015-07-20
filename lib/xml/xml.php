@@ -165,6 +165,3 @@ class XML{
         }
     }
 }
-
-require_once "xmlparser.php";
-require_once "xmlwriter.php";

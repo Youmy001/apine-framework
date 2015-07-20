@@ -1,5 +1,4 @@
 <?php
-require_once('lib/config.php');
 /**
  * This file contains the tools to communicate with the database
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>

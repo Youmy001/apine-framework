@@ -1,6 +1,4 @@
 <?php
-require_once('lib/liste.php');
-require_once('lib/url_helper.php');
 
 abstract class View{
 	

@@ -1,7 +1,5 @@
 <?php
 
-require_once ('lib/xml/xml.php');
-
 class Routing{
 	
 	private static $routes = array(

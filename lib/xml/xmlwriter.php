@@ -7,8 +7,6 @@
 / Auteurs: Marc-André Douville Auger, Véronique Blais, Tommy Teasdale
 */
 
-require_once "xmlelement.php";
-
 /*************************************************
  * Classe Writer
  * ---------------

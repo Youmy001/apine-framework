@@ -7,9 +7,6 @@
  * @package apine-framework
  * @subpackage system
  */
-require_once ('lib/factory/factory.php');
-require_once ('lib/model/user.php');
-require_once ('lib/model/image.php');
 
 class ApineImageFactory extends ApineFactory implements ApineFactoryInterface{
 

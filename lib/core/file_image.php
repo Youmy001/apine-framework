@@ -5,7 +5,6 @@
  * @package apine-framework
  * @subpackage system
  */
-require_once ('lib/File.php');
 
 /**
  * Compute a ratio from a multiplier
@@ -44,7 +43,7 @@ function float2rat($n, $tolerance = 1.e-6){
  * contains the tools to crop, resize and apply basic filters to the
  * ressource image.
  */
-class File_Image extends File{
+class FileImage extends File{
 
 	/**
 	 * Image's height in pixels

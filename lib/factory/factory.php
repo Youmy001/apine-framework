@@ -7,9 +7,6 @@
  * @package apine-framework
  * @subpackage factory
  */
-require_once ('lib/database.php');
-require_once ('lib/liste.php');
-require_once ('lib/factory/interface/factory_interface.php');
 
 /**
  * This is the implementation of the factory

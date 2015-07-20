@@ -8,9 +8,6 @@
  * @subpackage entity
  */
 
-require_once ('lib/factory/factory.php');
-require_once ('lib/entity/interface/entity_interface.php');
-
 /**
  * This is the implementation of the data mapper
  * design patern.

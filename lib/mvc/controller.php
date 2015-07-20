@@ -1,5 +1,4 @@
 <?php
-require_once('lib/mvc/view.php');
 
 abstract class Controller{
 	

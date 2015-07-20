@@ -5,10 +5,6 @@
  * @package bokaro
  * @subpackage system
  */
-require_once ('lib/model/factory/image_factory.php');
-require_once ('lib/model/user.php');
-require_once ('lib/file_image.php');
-require_once ('lib/entity/entity.php');
 
 /**
  * Database representation of uploaded images
@@ -232,7 +228,7 @@ class ApineImage extends ApineEntityModel{
 			$this->load();
 		}
 		if(is_string($a_file)){
-			$this->file = new File_Image(SCRIPT_PATH . $a_file);
+			$this->file = new FileImage(SCRIPT_PATH . $a_file);
 		}else if(get_class($a_file) == 'File_Image'){
 			$this->file = $a_file;
 		}
@@ -254,7 +250,7 @@ class ApineImage extends ApineEntityModel{
 			$this->privacy = $this->_get_field('privacy');
 			$this->folder = $this->_get_field("folder");
 			$this->user = UserFactory::create_by_id($this->_get_field('user_id'));
-			$this->file = new File_Image($this->_get_field('file'));
+			$this->file = new FileImage($this->_get_field('file'));
 			$this->loaded = 1;
 		}
 	
