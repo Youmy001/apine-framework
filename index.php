@@ -16,68 +16,9 @@ if(!function_exists('str_split_unicode')){
 	    return preg_split("//u", $str, -1, PREG_SPLIT_NO_EMPTY);
 	}
 }
-$dir=realpath(dirname(__FILE__)).'/lib/';
 
-function folder_files($dir,$root=true){
-	$array=array();
-	if (is_dir($dir)) {
-		if(!$root){
-			//print($dir);
-			// Extract directories
-			$a_dir=array();
-			$a_file=array();
-			foreach(scandir($dir) as $file){
-				if ($file != "." && $file != "..") {
-					if(is_dir($dir . $file . '/')){
-						$a_dir[]=$dir.$file;
-					}else{
-						$a_file[]=$dir.$file;
-					}
-				}
-			}
-			/*array_push($array, $a_dir);
-			array_push($array, $a_file);*/
-			foreach ($a_dir as $file){
-				if ($file != "." && $file != "..") {
-					$dir_array=folder_files($file . '/',false);
-					//$array[$dir . $file . '/']=folder_files($dir . $file . '/');
-					//array_push($array,$dir_array);
-					foreach ($dir_array as $dir_file){
-						$array[]=$dir_file;
-					}
-				}
-			}
-			
-			foreach ($a_file as $file){
-				$array[]=$file;
-			}
-			
-		}else{
-			foreach(scandir($dir) as $file){
-				if ($file != "." && $file != "..") {
-					if(is_dir($dir . $file . '/')){
-						$dir_array=folder_files($dir . $file . '/',false);
-						//$array[$dir . $file . '/']=folder_files($dir . $file . '/');
-						//array_push($array,$dir_array);
-						foreach ($dir_array as $dir_file){
-							$array[]=$dir_file;
-						}
-					}else{
-						//echo " ( filename: $dir$file ; filetype: " . filetype($dir . $file) . " ) ,\n";
-						//require_once("$dir$file");
-						$array[]=$dir.$file;
-					}
-				}
-			}
-		}
-	}
-	return $array;
-}
-
-foreach (folder_files($dir) as $file){
-	require_once $file;
-}
-
+require_once('lib/core/autoloader.php');
+Autoload::load_kernel();
 
 function session(){
 	// Start Session
