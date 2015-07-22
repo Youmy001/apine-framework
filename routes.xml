@@ -1,33 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <routes>
-    <route args="false" method="GET">
-		<request>/([a-z]{2})</request>
-       	<controller>home</controller>
-		<action>index</action>
-	</route>
-	<route args="false" method="GET">
-		<request>/([a-z]{2})/</request>
-       	<controller>home</controller>
-		<action>index</action>
-	</route>
 	<route args="false" method="GET">
 		<request>/index</request>
-       	<controller>home</controller>
+       <controller>home</controller>
 		<action>index</action>
 	</route>
 	<route args="false" method="GET">
 		<request>/home</request>
-       	<controller>user</controller>
-		<action>home</action>
+       <controller>home</controller>
+		<action>index</action>
 	</route>
 	<route args="false" method="GET">
-		<request>/player</request>
-       	<controller>about</controller>
-		<action>player</action>
+		<request>/about</request>
+       <controller>home</controller>
+		<action>about</action>
 	</route>
-	<route args="true" method="GET">
-		<request>/player/([_A-Za-z0-9]+)</request>
-       	<controller>about</controller>
-		<action>player</action>
+	<route args="false" method="GET">
+		<request>/login</request>
+       <controller>session</controller>
+		<action>login</action>
+	</route>
+	<route args="false" method="GET">
+		<request>/logout</request>
+       <controller>session</controller>
+		<action>logout</action>
+	</route>
+	<route args="false" method="GET">
+		<request>/register</request>
+       <controller>session</controller>
+		<action>register</action>
+	</route>
+	<route args="true" method="POST">
+		<request>/login</request>
+       <controller>session</controller>
+		<action>login</action>
+	</route>
+	<route args="true" method="POST">
+		<request>/register</request>
+       <controller>session</controller>
+		<action>register</action>
 	</route>
 </routes>

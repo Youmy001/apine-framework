@@ -17,7 +17,7 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function is_id_exist($user_id){
 
-		$id_sql = self::_get_connection()->select("SELECT ID FROM users WHERE ID=$user_id");
+		$id_sql = self::_get_connection()->select("SELECT ID FROM apine_users WHERE ID=$user_id");
 		if($id_sql){
 			return true;
 		}
@@ -33,7 +33,7 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function is_name_exist($user_name){
 
-		$id_sql = self::_get_connection()->select("SELECT ID FROM users WHERE name='$user_name'");
+		$id_sql = self::_get_connection()->select("SELECT ID FROM apine_users WHERE username='$user_name'");
 		if($id_sql){
 			return true;
 		}
@@ -49,7 +49,7 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function is_email_exist($user_mail){
 
-		$id_sql = self::_get_connection()->select("SELECT ID FROM users WHERE email='$user_mail'");
+		$id_sql = self::_get_connection()->select("SELECT ID FROM apine_users WHERE email='$user_mail'");
 		if($id_sql){
 			return true;
 		}
@@ -62,7 +62,7 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function create_all(){
 
-		$request = self::_get_connection()->select('SELECT ID from `users` ORDER BY `name`');
+		$request = self::_get_connection()->select('SELECT ID from `apine_users` ORDER BY `username`');
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
@@ -81,7 +81,7 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function create_by_id($a_id){
 
-		$user_sql_id = self::_get_connection()->prepare('SELECT ID FROM `users` WHERE ID=?');
+		$user_sql_id = self::_get_connection()->prepare('SELECT ID FROM `apine_users` WHERE ID=?');
 		$ar_user_sql = self::_get_connection()->execute(array(
 						$a_id
 		), $user_sql_id);
@@ -102,7 +102,7 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function create_by_name($name){
 
-		$user_sql_id = self::_get_connection()->prepare('SELECT ID FROM `users` WHERE name=?');
+		$user_sql_id = self::_get_connection()->prepare('SELECT ID FROM `apine_users` WHERE username=?');
 		$ar_user_sql = self::_get_connection()->execute(array(
 						$name
 		), $user_sql_id);
@@ -118,14 +118,14 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	}
 
 	/**
-	 * Fetch users by permission level
+	 * Fetch apine_users by permission level
 	 * @param integer $access
 	 *        User Permission level
 	 * @return Liste
 	 */
 	public static function create_by_access_right($access){
 
-		$request = self::_get_connection()->select("SELECT ID from `users` where type=$access");
+		$request = self::_get_connection()->select("SELECT ID from `apine_users` where type=$access");
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
@@ -148,11 +148,12 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function authentication($name, $pass){
 
-		$connect_sql_id = self::_get_connection()->prepare('SELECT ID FROM users WHERE name=? AND pwd=?');
+		$connect_sql_id = self::_get_connection()->prepare('SELECT ID FROM apine_users WHERE username=? AND password=?');
 		$ar_connect_sql = self::_get_connection()->execute(array(
 						$name,
 						$pass
 		), $connect_sql_id);
+		
 		if($ar_connect_sql){
 			$connect = end($ar_connect_sql);
 			$connect = $connect['ID'];

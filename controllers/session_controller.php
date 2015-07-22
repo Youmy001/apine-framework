@@ -71,7 +71,7 @@ class SessionController extends Controller{
 				// Make sure required data are provided
 				if((isset($user) && isset($pwd) && isset($email)) && (!session()->is_logged_in())){
 					// Verify the user name isn't already in use
-					if(UserFactory::is_name_exist($user)){
+					if(ApineUserFactory::is_name_exist($user)){
 						throw new Exception("4"); // Already used username
 					}
 					// Verify both passwords are identical
@@ -84,11 +84,11 @@ class SessionController extends Controller{
 					if(isset($email) && !empty($email) && preg_match('/^(?!(?:(?:\\x22?\\x5C[\\x00-\\x7E]\\x22?)|(?:\\x22?[^\\x5C\\x22]\\x22?)){255,})(?!(?:(?:\\x22?\\x5C[\\x00-\\x7E]\\x22?)|(?:\\x22?[^\\x5C\\x22]\\x22?)){65,}@)(?:(?:[\\x21\\x23-\\x27\\x2A\\x2B\\x2D\\x2F-\\x39\\x3D\\x3F\\x5E-\\x7E]+)|(?:\\x22(?:[\\x01-\\x08\\x0B\\x0C\\x0E-\\x1F\\x21\\x23-\\x5B\\x5D-\\x7F]|(?:\\x5C[\\x00-\\x7F]))*\\x22))(?:\\.(?:(?:[\\x21\\x23-\\x27\\x2A\\x2B\\x2D\\x2F-\\x39\\x3D\\x3F\\x5E-\\x7E]+)|(?:\\x22(?:[\\x01-\\x08\\x0B\\x0C\\x0E-\\x1F\\x21\\x23-\\x5B\\x5D-\\x7F]|(?:\\x5C[\\x00-\\x7F]))*\\x22)))*@(?:(?:(?!.*[^.]{64,})(?:(?:(?:xn--)?[a-z0-9]+(?:-+[a-z0-9]+)*\\.){1,126}){1,}(?:(?:[a-z][a-z0-9]*)|(?:(?:xn--)[a-z0-9]+))(?:-+[a-z0-9]+)*)|(?:\\[(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){7})|(?:(?!(?:.*[a-f0-9][:\\]]){7,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?)))|(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){5}:)|(?:(?!(?:.*[a-f0-9]:){5,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3}:)?)))?(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))(?:\\.(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))){3}))\\]))$/iD', $_POST['email']) != 1){
 						throw new Exception("2"); // Misformated Email
 					}
-					if(UserFactory::is_email_exist($email)){
+					if(ApineUserFactory::is_email_exist($email)){
 						throw new Exception("7"); // Already used email
 					}
 					// Create new empty user
-					$new_user = new Apine_User();
+					$new_user = new ApineUser();
 					// Populate new user
 					$new_user->set_username($user);
 					if(isset($realname)){
@@ -105,7 +105,7 @@ class SessionController extends Controller{
 					if(isset($redirect) && $redirect != ""){
 						header("Location: " . $redirect);
 					}else{
-						header("Location: " . URL_Helper::path("home"));
+						header("Location: " . URL_Helper::path("login"));
 						die();
 					}
 					die();

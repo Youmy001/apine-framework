@@ -54,7 +54,7 @@ class ApineUser extends ApineEntityModel{
 	 */
 	public function __construct($a_id = null){
 
-		$this->_initialize('users', $a_id);
+		$this->_initialize('apine_users', $a_id);
 		if(!is_null($a_id)){
 			$this->id = $a_id;
 		}
@@ -111,7 +111,7 @@ class ApineUser extends ApineEntityModel{
 			$this->load();
 		}
 		$this->username = $a_name;
-		$this->_set_field('name', $a_name);
+		$this->_set_field('username', $a_name);
 	
 	}
 
@@ -139,7 +139,7 @@ class ApineUser extends ApineEntityModel{
 			$this->load();
 		}
 		$this->password = $a_pass;
-		$this->_set_field('pwd', $a_pass);
+		$this->_set_field('password', $a_pass);
 	
 	}
 
@@ -195,7 +195,7 @@ class ApineUser extends ApineEntityModel{
 			$this->load();
 		}
 		$this->email_address = $a_email;
-		$this->_set_field('Email', $a_email);
+		$this->_set_field('email', $a_email);
 	
 	}
 
@@ -234,10 +234,10 @@ class ApineUser extends ApineEntityModel{
 	public function load(){
 
 		if(!is_null($this->id)){
-			$this->username = $this->_get_field('name');
-			$this->password = $this->_get_field('pwd');
+			$this->username = $this->_get_field('username');
+			$this->password = $this->_get_field('password');
 			$this->type = $this->_get_field('type');
-			$this->email_address = $this->_get_field('Email');
+			$this->email_address = $this->_get_field('email');
 			$this->register_date = $this->_get_field('register');
 			$this->loaded = 1;
 		}

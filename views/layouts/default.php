@@ -42,9 +42,9 @@
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li class="active"><a href="<?= URL_Helper::path('home') ?>">Home</a></li>
-					<li><a href="#about">About</a></li>
-					<li><a href="#contact">Contact</a></li>
+					<li><a href="<?= URL_Helper::path('home') ?>">Home</a></li>
+					<li><a href="<?= URL_Helper::path('about') ?>">About</a></li>
+					<li><a href="<?= URL_Helper::path('contact') ?>">Contact</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="<?= URL_Helper::path('login');?>">Login</a></li>
@@ -60,6 +60,12 @@
     	<?php include_once("views/$this->_view.php");?>
 
     </div>
+    <footer class="container">
+    	<hr>
+    	<p class="pull-left">&copy; 2015 Tommy Teadale</>
+    	<p class="pull-right">Generated in <?= execution_time() ?> seconds</p>
+    	<p class="text-center">APIne ver. <?= Config::get('application', 'version') ?></p>
+    </footer>
 	<!-- /.container -->
 
 

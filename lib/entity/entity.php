@@ -69,7 +69,7 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 	*/
 	protected function _load(){
 
-		$this->database_fields = ($this->id !== null)?Factory::get_table_row($this->table_name, $this->id):null;
+		$this->database_fields = ($this->id !== null)?ApineFactory::get_table_row($this->table_name, $this->id):null;
 		$this->database_fields = $this->database_fields[0];
 		$this->field_loaded = 1;
 		if(sizeof($this->modified_fields) > 0){
@@ -219,7 +219,7 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 				}
 			}
 			if(sizeof($new_dbf) > 0){
-				$this->id = Factory::set_table_row($this->table_name, $new_dbf);
+				$this->id = ApineFactory::set_table_row($this->table_name, $new_dbf);
 			}
 			/*$this->field_loaded = 1;
 			 $this->loaded = 1;*/
@@ -238,7 +238,7 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 					}
 				}
 			}
-			Factory::update_table_row($this->table_name, $arUpdate, array(
+			ApineFactory::update_table_row($this->table_name, $arUpdate, array(
 							'ID' => $this->id
 			));
 		}

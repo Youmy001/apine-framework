@@ -1,9 +1,10 @@
 <?php
 /**
  * This file contains the session management class
+ * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
- * @package apine-framework
- * @subpackage system
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
  */
 
 /**
@@ -21,12 +22,10 @@ define('SESSION_USER', 65);
 define('SESSION_GUEST', 40);
 // Can't access ACP or UCP at all. Can only view content.
 // Can also subscribe or register to newsletter.
+
 /**
- * Gestion and configuration of the userland
- * (Language, User login and logout).
- *
- * This class also include URL writing and
- * cookie gestion functionnalities.
+ * Gestion and configuration of the a user session
+ * This class manages user login and logout and register the state of the http request
  */
 class ApineSession{
 
@@ -85,14 +84,13 @@ class ApineSession{
 	private $session_request_type;
 	
 	/**
-	 * UserSession Constructor
+	 * Construct the session handler
+	 * Fetch data from PHP structures and start the PHP session
 	 */
 	public function __construct(){
 		
 		$this->session_request_type=$_SERVER['REQUEST_METHOD'];
 		
-		// Connect do database
-		self::$dbhandle = $this->get_database_connection();
 		// Check the session cookie (if one)
 		if(Cookie::get_cookie('session') != null){
 			session_id(self::get_cookie('session'));
@@ -109,28 +107,19 @@ class ApineSession{
 		}
 	
 	}
-
+	
 	/**
-	 * Fetch a database connection handler using the singleton pattern
-	 * @return Database
+	 * Return the type of the current http request
+	 * @return string
 	 */
-	public static function get_database_connection(){
-
-		if(!isset(self::$dbhandle)){
-			try{
-				self::$dbhandle = new Database();
-			}catch(DatabaseException $e){
-				die('Erreur : ' . $e->getMessage());
-			}
-		}
-		return self::$dbhandle;
-	
-	}
-	
 	public function get_session_request_type(){
 		return $this->session_request_type;
 	}
 	
+	/**
+	 * Returns weither the current http request is a GET request or not
+	 * @return boolean
+	 */
 	public function is_get(){
 		$return=false;
 		if($this->session_request_type=="GET"){
@@ -139,6 +128,10 @@ class ApineSession{
 		return $return;
 	}
 	
+	/**
+	 * Returns weither the current http request is a POST request or not
+	 * @return boolean
+	 */
 	public function is_post(){
 		$return=false;
 		if($this->session_request_type=="POST"){
@@ -147,6 +140,10 @@ class ApineSession{
 		return $return;
 	}
 	
+	/**
+	 * Returns weither the current http request is a PUT request or not
+	 * @return boolean
+	 */
 	public function is_put(){
 		$return=false;
 		if($this->session_request_type=="PUT"){
@@ -155,6 +152,10 @@ class ApineSession{
 		return $return;
 	}
 	
+	/**
+	 * Returns weither the current http request is a DELETE request or not
+	 * @return boolean
+	 */
 	public function is_delete(){
 		$return=false;
 		if($this->session_request_type=="DELETE"){
@@ -191,7 +192,7 @@ class ApineSession{
 	public function get_user(){
 
 		if($this->is_logged_in())
-			return new Apine_User($this->user_id);
+			return new ApineUser($this->user_id);
 	
 	}
 
@@ -227,23 +228,9 @@ class ApineSession{
 	}
 
 	/**
-	 * Display a login prompt
-	 * @param string $name
-	 *        Title of the login prompt
-	 * @param string $action
-	 *        Redirection Location
-	 * @param string $error
-	 *        Message error to display in the prompt
-	 */
-	public function login_form($name, $action = 'index', $error = null, $code= null){
-
-		$session = &$this;
-		include_once ('views/session/login_form.php');
-	
-	}
-
-	/**
 	 * Log a user in
+	 * Look up in database for a matching row with a username and a password
+	 * 
 	 * @param string $user_name
 	 *        Username of the user
 	 * @param string $password
@@ -254,14 +241,14 @@ class ApineSession{
 
 		if(!$this->is_logged_in()){
 			$encode_pass = hash('sha256', $password);
-			$user_id = Apine_UserFactory::Authentication($user_name, $encode_pass);
+			
+			$user_id = ApineUserFactory::authentication($user_name, $encode_pass);
 			if($user_id){
 				$this->user_id = $user_id;
 				$this->logged_in = true;
 				$_SESSION['ID'] = $this->user_id;
 				$new_user = $this->get_user();
 				$_SESSION['type'] = $new_user->get_type();
-				$this->set_session_language();
 				$this->set_session_type($new_user->get_type());
 				return true;
 			}else{
@@ -280,47 +267,10 @@ class ApineSession{
 
 		if($this->is_logged_in()){
 			$_SESSION = array();
-			self::set_cookie('session', $this->php_session_id, time() - 7776000);
+			Cookie::set_cookie('session', $this->php_session_id, time() - 7776000);
 			session_destroy();
 			$this->logged_in = false;
-			$this->set_session_language();
 			$this->set_session_type(SESSION_GUEST);
-		}
-	
-	}
-
-	/**
-	 * Display a registration prompt
-	 * @param string $name
-	 *        Title of the registration prompt
-	 * @param string $action
-	 *        Redirection Location
-	 * @param string $error
-	 *        Message error to display in the prompt
-	 */
-	public function register_form($name, $action = 'index', $error = null){
-
-		if(!$this->is_logged_in()){
-			$session = &$this;
-			include_once ('views/session/register_form.php');
-		}
-	
-	}
-
-	/**
-	 * Display a password restoration prompt
-	 * @param string $name
-	 *        Title of the password restoration prompt
-	 * @param string $action
-	 *        Redirection Location
-	 * @param string $error
-	 *        Message error to display in the prompt
-	 */
-	public function restore_form($name, $action = 'index', $error = null){
-
-		if(!$this->is_logged_in()){
-			$session = &$this;
-			include_once ('views/session/pwd_restore_form.php');
 		}
 	
 	}

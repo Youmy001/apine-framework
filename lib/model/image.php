@@ -54,7 +54,7 @@ class ApineImage extends ApineEntityModel{
 	 */
 	public function __construct($a_id = null){
 
-		$this->_initialize('images', $a_id);
+		$this->_initialize('apine_images', $a_id);
 		if(!is_null($a_id)){
 			$this->id = $a_id;
 		}

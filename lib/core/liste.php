@@ -248,7 +248,7 @@ class Liste implements IteratorAggregate{
 	 */
 	public function getIterator(){
 
-		return new Liste_Iterator(clone $this);
+		return new ListeIterator(clone $this);
 	
 	}
 	

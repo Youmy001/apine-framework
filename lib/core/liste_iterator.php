@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Liste's class iterator
  *
@@ -8,7 +7,7 @@
  * @package apine-framework
  * @subpackage system
  */
-class Liste_Iterator implements Iterator{
+class ListeIterator implements Iterator{
 
 	/**
 	 * Instance of the collection

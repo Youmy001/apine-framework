@@ -4,6 +4,7 @@ class Routing{
 	
 	private static $routes = array(
 		"/index"			=> "/home/index",
+		"/about"			=> "/home/about",
 		"/login/restore"	=> "/session/restore",
 		"/login"			=> "/session/login",
 		"/logout"			=> "/session/logout",
@@ -22,65 +23,53 @@ class Routing{
 		$str_routes="";
 		$found_route=null;
 		foreach ($routes as $item){
-			print 'route<br>';
-			//print var_dump($item->hasChildNodes());
+			
 			if($item->nodeType==XML_ELEMENT_NODE){
 				foreach($item->childNodes as $attr){
-					//print "Child";
+					
 		        	if($attr->nodeType==XML_ELEMENT_NODE){
-		              //print $attr->tagName.": ".$attr->nodeValue."<br>";
+		              
 		        		if($attr->tagName=="request"){
-		        			print $request."=".$attr->nodeValue."<br>";
-		        			var_dump(strpos($request,$attr->nodeValue));
-		        			print '<br>';
 		        			if(strpos($request,$attr->nodeValue)===0&&$item->getAttribute('method')==$_SERVER['REQUEST_METHOD']){
 		        				$found_route=$item->cloneNode(true);
-		        				print "matched<br>";
 		        				break;
 		        			}
 		        		}
 		        	}
 				}
-		       //print "----------<br>";
 		    }
 		    if($found_route!==null){
 		    	break;
 		    }
-		    //print $item->tagName."<br>";
-		    //print "----------<br>";
 		}
 		if($found_route!==null){
-			//print $found_route->getElementsByTagName('controller')->item(0)->nodeValue.'/'.$found_route->getElementsByTagName('action')->item(0)->nodeValue;
+			
 			$controller=$found_route->getElementsByTagName('controller')->item(0)->nodeValue;
 			$action=$found_route->getElementsByTagName('action')->item(0)->nodeValue;
 			
-			//$request_args=substr($_GET['request'], $found_route->getElementsByTagName('request')->nodeValue);
-			$request=preg_replace($found_route->getElementsByTagName('request')->nodeValue,"$controller/$action",$request);
-		}else{
+			$match=str_ireplace('/','\\/',$found_route->getElementsByTagName('request')->item(0)->nodeValue);
+			$match.="(\\/(.*))?";
+			$match='/^'.$match.'$/';
+			
+			$replace="/$controller/$action";
+			$request=preg_replace($match,$replace,$request);
 			
 		}
 		
-		die();
-	} 
-	
+		return $request;
+	}
+
 	public static function route(){
-		//self::xml_route();
-		//print $_GET['request'];
 		$request=(isset($_GET['request']))?$_GET['request']:'/index';
 		$route_found=false;
 		
-		//print ucfirst($controller)."Controller->".$action.'()';*/
 		$vanilla_route_found=self::check_route($request);
 		
 		if(!$vanilla_route_found){
-			foreach(self::$routes as $match => $replace){
-				$match=str_ireplace('/','\\/',$match);
-				$match='/^'.$match.'$/';
-				if(preg_match($match, $request)){
-					$request=preg_replace($match,$replace,$request);
-					$route_found=true;
-					break;
-				}
+			$xml_request=self::xml_route();
+			if($xml_request!==$request){
+				$route_found=true;
+				$request=$xml_request;
 			}
 		}
 		
@@ -106,6 +95,7 @@ class Routing{
 		}
 		
 		try{
+			require_once('controllers/error_controller.php');
 			if(file_exists('controllers/'.$controller.'_controller.php')){
 				require_once('controllers/'.$controller.'_controller.php');
 				$maj_controller=ucfirst($controller).'Controller';
@@ -131,8 +121,6 @@ class Routing{
 			$controller=new ErrorController();
 			$controller->server();
 		}
-		
-		//return array($controller,$action, $args);
 	}
 	
 	private static function check_route($a_route){
