@@ -25,7 +25,15 @@ if(!function_exists('str_split_unicode')){
 	}
 }
 
-$before=microtime(true);
+function execution_time(){
+	global $before;
+
+	$after=microtime(true) * 1000;
+
+	return number_format((($after-$before)),1);
+}
+
+$before=microtime(true) * 1000;
 
 require_once('lib/core/autoloader.php');
 Autoload::load_kernel();
@@ -45,13 +53,5 @@ function session(){
 }
 
 Routing::route();
-
-function execution_time(){
-	global $before;
-	
-	$after=microtime(true);
-	
-	return number_format((($after-$before)*1),4);
-}
 
 ?>

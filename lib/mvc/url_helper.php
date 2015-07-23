@@ -142,4 +142,24 @@ class URL_Helper{
 		return self::write_relative_path($path);
 	
 	}
+	
+	/**
+	 * Get current absolute path
+	 * @return string
+	 */
+	public static function get_current_path(){
+	
+		return self::get_instance()->session_current;
+	
+	}
+	
+	/**
+	 * Get current absolute server path
+	 * @return string
+	 */
+	public static function get_server_path(){
+	
+		return self::get_instance()->session_server_path;
+	
+	}
 }

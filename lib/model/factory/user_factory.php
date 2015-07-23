@@ -66,7 +66,7 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
-				$liste->add_item(new Apine_User($item['ID']));
+				$liste->add_item(new ApineUser($item['ID']));
 			}
 		}
 		return $liste;
@@ -86,7 +86,7 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 						$a_id
 		), $user_sql_id);
 		if($ar_user_sql){
-			$return = new Apine_User($ar_user_sql[0]['ID']);
+			$return = new ApineUser($ar_user_sql[0]['ID']);
 		}else{
 			$return = null;
 		}
@@ -109,7 +109,7 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 		if($ar_user_sql){
 			$user_id = end($ar_user_sql);
 			$user_id = $user_id['ID'];
-			$lang = new Apine_User($user_id);
+			$lang = new ApineUser($user_id);
 		}else{
 			$lang = null;
 		}
@@ -129,7 +129,7 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
-				$liste->add_item(new Apine_User($item['ID']));
+				$liste->add_item(new ApineUser($item['ID']));
 			}
 		}
 		return $liste;

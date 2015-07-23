@@ -93,7 +93,7 @@ class ApineSession{
 		
 		// Check the session cookie (if one)
 		if(Cookie::get_cookie('session') != null){
-			session_id(self::get_cookie('session'));
+			session_id(Cookie::get_cookie('session'));
 		}
 		// Start PHP Session
 		session_start();

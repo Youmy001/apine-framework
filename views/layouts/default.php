@@ -63,7 +63,7 @@
     <footer class="container">
     	<hr>
     	<p class="pull-left">&copy; 2015 Tommy Teadale</>
-    	<p class="pull-right">Generated in <?= execution_time() ?> seconds</p>
+    	<p class="pull-right">Generated in <?= execution_time() ?> milliseconds</p>
     	<p class="text-center">APIne ver. <?= Config::get('application', 'version') ?></p>
     </footer>
 	<!-- /.container -->

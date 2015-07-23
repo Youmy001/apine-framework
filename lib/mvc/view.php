@@ -163,7 +163,7 @@ class HTMLView extends HTTPView{
 	public function add_script($a_script){
 		if($a_script!=""){
 			if(file_exists("resources/public/js/$a_script.js")){
-				$this->_scripts->add_item(session()->path("resources/public/js/$a_script.js",false));
+				$this->_scripts->add_item(URL_Helper::path("resources/public/js/$a_script.js",false));
 			}
 		}
 	}

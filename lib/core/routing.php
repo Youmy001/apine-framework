@@ -2,16 +2,6 @@
 
 class Routing{
 	
-	private static $routes = array(
-		"/index"			=> "/home/index",
-		"/about"			=> "/home/about",
-		"/login/restore"	=> "/session/restore",
-		"/login"			=> "/session/login",
-		"/logout"			=> "/session/logout",
-		"/register"		=> "/session/register",
-		"/redirect"		=> "/session/redirect"
-	);
-	
 	private static function xml_route(){
 		$xml_routes=new Parser();
 		$xml_routes->load_from_file('routes.xml');
@@ -30,9 +20,29 @@ class Routing{
 		        	if($attr->nodeType==XML_ELEMENT_NODE){
 		              
 		        		if($attr->tagName=="request"){
-		        			if(strpos($request,$attr->nodeValue)===0&&$item->getAttribute('method')==$_SERVER['REQUEST_METHOD']){
-		        				$found_route=$item->cloneNode(true);
-		        				break;
+		        			if($item->getAttribute('method')==$_SERVER['REQUEST_METHOD']){
+		        				$match_route=$item->cloneNode(true);
+		        				//print "{$match_route->getElementsByTagName('request')->item(0)->nodeValue}\n";
+		        				
+		        				$controller=$match_route->getElementsByTagName('controller')->item(0)->nodeValue;
+		        				$action=$match_route->getElementsByTagName('action')->item(0)->nodeValue;
+		        				
+		        				$match=str_ireplace('/','\\/',$match_route->getElementsByTagName('request')->item(0)->nodeValue);
+		        				//$match.="(\\/(.*))?";
+		        				$match='/^'.$match.'$/';
+		        				$replace="/$controller/$action";
+		        				if($match_route->getAttribute('args')==true){
+		        					$number_args=($match_route->getAttribute('argsnum')!==null)?$match_route->getAttribute('argsnum'):1;
+		        					for($i=1;$i<=$number_args;$i++)
+		        					$replace.="/$".$i;
+		        				}
+		        				if(preg_match($match, $request)){
+		        					$request=preg_replace($match,$replace,$request);
+		        					$found_route=$item->cloneNode(true);
+		        					
+		        					//print "Found\n";
+		        					break;
+		        				}
 		        			}
 		        		}
 		        	}
@@ -41,19 +51,6 @@ class Routing{
 		    if($found_route!==null){
 		    	break;
 		    }
-		}
-		if($found_route!==null){
-			
-			$controller=$found_route->getElementsByTagName('controller')->item(0)->nodeValue;
-			$action=$found_route->getElementsByTagName('action')->item(0)->nodeValue;
-			
-			$match=str_ireplace('/','\\/',$found_route->getElementsByTagName('request')->item(0)->nodeValue);
-			$match.="(\\/(.*))?";
-			$match='/^'.$match.'$/';
-			
-			$replace="/$controller/$action";
-			$request=preg_replace($match,$replace,$request);
-			
 		}
 		
 		return $request;
