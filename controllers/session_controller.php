@@ -4,7 +4,7 @@ class SessionController extends Controller{
 	
 	public function login($params){
 		
-		if(ApineSession::is_post()){
+		if(Request::is_post()){
 			if(isset($params['user']))
 				$user = htmlspecialchars($params['user']);
 			if(isset($params['pwd']))
@@ -54,7 +54,7 @@ class SessionController extends Controller{
 	}
 	
 	public function register(){
-		if(ApineSession::is_post()&&!ApineSession::is_logged_in()){
+		if(Request::is_post()&&!ApineSession::is_logged_in()){
 			
 			if(isset($_POST['user']))
 				$user = htmlspecialchars($_POST['user']);
@@ -140,7 +140,7 @@ class SessionController extends Controller{
 	}
 	
 	public function restore(){
-		if(ApineSession::is_post()&&!ApineSession::is_logged_in()){
+		if(Request::is_post()&&!ApineSession::is_logged_in()){
 			/* TODO Password Restoration */
 		}
 		$this->_view->set_title('Reset Password');

@@ -85,7 +85,7 @@ class ApineSession{
 	 */
 	private function __construct(){
 		
-		$this->session_request_type=$_SERVER['REQUEST_METHOD'];
+		//$this->session_request_type=$_SERVER['REQUEST_METHOD'];
 		
 		// Check the session cookie (if one)
 		if(Cookie::get_cookie('session') != null){
@@ -109,62 +109,6 @@ class ApineSession{
 			self::$_instance = new static();
 		}
 		return self::$_instance;
-	}
-	
-	/**
-	 * Return the type of the current http request
-	 * @return string
-	 */
-	public static function get_session_request_type(){
-		return self::get_instance()->session_request_type;
-	}
-	
-	/**
-	 * Returns weither the current http request is a GET request or not
-	 * @return boolean
-	 */
-	public static function is_get(){
-		$return=false;
-		if(self::get_instance()->session_request_type=="GET"){
-			$return=true;
-		}
-		return $return;
-	}
-	
-	/**
-	 * Returns weither the current http request is a POST request or not
-	 * @return boolean
-	 */
-	public static function is_post(){
-		$return=false;
-		if(self::get_instance()->session_request_type=="POST"){
-			$return=true;
-		}
-		return $return;
-	}
-	
-	/**
-	 * Returns weither the current http request is a PUT request or not
-	 * @return boolean
-	 */
-	public static function is_put(){
-		$return=false;
-		if(self::get_instance()->session_request_type=="PUT"){
-			$return=true;
-		}
-		return $return;
-	}
-	
-	/**
-	 * Returns weither the current http request is a DELETE request or not
-	 * @return boolean
-	 */
-	public static function is_delete(){
-		$return=false;
-		if(self::get_instance()->session_request_type=="DELETE"){
-			$return=true;
-		}
-		return $return;
 	}
 
 	/**

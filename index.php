@@ -40,7 +40,7 @@ Autoload::load_kernel();
 
 //print_r($_SERVER['QUERY_STRING']);
 
-if(isset($_GET['api'])&&$_GET['api']==='api'){
+if(Request::is_api_call()){
 	print "\nRESTful API call";
 }else{
 	Routing::route();
