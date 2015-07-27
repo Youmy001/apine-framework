@@ -28,7 +28,9 @@ define('SESSION_GUEST', 40);
  * This class manages user login and logout and register the state of the http request
  */
 class ApineSession{
-
+	
+	private static $_instance;
+	
 	/**
 	 * PHP session's Id
 	 * @var string
@@ -46,12 +48,6 @@ class ApineSession{
 	 * @var integer
 	 */
 	private $user_id;
-
-	/**
-	 * Database connection handler
-	 * @var Database
-	 */
-	static $dbhandle;
 
 	/**
 	 * Session timeout
@@ -87,7 +83,7 @@ class ApineSession{
 	 * Construct the session handler
 	 * Fetch data from PHP structures and start the PHP session
 	 */
-	public function __construct(){
+	private function __construct(){
 		
 		$this->session_request_type=$_SERVER['REQUEST_METHOD'];
 		
@@ -103,26 +99,33 @@ class ApineSession{
 		if(isset($_SESSION['ID'])){
 			$this->logged_in = true;
 			$this->user_id = $_SESSION['ID'];
-			$this->session_type = $_SESSION['type'];
+			//$this->session_type = $_SESSION['type'];
 		}
 	
+	}
+	
+	public static function get_instance(){
+		if(!isset(self::$_instance)){
+			self::$_instance = new static();
+		}
+		return self::$_instance;
 	}
 	
 	/**
 	 * Return the type of the current http request
 	 * @return string
 	 */
-	public function get_session_request_type(){
-		return $this->session_request_type;
+	public static function get_session_request_type(){
+		return self::get_instance()->session_request_type;
 	}
 	
 	/**
 	 * Returns weither the current http request is a GET request or not
 	 * @return boolean
 	 */
-	public function is_get(){
+	public static function is_get(){
 		$return=false;
-		if($this->session_request_type=="GET"){
+		if(self::get_instance()->session_request_type=="GET"){
 			$return=true;
 		}
 		return $return;
@@ -132,9 +135,9 @@ class ApineSession{
 	 * Returns weither the current http request is a POST request or not
 	 * @return boolean
 	 */
-	public function is_post(){
+	public static function is_post(){
 		$return=false;
-		if($this->session_request_type=="POST"){
+		if(self::get_instance()->session_request_type=="POST"){
 			$return=true;
 		}
 		return $return;
@@ -144,9 +147,9 @@ class ApineSession{
 	 * Returns weither the current http request is a PUT request or not
 	 * @return boolean
 	 */
-	public function is_put(){
+	public static function is_put(){
 		$return=false;
-		if($this->session_request_type=="PUT"){
+		if(self::get_instance()->session_request_type=="PUT"){
 			$return=true;
 		}
 		return $return;
@@ -156,9 +159,9 @@ class ApineSession{
 	 * Returns weither the current http request is a DELETE request or not
 	 * @return boolean
 	 */
-	public function is_delete(){
+	public static function is_delete(){
 		$return=false;
-		if($this->session_request_type=="DELETE"){
+		if(self::get_instance()->session_request_type=="DELETE"){
 			$return=true;
 		}
 		return $return;
@@ -168,9 +171,9 @@ class ApineSession{
 	 * Verifies if a user is logged in
 	 * @return boolean
 	 */
-	public function is_logged_in(){
+	public static function is_logged_in(){
 
-		return $this->logged_in;
+		return self::get_instance()->logged_in;
 	
 	}
 
@@ -178,9 +181,9 @@ class ApineSession{
 	 * Get logged in user's id
 	 * @return integer
 	 */
-	public function get_user_id(){
+	public static function get_user_id(){
 
-		if($this->is_logged_in())
+		if(self::is_logged_in())
 			return $this->user_id;
 	
 	}
@@ -189,10 +192,10 @@ class ApineSession{
 	 * Get logged in user
 	 * @return User
 	 */
-	public function get_user(){
+	public static function get_user(){
 
-		if($this->is_logged_in())
-			return new ApineUser($this->user_id);
+		if(self::is_logged_in())
+			return new ApineUser(self::get_instance()->user_id);
 	
 	}
 
@@ -200,9 +203,9 @@ class ApineSession{
 	 * Get PHP's session Id
 	 * @return string
 	 */
-	public function get_session_identifier(){
+	public static function get_session_identifier(){
 
-		return $this->php_session_id;
+		return self::get_instance()->php_session_id;
 	
 	}
 
@@ -211,9 +214,9 @@ class ApineSession{
 	 * @param integer $type
 	 *        Session access level type
 	 */
-	public function set_session_type($type){
+	public static function set_session_type($type){
 
-		$this->session_type = $type;
+		self::get_instance()->session_type = $type;
 	
 	}
 
@@ -221,9 +224,9 @@ class ApineSession{
 	 * Get current session access level
 	 * @return integer
 	 */
-	public function get_session_type(){
+	public static function get_session_type(){
 
-		return $this->session_type;
+		return self::get_instance()->session_type;
 	
 	}
 
@@ -237,19 +240,19 @@ class ApineSession{
 	 *        Password of the user
 	 * @return boolean
 	 */
-	public function Login($user_name, $password){
+	public static function login($user_name, $password){
 
-		if(!$this->is_logged_in()){
+		if(!self::is_logged_in()){
 			$encode_pass = hash('sha256', $password);
 			
 			$user_id = ApineUserFactory::authentication($user_name, $encode_pass);
 			if($user_id){
-				$this->user_id = $user_id;
-				$this->logged_in = true;
-				$_SESSION['ID'] = $this->user_id;
-				$new_user = $this->get_user();
+				self::get_instance()->user_id = $user_id;
+				self::get_instance()->logged_in = true;
+				$_SESSION['ID'] = $user_id;
+				$new_user = self::get_user();
 				$_SESSION['type'] = $new_user->get_type();
-				$this->set_session_type($new_user->get_type());
+				self::set_session_type($new_user->get_type());
 				return true;
 			}else{
 				return false;
@@ -263,14 +266,14 @@ class ApineSession{
 	/**
 	 * Log a user out
 	 */
-	public function Logout(){
+	public static function logout(){
 
-		if($this->is_logged_in()){
+		if(self::is_logged_in()){
 			$_SESSION = array();
-			Cookie::set_cookie('session', $this->php_session_id, time() - 7776000);
+			Cookie::set_cookie('session', self::get_instance()->php_session_id, time() - 7776000);
 			session_destroy();
-			$this->logged_in = false;
-			$this->set_session_type(SESSION_GUEST);
+			self::get_instance()->logged_in = false;
+			self::set_session_type(SESSION_GUEST);
 		}
 	
 	}
@@ -278,10 +281,10 @@ class ApineSession{
 	/**
 	 * Make a logged un user's session permanent
 	 */
-	public function make_permanent(){
+	public static function make_permanent(){
 
-		if($this->is_logged_in())
-			self::set_cookie('session', $this->php_session_id, time() + 7776000);
+		if(self::is_logged_in())
+			Cookie::set_cookie('session', self::get_instance()->php_session_id, time() + 7776000);
 	
 	}
 

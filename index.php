@@ -38,20 +38,12 @@ $before=microtime(true) * 1000;
 require_once('lib/core/autoloader.php');
 Autoload::load_kernel();
 
-/**
- * Returns current session state in any scope of the Framework
- * @return ApineSession
- */
-function session(){
-	// Start Session
-	static $session;
-	
-	if($session==null){
-		$session=new ApineSession();
-	}
-	return $session;
-}
+//print_r($_SERVER['QUERY_STRING']);
 
-Routing::route();
+if(isset($_GET['api'])&&$_GET['api']==='api'){
+	print "\nRESTful API call";
+}else{
+	Routing::route();
+}
 
 ?>

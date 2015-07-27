@@ -8,3 +8,10 @@ abstract class Controller{
 		$this->_view=new HTMLView();
 	}
 }
+
+abstract class APIController extends Controller{
+	
+	public function __construct(){
+		$this->_view=new JSONView();
+	}
+}

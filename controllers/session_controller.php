@@ -4,7 +4,7 @@ class SessionController extends Controller{
 	
 	public function login($params){
 		
-		if(session()->is_post()){
+		if(ApineSession::is_post()){
 			if(isset($params['user']))
 				$user = htmlspecialchars($params['user']);
 			if(isset($params['pwd']))
@@ -18,10 +18,10 @@ class SessionController extends Controller{
 			}
 			
 			try{
-				if((isset($user) && isset($pwd)) && (!session()->is_logged_in())){
-					if(session()->login($user, $pwd)){
+				if((isset($user) && isset($pwd)) && (!ApineSession::is_logged_in())){
+					if(ApineSession::login($user, $pwd)){
 						if($permanent == 'on'){
-							session()->make_permanent();
+							ApineSession::make_permanent();
 						}
 						if(isset($redirect) && $redirect != ""){
 							header("Location: " . $redirect);
@@ -47,14 +47,14 @@ class SessionController extends Controller{
 	}
 	
 	public function logout(){
-		if(session()->is_logged_in()){
-			session()->logout();
+		if(ApineSession::is_logged_in()){
+			ApineSession::logout();
 		}
 		header("Location: " . URL_Helper::path("login"));
 	}
 	
 	public function register(){
-		if(session()->is_post()&&!session()->is_logged_in()){
+		if(ApineSession::is_post()&&!ApineSession::is_logged_in()){
 			
 			if(isset($_POST['user']))
 				$user = htmlspecialchars($_POST['user']);
@@ -69,7 +69,7 @@ class SessionController extends Controller{
 			
 			try{
 				// Make sure required data are provided
-				if((isset($user) && isset($pwd) && isset($email)) && (!session()->is_logged_in())){
+				if((isset($user) && isset($pwd) && isset($email)) && (!ApineSession::is_logged_in())){
 					// Verify the user name isn't already in use
 					if(ApineUserFactory::is_name_exist($user)){
 						throw new Exception("4"); // Already used username
@@ -140,7 +140,7 @@ class SessionController extends Controller{
 	}
 	
 	public function restore(){
-		if(session()->is_post()&&!session()->is_logged_in()){
+		if(ApineSession::is_post()&&!ApineSession::is_logged_in()){
 			/* TODO Password Restoration */
 		}
 		$this->_view->set_title('Reset Password');

@@ -12,7 +12,7 @@
 	<title><?= Config::get('application', 'title').' - '.$this->_title ?></title>
 
 	<!-- Bootstrap core CSS -->
-	<link href="resources/public/css/bootstrap.min.css" rel="stylesheet">
+	<link href="<?= URL_Helper::path('resources/public/css/bootstrap.min.css',false); ?>" rel="stylesheet">
 
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
@@ -46,10 +46,17 @@
 					<li><a href="<?= URL_Helper::path('about') ?>">About</a></li>
 					<li><a href="<?= URL_Helper::path('contact') ?>">Contact</a></li>
 				</ul>
+				<?php if(!ApineSession::is_logged_in()){?>
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="<?= URL_Helper::path('login');?>">Login</a></li>
 					<li><a href="<?= URL_Helper::path('register');?>">Sign Up</a></li>
 				</ul>
+				<?php }else{?>
+				<ul class="nav navbar-nav navbar-right">
+					<p class="navbar-text">Signed in as <?= ApineSession::get_user()->get_username() ?></p>
+					<li><a href="<?= URL_Helper::path('logout') ?>">Logout</a></li>
+				</ul>
+				<?php } ?>
 			</div>
 			<!--/.nav-collapse -->
 		</div>
@@ -73,7 +80,7 @@
     ================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
 	<script
-		src="resources/public/scripts/jquery.min.js"></script>
-	<script src="resources/public/scripts/bootstrap.min.js"></script>
+		src="<?= URL_Helper::path('resources/public/scripts/jquery.min.js',false); ?>"></script>
+	<script src="<?= URL_Helper::path('resources/public/scripts/bootstrap.min.js',false); ?>"></script>
 </body>
 </html>

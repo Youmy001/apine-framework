@@ -8,7 +8,7 @@ class Routing{
 		$request=(isset($_GET['request']))?$_GET['request']:'/index';
 		$route_found=false;
 		
-		$routes=$xml_routes->getElementsByAttributeValue('method', session()->get_session_request_type());
+		$routes=$xml_routes->getElementsByAttributeValue('method', ApineSession::get_session_request_type());
 		
 		$str_routes="";
 		$found_route=null;

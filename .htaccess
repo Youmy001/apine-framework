@@ -69,17 +69,18 @@
 </ifModule>
 
 #Options +FollowSymlinks
-Options +SymLinksIfOwnerMatch
+#Options +SymLinksIfOwnerMatch
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# MVC Rules
-RewriteRule ^((([a-z]{2})(\/))?)(.+)$ /?request=/$5&lang=$3 [L]
+# APIne Rules
+# The rule accepts a 2 chars language code for multi language systems
+RewriteRule "^(((api)\/)?)((([a-z]{2})(\/))?)(.+)$" "/?request=/$8&lang=$6&api=$3" [L]
 
 </IfModule>
-ErrorDocument 401 /index.php?request=error/401
-ErrorDocument 404 /index.php?request=error/404
-ErrorDocument 403 /index.php?request=error/403
-ErrorDocument 500 /index.php?request=error/500
+ErrorDocument 401 /index.php?request=/error/unauthorized
+ErrorDocument 404 /index.php?request=/error/notfound
+ErrorDocument 403 /index.php?request=/error/forbidden
+ErrorDocument 500 /index.php?request=/error/server
