@@ -99,7 +99,7 @@ class ApineSession{
 		if(isset($_SESSION['ID'])){
 			$this->logged_in = true;
 			$this->user_id = $_SESSION['ID'];
-			$this->session_type=self::set_session_type(self::get_user()->get_type());
+			$this->session_type=ApineUserFactory::create_by_id($this->user_id)->get_type();
 		}
 	
 	}
