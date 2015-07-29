@@ -26,16 +26,21 @@ class Autoload{
 	 * @param string $module_name Name of the folder of the module
 	 */
 	static function load_module($module_name){
-		$dir='model/'.$module_name.'/';
-		$files=self::get_folder_files($dir);
 		
-		try{
-			foreach ($files as $file){
-				require_once $file;
+		if(is_dir('modules/'.$module_name.'/')){
+			$dir='modules/'.$module_name.'/';
+			$files=self::get_folder_files($dir);
+			
+			try{
+				foreach ($files as $file){
+					require_once $file;
+				}
+				return true;
+			}catch(Exception $e){
+				return false;
 			}
-			return true;
-		}catch(Exception $e){
-			return false;
+		}else if(is_file('modules/'.$module_name)){
+			require_once 'modules/'.$module_name;
 		}
 	}
 	

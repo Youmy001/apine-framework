@@ -27,7 +27,6 @@
 </head>
 
 <body>
-
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 			<div class="navbar-header">
@@ -53,7 +52,7 @@
 				</ul>
 				<?php }else{?>
 				<ul class="nav navbar-nav navbar-right">
-					<p class="navbar-text">Signed in as <?= ApineSession::get_user()->get_username() ?> <i><?= (ApineSession::get_session_type()===SESSION_ADMIN)?'(Admin)':'(User)' ?></i></p>
+					<p class="navbar-text">Signed in as <?= ApineSession::get_user()->get_username() ?> (<i><?= ((int)ApineSession::get_session_type()===SESSION_ADMIN)?'Admin':'User' ?></i>)</p>
 					<li><a href="<?= URL_Helper::path('logout') ?>">Logout</a></li>
 				</ul>
 				<?php } ?>

@@ -7,6 +7,10 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
+$before=microtime(true) * 1000;
+require_once('lib/core/autoloader.php');
+Autoload::load_kernel();
+
 ini_set('display_errors','On');
 ini_set('include_path', realpath(dirname(__FILE__)));
 error_reporting(E_ALL | E_STRICT);
@@ -33,10 +37,7 @@ function execution_time(){
 	return number_format((($after-$before)),1);
 }
 
-$before=microtime(true) * 1000;
-
-require_once('lib/core/autoloader.php');
-Autoload::load_kernel();
+//$before=microtime(true) * 1000;
 
 //print_r($_SERVER['QUERY_STRING']);
 

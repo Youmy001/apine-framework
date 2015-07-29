@@ -1,8 +1,18 @@
 <?php
 
+/**
+ * Something kind of concrete but still ambiguous to most
+ * @author youmy
+ *
+ */
 class Routing{
 	
+	/**
+	 * Something ambiguous returning something ambiguous 
+	 * @return mixed
+	 */
 	private static function xml_route(){
+		
 		$xml_routes=new Parser();
 		$xml_routes->load_from_file('routes.xml');
 		$request=(isset($_GET['request']))?$_GET['request']:'/index';
@@ -55,7 +65,11 @@ class Routing{
 		
 		return $request;
 	}
-
+	
+	/**
+	 * An ambiguous procedure on ambiguous stuff
+	 * @return number
+	 */
 	public static function route(){
 		$request=(isset($_GET['request']))?$_GET['request']:'/index';
 		$route_found=false;
@@ -101,7 +115,7 @@ class Routing{
 					$controller=ucfirst($controller).'Controller';
 					$controller=new $controller();
 					$controller->$action($args);
-					return 0;
+					return true;
 				}
 			}
 			if($route_found){
@@ -120,6 +134,11 @@ class Routing{
 		}
 	}
 	
+	/**
+	 * Verifies something ambiguous with a confusing response 
+	 * @param mixed $a_route
+	 * @return boolean
+	 */
 	private static function check_route($a_route){
 		$args=explode("/",$a_route);
 		

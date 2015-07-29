@@ -104,6 +104,10 @@ class ApineSession{
 	
 	}
 	
+	/**
+	 * Singleton design pattern implementation
+	 * @return ApineSession
+	 */
 	public static function get_instance(){
 		if(!isset(self::$_instance)){
 			self::$_instance = new static();
