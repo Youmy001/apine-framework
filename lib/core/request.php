@@ -36,6 +36,10 @@ class Request{
 		return self::get_instance()->request_type;
 	}
 	
+	/**
+	 * Checks if the request is made to the API
+	 * @return boolean
+	 */
 	public static function is_api_call(){
 		$return=false;
 		if(self::get_instance()->api_call==true){

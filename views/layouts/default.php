@@ -53,7 +53,7 @@
 				</ul>
 				<?php }else{?>
 				<ul class="nav navbar-nav navbar-right">
-					<p class="navbar-text">Signed in as <?= ApineSession::get_user()->get_username() ?></p>
+					<p class="navbar-text">Signed in as <?= ApineSession::get_user()->get_username() ?> <i><?= (ApineSession::get_session_type()===SESSION_ADMIN)?'(Admin)':'(User)' ?></i></p>
 					<li><a href="<?= URL_Helper::path('logout') ?>">Logout</a></li>
 				</ul>
 				<?php } ?>
@@ -71,7 +71,7 @@
     	<hr>
     	<p class="pull-left">&copy; 2015 Tommy Teadale</>
     	<p class="pull-right">Generated in <?= execution_time() ?> milliseconds</p>
-    	<p class="text-center">APIne ver. <?= Config::get('application', 'version') ?></p>
+    	<p class="text-center">APIne ver. <?= Config::get('apine-framework', 'version') ?></p>
     </footer>
 	<!-- /.container -->
 
