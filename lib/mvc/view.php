@@ -220,11 +220,45 @@ class FileView extends HTTPView{
 
 class JSONView extends View{
 	
+	private $_json_file;
+	
+	public function set_json_file($a_json){
+		
+		if(is_string($a_json)){
+			// Verify if valid json array
+			$result = json_decode($a_json);
+			
+			if (json_last_error() === JSON_ERROR_NONE) {
+				$this->_json_file=$a_json;
+				$return=$a_json;
+			}else{
+				$return=null;
+			}
+		}else if (is_object($a_json)){
+			$this->_json_file=json_encode($a_json);
+			
+			$return=$this->_json_file;
+		}else if (is_array($a_json)){
+			$this->_json_file=json_encode($a_json);
+			
+			$return=$this->_json_file;
+		}else{
+			$return=null;
+		}
+		return $return;
+	}
+	
 	public function draw(){
 		header('Content-type: application/json');
 		
-		// Encode Objects to Array
+		if($this->_json_file===null){
+			// Encode Objects to Array
+			
+			//print_r($this->_params->get_all());
+			// Encode to JSON
+			$this->set_json_file($this->_params->get_all());
+		}
 		
-		// Encode to JSON
+		print $this->_json_file;
 	}
 }
