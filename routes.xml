@@ -40,4 +40,9 @@
        <controller>session</controller>
 		<action>register</action>
 	</route>
+	<route args="false" method="GET">
+		<request>/login/restore</request>
+       <controller>session</controller>
+		<action>restore</action>
+	</route>
 </routes>

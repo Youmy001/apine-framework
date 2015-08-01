@@ -137,6 +137,25 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	}
 	
 	/**
+	 * Fetch apine_users by group
+	 * @param integer $access
+	 *        User Group
+	 * @return Liste
+	 */
+	public static function create_by_group($group){
+	
+		$request = self::_get_connection()->select("SELECT ID from `apine_users` where group=$group");
+		$liste = new Liste();
+		if($request != null && count($request) > 0){
+			foreach($request as $item){
+				$liste->add_item(new ApineUser($item['ID']));
+			}
+		}
+		return $liste;
+	
+	}
+	
+	/**
 	 * Authentifiate a user with a combination of a user name and an
 	 * encoded password.
 	 *

@@ -139,15 +139,15 @@ class SessionController extends Controller{
 		$this->_view->draw();
 	}
 	
-	public function restore(){
+	/*public function restore(){
 		if(Request::is_post()&&!ApineSession::is_logged_in()){
-			/* TODO Password Restoration */
+			// TODO Password Restoration
 		}
 		$this->_view->set_title('Reset Password');
 		$this->_view->set_view('session/reset');
 		$this->_view->set_response_code(200);
 		$this->_view->draw();
-	}
+	}*/
 	
 	public function redirect(){
 		
