@@ -35,6 +35,9 @@ class Config{
 	}
 }
 
+/**
+ * Source: http://stackoverflow.com/questions/1268378/create-ini-file-write-values-in-php
+ */
 function write_ini_file($assoc_arr, $path, $has_sections = FALSE){
 
 	$content = "";
