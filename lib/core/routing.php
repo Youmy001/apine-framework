@@ -8,7 +8,7 @@
 class Routing{
 	
 	/**
-	 * Something ambiguous returning something ambiguous 
+	 * Something ambiguous returning something ambiguously concrete
 	 * @return mixed
 	 */
 	private static function xml_route(){
@@ -67,7 +67,7 @@ class Routing{
 	}
 	
 	/**
-	 * An ambiguous procedure on ambiguous stuff
+	 * An ambiguous procedure on ambiguous stuff in order to generate a response whose concreteness is still ambiguous
 	 * @return number
 	 */
 	public static function route(){

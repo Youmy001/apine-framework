@@ -15,37 +15,37 @@ class ApineImage extends ApineEntityModel{
 	 * Image identifier in database
 	 * @var integer
 	 */
-	private $id;
+	protected $id;
 
 	/**
 	 * Image external identifier
 	 * @var string
 	 */
-	public $access_id;
+	protected $access_id;
 
 	/**
 	 * Image owner
 	 * @var User
 	 */
-	private $user;
+	protected $user;
 
 	/**
 	 * Privacy level of the image
 	 * @var integer
 	 */
-	private $privacy;
+	protected $privacy;
 
 	/**
 	 * Image folder
 	 * @var string
 	 */
-	private $folder;
+	protected $folder;
 
 	/**
 	 * Image file
 	 * @var File_Image
 	 */
-	private $file;
+	protected $file;
 
 	/**
 	 * Image class' contructor

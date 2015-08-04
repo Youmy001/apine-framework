@@ -42,7 +42,6 @@ class Liste implements IteratorAggregate{
 			// Retrieve and return the key
 			return array_search($a_item, $this->items, true);
 		}catch(Exception $e){
-			//throw new Exception($e->getMessage() . ' - ' . $e->getTraceAsString());
 			return false;
 		}
 	
@@ -62,13 +61,12 @@ class Liste implements IteratorAggregate{
 				if($this->exists($a_key))
 					unset($this->items[$a_key]);
 				else
-					throw new Exception('The provided key does not exist.');
+					throw new Exception();
 			}else{
-				throw new Exception('The collection is empty.');
+				throw new Exception();
 			}
 			return true;
 		}catch(Exception $e){
-			//throw new Exception($e->getMessage() . ' - ' . $e->getTraceAsString());
 			return false;
 		}
 	
@@ -85,14 +83,13 @@ class Liste implements IteratorAggregate{
 
 		try{
 			if($this->length() == 0)
-				throw new Exception('The collection is empty.');
+				throw new Exception();
 			if($this->exists($a_key)){
 				return $this->items[$a_key];
 			}else{
-				throw new Exception('The provided key does not exist.');
+				throw new Exception();
 			}
 		}catch(Exception $e){
-			//throw new Exception($e->getMessage() . ' - ' . $e->getTraceAsString());
 			return false;
 		}
 	
@@ -107,10 +104,9 @@ class Liste implements IteratorAggregate{
 
 		try{
 			if($this->length() == 0)
-				throw new Exception('The collection is empty.');
+				throw new Exception();
 			return $this->items;
 		}catch(Exception $e){
-			//throw new Exception($e->getMessage() . ' - ' . $e->getTraceAsString());
 			return false;
 		}
 	
@@ -125,10 +121,9 @@ class Liste implements IteratorAggregate{
 
 		try{
 			if($this->length() == 0)
-				throw new Exception('The collection is empty.');
+				throw new Exception();
 			return reset($this->items);
 		}catch(Exception $e){
-			throw new Exception($e->getMessage() . ' - ' . $e->getTraceAsString());
 			return false;
 		}
 	
@@ -143,10 +138,9 @@ class Liste implements IteratorAggregate{
 
 		try{
 			if($this->length() == 0)
-				throw new Exception('The collection is empty.');
+				throw new Exception();
 			return end($this->items);
 		}catch(Exception $e){
-			//throw new Exception($e->getMessage() . ' - ' . $e->getTraceAsString());
 			return false;
 		}
 	
@@ -161,11 +155,10 @@ class Liste implements IteratorAggregate{
 
 		try{
 			if($this->length() == 0)
-				throw new Exception('The collection is empty.');
+				throw new Exception();
 			$this->items = array_reverse($this->items);
 			return true;
 		}catch(Exception $e){
-			//throw new Exception($e->getMessage() . ' - ' . $e->getTraceAsString());
 			return false;
 		}
 	
@@ -180,11 +173,10 @@ class Liste implements IteratorAggregate{
 
 		try{
 			if($this->length() == 0)
-				throw new Exception('The collection is empty.');
+				throw new Exception();
 			ksort($this->items);
 			return true;
 		}catch(Exception $e){
-			//throw new Exception($e->getMessage() . ' - ' . $e->getTraceAsString());
 			return false;
 		}
 	
@@ -200,13 +192,12 @@ class Liste implements IteratorAggregate{
 		try{
 			if($this->items != null){
 				if($this->length() == 0)
-					throw new Exception('The collection is empty.');
+					throw new Exception();
 				return array_keys($this->items);
 			}else{
 				return array();
 			}
 		}catch(Exception $e){
-			//throw new Exception($e->getMessage() . ' - ' . $e->getTraceAsString());
 			return false;
 		}
 	
@@ -220,7 +211,7 @@ class Liste implements IteratorAggregate{
 
 		return sizeof($this->items);
 	
-	}
+	} 
 
 	/**
 	 * Verify if key exists in the collection
@@ -233,10 +224,9 @@ class Liste implements IteratorAggregate{
 
 		try{
 			if($this->length() == 0)
-				throw new Exception('The collection is empty.');
+				throw new Exception();
 			return (isset($this->items[$a_key]));
 		}catch(Exception $e){
-			//throw new Exception($e->getMessage() . ' - ' . $e->getTraceAsString());
 			return false;
 		}
 	

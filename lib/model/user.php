@@ -15,43 +15,43 @@ class ApineUser extends ApineEntityModel{
 	 * User identifier in database
 	 * @var integer
 	 */
-	private $id;
+	protected $id;
 
 	/**
 	 * Username
 	 * @var string
 	 */
-	private $username;
+	protected $username;
 
 	/**
 	 * User encrypted password
 	 * @var string
 	 */
-	private $password;
+	protected $password;
 
 	/**
 	 * User permissions
 	 * @var integer
 	 */
-	private $type;
+	protected $type;
 	
 	/**
 	 * User Group
-	 * @var ApineUserGroup
+	 * @var Liste[ApineUserGroup]
 	 */
-	private $group;
+	protected $group;
 
 	/**
 	 * User email address
 	 * @var string
 	 */
-	private $email_address;
+	protected $email_address;
 
 	/**
 	 * Registration date's timestamp
 	 * @var string
 	 */
-	private $register_date;
+	protected $register_date;
 
 	/**
 	 * User class' constructor
@@ -184,7 +184,7 @@ class ApineUser extends ApineEntityModel{
 	public function get_group(){
 	
 		if($this->loaded == 0){
-			$this->load();
+			$this->group=ApineUserGroupFactory::create_by_user($this->id);;
 		}
 		return $this->group;
 	
@@ -192,22 +192,26 @@ class ApineUser extends ApineEntityModel{
 	
 	/**
 	 * Set user's group
-	 * @param <Group, integer> $a_type
-	 *        User's group
+	 * @param <Liste[ApineUserGroup]> $a_group_list
+	 *        List of User's groups
 	 */
-	public function set_group($a_type){
-	
+	public function set_group($a_group_list){
+		
 		if($this->loaded == 0){
 			$this->load();
 		}
-		if(is_numeric($a_type)){
-			if(GroupFactory::is_id_exist($a_type)){
-				$this->group = GroupFactory::create_by_id($a_type);
+	
+		if(get_class($a_group_list) == 'Liste'){
+			$valid=true;
+			foreach ($a_group_list as $item){
+				if(!get_class($item)=='ApineUserGroup'){
+					$valid=false;
+				}
 			}
-		}else if(get_class($a_type) == 'Group'){
-			$this->group = $a_type;
+			if($valid){
+				$this->group = $a_group_list;
+			}
 		}
-		$this->_set_field('group', $this->type->get_id());
 	
 	}
 
@@ -248,7 +252,7 @@ class ApineUser extends ApineEntityModel{
 		if($this->loaded == 0){
 			$this->load();
 		}
-		return date(APP_DATE_FORMAT, strtotime($this->register_date));
+		return date(Config::get('dateformat', 'datehour'), strtotime($this->register_date));
 	
 	}
 
@@ -276,7 +280,6 @@ class ApineUser extends ApineEntityModel{
 			$this->username = $this->_get_field('username');
 			$this->password = $this->_get_field('password');
 			$this->type = $this->_get_field('type');
-			$this->group = ApineUserGroupFactory::create_by_id($this->_get_field('group'));
 			$this->email_address = $this->_get_field('email');
 			$this->register_date = $this->_get_field('register');
 			$this->loaded = 1;
@@ -292,13 +295,27 @@ class ApineUser extends ApineEntityModel{
 		parent::_save();
 		$this->set_id($this->_get_id());
 		
+		$db=new Database();
+		$db->delete('apine_users_user_groups', array("id_user"=>$this->get_id()));
+		
+		foreach ($this->goup as $item){
+			$db->insert('apine_users_user_groups', array("id_user"=>$this->get_id(), "id_group"=>$item->get_id()));
+		}
 	}
 
 	/**
 	 * @see ApineEntityInterface::delete()
 	 */
 	public function delete(){
-
+		
+		if($this->loaded == 0){
+			$this->load();
+		}
+		
+		$db=new Database();
+		$db->delete('apine_users_user_groups', array("id_user"=>$this->get_id()));
+		
+		parent::_destroy();
 	}
 
 }

@@ -36,5 +36,24 @@ class ApineUserGroupFactory extends ApineFactory implements ApineFactoryInterfac
 		return $return;
 
 	}
+	
+	/**
+	 * Fetch apine_user_groups by user
+	 * @param integer $user
+	 *        ApineUser id
+	 * @return Liste
+	 */
+	public static function create_by_user($user){
+	
+		$request = self::_get_connection()->select("SELECT id_group from `apine_users_user_groups` where id_user=$user");
+		$liste = new Liste();
+		if($request != null && count($request) > 0){
+			foreach($request as $item){
+				$liste->add_item(new ApineUserGroup($itesm['id_group']));
+			}
+		}
+		return $liste;
+	
+	}
 
 }

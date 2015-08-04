@@ -99,7 +99,10 @@ class SessionController extends Controller{
 						$new_user->set_email_address($email);
 					}
 					$new_user->set_type(SESSION_USER);
-					$new_user->set_group(ApineUserGroupFactory::create_by_id(1));
+					
+					$list_group=new Liste();
+					$list_group->add_item(ApineUserGroupFactory::create_by_id(1));
+					$new_user->set_group($list_group);
 					// Write new user in database
 					$new_user->save();
 					

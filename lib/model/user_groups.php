@@ -17,13 +17,13 @@ class ApineUserGroup extends ApineEntityModel{
 	 * User identifier in database
 	 * @var integer
 	 */
-	private $id;
+	protected $id;
 	
 	/**
 	 * Group's name
 	 * @var string
 	 */
-	private $name;
+	protected $name;
 	
 	/**
 	 * Group class' constructor
