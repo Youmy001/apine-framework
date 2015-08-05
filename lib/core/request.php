@@ -11,6 +11,18 @@ class Request{
 	private $request_type;
 	
 	/**
+	 * Session Request Port
+	 * @var string
+	 */
+	private $request_port;
+	
+	/**
+	 * Is request from https protocol
+	 * @var boolean
+	 */
+	private $request_ssl;
+	
+	/**
 	 * Session API Call
 	 * @var boolean
 	 */
@@ -18,6 +30,8 @@ class Request{
 	
 	private function __construct(){
 		$this->request_type=$_SERVER['REQUEST_METHOD'];
+		$this->request_port=$_SERVER['REMOTE_PORT'];
+		$this->request_ssl=(isset($_SERVER['HTTPS'])&&!empty($_SERVER['HTTPS']));
 		$this->api_call=(isset($_GET['api']) && $_GET['api']==='api');
 	}
 	
@@ -34,6 +48,22 @@ class Request{
 	 */
 	public static function get_request_type(){
 		return self::get_instance()->request_type;
+	}
+	
+	/**
+	 * Return the port used by the user in the current request
+	 * @return string
+	 */
+	public static function get_request_port(){
+		return self::get_instance()->request_port;
+	}
+	
+	/**
+	 * Checks if the request is made through the HTTPS protocol
+	 * @return boolean
+	 */
+	public static function is_https(){
+		return self::get_instance()->request_ssl;
 	}
 	
 	/**
