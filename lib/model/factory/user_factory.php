@@ -167,8 +167,9 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function authentication($name, $pass){
 
-		$connect_sql_id = self::_get_connection()->prepare('SELECT ID FROM apine_users WHERE username=? AND password=?');
+		$connect_sql_id = self::_get_connection()->prepare('SELECT ID FROM apine_users WHERE username=? OR email=? AND password=?');
 		$ar_connect_sql = self::_get_connection()->execute(array(
+						$name,
 						$name,
 						$pass
 		), $connect_sql_id);
