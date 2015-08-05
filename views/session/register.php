@@ -17,7 +17,7 @@
 				<form id="content" action="<?php echo URL_Helper::path("register",false);?>"
 					method="post">
 					<div class="form-group">
-						<label class="control-label">Username</label>
+						<label class="control-label">Username or Email</label>
 						<input class="form-control" type="text" name="user" placeholder="Username" required />
 					</div>
 					<div class="form-group">

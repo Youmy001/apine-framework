@@ -32,7 +32,7 @@ class SessionController extends Controller{
 						die();
 					}
 				}
-				$message = 'Either the the username or the password is not valid. Please try again later.';
+				$message = 'Either the the username/email or the password is not valid. Please try again later.';
 			}catch(Exception $e){
 				$message = 'An unknown error occured when sending data to the server. Please try again later.';
 			}
@@ -99,11 +99,10 @@ class SessionController extends Controller{
 						$new_user->set_email_address($email);
 					}
 					$new_user->set_type(SESSION_USER);
-					
-					$list_group=new Liste();
-					$list_group->add_item(ApineUserGroupFactory::create_by_id(1));
-					$new_user->set_group($list_group);
+
+					$new_user->set_group(SESSION_USER);
 					// Write new user in database
+
 					$new_user->save();
 					
 					if(isset($redirect) && $redirect != ""){
@@ -114,7 +113,7 @@ class SessionController extends Controller{
 					}
 					die();
 				}
-				throw new Exception("0"); // Unknown Error
+				throw new Exception(0); // Unknown Error
 			}catch (Exception $e){
 				switch($e->getMessage()){
 					case 7:
