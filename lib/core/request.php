@@ -30,7 +30,7 @@ class Request{
 	
 	private function __construct(){
 		$this->request_type=$_SERVER['REQUEST_METHOD'];
-		$this->request_port=$_SERVER['REMOTE_PORT'];
+		$this->request_port=$_SERVER['SERVER_PORT'];
 		$this->request_ssl=(isset($_SERVER['HTTPS'])&&!empty($_SERVER['HTTPS']));
 		$this->api_call=(isset($_GET['api']) && $_GET['api']==='api');
 	}

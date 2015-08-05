@@ -36,7 +36,7 @@ class URL_Helper{
 	private function __construct(){
 		
 		// Set server address
-		$protocol = (isset($_SERVER['HTTPS']))?'https://':'http://';
+		$protocol = (Request::is_https())?'https://':'http://';
 		$this->session_server = $protocol . $_SERVER['SERVER_NAME'];
 		$ar_domain = explode('.', $_SERVER['SERVER_NAME']);
 		if(count($ar_domain) >= 3){
@@ -45,6 +45,12 @@ class URL_Helper{
 		}else{
 			$this->main_session_server = $protocol . $_SERVER['SERVER_NAME'];
 		}
+		
+		if((!Request::is_https()&&Request::get_request_port()!=80)||(Request::is_https()&&Request::get_request_port()!=443)){
+			$this->session_server.=":".Request::get_request_port();
+			$this->main_session_server.=":".Request::get_request_port();
+		}
+		
 		// Set script name
 		$this->session_current = $protocol . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'];
 		// Set script path
