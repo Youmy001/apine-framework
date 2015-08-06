@@ -72,7 +72,6 @@ class ApineUser extends ApineEntityModel{
 	 * @return integer
 	 */
 	public function get_id(){
-
 		if($this->loaded == 0){
 			$this->load();
 		}
@@ -183,8 +182,8 @@ class ApineUser extends ApineEntityModel{
 	 */
 	public function get_group(){
 	
-		if($this->loaded == 0){
-			$this->group=ApineUserGroupFactory::create_by_user($this->id);;
+		if($this->group == null){
+			$this->group=ApineUserGroupFactory::create_by_user($this->id);
 		}
 		return $this->group;
 	
@@ -196,9 +195,13 @@ class ApineUser extends ApineEntityModel{
 	 *        List of User's groups
 	 */
 	public function set_group($a_group_list){
-		
 		if($this->loaded == 0){
 			$this->load();
+		}
+		if(is_numeric($a_type)){
+			if(GroupFactory::is_id_exist($a_type)){
+				$this->group = GroupFactory::create_by_id($a_type);
+			}
 		}
 	
 		if(get_class($a_group_list) == 'Liste'){
@@ -210,9 +213,10 @@ class ApineUser extends ApineEntityModel{
 			}
 			if($valid){
 				$this->group = $a_group_list;
-			}
+ 			}
+		}else{
+			return null;
 		}
-	
 	}
 
 	/**
@@ -252,7 +256,7 @@ class ApineUser extends ApineEntityModel{
 		if($this->loaded == 0){
 			$this->load();
 		}
-		return date(Config::get('dateformat', 'datehour'), strtotime($this->register_date));
+		return date(strtotime($this->register_date));
 	
 	}
 
@@ -314,7 +318,7 @@ class ApineUser extends ApineEntityModel{
 		
 		$db=new Database();
 		$db->delete('apine_users_user_groups', array("id_user"=>$this->get_id()));
-		
+
 		parent::_destroy();
 	}
 

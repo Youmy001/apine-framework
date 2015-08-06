@@ -169,6 +169,9 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 
 		$this->table_name = $table_name;
 		$this->id = $tuple_id;
+		
+		//echo get_class($this)."\n";
+		//print_r(get_class_vars('ApineUser'));
 
 	}
 

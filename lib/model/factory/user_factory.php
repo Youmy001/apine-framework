@@ -144,11 +144,11 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function create_by_group($group){
 	
-		$request = self::_get_connection()->select("SELECT ID from `apine_users` where group=$group");
+		$request = self::_get_connection()->select("SELECT id_user from `apine_users_user_group` where id_group=$group");
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
-				$liste->add_item(new ApineUser($item['ID']));
+				$liste->add_item(new ApineUser($item['id_user']));
 			}
 		}
 		return $liste;
@@ -167,8 +167,9 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function authentication($name, $pass){
 
-		$connect_sql_id = self::_get_connection()->prepare('SELECT ID FROM apine_users WHERE username=? AND password=?');
+		$connect_sql_id = self::_get_connection()->prepare('SELECT ID FROM apine_users WHERE username=? OR email=? AND password=?');
 		$ar_connect_sql = self::_get_connection()->execute(array(
+						$name,
 						$name,
 						$pass
 		), $connect_sql_id);

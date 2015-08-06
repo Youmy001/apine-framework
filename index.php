@@ -36,10 +36,12 @@ function execution_time(){
 
 	return number_format((($after-$before)),1);
 }
+//print_r($_SERVER);
+//$database=new DataDirectory();
+//$statement=$database->select('apine_users')->fields(array("ID","username","type"))->where(array("register"=>"2015-07"),MYSQL_GREATER)->order_by(array("register"=>MYSQL_DESCENDING));
+//$result=$statement->execute();
+//print $statement->get_query();
 
-//$before=microtime(true) * 1000;
-
-//print_r($_SERVER['QUERY_STRING']);
 
 if(Request::is_api_call()){
 	print "\nRESTful API call";
