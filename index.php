@@ -11,11 +11,22 @@ $before=microtime(true) * 1000;
 require_once('lib/core/autoloader.php');
 Autoload::load_kernel();
 
-ini_set('display_errors','On');
+ini_set('display_errors',Config::get('apine-framework', 'display_errors'));
 ini_set('include_path', realpath(dirname(__FILE__)));
-error_reporting(E_ALL | E_STRICT);
+if(Config::get('apine-framework', 'mode')=='development'){
+	error_reporting(E_ALL | E_STRICT);
+}else{
+	error_reporting(E_ERROR);
+}
+date_default_timezone_set(Config::get('dateformat', 'timezone'));
 
 if(!function_exists('str_split_unicode')){
+	/**
+	 * A split method that supports unicode characters
+	 * @param string $str
+	 * @param number $l
+	 * @return string
+	 */
 	function str_split_unicode($str, $l = 0) {
 	    if ($l > 0) {
 	        $ret = array();
@@ -29,6 +40,11 @@ if(!function_exists('str_split_unicode')){
 	}
 }
 
+/**
+ * Calculate the total execution time 
+ * of the request up to now
+ * @return string
+ */
 function execution_time(){
 	global $before;
 
@@ -36,13 +52,10 @@ function execution_time(){
 
 	return number_format((($after-$before)),1);
 }
-//print_r($_SERVER);
-//$database=new DataDirectory();
-//$statement=$database->select('apine_users')->fields(array("ID","username","type"))->where(array("register"=>"2015-07"),MYSQL_GREATER)->order_by(array("register"=>MYSQL_DESCENDING));
-//$result=$statement->execute();
-//print $statement->get_query();
 
-
+/**
+ * Main Execution
+ */
 if(Request::is_api_call()){
 	print "\nRESTful API call";
 }else{
