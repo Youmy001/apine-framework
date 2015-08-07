@@ -49,7 +49,7 @@ class ApineUserGroupFactory extends ApineFactory implements ApineFactoryInterfac
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
-				$liste->add_item(new ApineUserGroup($itesm['id_group']));
+				$liste->add_item(new ApineUserGroup($item['id_group']));
 			}
 		}
 		return $liste;

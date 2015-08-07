@@ -218,6 +218,22 @@ class ApineUser extends ApineEntityModel{
 			return null;
 		}
 	}
+	
+	/**
+	 * Check if the user is member of a User Group
+	 * @param <ApineUserGroup, int> $a_group
+	 * @return boolean
+	 */
+	public function has_group($a_group){
+		if(is_numeric($a_group)&&ApineUserGroupFactory::is_id_exist($a_group)){
+			$is_group=$this->group->value_exists(new ApineUserGroup($a_group));
+		}else if(get_class($a_group) == 'ApineUserGroup'){
+			$is_group=$this->group->value_exists($a_group);
+		}else{
+			$is_group=false;
+		}
+		return $is_group;
+	}
 
 	/**
 	 * Fetch user's email address
