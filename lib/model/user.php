@@ -198,11 +198,6 @@ class ApineUser extends ApineEntityModel{
 		if($this->loaded == 0){
 			$this->load();
 		}
-		if(is_numeric($a_type)){
-			if(GroupFactory::is_id_exist($a_type)){
-				$this->group = GroupFactory::create_by_id($a_type);
-			}
-		}
 	
 		if(get_class($a_group_list) == 'Liste'){
 			$valid=true;
@@ -225,6 +220,11 @@ class ApineUser extends ApineEntityModel{
 	 * @return boolean
 	 */
 	public function has_group($a_group){
+		
+		if($this->group == null){
+			$this->group=ApineUserGroupFactory::create_by_user($this->id);
+		}
+		
 		if(is_numeric($a_group)&&ApineUserGroupFactory::is_id_exist($a_group)){
 			$is_group=$this->group->value_exists(new ApineUserGroup($a_group));
 		}else if(get_class($a_group) == 'ApineUserGroup'){
@@ -318,7 +318,7 @@ class ApineUser extends ApineEntityModel{
 		$db=new Database();
 		$db->delete('apine_users_user_groups', array("id_user"=>$this->get_id()));
 		
-		foreach ($this->goup as $item){
+		foreach ($this->group as $item){
 			$db->insert('apine_users_user_groups', array("id_user"=>$this->get_id(), "id_group"=>$item->get_id()));
 		}
 	}
