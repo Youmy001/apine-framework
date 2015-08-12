@@ -8,7 +8,7 @@
  * @subpackage system
  */
 
-class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
+class ApineUserFactory extends ApineFactory{
 
 	/**
 	 * Verify if the identifier exists
@@ -17,7 +17,7 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function is_id_exist($user_id){
 
-		$id_sql = self::_get_connection()->select("SELECT ID FROM apine_users WHERE ID=$user_id");
+		$id_sql = (new Database())->select("SELECT ID FROM apine_users WHERE ID=$user_id");
 		if($id_sql){
 			return true;
 		}
@@ -33,7 +33,7 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function is_name_exist($user_name){
 
-		$id_sql = self::_get_connection()->select("SELECT ID FROM apine_users WHERE username='$user_name'");
+		$id_sql = (new Database())->select("SELECT ID FROM apine_users WHERE username='$user_name'");
 		if($id_sql){
 			return true;
 		}
@@ -49,7 +49,7 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function is_email_exist($user_mail){
 
-		$id_sql = self::_get_connection()->select("SELECT ID FROM apine_users WHERE email='$user_mail'");
+		$id_sql = (new Database())->select("SELECT ID FROM apine_users WHERE email='$user_mail'");
 		if($id_sql){
 			return true;
 		}
@@ -62,7 +62,7 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function create_all(){
 
-		$request = self::_get_connection()->select('SELECT ID from `apine_users` ORDER BY `username`');
+		$request = (new Database())->select('SELECT ID from `apine_users` ORDER BY `username`');
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
@@ -81,8 +81,9 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function create_by_id($a_id){
 
-		$user_sql_id = self::_get_connection()->prepare('SELECT ID FROM `apine_users` WHERE ID=?');
-		$ar_user_sql = self::_get_connection()->execute(array(
+		$database=new Database();
+		$user_sql_id = $database->prepare('SELECT ID FROM `apine_users` WHERE ID=?');
+		$ar_user_sql = $database->execute(array(
 						$a_id
 		), $user_sql_id);
 		if($ar_user_sql){
@@ -102,8 +103,9 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function create_by_name($name){
 
-		$user_sql_id = self::_get_connection()->prepare('SELECT ID FROM `apine_users` WHERE username=?');
-		$ar_user_sql = self::_get_connection()->execute(array(
+		$database=new Database();
+		$user_sql_id = $database->prepare('SELECT ID FROM `apine_users` WHERE username=?');
+		$ar_user_sql = $database->execute(array(
 						$name
 		), $user_sql_id);
 		if($ar_user_sql){
@@ -125,7 +127,7 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function create_by_access_right($access){
 
-		$request = self::_get_connection()->select("SELECT ID from `apine_users` where type=$access");
+		$request = (new Database())->select("SELECT ID from `apine_users` where type=$access");
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
@@ -144,7 +146,7 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function create_by_group($group){
 	
-		$request = self::_get_connection()->select("SELECT id_user from `apine_users_user_group` where id_group=$group");
+		$request = (new Database())->select("SELECT id_user from `apine_users_user_group` where id_group=$group");
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
@@ -166,9 +168,10 @@ class ApineUserFactory extends ApineFactory implements ApineFactoryInterface{
 	 * @return integer
 	 */
 	public static function authentication($name, $pass){
-
-		$connect_sql_id = self::_get_connection()->prepare('SELECT ID FROM apine_users WHERE username=? OR email=? AND password=?');
-		$ar_connect_sql = self::_get_connection()->execute(array(
+		
+		$database=new Database();
+		$connect_sql_id = $database->prepare('SELECT ID FROM apine_users WHERE username=? OR email=? AND password=?');
+		$ar_connect_sql = $database->execute(array(
 						$name,
 						$name,
 						$pass

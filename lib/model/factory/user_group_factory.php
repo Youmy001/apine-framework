@@ -1,10 +1,10 @@
 <?php
 
-class ApineUserGroupFactory extends ApineFactory implements ApineFactoryInterface{
+class ApineUserGroupFactory extends ApineFactory{
 
 	public static function is_id_exist($a_id){
 
-		$request = self::_get_connection()->select("SELECT id FROM apine_user_groups WHERE id=$a_id");
+		$request = (new Database())->select("SELECT id FROM apine_user_groups WHERE id=$a_id");
 		if($request != null && count($request) > 0){
 			return true;
 		}
@@ -14,11 +14,11 @@ class ApineUserGroupFactory extends ApineFactory implements ApineFactoryInterfac
 
 	public static function create_all(){
 
-		$request = self::_get_connection()->select("SELECT id FROM apine_user_groups ORDER BY id");
+		$request = (new Database())->select("SELECT id FROM apine_user_groups ORDER BY id");
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
-				$liste->add_item(new Group($item['id']));
+				$liste->add_item(new ApineUserGroup($item['id']));
 			}
 		}
 		return $liste;
@@ -27,9 +27,9 @@ class ApineUserGroupFactory extends ApineFactory implements ApineFactoryInterfac
 
 	public static function create_by_id($a_id){
 
-		$request = self::_get_connection()->select("SELECT id FROM apine_user_groups WHERE id=$a_id");
+		$request = (new Database())->select("SELECT id FROM apine_user_groups WHERE id=$a_id");
 		if($request != null && count($request) > 0){
-			$return = new Group($request[0]['id']);
+			$return = new ApineUserGroup($request[0]['id']);
 		}else{
 			$return = null;
 		}
@@ -45,7 +45,7 @@ class ApineUserGroupFactory extends ApineFactory implements ApineFactoryInterfac
 	 */
 	public static function create_by_user($user){
 	
-		$request = self::_get_connection()->select("SELECT id_group from `apine_users_user_groups` where id_user=$user");
+		$request = (new Database())->select("SELECT id_group from `apine_users_user_groups` where id_user=$user");
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){

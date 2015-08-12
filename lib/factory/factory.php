@@ -12,11 +12,12 @@
  * This is the implementation of the factory
  * design patern.
  */
-class ApineFactory{
+abstract class ApineFactory implements ApineFactoryInterface{
 
 	/**
 	 * Databse connection instance
 	 * @staticvar Database
+	 * @deprecated
 	 */
 	private static $_instance;
 
@@ -26,6 +27,7 @@ class ApineFactory{
 	 * @throws DatabaseException If cannot connect to database
 	 * @return Database
 	 * @static
+	 * @deprecated
 	 *
 	 */
 	protected static function _get_connection(){
@@ -49,6 +51,7 @@ class ApineFactory{
 	 *        Identiifer of the row to fetch
 	 * @return multitype:mixed
 	 * @static
+	 * @deprecated
 	 *
 	 */
 	public static function get_table_row($table_name, $row_id){
@@ -66,7 +69,8 @@ class ApineFactory{
 	 *        Field names and values to include in the row
 	 * @return string
 	 * @static
-	 *
+	 * @deprecated
+	 * 
 	 */
 	public static function set_table_row($table_name, $ar_row){
 
@@ -83,6 +87,7 @@ class ApineFactory{
 	 * @param string[] $ar_cond
 	 *        Field names and values to match desired rows
 	 * @static
+	 * @deprecated
 	 *
 	 */
 	public static function update_table_row($table_name, $ar_row, $ar_cond){
@@ -99,6 +104,7 @@ class ApineFactory{
 	 *        Field names and values to match desired rows
 	 * @return boolean
 	 * @static
+	 * @deprecated
 	 *
 	 */
 	public static function remove_table_row($table_name, $ar_cond){

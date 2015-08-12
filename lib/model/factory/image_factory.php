@@ -8,7 +8,7 @@
  * @subpackage system
  */
 
-class ApineImageFactory extends ApineFactory implements ApineFactoryInterface{
+class ApineImageFactory extends ApineFactory{
 
 	/**
 	 * Verify if the identifier exists
@@ -17,7 +17,7 @@ class ApineImageFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function is_id_exist($image_id){
 
-		$id_sql = self::_get_connection()->select("SELECT ID FROM apine_images WHERE ID=$image_id");
+		$id_sql = (new Database())->select("SELECT ID FROM apine_images WHERE ID=$image_id");
 		if($id_sql){
 			return true;
 		}
@@ -32,7 +32,7 @@ class ApineImageFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function is_access_id_exist($image_id){
 
-		$id_sql = self::_get_connection()->select("SELECT ID FROM apine_images WHERE access_id='$image_id'");
+		$id_sql = (new Database())->select("SELECT ID FROM apine_images WHERE access_id='$image_id'");
 		if($id_sql){
 			return true;
 		}
@@ -54,7 +54,7 @@ class ApineImageFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function create_all(){
 
-		$request = self::_get_connection()->select('SELECT ID from `apine_images` ORDER BY `ID`');
+		$request = (new Database())->select('SELECT ID from `apine_images` ORDER BY `ID`');
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
@@ -73,7 +73,7 @@ class ApineImageFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function create_all_folder($a_folder){
 
-		$request = self::_get_connection()->select("SELECT ID from `apine_images` where folder=$a_folder ORDER BY `ID`");
+		$request = (new Database())->select("SELECT ID from `apine_images` where folder=$a_folder ORDER BY `ID`");
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
@@ -92,8 +92,9 @@ class ApineImageFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function create_by_id($a_id){
 
-		$sql_id = self::_get_connection()->prepare('SELECT ID FROM `apine_images` WHERE ID=?');
-		$ar_sql = self::_get_connection()->execute(array(
+		$database=new Database();
+		$sql_id = $database->prepare('SELECT ID FROM `apine_images` WHERE ID=?');
+		$ar_sql = $database->execute(array(
 						$a_id
 		), $sql_id);
 		if($ar_sql){
@@ -113,8 +114,9 @@ class ApineImageFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function create_by_access_id($access_id){
 
-		$sql_id = self::_get_connection()->prepare('SELECT ID FROM `apine_images` WHERE access_id=?');
-		$ar_sql = self::_get_connection()->execute(array(
+		$database=new Database();
+		$sql_id = $database->prepare('SELECT ID FROM `apine_images` WHERE access_id=?');
+		$ar_sql = $database->execute(array(
 						$access_id
 		), $sql_id);
 		if($ar_sql){
@@ -136,7 +138,7 @@ class ApineImageFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function create_by_user($a_user_id){
 
-		$request = self::_get_connection()->select("SELECT ID from `apine_images` where user_id=$a_user_id");
+		$request = (new Database())->select("SELECT ID from `apine_images` where user_id=$a_user_id");
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
@@ -157,7 +159,7 @@ class ApineImageFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function create_by_user_folder($a_user_id, $a_folder){
 
-		$request = self::_get_connection()->select("SELECT ID from `apine_images` where user_id=$a_user_id AND folder=$a_folder");
+		$request = (new Database())->select("SELECT ID from `apine_images` where user_id=$a_user_id AND folder=$a_folder");
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
@@ -176,7 +178,7 @@ class ApineImageFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function create_by_user_public($a_user_id){
 
-		$request = self::_get_connection()->select("SELECT ID from `apine_images` where user_id=$a_user_id OR privacy=2");
+		$request = (new Database())->select("SELECT ID from `apine_images` where user_id=$a_user_id OR privacy=2");
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
@@ -197,8 +199,9 @@ class ApineImageFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function create_by_user_folder_public($a_user_id, $a_folder){
 
-		$request_id = self::_get_connection()->prepare("SELECT ID from `apine_images` where ( user_id=? AND folder=? ) OR ( privacy=2 AND folder=? )");
-		$request = self::_get_connection()->execute(array(
+		$database=new Database();
+		$request_id = $database->prepare("SELECT ID from `apine_images` where ( user_id=? AND folder=? ) OR ( privacy=2 AND folder=? )");
+		$request = $database->execute(array(
 						$a_user_id,
 						$a_folder,
 						$a_folder
@@ -220,7 +223,7 @@ class ApineImageFactory extends ApineFactory implements ApineFactoryInterface{
 	 */
 	public static function create_by_privacy($privacy){
 
-		$request = self::_get_connection()->select("SELECT ID from `apine_images` where privacy=$privacy");
+		$request = (new Database())->select("SELECT ID from `apine_images` where privacy=$privacy");
 		$liste = new Liste();
 		if($request != null && count($request) > 0){
 			foreach($request as $item){
