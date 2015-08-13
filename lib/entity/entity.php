@@ -68,8 +68,10 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 	* Fetch database fields and values for entity
 	*/
 	protected function _load(){
-
-		$this->database_fields = ($this->id !== null)?ApineFactory::get_table_row($this->table_name, $this->id):null;
+		
+		$db=new Database();
+		
+		$this->database_fields = ($this->id !== null)?$db->select("SELECT * from $this->table_name where ID=$this->id"):null;
 		$this->database_fields = $this->database_fields[0];
 		$this->field_loaded = 1;
 		if(sizeof($this->modified_fields) > 0){
@@ -196,9 +198,10 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 	 * Delete Entity from database
 	 */
 	protected function _destroy(){
-
+		$db=new Database();
+		
 		if($this->id){
-			Factory::remove_table_row($this->table_name, array(
+			$db->delete($this->table_name, array(
 							'ID' => $this->id
 			));
 		}
@@ -209,6 +212,8 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 	 * Save Entity state to database
 	 */
 	protected function _save(){
+		
+		$db=new Database();
 
 		if($this->id === null){
 			$this->field_loaded = 0;
@@ -222,7 +227,7 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 				}
 			}
 			if(sizeof($new_dbf) > 0){
-				$this->id = ApineFactory::set_table_row($this->table_name, $new_dbf);
+				$this->id = $db->insert($this->table_name, $new_dbf);
 			}
 			/*$this->field_loaded = 1;
 			 $this->loaded = 1;*/
@@ -241,7 +246,7 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 					}
 				}
 			}
-			ApineFactory::update_table_row($this->table_name, $arUpdate, array(
+			$db->update($this->table_name, $arUpdate, array(
 							'ID' => $this->id
 			));
 		}

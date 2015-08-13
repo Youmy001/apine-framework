@@ -34,16 +34,15 @@ class URL_Helper{
 	private $main_session_server;
 	
 	private function __construct(){
-		
 		// Set server address
 		$protocol = (Request::is_https())?'https://':'http://';
-		$this->session_server = $protocol . $_SERVER['SERVER_NAME'];
-		$ar_domain = explode('.', $_SERVER['SERVER_NAME']);
+		$this->session_server = $protocol . Request::server()['SERVER_NAME'];
+		$ar_domain = explode('.', Request::server()['SERVER_NAME']);
 		if(count($ar_domain) >= 3){
 			$start = strlen($ar_domain[0]) + 1;
-			$this->main_session_server = $protocol . substr($_SERVER['SERVER_NAME'], $start);
+			$this->main_session_server = $protocol . substr(Request::server()['SERVER_NAME'], $start);
 		}else{
-			$this->main_session_server = $protocol . $_SERVER['SERVER_NAME'];
+			$this->main_session_server = $protocol . Request::server()['SERVER_NAME'];
 		}
 		
 		if((!Request::is_https()&&Request::get_request_port()!=80)||(Request::is_https()&&Request::get_request_port()!=443)){
@@ -52,9 +51,9 @@ class URL_Helper{
 		}
 		
 		// Set script name
-		$this->session_current = $protocol . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'];
+		$this->session_current = $protocol . Request::server()['SERVER_NAME'] . Request::server()['PHP_SELF'];
 		// Set script path
-		$this->session_current_path = $protocol . $_SERVER['SERVER_NAME'] . dirname($_SERVER['PHP_SELF']);
+		$this->session_current_path = $protocol . Request::server()['SERVER_NAME'] . dirname(Request::server()['PHP_SELF']);
 		// Set server path
 		$this->session_server_path = realpath(dirname(dirname(__FILE__)) . '/..');
 		

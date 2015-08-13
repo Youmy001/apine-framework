@@ -22,6 +22,18 @@ class Request{
 	 */
 	private $request_ssl;
 	
+	private $get;
+	
+	private $post;
+	
+	private $files;
+	
+	private $request;
+	
+	private $server;
+	
+	public $session;
+	
 	/**
 	 * Session API Call
 	 * @var boolean
@@ -33,6 +45,23 @@ class Request{
 		$this->request_port=$_SERVER['SERVER_PORT'];
 		$this->request_ssl=(isset($_SERVER['HTTPS'])&&!empty($_SERVER['HTTPS']));
 		$this->api_call=(isset($_GET['api']) && $_GET['api']==='api');
+		
+		$this->get=$_GET;
+		$this->post=$_POST;
+		$this->files=$_FILES;
+		$this->request=$_REQUEST;
+		$this->server=$_SERVER;
+		$this->session=&$_SESSION;
+		
+		$_GET=null;
+		$_POST=null;
+		$_FILES=null;
+		$_REQUEST=null;
+		//$_SERVER=null;
+		
+		foreach ($this->post as $key=>$value){
+			$this->post[$key]=filter_var($value,FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		}
 	}
 	
 	public static function get_instance(){
@@ -124,5 +153,25 @@ class Request{
 			$return=true;
 		}
 		return $return;
+	}
+	
+	public static function get(){
+		return self::get_instance()->get;
+	}
+	
+	public static function post(){
+		return self::get_instance()->post;
+	}
+	
+	public static function files(){
+		return self::get_instance()->files;
+	}
+	
+	public static function request(){
+		return self::get_instance()->request;
+	}
+	
+	public static function server(){
+		return self::get_instance()->server;
 	}
 }

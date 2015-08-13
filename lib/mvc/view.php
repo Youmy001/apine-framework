@@ -78,7 +78,7 @@ abstract class View{
 					break;
 			}
 		
-			$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+			$protocol = (isset(Request::server()['SERVER_PROTOCOL']) ? Request::server()['SERVER_PROTOCOL'] : 'HTTP/1.0');
 		
 			$this->set_header_rule($protocol . ' ' . $code . ' ' . $text);
 		

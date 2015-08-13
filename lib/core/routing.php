@@ -15,7 +15,7 @@ class Routing{
 		
 		$xml_routes=new Parser();
 		$xml_routes->load_from_file('routes.xml');
-		$request=(isset($_GET['request']))?$_GET['request']:'/index';
+		$request=(isset(Request::get()['request']))?Request::get()['request']:'/index';
 		$route_found=false;
 		
 		$routes=$xml_routes->getElementsByAttributeValue('method', Request::get_request_type());
@@ -71,7 +71,7 @@ class Routing{
 	 * @return number
 	 */
 	public static function route(){
-		$request=(isset($_GET['request']))?$_GET['request']:'/index';
+		$request=(isset(Request::get()['request']))?Request::get()['request']:'/index';
 		$route_found=false;
 		
 		$vanilla_route_found=self::check_route($request);
@@ -98,11 +98,11 @@ class Routing{
 		}
 		
 		// Add post arguments to args array
-		if($_SERVER['REQUEST_METHOD']!="GET"){
-			$args=array_merge($args,$_POST);
+		if(Request::get_request_type()!="GET"){
+			$args=array_merge($args,Request::post());
 		}
-		if(!empty($_FILES)){
-			$args=array_merge($args,array("uploads" => $_FILES));
+		if(!empty(Request::files())){
+			$args=array_merge($args,array("uploads" => Request::files()));
 		}
 		
 		try{
