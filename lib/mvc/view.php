@@ -198,7 +198,7 @@ class FileView extends HTTPView{
 	public function set_file($a_file=null){
 		if(!$a_file==null){
 			if(is_string($a_file)){
-				$this->_file = new File(SCRIPT_PATH . $a_file);
+				$this->_file = new File($a_file);
 			}else if(is_a($a_file,'File')){
 				$this->_file = $a_file;
 			}

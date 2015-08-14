@@ -228,12 +228,12 @@ class ApineImage extends ApineEntityModel{
 			$this->load();
 		}
 		if(is_string($a_file)){
-			$this->file = new FileImage(SCRIPT_PATH . $a_file);
+			$this->file = new FileImage($a_file);
 		}else if(get_class($a_file) == 'File_Image'){
 			$this->file = $a_file;
 		}
 		// Move the file to the image folder
-		$this->file->set_save_location(SCRIPT_PATH . '/upload/');
+		$this->file->set_save_location('resources/public/uploads/');
 		$this->file->save();
 		$this->_set_field('file', 'upload/' . $this->file->get_file_name());
 	
