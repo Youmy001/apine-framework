@@ -62,6 +62,14 @@ class Request{
 		foreach ($this->post as $key=>$value){
 			$this->post[$key]=filter_var($value,FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 		}
+		
+		// Format Files Array
+		if(is_array($this->files)&&!empty($this->files)){
+			$first=reset($this->files);
+			if(isset($first['name']) && $count($first['name'])>1){
+				$this->files=self::format_files_array($this->files);
+			}
+		}
 	}
 	
 	public static function get_instance(){
@@ -173,5 +181,16 @@ class Request{
 	
 	public static function server(){
 		return self::get_instance()->server;
+	}
+	
+	private static function format_files_array(Array $files){
+		$result=array();
+		
+		foreach ($files as $key1 => $value1){
+			foreach ($value1 as $key2 => $value2){
+				$result[$key2][$key1]=$value2;
+			}
+		}
+		return $result;
 	}
 }

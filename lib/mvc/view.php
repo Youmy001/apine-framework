@@ -188,7 +188,7 @@ class FileView extends HTTPView{
 	
 	private $_file;
 	
-	public function __construct($a_file=null){
+	public function __construct(File $a_file=null){
 		parent::__construct();
 		
 		$this->set_file($a_file);
