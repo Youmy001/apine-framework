@@ -10,6 +10,7 @@ The most notable features include a conplete session manager (login, logout, reg
 * MySQL 5
 * Apache 2.4
 * mod_rewrite
+* filter_module
 
 The project must be set in a virtual host that allows rewrites for routes to work.
 
@@ -17,7 +18,7 @@ The project must be set in a virtual host that allows rewrites for routes to wor
 
 1. Clone this project in your working directory 
 ```sh
-$git clone https://github.com/Youmy001/apine_framework.git
+$ git clone https://github.com/Youmy001/apine_framework.git
 ```
 2. Setup a virtual host for the project directory that allow rewrite rules and has filter module enabled in apache for version 2.4 or greater.
 3. Import `resources/apine_sql_tables.sql` into your database. This file includes the instructions to create the tables needed by the framework.

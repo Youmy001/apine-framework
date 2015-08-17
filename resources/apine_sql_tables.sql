@@ -23,7 +23,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE IF NOT EXISTS `apine_images` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `user_id` int(11) DEFAULT NULL,
   `access_id` varchar(60) NOT NULL,
   `file` varchar(254) NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `apine_images` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `apine_images`
- ADD PRIMARY KEY (`id`), ADD KEY `user_id` (`user_id`);
+ ADD KEY `user_id` (`user_id`);
 
 -- --------------------------------------------------------
 
@@ -41,16 +41,16 @@ ALTER TABLE `apine_images`
 --
 
 CREATE TABLE IF NOT EXISTS `apine_users` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `username` varchar(25) NOT NULL,
   `password` varchar(64) NOT NULL,
-  `type` tinyint(4) NOT NULL DEFAULT '70',
+  `type` tinyint(4) NOT NULL DEFAULT '65',
   `email` varchar(100) NOT NULL,
   `register` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `apine_users`
- ADD PRIMARY KEY (`ID`), ADD UNIQUE KEY `username` (`username`,`email`);
+ ADD UNIQUE KEY `username` (`username`,`email`);
 
 -- --------------------------------------------------------
 
@@ -78,19 +78,19 @@ INSERT INTO `apine_user_groups` (`id`, `name`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `apine_users_user_groups` (
-  `id_user` int(11) NOT NULL,
-  `id_group` int(11) NOT NULL
+  `user_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-ALTER TABLE `apine_user_users_groups`
- ADD PRIMARY KEY (`id_user`,`id_group`);
+ALTER TABLE `apine_users_user_groups`
+ ADD PRIMARY KEY (`user_id`,`group_id`);
 
 ALTER TABLE `apine_users_user_groups`
- ADD UNIQUE KEY `apine_users_user_groups_index` (`id_user`,`id_group`), ADD KEY `apine_users_user_groups_id_user` (`id_user`), ADD KEY `apine_users_user_groups_id_group` (`id_group`);
+ ADD UNIQUE KEY `apine_users_user_groups_index` (`user_id`,`group_id`), ADD KEY `apine_users_user_groups_user_is` (`user_id`), ADD KEY `apine_users_user_groups_group_id` (`group_id`);
 
 ALTER TABLE `apine_users_user_groups`
-ADD CONSTRAINT `apine_users_user_groups_ibfk_2` FOREIGN KEY (`id_group`) REFERENCES `apine_user_groups` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `apine_users_user_groups_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `apine_users` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `apine_users_user_groups_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `apine_user_groups` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+ADD CONSTRAINT `apine_users_user_groups_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `apine_users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -88,7 +88,7 @@ class ApineUser extends ApineEntityModel{
 
 		$this->id = $a_id;
 		$this->_set_id($a_id);
-		$this->_set_field('ID', $a_id);
+		$this->_set_field('id', $a_id);
 	
 	}
 
@@ -316,10 +316,10 @@ class ApineUser extends ApineEntityModel{
 		$this->set_id($this->_get_id());
 		
 		$db=new Database();
-		$db->delete('apine_users_user_groups', array("id_user"=>$this->get_id()));
+		$db->delete('apine_users_user_groups', array("user_id"=>$this->get_id()));
 		
 		foreach ($this->group as $item){
-			$db->insert('apine_users_user_groups', array("id_user"=>$this->get_id(), "id_group"=>$item->get_id()));
+			$db->insert('apine_users_user_groups', array("user_id"=>$this->get_id(), "group_id"=>$item->get_id()));
 		}
 	}
 
@@ -333,7 +333,7 @@ class ApineUser extends ApineEntityModel{
 		}
 		
 		$db=new Database();
-		$db->delete('apine_users_user_groups', array("id_user"=>$this->get_id()));
+		$db->delete('apine_users_user_groups', array("user_id"=>$this->get_id()));
 
 		parent::_destroy();
 	}

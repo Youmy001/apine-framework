@@ -71,7 +71,7 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 		
 		$db=new Database();
 		
-		$this->database_fields = ($this->id !== null)?$db->select("SELECT * from $this->table_name where ID=$this->id"):null;
+		$this->database_fields = ($this->id !== null)?$db->select("SELECT * from $this->table_name where id=$this->id"):null;
 		$this->database_fields = $this->database_fields[0];
 		$this->field_loaded = 1;
 		if(sizeof($this->modified_fields) > 0){
@@ -99,6 +99,7 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 	 * @return mixed
 	 */
 	protected function _get_field($a_field){
+		
 		// Load entity if not loaded yet
 		if($this->field_loaded == 0)
 			$this->_load();
@@ -111,6 +112,7 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 	 * @return array
 	 */
 	protected function _get_all_fields(){
+		
 		// Load entity if not loaded yet
 		if($this->field_loaded == 0)
 			$this->_load();
@@ -202,7 +204,7 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 		
 		if($this->id){
 			$db->delete($this->table_name, array(
-							'ID' => $this->id
+							'id' => $this->id
 			));
 		}
 

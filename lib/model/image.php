@@ -82,7 +82,7 @@ class ApineImage extends ApineEntityModel{
 
 		$this->id = $a_id;
 		$this->_set_id($a_id);
-		$this->_set_field('ID', $a_id);
+		$this->_set_field('id', $a_id);
 	
 	}
 
