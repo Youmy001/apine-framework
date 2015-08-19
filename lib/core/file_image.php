@@ -226,7 +226,7 @@ class FileImage extends File {
 		$new_image = imagecreatetruecolor($n_width, $n_height);
 		imagecopyresized($new_image, $this->file, 0, 0, $x, $y, $n_width, $n_height, $this->get_width(), $this->get_height());
 		$this->write($new_image);
-		$this->create_by_location($this->getLocation());	// Reload Image
+		$this->create_by_location($this->get_location());
 	
 	}
 
@@ -249,8 +249,8 @@ class FileImage extends File {
 
 		imagefilter($this->file, $filtertype, $arg1, $arg2, $arg3, $arg4);
 		$this->write($this->file);							// Write image
-		$this->create_by_location($this->getLocation());	// Reload Image
-		
+		$this->create_by_location($this->get_location());
+		// Reload Image
 	}
 
 	/**
@@ -264,8 +264,8 @@ class FileImage extends File {
 
 		imageflip($this->file, $mode);
 		$this->write($this->file);							// Write image
-		$this->create_by_location($this->getLocation());	// Reload Image
-			
+		$this->create_by_location($this->get_location());
+		// Reload Image
 	}
 
 	/**
