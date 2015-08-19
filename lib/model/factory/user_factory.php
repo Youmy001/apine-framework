@@ -8,19 +8,23 @@
  * @subpackage system
  */
 
-class ApineUserFactory extends ApineFactory{
+class ApineUserFactory extends ApineFactory {
 
 	/**
 	 * Verify if the identifier exists
 	 * @param integer $user_id        
 	 * @return boolean
 	 */
-	public static function is_id_exist($user_id){
+	public static function is_id_exist($user_id) {
 
-		$id_sql = (new Database())->select("SELECT `id` FROM `apine_users` WHERE `id`=$user_id");
-		if($id_sql){
+		//$id_sql = (new Database())
+		$database=new Database();
+		$id_sql = $request->select("SELECT `id` FROM `apine_users` WHERE `id`=$user_id");
+		
+		if ($id_sql) {
 			return true;
 		}
+		
 		return false;
 	
 	}
@@ -33,10 +37,14 @@ class ApineUserFactory extends ApineFactory{
 	 */
 	public static function is_name_exist($user_name){
 
-		$id_sql = (new Database())->select("SELECT `id` FROM `apine_users` WHERE `username`='$user_name'");
-		if($id_sql){
+		//$id_sql = (new Database())
+		$database=new Database();
+		$id_sql = $request->select("SELECT `id` FROM `apine_users` WHERE `username`='$user_name'");
+		
+		if ($id_sql) {
 			return true;
 		}
+		
 		return false;
 	
 	}
@@ -47,12 +55,16 @@ class ApineUserFactory extends ApineFactory{
 	 *        User email address
 	 * @return boolean
 	 */
-	public static function is_email_exist($user_mail){
+	public static function is_email_exist($user_mail) {
 
-		$id_sql = (new Database())->select("SELECT `id` FROM `apine_users` WHERE `email`='$user_mail'");
-		if($id_sql){
+		//$id_sql = (new Database())
+		$database=new Database();
+		$id_sql = $request->select("SELECT `id` FROM `apine_users` WHERE `email`='$user_mail'");
+		
+		if ($id_sql) {
 			return true;
 		}
+		
 		return false;
 	
 	}
@@ -60,15 +72,19 @@ class ApineUserFactory extends ApineFactory{
 	 *
 	 * @return Liste
 	 */
-	public static function create_all(){
+	public static function create_all() {
 
-		$request = (new Database())->select('SELECT `id` from `apine_users` ORDER BY `username`');
+		//$request = (new Database())
+		$database=new Database();
+		$request = $request->select('SELECT `id` from `apine_users` ORDER BY `username`');
 		$liste = new Liste();
-		if($request != null && count($request) > 0){
-			foreach($request as $item){
+		
+		if ($request != null && count($request) > 0) {
+			foreach ($request as $item) {
 				$liste->add_item(new ApineUser($item['id']));
 			}
 		}
+		
 		return $liste;
 	
 	}
@@ -79,18 +95,20 @@ class ApineUserFactory extends ApineFactory{
 	 *        User Identifier
 	 * @return User
 	 */
-	public static function create_by_id($a_id){
-
+	public static function create_by_id($a_id) {
+		
 		$database=new Database();
 		$user_sql_id = $database->prepare('SELECT `id` FROM `apine_users` WHERE `id`=?');
 		$ar_user_sql = $database->execute(array(
 						$a_id
 		), $user_sql_id);
-		if($ar_user_sql){
+		
+		if ($ar_user_sql) {
 			$return = new ApineUser($ar_user_sql[0]['id']);
-		}else{
+		} else {
 			$return = null;
 		}
+		
 		return $return;
 	
 	}
@@ -101,20 +119,22 @@ class ApineUserFactory extends ApineFactory{
 	 *        User username
 	 * @return User
 	 */
-	public static function create_by_name($name){
+	public static function create_by_name($name) {
 
-		$database=new Database();
+		$database = new Database();
 		$user_sql_id = $database->prepare('SELECT `id` FROM `apine_users` WHERE `username`=?');
 		$ar_user_sql = $database->execute(array(
 						$name
 		), $user_sql_id);
-		if($ar_user_sql){
+		
+		if ($ar_user_sql) {
 			$user_id = end($ar_user_sql);
 			$user_id = $user_id['id'];
 			$lang = new ApineUser($user_id);
-		}else{
+		} else {
 			$lang = null;
 		}
+		
 		return $lang;
 	
 	}
@@ -125,15 +145,19 @@ class ApineUserFactory extends ApineFactory{
 	 *        User Permission level
 	 * @return Liste
 	 */
-	public static function create_by_access_right($access){
+	public static function create_by_access_right($access) {
 
-		$request = (new Database())->select("SELECT `id` FROM `apine_users` WHERE `type`=$access");
+		//$request = (new Database())
+		$database=new Database();
+		$request = $request->select("SELECT `id` FROM `apine_users` WHERE `type`=$access");
 		$liste = new Liste();
-		if($request != null && count($request) > 0){
-			foreach($request as $item){
+		
+		if ($request != null && count($request) > 0) {
+			foreach ($request as $item) {
 				$liste->add_item(new ApineUser($item['id']));
 			}
 		}
+		
 		return $liste;
 	
 	}
@@ -144,15 +168,19 @@ class ApineUserFactory extends ApineFactory{
 	 *        User Group
 	 * @return Liste
 	 */
-	public static function create_by_group($group){
+	public static function create_by_group($group) {
 	
-		$request = (new Database())->select("SELECT `user_id` FROM `apine_users_user_group` WHERE `group_id`=$group");
+		//$request = (new Database())
+		$database=new Database();
+		$request = $request->select("SELECT `user_id` FROM `apine_users_user_group` WHERE `group_id`=$group");
 		$liste = new Liste();
-		if($request != null && count($request) > 0){
-			foreach($request as $item){
+		
+		if ($request != null && count($request) > 0) {
+			foreach ($request as $item) {
 				$liste->add_item(new ApineUser($item['user_id']));
 			}
 		}
+		
 		return $liste;
 	
 	}
@@ -167,7 +195,7 @@ class ApineUserFactory extends ApineFactory{
 	 *        Encrypted password
 	 * @return integer
 	 */
-	public static function authentication($name, $pass){
+	public static function authentication($name, $pass) {
 		
 		$database=new Database();
 		$connect_sql_id = $database->prepare('SELECT `id` FROM `apine_users` WHERE `username`=? OR `email`=? AND `password`=?');
@@ -177,12 +205,13 @@ class ApineUserFactory extends ApineFactory{
 						$pass
 		), $connect_sql_id);
 		
-		if($ar_connect_sql){
+		if ($ar_connect_sql) {
 			$connect = end($ar_connect_sql);
 			$connect = $connect['id'];
-		}else{
+		} else {
 			$connect = 0; // Value of false
 		}
+		
 		return $connect;
 	
 	}

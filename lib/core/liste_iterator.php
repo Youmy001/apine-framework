@@ -7,7 +7,7 @@
  * @package apine-framework
  * @subpackage system
  */
-class ListeIterator implements Iterator{
+class ListeIterator implements Iterator {
 
 	/**
 	 * Instance of the collection
@@ -32,7 +32,7 @@ class ListeIterator implements Iterator{
 	 * @param Liste $a_liste
 	 *        Instance of the collection
 	 */
-	public function __construct(Liste $a_liste){
+	public function __construct(Liste $a_liste) {
 
 		$this->_liste = $a_liste;
 		$this->_keys = $this->_liste->keys();
@@ -43,7 +43,7 @@ class ListeIterator implements Iterator{
 	 * Return to the first item (non-PHPdoc)
 	 * @see Iterator::rewind()
 	 */
-	public function rewind(){
+	public function rewind() {
 
 		$this->_currIndex = 0;
 	
@@ -53,7 +53,7 @@ class ListeIterator implements Iterator{
 	 * Return current item's key (non-PHPdoc)
 	 * @see Iterator::key()
 	 */
-	public function key(){
+	public function key() {
 
 		return $this->_keys[$this->_currIndex];
 	
@@ -63,7 +63,7 @@ class ListeIterator implements Iterator{
 	 * Get the item at current pointer position (non-PHPdoc)
 	 * @see Iterator::current()
 	 */
-	public function current(){
+	public function current() {
 
 		return $this->_liste->get_item($this->_keys[$this->_currIndex]);
 	
@@ -73,7 +73,7 @@ class ListeIterator implements Iterator{
 	 * Move the pointer to the next position (non-PHPdoc)
 	 * @see Iterator::next()
 	 */
-	public function next(){
+	public function next() {
 
 		$this->_currIndex++;
 	
@@ -83,7 +83,7 @@ class ListeIterator implements Iterator{
 	 * Validate pointer's position (non-PHPdoc)
 	 * @see Iterator::valid()
 	 */
-	public function valid(){
+	public function valid() {
 
 		return $this->_currIndex < $this->_liste->length();
 	

@@ -6,7 +6,7 @@
  * @package apine-framework
  * @subpackage system
  */
-class File{
+class File {
 
 	/**
 	 * Ressource file
@@ -54,26 +54,31 @@ class File{
 	 * File class' constructor
 	 * @param string $location        
 	 */
-	public function __construct($location = null){
+	public function __construct($location = null) {
 
-		if($location != null){
-			try{
+		if ($location != null) {
+			
+			try {
 				// Open File
 				$this->file = fopen($location, "c+");
 				$this->file_location = $location;
 				$this->file_name = basename($location);
+				
 				// Get file extention
 				$ar_file_ext = explode(".", $this->file_name);
 				$extension = end($ar_file_ext);
+				
 				// Get file name with extention
 				$ar_file_name = explode("/", reset($ar_file_ext));
 				$file_name = end($ar_file_name);
 				$this->file_name = $file_name . "." . $extension;
+				
 				$this->save_loc = substr($this->file_location, 0, strripos($location, "/") - 1);
 				$this->file_error = 0;
-			}catch(Exception $e){
+			} catch(Exception $e) {
 				$this->file_error = 4;
 			}
+			
 		}
 	
 	}
@@ -84,9 +89,9 @@ class File{
 	 *        Array containning temporary file's informations. It's
 	 *        basicaly the $_FILE['name_of_a_input_file'] array.
 	 */
-	public function new_file(Array $file_array){
+	public function new_file(Array $file_array) {
 
-		if($file_array['tmp_name']){
+		if ($file_array['tmp_name']) {
 			$this->file = fopen($file_array['tmp_name'], "c+");
 			$this->file_location = $file_array['tmp_name'];
 			$this->file_name = $file_array['name'];
@@ -101,12 +106,14 @@ class File{
 	 * Fetch file size
 	 * @return integer
 	 */
-	public function get_size(){
+	public function get_size() {
 
-		if($this->is_new)
+		if ($this->is_new) {
 			$size = $this->file_array['size'];
-		else
+		} else {
 			$size = filesize($this->get_location());
+		}
+		
 		return $size;
 	
 	}
@@ -115,7 +122,7 @@ class File{
 	 * Fetch file name
 	 * @return string
 	 */
-	public function get_file_name(){
+	public function get_file_name() {
 
 		return $this->file_name;
 	
@@ -126,14 +133,15 @@ class File{
 	 * @param string $name
 	 *        New File name
 	 */
-	public function set_file_name($name){
+	public function set_file_name($name) {
 
 		$ar_file_ext = explode(".", $this->file_name);
 		$extension = end($ar_file_ext);
+		
 		// Add extention if its not present into the new name
-		if(strripos($name, '.') === false){
+		if (strripos($name, '.') === false) {
 			$this->file_name = $name . "." . $extension;
-		}else{
+		} else {
 			$this->file_name = $name;
 		}
 	
@@ -143,7 +151,7 @@ class File{
 	 * Fetch file path
 	 * @return string
 	 */
-	public function get_location(){
+	public function get_location() {
 
 		return $this->file_location;
 	
@@ -154,7 +162,7 @@ class File{
 	 * @see File::get_location()
 	 * @return string
 	 */
-	public function get_path(){
+	public function get_path() {
 
 		return $this->get_location();
 	
@@ -164,12 +172,13 @@ class File{
 	 * Fetch the saving path
 	 * @return string|boolean
 	 */
-	public function get_save_location(){
+	public function get_save_location() {
 
-		if($this->_is_save_loc)
+		if ($this->_is_save_loc) {
 			return $this->save_loc;
-		else
+		} else {
 			return false;
+		}
 	
 	}
 
@@ -178,7 +187,7 @@ class File{
 	 * @param string $location
 	 *        Saving location
 	 */
-	public function set_save_location($location){
+	public function set_save_location($location) {
 
 		$this->_is_save_loc = true;
 		$this->save_loc = $location;
@@ -189,11 +198,12 @@ class File{
 	 * Fetch error code for new upload files only.
 	 * @return integer
 	 */
-	public function get_error_code(){
+	public function get_error_code() {
+		
 		// For upload only
-		if($this->is_new){
+		if ($this->is_new) {
 			return $this->file_error;
-		}else{
+		} else {
 			return 0;
 		}
 	
@@ -203,12 +213,14 @@ class File{
 	 * Get file's mime type
 	 * @return string
 	 */
-	public function get_type(){
-
-		if($this->is_new)
+	 public function get_type(){
+	
+		if ($this->is_new) {
 			$type = $this->file_array["type"];
-		else
-			$type = mime_content_type($this->file_location);
+		} else {
+			$type = exec("file -b '".$this->get_location()."'");
+		}
+		
 		return $type;
 	
 	}
@@ -217,7 +229,7 @@ class File{
 	 * Get file's extention
 	 * @return string
 	 */
-	public function get_extention(){
+	public function get_extention() {
 
 		$filename = explode(".", $this->get_file_name());
 		return end($filename);
@@ -228,7 +240,7 @@ class File{
 	 * Remove file from disk.
 	 * This action literaly erases the ressource from the hard drive.
 	 */
-	public function delete(){
+	public function delete() {
 
 		unlink($this->get_location());
 	
@@ -241,27 +253,27 @@ class File{
 	 * @param boolean $move Should the file be moved or copied
 	 * @return boolean
 	 */
-	public function save($move=false){
+	public function save($move=false) {
 
-		if($this->_is_save_loc){
+		if ($this->_is_save_loc) {
 			$filename=basename($this->file_name);
 			$target=$this->save_loc;
 			$target=$target.$filename;
 			$file = $this->file_location;
 			$name = substr($file, strrpos($file, '/')+1);
-		
 			
 			$target = $this->save_loc;
 			$target = $target . $filename;
 			
-			if($move==false || $this->is_new){
+			if ($move==false || $this->is_new) {
 				$success = copy($this->file_location, $target);
-			}else{
+			} else {
 				$success = rename($this->file_location, $target, $this->file);
 			}
+			
 			$this->file_location = $target;
 			return $success;
-		}else{
+		} else {
 			return false;
 		}
 	
@@ -271,11 +283,13 @@ class File{
 	 * Move the file to its saving location.
 	 * @return boolean
 	 */
-	public function move(){
+	public function move() {
+		
 		return $this->save(true);
+		
 	}
 	
-	public function read(){
+	public function read() {
 	
 		readfile($this->get_location());
 	
@@ -284,10 +298,11 @@ class File{
 	/**
 	 * File class' destructor.
 	 */
-	public function __destruct(){
+	public function __destruct() {
+		
 		// Close ressource
 		fclose($this->file);
+		
 	}
 
 }
-?>

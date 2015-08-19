@@ -11,18 +11,22 @@ interface APIActions {
 	public function delete($params);
 }
 
-abstract class Controller{
+abstract class Controller {
 	
 	protected $_view;
 	
-	public function __construct(){
+	public function __construct() {
+		
 		$this->_view=new HTMLView();
+		
 	}
 }
 
-abstract class APIController extends Controller implements APIActions{
+abstract class APIController extends Controller implements APIActions {
 	
-	public function __construct(){
+	public function __construct() {
+		
 		$this->_view=new JSONView();
+		
 	}
 }

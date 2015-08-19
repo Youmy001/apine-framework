@@ -11,7 +11,7 @@
 /**
  * Implementation of the database representation of users groups
  */
-class ApineUserGroup extends ApineEntityModel{
+class ApineUserGroup extends ApineEntityModel {
 
 	/**
 	 * User identifier in database
@@ -30,10 +30,11 @@ class ApineUserGroup extends ApineEntityModel{
 	 * @param integer $a_id
 	 *        Group identifier
 	 */
-	public function __construct($a_id = null){
+	public function __construct($a_id = null) {
 
 		$this->_initialize('apine_user_groups', $a_id);
-		if(!is_null($a_id)){
+		
+		if (!is_null($a_id)) {
 			$this->id = $a_id;
 		}
 
@@ -43,11 +44,12 @@ class ApineUserGroup extends ApineEntityModel{
 	 * Fetch group's identifier
 	 * @return integer
 	 */
-	public function get_id(){
+	public function get_id() {
 
-		if($this->loaded == 0){
+		if ($this->loaded == 0) {
 			$this->load();
 		}
+		
 		return $this->id;
 
 	}
@@ -57,7 +59,7 @@ class ApineUserGroup extends ApineEntityModel{
 	 * @param integer $a_id
 	 *        Group's identifier
 	 */
-	public function set_id($a_id){
+	public function set_id($a_id) {
 
 		$this->id = $a_id;
 		$this->_set_id($a_id);
@@ -69,11 +71,12 @@ class ApineUserGroup extends ApineEntityModel{
 	 * Fetch group's name
 	 * @return string
 	 */
-	public function get_name(){
+	public function get_name() {
 
-		if($this->loaded == 0){
+		if ($this->loaded == 0) {
 			$this->load();
 		}
+		
 		return $this->name;
 
 	}
@@ -83,11 +86,12 @@ class ApineUserGroup extends ApineEntityModel{
 	 * @param string $a_name
 	 *        Group's name
 	 */
-	 public function set_name($a_name){
+	 public function set_name($a_name) {
 
-		if($this->loaded == 0){
+		if ($this->loaded == 0) {
 			$this->load();
 		}
+		
 		$this->name = $a_name;
 		$this->_set_field('name', $a_name);
 
@@ -96,9 +100,9 @@ class ApineUserGroup extends ApineEntityModel{
 	/**
 	 * @see ApineEntityInterface::load()
 	 */
-	public function load(){
+	public function load() {
 
-		if(!is_null($this->id)){
+		if (!is_null($this->id)) {
 			$this->name = $this->_get_field('name');
 			$this->loaded = 1;
 		}
@@ -108,7 +112,7 @@ class ApineUserGroup extends ApineEntityModel{
 	/**
 	 * @see ApineEntityInterface::save()
 	 */
-	public function save(){
+	public function save() {
 
 		parent::_save();
 		// Save
@@ -117,13 +121,15 @@ class ApineUserGroup extends ApineEntityModel{
 	/**
 	 * @see ApineEntityInterface::delete()
 	 */
-	public function delete(){
+	public function delete() {
 
-		if($this->loaded == 0){
+		if($this->loaded == 0) {
 			$this->load();
 		}
+		
 		parent::_destroy();
 		// Remove from the database
+		
 	}
 
 }

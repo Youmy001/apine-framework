@@ -13,7 +13,7 @@ define('PAGINATION_TYPE_PAGER', 110);
  * @package bokaro
  * @subpackage view
  */
-class Pagination{
+class Pagination {
 
 	/**
 	 * Current active page
@@ -54,7 +54,7 @@ class Pagination{
 	 * @param integer $a_nb_display
 	 *        Number of items to display per pages
 	 */
-	public function __construct($a_nb_item, $cur_page = 1, $a_nb_display = 10){
+	public function __construct($a_nb_item, $cur_page = 1, $a_nb_display = 10) {
 
 		$this->set_current_page($cur_page);
 		$this->set_number_page(ceil($a_nb_item / $a_nb_display));
@@ -66,7 +66,7 @@ class Pagination{
 	 * Set current active page
 	 * @param integer $a_cur_page        
 	 */
-	public function set_current_page($a_cur_page){
+	public function set_current_page($a_cur_page) {
 
 		(is_numeric($a_cur_page))?$this->cur_page = (int) $a_cur_page:0;
 	
@@ -76,7 +76,7 @@ class Pagination{
 	 * Fetch current active page
 	 * @return integer
 	 */
-	public function get_current_page(){
+	public function get_current_page() {
 
 		return $this->cur_page;
 	
@@ -86,7 +86,7 @@ class Pagination{
 	 * Set total number of pages
 	 * @param integer $a_num_page        
 	 */
-	public function set_number_page($a_num_page){
+	public function set_number_page($a_num_page) {
 
 		(is_numeric($a_num_page))?$this->num_page = (int) $a_num_page:0;
 	
@@ -96,7 +96,7 @@ class Pagination{
 	 * Fetch total number of pages
 	 * @return integer
 	 */
-	public function get_number_page(){
+	public function get_number_page() {
 
 		return $this->num_page;
 	
@@ -106,7 +106,7 @@ class Pagination{
 	 * Set the number of pages to display
 	 * @param integer $a_page_display        
 	 */
-	public function set_page_display($a_page_display){
+	public function set_page_display($a_page_display) {
 
 		(is_numeric($a_page_display))?$this->page_display = $a_page_display:0;
 	
@@ -116,7 +116,7 @@ class Pagination{
 	 * Fetch the number of pages to display
 	 * @return integer
 	 */
-	public function get_page_display(){
+	public function get_page_display() {
 
 		return $this->page_display;
 	
@@ -126,7 +126,7 @@ class Pagination{
 	 * Set base url for links
 	 * @param string $a_base        
 	 */
-	public function set_base_url($a_base){
+	public function set_base_url($a_base) {
 
 		$this->base = $a_base;
 	
@@ -135,7 +135,7 @@ class Pagination{
 	/**
 	 * Mark the pagination as a pager
 	 */
-	public function pager(){
+	public function pager() {
 
 		$this->type = PAGINATION_TYPE_PAGER;
 	
@@ -144,120 +144,144 @@ class Pagination{
 	/**
 	 * Mark the pagination as a regular pagination
 	 */
-	public function pagination(){
+	public function pagination() {
 
 		$this->type = PAGINATION_TYPE_PAGINATION;
 	
 	}
 
-	public function get_first_display_page(){
+	public function get_first_display_page() {
 
-		if($this->type == PAGINATION_TYPE_PAGINATION){
+		if ($this->type == PAGINATION_TYPE_PAGINATION) {
 			$split = ceil($this->page_display / 2);
 			$prev_page = $this->cur_page - 1;
 			$next_page = $this->cur_page + 1;
 			$begin = $this->cur_page - $split;
 			$end = $this->cur_page + $split;
-			if($begin < 1){
+			
+			if ($begin < 1) {
 				$begin = 1;
 				$end = $this->page_display;
 			}
-			if($end > $this->num_page){
+			
+			if ($end > $this->num_page) {
 				$end = $this->num_page;
 				$begin = ($this->num_page - $this->page_display) + 1;
-				if($begin < 1){
+				
+				if ($begin < 1) {
 					$begin = 1;
 				}
 			}
+			
 			return $begin;
-		}else{}
+		} else {
+			
+		}
 	
 	}
 
-	public function get_last_display_page(){
+	public function get_last_display_page() {
 
-		if($this->type == PAGINATION_TYPE_PAGINATION){
+		if ($this->type == PAGINATION_TYPE_PAGINATION) {
 			$split = ceil($this->page_display / 2);
 			$prev_page = $this->cur_page - 1;
 			$next_page = $this->cur_page + 1;
 			$begin = $this->cur_page - $split;
 			$end = $this->cur_page + $split;
-			if($begin < 1){
+			
+			if ($begin < 1) {
 				$begin = 1;
 				$end = $this->page_display;
 			}
-			if($end > $this->num_page){
+			
+			if ($end > $this->num_page) {
 				$end = $this->num_page;
 				$begin = ($this->num_page - $this->page_display) + 1;
-				if($begin < 1){
+				
+				if ($begin < 1) {
 					$begin = 1;
 				}
 			}
+			
 			return $end;
-		}else{}
+		} else {
+			
+		}
 	
 	}
 
-	public function draw(){
+	public function draw() {
 
-		if($this->type == PAGINATION_TYPE_PAGINATION){
+		if ($this->type == PAGINATION_TYPE_PAGINATION) {
 			$split = ceil($this->page_display / 2);
 			$prev_page = $this->cur_page - 1;
 			$next_page = $this->cur_page + 1;
 			$begin = $this->cur_page - $split;
 			$end = $this->cur_page + $split;
-			if($begin < 1){
+			
+			if ($begin < 1) {
 				$begin = 1;
 				$end = $this->page_display;
 			}
-			if($end > $this->num_page){
+			
+			if ($end > $this->num_page) {
 				$end = $this->num_page;
 				$begin = ($this->num_page - $this->page_display) + 1;
-				if($begin < 1){
+				
+				if ($begin < 1) {
 					$begin = 1;
 				}
 			}
+			
 			print '<div class="pagination pagination-large pagination-centered">
 						<ul>';
-			if($this->cur_page == 1){
+			
+			if ($this->cur_page == 1) {
 				print '<li id="page_prev" class="disabled"><a href="">' . PAGER_PREV . '</a></li>';
-			}else{
+			} else {
 				print '<li id="page_prev" ><a class="effect" href="' . $this->base . $prev_page;
 				print '">' . PAGER_PREV . '</a></li>';
 			}
-			for($i = $begin;$i <= $end;$i++){
-				if($i == $this->cur_page){
+			
+			for ($i = $begin;$i <= $end;$i++) {
+				if ($i == $this->cur_page) {
 					print '<li id="page_' . $i . '" class="page active">';
-				}else{
+				} else {
 					print '<li id="page_' . $i . '" class="page">';
 				}
+				
 				print "<a class=\"effect\" href=\"" . $this->base . $i;
 				print "\">$i</a></li>";
 			}
-			if($this->cur_page == $this->num_page){
+			
+			if ($this->cur_page == $this->num_page) {
 				print '<li id="page_next" class="disabled"><a href="">' . PAGER_NEXT . '</a></li>';
-			}else{
+			} else {
 				print '<li id="page_next" ><a class="effect" href="' . $this->base . $next_page;
 				print '">' . PAGER_NEXT . '</a></li>';
 			}
+			
 			print '</ul>
 				</div>';
-		}else if($this->type == PAGINATION_TYPE_PAGER){
+		} else if($this->type == PAGINATION_TYPE_PAGER) {
 			$prev_page = $this->cur_page - 1;
 			$next_page = $this->cur_page + 1;
 			print '<ul class="pager">';
-			if($this->cur_page == 1){
+			
+			if ($this->cur_page == 1) {
 				print '<li class="previous disabled"><a href="">&larr; ' . PAGER_OLDER . '</a></li>';
-			}else{
+			} else {
 				print '<li class="previous"><a class=\"effect\" href="' . $this->base . $prev_page;
 				print '">&larr; ' . PAGER_OLDER . '</a></li>';
 			}
-			if($this->cur_page == $this->num_page){
+			
+			if ($this->cur_page == $this->num_page) {
 				print '<li class="next disabled"><a href="">' . PAGER_NEWER . ' &rarr;</a></li>';
-			}else{
+			} else {
 				print '<li class="next"><a class="effect" href="' . $this->base . $next_page;
 				print '">' . PAGER_NEWER . ' &rarr;</a></li>';
 			}
+			
 			print '</ul>';
 		}
 	

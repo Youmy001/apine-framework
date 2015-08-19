@@ -16,9 +16,10 @@
  * Cette classe permet de lire et modifier un 
  * élément XML. 
  *************************************************/
-class Element extends DOMElement{
+class Element extends DOMElement {
     
     private $document;    // Instance du DOM
+    
     private $element;    // Instance de l'élément DOM
     
     /*********************************************
@@ -32,10 +33,12 @@ class Element extends DOMElement{
      * RETURN
      *    null
      *********************************************/
-    public function __construct(DOMDocument &$a_document,DOMElement &$a_element){
-        $this->document=$a_document;
-        $this->element=$a_element;
-    }
+    public function __construct(DOMDocument &$a_document, DOMElement &$a_element) {
+
+		$this->document = $a_document;
+		$this->element = $a_element;
+	
+	}
     
     /*********************************************
      * Méthode addAttribute
@@ -48,9 +51,11 @@ class Element extends DOMElement{
      * RETURN
      *    DOMAttr             Attribut ajouté
      *********************************************/
-    public function addAttribute($a_attr,$a_value){
-        return $this->setAttribute($a_attr,$a_value);
-    }
+    public function addAttribute($a_attr, $a_value) {
+
+		return $this->setAttribute($a_attr, $a_value);
+	
+	}
     
     /*********************************************
      * Méthode addComment
@@ -62,12 +67,13 @@ class Element extends DOMElement{
      * RETURN
      *    DOMComment $node       Node du commentaire ajouté
      *********************************************/
-    public function addComment($a_comment){
-        $node=$this->document->createComment($a_comment);
-        $node=$this->element->appendChild($node);
-        
-        return $node;
-    }
+    public function addComment($a_comment) {
+
+		$node = $this->document->createComment($a_comment);
+		$node = $this->element->appendChild($node);
+		return $node;
+	
+	}
     
     /*********************************************
      * Méthode addTextNode
@@ -79,12 +85,13 @@ class Element extends DOMElement{
      * RETURN
      *    DOMTextNode $node       Node du texte ajouté
      *********************************************/
-    public function addTextNode($a_content){
-        $text=$this->DOM_document->createTextNode($a_content);
-        $this->element->appendChild($text);
-        
-        return $text;
-    }
+    public function addTextNode($a_content) {
+
+		$text = $this->DOM_document->createTextNode($a_content);
+		$this->element->appendChild($text);
+		return $text;
+	
+	}
     
     /*********************************************
      * Méthode appendChild
@@ -96,11 +103,12 @@ class Element extends DOMElement{
      * RETURN
      *    DOMNode $node       Node ajouté
      *********************************************/
-    public function appendChild(DOMNode $node){
-        $node=$this->element->appendChild($node);
-        
-        return $node;
-    }
+    public function appendChild(DOMNode $node) {
+
+		$node = $this->element->appendChild($node);
+		return $node;
+	
+	}
     
     /*********************************************
      * Méthode setAttribute
@@ -113,11 +121,12 @@ class Element extends DOMElement{
      * RETURN
      *    DOMAttr $attr       Attribut ajouté
      *********************************************/
-    public function setAttribute($a_name,$a_value){
-        $attr=$this->element->setAttribute($a_name,$a_value);
-        
-        return $attr;
-    }
+    public function setAttribute($a_name, $a_value) {
+
+		$attr = $this->element->setAttribute($a_name, $a_value);
+		return $attr;
+	
+	}
     
     /*********************************************
      * Méthode getAttribute
@@ -129,10 +138,13 @@ class Element extends DOMElement{
      * RETURN
      *    STRING              Valeur de l'attribut de l'élément
      *********************************************/
-    public function getAttribute($a_name){
-        if($this->element->hasAttribute($a_name))
-            return $this->element->getAttribute($a_name);
-    }
+    public function getAttribute($a_name) {
+
+		if ($this->element->hasAttribute($a_name)) {
+			return $this->element->getAttribute($a_name);
+		}
+	
+	}
     
     /*********************************************
      * Méthode removeAttribute
@@ -144,9 +156,11 @@ class Element extends DOMElement{
      * RETURN
      *    DOMAttr             Attribut supprimé
      *********************************************/
-    public function removeAttribute($a_name){
-        return ($this->element->removeAttribute($a_name));
-    }
+    public function removeAttribute($a_name) {
+
+		return ($this->element->removeAttribute($a_name));
+	
+	}
     
     /*********************************************
      * Méthode getLineNumber
@@ -158,9 +172,11 @@ class Element extends DOMElement{
      * RETURN
      *    INTEGER             Numéro de line
      *********************************************/
-    public function getLineNumber(){
-        return $this->element->getLineNo();
-    }
+    public function getLineNumber() {
+
+		return $this->element->getLineNo();
+	
+	}
     
     /*********************************************
      * Méthode hasAttribute
@@ -172,9 +188,11 @@ class Element extends DOMElement{
      * RETURN
      *    BOOLEAN             Si l'attribut existe
      *********************************************/
-    public function hasAttribute($a_name){
-        return $this->element->hasAttribute($a_name);
-    }
+    public function hasAttribute($a_name) {
+
+		return $this->element->hasAttribute($a_name);
+	
+	}
     
     /*********************************************
      * Méthode hasAttributes
@@ -186,9 +204,11 @@ class Element extends DOMElement{
      * RETURN
      *    BOOLEAN             Si il y a des attributs
      *********************************************/
-    public function hasAttributes(){
-        return $this->element->hasAttributes();
-    }
+    public function hasAttributes() {
+
+		return $this->element->hasAttributes();
+	
+	}
     
     /*********************************************
      * Méthode hasChildNodes
@@ -200,31 +220,35 @@ class Element extends DOMElement{
      * RETURN
      *    BOOLEAN             Si il y a des enfants
      *********************************************/
-    public function hasChildNodes(){
-        return $this->element->hasChildNodes();
-    }
-    
-    /*********************************************
-     * Méthode insertBefore
-     * ---------------
-     * Ajouter un node enfant avant un autre
-     * 
-     * ENTRIES
-     *    DOMNode $new_node   Node à ajouter
-     *    DOMNode $ref_node   Node avant lequel insérer
-     * RETURN
-     *    DOMNode $node       Node ajouté
-     *********************************************/
-    public function insertBefore(DOMNode $new_node, DOMNode $ref_node=null){
-        
-        try{
-            $node=$this->element->insertBefore($new_node,$ref_node);
-            
-            return $node;
-        }catch(Exception $e){
-            throw new Exception("Erreur de DOM : ".$e->getMessage());
-        }
-    }
+    public function hasChildNodes() {
+
+		return $this->element->hasChildNodes();
+	
+	}
+
+	/**
+	 * *******************************************
+	 * Méthode insertBefore
+	 * ---------------
+	 * Ajouter un node enfant avant un autre
+	 *
+	 * ENTRIES
+	 * 		DOMNode $new_node 	Node à ajouter
+	 * 		DOMNode $ref_node 	Node avant lequel insérer
+	 * RETURN
+	 * 		DOMNode $node 		Node ajouté
+	 * *******************************************
+	 */
+	public function insertBefore(DOMNode $new_node, DOMNode $ref_node = null){
+
+		try{
+			$node = $this->element->insertBefore($new_node, $ref_node);
+			return $node;
+		}catch(Exception $e){
+			throw new Exception("Erreur de DOM : " . $e->getMessage());
+		}
+	
+	}
     
     /*********************************************
      * Méthode removeChild
@@ -236,58 +260,69 @@ class Element extends DOMElement{
      * RETURN
      *    DOMNode $node       Node rétiré
      *********************************************/
-    public function removeChild(DOMNode $old_node){
-        $node=$this->element->removeChild($old_node);
-        
-        return $node;
-    }
-    
-    /*********************************************
-     * Méthode replaceChild
-     * ---------------
-     * Remplacer un node enfant avec un autre
-     * 
-     * ENTRIES
-     *    DOMNode $new_node   Node à ajouter
-     *    DOMNode $old_node   Node à remplacer
-     * RETURN
-     *    DOMNode $node       Node ajouté
-     *********************************************/
-    public function replaceChild(DOMNode $new_node, DOMNode $old_node){
-        $node=$this->element->replaceChild($new_node,$old_node);
-        
-        return $node;
-    }
-    
-    /*********************************************
-     * Méthode cloneNode
-     * ---------------
-     * Cloner l'élément
-     * 
-     * ENTRIES
-     *    BOOLEAN $deep       Si il faut copier l'arbre au complet
-     * RETURN
-     *    DOMNode $node       Node cloné
-     *********************************************/
-    public function cloneNode($deep=true){
-        $node=$this->element->cloneNode($deep);
-        
-        return $node;
-    }
-    
-    /*********************************************
-     * Méthode importNode
-     * ---------------
-     * Importer un node enfant
-     * 
-     * ENTRIES
-     *    DOMNode $new_node   Node à importer
-     * RETURN
-     *    null
-     *********************************************/
-    public function importNode(DOMNode $new_node){
-        $node=$this->element->importNode($new_node,true);
-    }
+	public function removeChild(DOMNode $old_node) {
+
+		$node = $this->element->removeChild($old_node);
+		return $node;
+	
+	}
+
+	/**
+	 * *******************************************
+	 * Méthode replaceChild
+	 * ---------------
+	 * Remplacer un node enfant avec un autre
+	 *
+	 * ENTRIES
+	 * 		DOMNode $new_node 	Node à ajouter
+	 * 		DOMNode $old_node 	Node à remplacer
+	 * RETURN
+	 * 		DOMNode $node 		Node ajouté
+	 * *******************************************
+	 */
+	public function replaceChild(DOMNode $new_node, DOMNode $old_node) {
+
+		$node = $this->element->replaceChild($new_node, $old_node);
+		return $node;
+	
+	}
+
+	/**
+	 * *******************************************
+	 * Méthode cloneNode
+	 * ---------------
+	 * Cloner l'élément
+	 *
+	 * ENTRIES
+	 * 		BOOLEAN $deep 	Si il faut copier l'arbre au complet
+	 * RETURN
+	 * 		DOMNode $node 	Node cloné
+	 * *******************************************
+	 */
+	public function cloneNode($deep = true) {
+
+		$node = $this->element->cloneNode($deep);
+		return $node;
+	
+	}
+
+	/**
+	 * *******************************************
+	 * Méthode importNode
+	 * ---------------
+	 * Importer un node enfant
+	 *
+	 * ENTRIES
+	 * 		DOMNode $new_node 	Node à importer
+	 * RETURN
+	 * 		null
+	 * *******************************************
+	 */
+	public function importNode(DOMNode $new_node) {
+
+		$node = $this->element->importNode($new_node, true);
+	
+	}
     
     /*********************************************
      * Méthode setId
@@ -299,9 +334,11 @@ class Element extends DOMElement{
      * RETURN
      *    null
      *********************************************/
-    public function setId($id){
-        return $this->setAttribute("id",$id);
-    }
+    public function setId($id) {
+
+		return $this->setAttribute("id", $id);
+	
+	}
     
     /*********************************************
      * Méthode getId
@@ -313,10 +350,13 @@ class Element extends DOMElement{
      * RETURN
      *    INTEGER             Id de l'élément
      *********************************************/
-    public function getId(){
-        if($this->element->hasAttribute("id"))
-            return $this->getAttribute("id");
-    }
+    public function getId() {
+
+		if ($this->element->hasAttribute("id")) {
+			return $this->getAttribute("id");
+		}
+	
+	}
     
     /*********************************************
      * Méthode getElement
@@ -328,7 +368,9 @@ class Element extends DOMElement{
      * RETURN
      *    DOMElement          Instance de l'élément DOM
      *********************************************/
-    public function getElement(){
-        return $this->element;
-    }
+    public function getElement() {
+
+		return $this->element;
+	
+	}
 }

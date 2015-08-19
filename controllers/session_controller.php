@@ -1,41 +1,53 @@
 <?php
 
-class SessionController extends Controller{
+class SessionController extends Controller {
 	
-	public function login($params){
+	public function login ($params) {
 		
-		if(Request::is_post()){
-			if(isset($params['user']))
+		if (Request::is_post()) {
+			
+			if (isset($params['user']))
 				$user = $params['user'];
-			if(isset($params['pwd']))
+			
+			if (isset($params['pwd']))
 				$pwd = $params['pwd'];
-			if(isset($params['redirect']))
+			
+			if (isset($params['redirect']))
 				$redirect = $params['redirect'];
-			if(isset($params['perm'])){
+			
+			if (isset($params['perm'])) {
 				$permanent = $params['perm'];
-			}else{
+			} else {
 				$permanent = 'off';
 			}
 			
-			try{
-				if((isset($user) && isset($pwd)) && (!ApineSession::is_logged_in())){
-					if(ApineSession::login($user, $pwd)){
-						if($permanent == 'on'){
+			try {
+				
+				if ((isset($user) && isset($pwd)) && (!ApineSession::is_logged_in())) {
+					
+					if (ApineSession::login($user, $pwd)) {
+						
+						if ($permanent == 'on') {
 							ApineSession::make_permanent();
 						}
-						if(isset($redirect) && $redirect != ""){
+						
+						if (isset($redirect) && $redirect != "") {
 							header("Location: " . $redirect);
-						}else{
+						} else {
 							header("Location: " . URL_Helper::path(""));
 							die();
 						}
+						
 						die();
 					}
+					
 				}
+				
 				$message = 'Either the the username/email or the password is not valid. Please try again later.';
-			}catch(Exception $e){
+			} catch(Exception $e) {
 				$message = 'An unknown error occured when sending data to the server. Please try again later.';
 			}
+			
 			$this->_view->set_param('error_code',true);
 			$this->_view->set_param('error_message', $message);
 		}
@@ -44,87 +56,106 @@ class SessionController extends Controller{
 		$this->_view->set_view('session/login');
 		$this->_view->set_response_code(200);
 		$this->_view->draw();
+		
 	}
 	
-	public function logout(){
-		if(ApineSession::is_logged_in()){
+	public function logout() {
+		
+		if (ApineSession::is_logged_in()) {
 			ApineSession::logout();
 		}
+		
 		header("Location: " . URL_Helper::path("login"));
+		
 	}
 	
-	public function register($params){
-		if(Request::is_post()&&!ApineSession::is_logged_in()){
+	public function register($params) {
+		
+		if (Request::is_post()&&!ApineSession::is_logged_in()) {
 			
-			if(isset($params['user']))
+			if (isset($params['user']))
 				$user = $params['user'];
-			if(isset($params['pwd']))
+			
+			if (isset($params['pwd']))
 				$pwd = $params['pwd'];
-			if(isset($params['redirect']))
+			
+			if (isset($params['redirect']))
 				$redirect = $params['redirect'];
-			if(isset($params['pwd_confirm']))
+			
+			if (isset($params['pwd_confirm']))
 				$pwdconfirm = $params['pwd_confirm'];
-			if(isset($params['email']))
+			
+			if (isset($params['email']))
 				$email = $params['email'];
 			
 			/*var_dump(filter_var($email,FILTER_VALIDATE_EMAIL));
 			var_dump(preg_match('/^(?!(?:(?:\\x22?\\x5C[\\x00-\\x7E]\\x22?)|(?:\\x22?[^\\x5C\\x22]\\x22?)){255,})(?!(?:(?:\\x22?\\x5C[\\x00-\\x7E]\\x22?)|(?:\\x22?[^\\x5C\\x22]\\x22?)){65,}@)(?:(?:[\\x21\\x23-\\x27\\x2A\\x2B\\x2D\\x2F-\\x39\\x3D\\x3F\\x5E-\\x7E]+)|(?:\\x22(?:[\\x01-\\x08\\x0B\\x0C\\x0E-\\x1F\\x21\\x23-\\x5B\\x5D-\\x7F]|(?:\\x5C[\\x00-\\x7F]))*\\x22))(?:\\.(?:(?:[\\x21\\x23-\\x27\\x2A\\x2B\\x2D\\x2F-\\x39\\x3D\\x3F\\x5E-\\x7E]+)|(?:\\x22(?:[\\x01-\\x08\\x0B\\x0C\\x0E-\\x1F\\x21\\x23-\\x5B\\x5D-\\x7F]|(?:\\x5C[\\x00-\\x7F]))*\\x22)))*@(?:(?:(?!.*[^.]{64,})(?:(?:(?:xn--)?[a-z0-9]+(?:-+[a-z0-9]+)*\\.){1,126}){1,}(?:(?:[a-z][a-z0-9]*)|(?:(?:xn--)[a-z0-9]+))(?:-+[a-z0-9]+)*)|(?:\\[(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){7})|(?:(?!(?:.*[a-f0-9][:\\]]){7,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?)))|(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){5}:)|(?:(?!(?:.*[a-f0-9]:){5,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3}:)?)))?(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))(?:\\.(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))){3}))\\]))$/iD', $email));
 			die();*/
 			
-			try{
+			try {
+				
 				// Make sure required data are provided
-				if((isset($user) && isset($pwd) && isset($email)) && (!ApineSession::is_logged_in())){
+				if ((isset($user) && isset($pwd) && isset($email)) && (!ApineSession::is_logged_in())) {
+					
 					// Verify the user name isn't already in use
-					if(ApineUserFactory::is_name_exist($user)){
+					if (ApineUserFactory::is_name_exist($user)) {
 						throw new Exception("4"); // Already used username
 					}
+					
 					// Verify both passwords are identical
-					if(($pwd === $pwdconfirm)){
+					if (($pwd === $pwdconfirm)) {
 						$encoded_pwd = hash('sha256', $pwd);
-					}else{
+					} else {
 						throw new Exception("3"); // Wrong password
 					}
+					
 					// Verify Email format if it exists
 					/*if(isset($email) && !empty($email) && preg_match('/^(?!(?:(?:\\x22?\\x5C[\\x00-\\x7E]\\x22?)|(?:\\x22?[^\\x5C\\x22]\\x22?)){255,})(?!(?:(?:\\x22?\\x5C[\\x00-\\x7E]\\x22?)|(?:\\x22?[^\\x5C\\x22]\\x22?)){65,}@)(?:(?:[\\x21\\x23-\\x27\\x2A\\x2B\\x2D\\x2F-\\x39\\x3D\\x3F\\x5E-\\x7E]+)|(?:\\x22(?:[\\x01-\\x08\\x0B\\x0C\\x0E-\\x1F\\x21\\x23-\\x5B\\x5D-\\x7F]|(?:\\x5C[\\x00-\\x7F]))*\\x22))(?:\\.(?:(?:[\\x21\\x23-\\x27\\x2A\\x2B\\x2D\\x2F-\\x39\\x3D\\x3F\\x5E-\\x7E]+)|(?:\\x22(?:[\\x01-\\x08\\x0B\\x0C\\x0E-\\x1F\\x21\\x23-\\x5B\\x5D-\\x7F]|(?:\\x5C[\\x00-\\x7F]))*\\x22)))*@(?:(?:(?!.*[^.]{64,})(?:(?:(?:xn--)?[a-z0-9]+(?:-+[a-z0-9]+)*\\.){1,126}){1,}(?:(?:[a-z][a-z0-9]*)|(?:(?:xn--)[a-z0-9]+))(?:-+[a-z0-9]+)*)|(?:\\[(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){7})|(?:(?!(?:.*[a-f0-9][:\\]]){7,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?)))|(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){5}:)|(?:(?!(?:.*[a-f0-9]:){5,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3}:)?)))?(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))(?:\\.(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))){3}))\\]))$/iD', $email) != 1){
 						throw new Exception("2"); // Misformated Email
 					}*/
-					if(!filter_var($email,FILTER_VALIDATE_EMAIL)){
+					
+					if (!filter_var($email,FILTER_VALIDATE_EMAIL)) {
 						throw new Exception("2"); // Misformated Email
 					}
-					if(ApineUserFactory::is_email_exist($email)){
+					
+					if (ApineUserFactory::is_email_exist($email)) {
 						throw new Exception("7"); // Already used email
 					}
-					// Create new empty user
+					
+					// Create and populate new empty user
 					$new_user = new ApineUser();
-					// Populate new user
 					$new_user->set_username($user);
-					if(isset($realname)){
-						$new_user->set_realname($realname);
-					}
 					$new_user->set_password($encoded_pwd);
-					if(!empty($email)){
-						$new_user->set_email_address($email);
-					}
 					$new_user->set_type(SESSION_USER);
-
+					
 					$list_group=new Liste();
 					$list_group->add_item(ApineUserGroupFactory::create_by_id(1));
 					$new_user->set_group($list_group);
 					
-					// Write new user in database
-					$new_user->save();
+					if (isset($realname)) {
+						$new_user->set_realname($realname);
+					}
 					
-					if(isset($redirect) && $redirect != ""){
+					if (!empty($email)) {
+						$new_user->set_email_address($email);
+					}
+					
+					$new_user->save(); // Write new user in database
+					
+					if (isset($redirect) && $redirect != "") {
 						header("Location: " . $redirect);
-					}else{
+					} else {
 						header("Location: " . URL_Helper::path("login"));
 						die();
 					}
+					
 					die();
 				}
+				
 				throw new Exception(0); // Unknown Error
-			}catch (Exception $e){
-				switch($e->getMessage()){
+			} catch (Exception $e) {
+				
+				switch ($e->getMessage()) {
 					case 7:
 						$message='The email address is already taken.';
 						break;
@@ -141,13 +172,17 @@ class SessionController extends Controller{
 					default:
 						$message='An unknown error occured when sending data to the server. Please try again later.';
 				}
+				
 			}
+			
 			$this->_view->set_param('error_code',true);
 			$this->_view->set_param('error_message', $message);
 		}
+		
 		$this->_view->set_title('Sign Up');
 		$this->_view->set_view('session/register');
 		$this->_view->set_response_code(200);
 		$this->_view->draw();
+		
 	}
 }

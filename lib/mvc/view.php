@@ -1,38 +1,49 @@
 <?php
 
-abstract class View{
+abstract class View {
 	
 	protected $_params;
 	
-	public function __construct(){
+	public function __construct() {
+		
 		$this->_params=new Liste();
+		
 	}
 	
-	public function __toString(){
+	public function __toString() {
+		
 		$this->draw();
+		
 	}
 	
-	public function set_param($a_name,$a_data){
+	public function set_param($a_name,$a_data) {
+		
 		$this->_params->add_item($a_data,$a_name);
+		
 	}
 	
-	public function set_header_rule($a_rule,$a_name=null){
+	public function set_header_rule($a_rule,$a_name=null) {
+		
 		$this->_headers->add_item($a_name,$a_rule);
+		
 	}
 	
-	public function apply_headers(){
-		if($this->_headers->length()>0){
-			foreach ($this->_headers as $key=>$value){
-				if($value!=null){
+	public function apply_headers() {
+		
+		if ($this->_headers->length()>0) {
+			foreach ($this->_headers as $key=>$value) {
+				if ($value!=null) {
 					header("$key: $value");
-				}else{
+				} else {
 					header("$key");
 				}
 			}
 		}
+		
 	}
 	
-	public function set_response_code($code){
+	public function set_response_code($code) {
+		
 		if ($code !== NULL) {
 		
 			switch ($code) {
@@ -91,28 +102,33 @@ abstract class View{
 		}
 		
 		return $code;
+		
 	}
 	
 	abstract function draw();
+	
 }
 
-class HTTPView extends View{
+class HTTPView extends View {
 	
 	protected $_headers;
 	
-	public function __construct(){
-		parent::__construct();
+	public function __construct() {
 		
+		parent::__construct();
 		$this->_headers=new Liste();
+		
 	}
 	
-	public function draw(){
+	public function draw() {
+		
 		$this->apply_headers();
+		
 	}
 	
 }
 
-class HTMLView extends HTTPView{
+class HTMLView extends HTTPView {
 	
 	private $_layout;
 	
@@ -122,7 +138,8 @@ class HTMLView extends HTTPView{
 	
 	private $_scripts;
 	
-	public function __construct($a_title="",$a_view="default",$a_layout="default"){
+	public function __construct($a_title="",$a_view="default",$a_layout="default") {
+		
 		parent::__construct();
 		$this->_scripts=new Liste();
 		
@@ -130,83 +147,106 @@ class HTMLView extends HTTPView{
 		
 		$this->set_layout($a_layout);
 		$this->set_view($a_view);
+		
 	}
 	
-	public function set_title($a_title){
-		if($a_title!=""){
+	public function set_title($a_title) {
+		
+		if ($a_title!="") {
 			$this->_title=$a_title;
 		}
+		
 	}
 	
-	public function set_layout($a_layout){
-		if($a_layout!=""){
+	public function set_layout($a_layout) {
+		
+		if ($a_layout!="") {
+			
 			// Verify if the layout file exists
-			if(file_exists("views/layouts/$a_layout.php")){
+			if (file_exists("views/layouts/$a_layout.php")) {
 				$this->_layout=$a_layout;
-			}else{
+			} else {
 				$this->_layout='default';
 			}
+			
 		}
+		
 	}
 	
-	public function set_view($a_view){
-		if($a_view!=""){
+	public function set_view($a_view) {
+		
+		if ($a_view!="") {
+			
 			// Verify if the view file exists
-			if(file_exists("views/$a_view.php")){
+			if (file_exists("views/$a_view.php")) {
 				$this->_view=$a_view;
-			}else{
+			} else {
 				$this->_view='default';
 			}
+			
 		}
+		
 	}
 	
-	public function add_script($a_script){
-		if($a_script!=""){
-			if(file_exists("resources/public/js/$a_script.js")){
+	public function add_script($a_script) {
+		
+		if ($a_script!="") {
+			
+			if (file_exists("resources/public/js/$a_script.js")) {
 				$this->_scripts->add_item(URL_Helper::path("resources/public/js/$a_script.js",false));
 			}
+			
 		}
+		
 	}
 	
-	public function apply_script(){
-		if($this->_scripts->length()>0){
-			foreach ($this->_scripts as $value){
+	public function apply_script() {
+		
+		if ($this->_scripts->length()>0) {
+			
+			foreach ($this->_scripts as $value) {
 				print("<script src=\"$value\"></script>");
 			}
+			
 		}
+		
 	}
 	
-	public function draw(){
-		//global $session;
+	public function draw() {
 		
 		$this->apply_headers();
 		include_once("views/layouts/$this->_layout.php");
+		
 	}
 }
 
-class FileView extends HTTPView{
+class FileView extends HTTPView {
 	
 	private $_file;
 	
-	public function __construct(File $a_file=null){
+	public function __construct(File $a_file=null) {
+		
 		parent::__construct();
 		
 		$this->set_file($a_file);
 		
 	}
 	
-	public function set_file($a_file=null){
-		if(!$a_file==null){
-			if(is_string($a_file)){
+	public function set_file($a_file=null) {
+		
+		if (!$a_file==null) {
+			if (is_string($a_file)) {
 				$this->_file = new File($a_file);
-			}else if(is_a($a_file,'File')){
+			} else if (is_a($a_file,'File')) {
 				$this->_file = $a_file;
 			}
 		}
+		
 	}
 	
-	public function draw(){
-		if(!$this->_file==null){
+	public function draw() {
+		
+		if (!$this->_file==null) {
 			// Set headers
 			// PHP must return an image instead of a html
 			header("Content-type: ".$this->_file->get_type());
@@ -215,16 +255,18 @@ class FileView extends HTTPView{
 			
 			$this->_file->read();
 		}
+		
 	}
+	
 }
 
-class JSONView extends View{
+class JSONView extends View {
 	
 	private $_json_file;
 	
-	public function set_json_file($a_json){
+	public function set_json_file($a_json) {
 		
-		if(is_string($a_json)){
+		if (is_string($a_json)) {
 			// Verify if valid json array
 			$result = json_decode($a_json);
 			
@@ -234,21 +276,23 @@ class JSONView extends View{
 			}else{
 				$return=null;
 			}
-		}else if (is_object($a_json)){
-			$this->_json_file=json_encode($a_json);
 			
-			$return=$this->_json_file;
-		}else if (is_array($a_json)){
+		} else if (is_object($a_json)) {
 			$this->_json_file=json_encode($a_json);
-			
 			$return=$this->_json_file;
-		}else{
+		} else if (is_array($a_json)) {
+			$this->_json_file=json_encode($a_json);
+			$return=$this->_json_file;
+		} else {
 			$return=null;
 		}
+		
 		return $return;
+		
 	}
 	
-	public function draw(){
+	public function draw() {
+		
 		header('Content-type: application/json');
 		
 		if($this->_json_file===null){
@@ -260,5 +304,7 @@ class JSONView extends View{
 		}
 		
 		print $this->_json_file;
+		
 	}
+	
 }

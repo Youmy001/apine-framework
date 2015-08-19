@@ -14,7 +14,7 @@
  * @abstract
  *
  */
-abstract class ApineEntityModel implements ApineEntityInterface{
+abstract class ApineEntityModel implements ApineEntityInterface {
 
 	/**
 	 * In-database entity identifier
@@ -67,17 +67,19 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 	/**
 	* Fetch database fields and values for entity
 	*/
-	protected function _load(){
+	protected function _load() {
 		
 		$db=new Database();
 		
 		$this->database_fields = ($this->id !== null)?$db->select("SELECT * from $this->table_name where id=$this->id"):null;
 		$this->database_fields = $this->database_fields[0];
 		$this->field_loaded = 1;
-		if(sizeof($this->modified_fields) > 0){
-			foreach($this->modified_fields as $key=>$values){
+		
+		if (sizeof($this->modified_fields) > 0) {
+			foreach ($this->modified_fields as $key=>$values) {
 				$this->modified_fields[$key] = false;
 			}
+			
 			$modified = 0;
 		}
 
@@ -86,7 +88,7 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 	/**
 	 * Mark entity has loaded
 	 */
-	protected function _force_loaded(){
+	protected function _force_loaded() {
 
 		$this->field_loaded = 1;
 
@@ -98,11 +100,13 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 	 *        Field name
 	 * @return mixed
 	 */
-	protected function _get_field($a_field){
+	protected function _get_field($a_field) {
 		
 		// Load entity if not loaded yet
-		if($this->field_loaded == 0)
+		if ($this->field_loaded == 0) {
 			$this->_load();
+		}
+		
 		return $this->database_fields[$a_field];
 
 	}
@@ -111,11 +115,13 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 	 * Fetch all fields' names and values
 	 * @return array
 	 */
-	protected function _get_all_fields(){
+	protected function _get_all_fields() {
 		
 		// Load entity if not loaded yet
-		if($this->field_loaded == 0)
+		if ($this->field_loaded == 0) {
 			$this->_load();
+		}
+		
 		return $this->database_fields;
 
 	}
@@ -124,7 +130,7 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 	 * Get entity identifier
 	 * @return string
 	 */
-	protected function _get_id(){
+	protected function _get_id() {
 
 		return $this->id;
 
@@ -135,7 +141,7 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 	 * @param string $id
 	 *        Entity identifier
 	 */
-	protected function _set_id($id){
+	protected function _set_id($id) {
 
 		$this->id = $id;
 
@@ -145,7 +151,7 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 	 * Get entity table name
 	 * @return string
 	 */
-	protected function _get_table_name(){
+	protected function _get_table_name() {
 
 		return $this->table_name;
 
@@ -156,7 +162,7 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 	 * @param string $table
 	 *        Entity table name
 	 */
-	protected function _set_table_name($table){
+	protected function _set_table_name($table) {
 
 		$this->table_name = $table;
 
@@ -169,7 +175,7 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 	 * @param string $tuple_id
 	 *        Entity identifier
 	 */
-	protected function _initialize($table_name, $tuple_id = null){
+	protected function _initialize($table_name, $tuple_id = null) {
 
 		$this->table_name = $table_name;
 		$this->id = $tuple_id;
@@ -186,10 +192,12 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 	 * @param mixed $value
 	 *        Field value
 	 */
-	protected function _set_field($field, $value){
+	protected function _set_field($field, $value) {
 
-		if($this->field_loaded == 0)
+		if ($this->field_loaded == 0) {
 			$this->_load();
+		}
+		
 		$this->database_fields[$field] = $value;
 		$this->modified = 1;
 		$this->modified_fields[$field] = true;
@@ -199,10 +207,11 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 	/**
 	 * Delete Entity from database
 	 */
-	protected function _destroy(){
+	protected function _destroy() {
+		
 		$db=new Database();
 		
-		if($this->id){
+		if ($this->id) {
 			$db->delete($this->table_name, array(
 							'id' => $this->id
 			));
@@ -213,41 +222,49 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 	/**
 	 * Save Entity state to database
 	 */
-	protected function _save(){
+	protected function _save() {
 		
 		$db=new Database();
 
-		if($this->id === null){
+		if ($this->id === null) {
 			$this->field_loaded = 0;
 		}
-		if($this->field_loaded == 0){
+		
+		if($this->field_loaded == 0) {
+			
 			// This is a new entity
 			$new_dbf = array();
-			foreach($this->database_fields as $field=>$val){
-				if(!is_numeric($field)){
+			
+			foreach ($this->database_fields as $field=>$val) {
+				if (!is_numeric($field)) {
 					$new_dbf[$field] = $val;
 				}
 			}
-			if(sizeof($new_dbf) > 0){
+			
+			if (sizeof($new_dbf) > 0) {
 				$this->id = $db->insert($this->table_name, $new_dbf);
 			}
+			
 			/*$this->field_loaded = 1;
 			 $this->loaded = 1;*/
 			$this->_load();
-		}else{
+		} else {
+			
 			// This is an already existing entity
 			$arUpdate = array();
-			foreach($this->database_fields as $key=>$value){
-				if(!is_numeric($key)){
-					if(isset($this->modified_fields[$key]) && $this->modified_fields[$key] == true){
-						if($value == ""){
+			
+			foreach ($this->database_fields as $key=>$value) {
+				if (!is_numeric($key)) {
+					if (isset($this->modified_fields[$key]) && $this->modified_fields[$key] == true) {
+						if ($value == "") {
 							$arUpdate[$key] = NULL;
-						}else{
+						} else {
 							$arUpdate[$key] = $value;
 						}
 					}
 				}
 			}
+			
 			$db->update($this->table_name, $arUpdate, array(
 							'ID' => $this->id
 			));
@@ -258,7 +275,7 @@ abstract class ApineEntityModel implements ApineEntityInterface{
 }
 
 
-class ApineEntity extends ApineEntityModel{
+class ApineEntity extends ApineEntityModel {
 
 	/**
 	 * Entity constructor
@@ -269,9 +286,9 @@ class ApineEntity extends ApineEntityModel{
 	 *        identifier of the entity in the
 	 *        table
 	 */
-	public function __construct($a_table = null, $a_id = null){
+	public function __construct($a_table = null, $a_id = null) {
 
-		if($a_table != null){
+		if ($a_table != null) {
 			$this->_initialize($a_table, $a_id);
 			$this->loaded = true;
 		}
@@ -283,14 +300,16 @@ class ApineEntity extends ApineEntityModel{
 	 * @param string $a_table        
 	 * @param string $a_id        
 	 */
-	public function initialize($a_table, $a_id = null){
+	public function initialize($a_table, $a_id = null) {
 
-		if(!$this->loaded){
+		if (!$this->loaded) {
 			$this->_initialize($a_table, $a_id);
-		}else{
-			if($a_id != null){
+		} else {
+			
+			if ($a_id != null) {
 				$this->_set_id($a_id);
 			}
+			
 			$this->_set_table_name($a_table);
 		}
 	
@@ -299,7 +318,7 @@ class ApineEntity extends ApineEntityModel{
 	/**
 	 * @see ApineEntityModel::_get_id()
 	 */
-	public function get_id(){
+	public function get_id() {
 
 		return $this->_get_id();
 	
@@ -310,7 +329,7 @@ class ApineEntity extends ApineEntityModel{
 	 * @param string $a_id
 	 *        Entity Identifier
 	 */
-	public function set_id($id){
+	public function set_id($id) {
 
 		$this->_set_id($id);
 	
@@ -322,9 +341,9 @@ class ApineEntity extends ApineEntityModel{
 	 * @param string $a_field        
 	 * @return mixed
 	 */
-	public function get_field($a_field){
+	public function get_field($a_field) {
 
-		if($a_table != null){
+		if ($a_table != null) {
 			return $this->_get_field($a_field);
 		}
 	
@@ -338,9 +357,9 @@ class ApineEntity extends ApineEntityModel{
 	 * @param mixed $a_value
 	 *        Field Value
 	 */
-	public function set_field($a_field, $a_value){
+	public function set_field($a_field, $a_value) {
 
-		if($a_table != null){
+		if ($a_table != null) {
 			return $this->_set_field($a_field, $a_value);
 		}
 	
@@ -350,7 +369,7 @@ class ApineEntity extends ApineEntityModel{
 	 *
 	 * @see ApineEntityInterface::load()
 	 */
-	public function load(){
+	public function load() {
 
 		$this->_load;
 	
@@ -360,7 +379,7 @@ class ApineEntity extends ApineEntityModel{
 	 *
 	 * @see ApineEntityInterface::save()
 	 */
-	public function save(){
+	public function save() {
 
 		$this->_save();
 	
@@ -370,7 +389,7 @@ class ApineEntity extends ApineEntityModel{
 	 *
 	 * @see ApineEntityInterface::delete()
 	 */
-	public function delete(){
+	public function delete() {
 
 		$this->_destroy();
 	

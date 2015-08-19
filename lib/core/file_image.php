@@ -14,13 +14,14 @@
  *        Precision level of the procedure
  * @return string
  */
-function float2rat($n, $tolerance = 1.e-6){
+function float2rat($n, $tolerance = 1.e-6) {
 
 	$h1 = 1;
 	$h2 = 0;
 	$k1 = 0;
 	$k2 = 1;
 	$b = 1 / $n;
+	
 	do{
 		$b = 1 / $b;
 		$a = floor($b);
@@ -31,7 +32,8 @@ function float2rat($n, $tolerance = 1.e-6){
 		$k1 = $a * $k1 + $k2;
 		$k2 = $aux;
 		$b = $b - $a;
-	}while(abs($n - $h1 / $k1) > $n * $tolerance);
+	} while(abs($n - $h1 / $k1) > $n * $tolerance);
+	
 	return "$h1/$k1";
 
 }
@@ -43,7 +45,7 @@ function float2rat($n, $tolerance = 1.e-6){
  * contains the tools to crop, resize and apply basic filters to the
  * ressource image.
  */
-class FileImage extends File{
+class FileImage extends File {
 
 	/**
 	 * Image's height in pixels
@@ -64,21 +66,24 @@ class FileImage extends File{
 	 * @throws Exception If the file isn't an image
 	 * @return boolean
 	 */
-	public function __construct($location = null){
+	public function __construct($location = null) {
 
 		parent::__construct($location);
-		try{
-			if(($this->get_type() == "image/png") || ($this->get_type() == "image/PNG")){
+		
+		try {
+			
+			if (($this->get_type() == "image/png") || ($this->get_type() == "image/PNG")) {
 				$this->file = imagecreatefrompng($this->get_location());
-			}else if(($this->get_type() == "image/jpg") || ($this->get_type() == "image/jpeg") || ($this->get_type() == "image/JPG") || ($this->get_type() == "image/JPEG")){
+			} else if (($this->get_type() == "image/jpg") || ($this->get_type() == "image/jpeg") || ($this->get_type() == "image/JPG") || ($this->get_type() == "image/JPEG")) {
 				$this->file = imagecreatefromjpeg($this->get_location());
-			}else if(($this->get_type() == "image/GIF") || ($this->get_type() == "image/gif")){
+			} else if (($this->get_type() == "image/GIF") || ($this->get_type() == "image/gif")) {
 				$this->file = imagecreatefromgif($this->get_location());
-			}else{
+			} else {
 				throw new Exception("This file (".$this->get_location().") has not a valid file format : " . $this->get_type() . ".");
 			}
+			
 			return true;
-		}catch(Exception $e){
+		} catch(Exception $e) {
 			print "Error : " . $e->getMessage();
 			return false;
 		}
@@ -89,7 +94,7 @@ class FileImage extends File{
 	 * Fetch Image width in pixels
 	 * @return integer
 	 */
-	public function get_width(){
+	public function get_width() {
 
 		$sizearray = getimagesize($this->get_location());
 		$this->width = $sizearray[0];
@@ -101,7 +106,7 @@ class FileImage extends File{
 	 * Fetch Image height in pixels
 	 * @return integer
 	 */
-	public function get_height(){
+	public function get_height() {
 
 		$sizearray = getimagesize($this->get_location());
 		$this->height = $sizearray[1];
@@ -113,7 +118,7 @@ class FileImage extends File{
 	 * Verify the image is of a valid format
 	 * @return boolean
 	 */
-	public function is_valid_image(){
+	public function is_valid_image() {
 
 		$allowedExts = array(
 						"jpeg",
@@ -126,15 +131,18 @@ class FileImage extends File{
 						"GIF"
 		);
 		$extension = $this->get_extention();
-		if((($this->get_type() == "image/jpeg") || ($this->get_type() == "image/jpg") || ($this->get_type() == "image/png") || ($this->get_type() == "image/GIF") || ($this->get_type() == "image/gif")) && in_array($extension, $allowedExts)){
-			if($this->get_error_code() > 0){
+		
+		if ((($this->get_type() == "image/jpeg") || ($this->get_type() == "image/jpg") || ($this->get_type() == "image/png") || ($this->get_type() == "image/GIF") || ($this->get_type() == "image/gif")) && in_array($extension, $allowedExts)) {
+			
+			if ($this->get_error_code() > 0) {
 				// Error during file transfert
 				return false;
-			}else{
+			} else {
 				// Image OK
 				return true;
 			}
-		}else{
+			
+		} else {
 			// Invalid file
 			return false;
 		}
@@ -147,41 +155,42 @@ class FileImage extends File{
 	 * @param string $a_ratio
 	 *        Desired height/width ratio
 	 */
-	public function crop_to_ratio($a_ratio){
+	public function crop_to_ratio($a_ratio) {
 
 		$ratio_w;
 		$ratio_h;
 		$ratio;
-		if(strpos($a_ratio, ":")){
+		
+		if (strpos($a_ratio, ":")) {
 			$ar_ratio = explode(':', $a_ratio);
 			$ratio_w = (int) $ar_ratio[0];
 			$ratio_h = (int) $ar_ratio[1];
 			$ratio = (double) $ratio_w / $ratio_h;
-		}elseif(strpos($a_ratio, "/")){
+		} else if (strpos($a_ratio, "/")) {
 			$ar_ratio = explode('/', $a_ratio);
 			$ratio_w = (int) $ar_ratio[0];
 			$ratio_h = (int) $ar_ratio[1];
 			$ratio = (double) $ratio_w / $ratio_h;
-		}elseif(floatval($a_ratio) > 0){
+		} else if (floatval($a_ratio) > 0) {
 			$ratio = (double) floatval($a_ratio);
 			$s_ratio = float2rat($ratio);
 			$ar_ratio = explode('/', $s_ratio);
 			$ratio_w = (int) $ar_ratio[0];
 			$ratio_h = (int) $ar_ratio[1];
 		}
+		
 		$crop_w = $this->get_width();
 		$crop_h = ceil($crop_w / $ratio);
+		
 		// Crop image if size is different
-		if(($crop_h != $this->get_height()) || ($crop_w != $this->get_width())){
-			if($crop_h < $this->get_height()){ // If current heigth is
-			                                   // bigger
+		if (($crop_h != $this->get_height()) || ($crop_w != $this->get_width())) {
+			
+			if ($crop_h < $this->get_height()) {						// If current heigth is bigger
 				$new_image = imagecreatetruecolor($crop_w, $crop_h);
 				$x = 0;
 				$y = floor(0.5 * ($this->get_height() - $crop_h));
 				imagecopyresized($new_image, $this->file, 0, 0, $x, $y, $crop_w, $crop_h, $crop_w, $crop_h);
-			}else if($crop_h > $this->get_height()){ // If current height
-			                                         // is
-			                                         // smaller
+			} else if($crop_h > $this->get_height()) {				// If current height is smaller
 				$crop_h = $this->get_height();
 				$crop_w = ceil($ratio * $crop_h);
 				$new_image = imagecreatetruecolor($crop_w, $crop_h);
@@ -189,11 +198,12 @@ class FileImage extends File{
 				$x = floor(0.5 * ($this->get_width() - $crop_w));
 				imagecopyresized($new_image, $this->file, 0, 0, $x, $y, $crop_w, $crop_h, $crop_w, $crop_h);
 			}
-			if(isset($new_image)){
-				$this->write($new_image); // Write image
-				$this->create_by_location($this->get_location()); // Reload
-					                                                  // Image
+			
+			if (isset($new_image)) {
+				$this->write($new_image);								// Write image
+				$this->create_by_location($this->get_location());	// Reload Image
 			}
+			
 		}
 	
 	}
@@ -211,12 +221,12 @@ class FileImage extends File{
 	 *        Vertical Position of the cropped image inside the
 	 *        original image from the upp-left corner.
 	 */
-	public function crop($n_width, $n_height, $x, $y){
+	public function crop($n_width, $n_height, $x, $y) {
 
 		$new_image = imagecreatetruecolor($n_width, $n_height);
 		imagecopyresized($new_image, $this->file, 0, 0, $x, $y, $n_width, $n_height, $this->get_width(), $this->get_height());
 		$this->write($new_image);
-		$this->create_by_location($this->getLocation());
+		$this->create_by_location($this->getLocation());	// Reload Image
 	
 	}
 
@@ -235,12 +245,12 @@ class FileImage extends File{
 	 *        See the php manual for a list of optional arguments.
 	 * @link http://www.php.net/manual/en/function.imagefilter.php
 	 */
-	public function filter($filtertype, $arg1 = null, $arg2 = null, $arg3 = null, $arg4 = null){
+	public function filter($filtertype, $arg1 = null, $arg2 = null, $arg3 = null, $arg4 = null) {
 
 		imagefilter($this->file, $filtertype, $arg1, $arg2, $arg3, $arg4);
-		$this->write($this->file); // Write image
-		$this->create_by_location($this->getLocation());
-		// Reload Image
+		$this->write($this->file);							// Write image
+		$this->create_by_location($this->getLocation());	// Reload Image
+		
 	}
 
 	/**
@@ -250,12 +260,12 @@ class FileImage extends File{
 	 *        modes.
 	 * @link http://php.net/manual/en/function.imageflip.php
 	 */
-	public function flip($mode){
+	public function flip($mode) {
 
 		imageflip($this->file, $mode);
-		$this->write($this->file); // Write image
-		$this->create_by_location($this->getLocation());
-		// Reload Image
+		$this->write($this->file);							// Write image
+		$this->create_by_location($this->getLocation());	// Reload Image
+			
 	}
 
 	/**
@@ -264,15 +274,15 @@ class FileImage extends File{
 	 *        Resource location
 	 * @throws Exception If the resource is not a valid image format
 	 */
-	private function create_by_location($location){
+	private function create_by_location($location) {
 
-		if(($this->get_type() == "image/png") || ($this->get_type() == "image/PNG")){
+		if (($this->get_type() == "image/png") || ($this->get_type() == "image/PNG")) {
 			$this->file = imagecreatefrompng($location);
-		}else if(($this->get_type() == "image/jpg") || ($this->get_type() == "image/jpeg") || ($this->get_type() == "image/JPG") || ($this->get_type() == "image/JPEG")){
+		} else if (($this->get_type() == "image/jpg") || ($this->get_type() == "image/jpeg") || ($this->get_type() == "image/JPG") || ($this->get_type() == "image/JPEG")) {
 			$this->file = imagecreatefromjpeg($location);
-		}else if(($this->get_type() == "image/GIF") || ($this->get_type() == "image/gif")){
+		} else if (($this->get_type() == "image/GIF") || ($this->get_type() == "image/gif")) {
 			$this->file = imagecreatefromgif($location);
-		}else{
+		} else {
 			throw new Exception("This file has not a valid file format : " . $this->get_type() . ".");
 		}
 	
@@ -283,15 +293,15 @@ class FileImage extends File{
 	 * @param resource $image
 	 * @throws Exception If the resource is not a valid image format
 	 */
-	private function write($image){
+	private function write($image) {
 
-		if(($this->get_type() == "image/png") || ($this->get_type() == "image/PNG")){
+		if (($this->get_type() == "image/png") || ($this->get_type() == "image/PNG")) {
 			$this->file = imagepng($image, $this->get_location());
-		}else if(($this->get_type() == "image/jpg") || ($this->get_type() == "image/jpeg") || ($this->get_type() == "image/JPG") || ($this->get_type() == "image/JPEG")){
+		} else if (($this->get_type() == "image/jpg") || ($this->get_type() == "image/jpeg") || ($this->get_type() == "image/JPG") || ($this->get_type() == "image/JPEG")) {
 			$this->file = imagejpeg($image, $this->get_location());
-		}else if(($this->get_type() == "image/GIF") || ($this->get_type() == "image/gif")){
+		} else if (($this->get_type() == "image/GIF") || ($this->get_type() == "image/gif")) {
 			$this->file = imagegif($image, $this->get_location());
-		}else{
+		} else {
 			throw new Exception("This file has not a valid file format : " . $this->get_type() . ".");
 		}
 	
@@ -301,7 +311,7 @@ class FileImage extends File{
 	 * (non-PHPdoc)
 	 * @see File::save()
 	 */
-	public function save($move=false){
+	public function save($move=false) {
 
 		$this->write($this->file);
 		$this->create_by_location($this->get_location());
@@ -313,20 +323,21 @@ class FileImage extends File{
 	 * (non-PHPdoc)
 	 * @see File::move()
 	 */
-	public function move(){
+	public function move() {
+		
 		$this->write($this->file);
 		$this->create_by_location($this->get_location());
 		return parent::save(true);
+		
 	}
 	
 	/**
 	 * Image_File class' destructor
 	 */
-	public function __destruct(){
+	public function __destruct() {
 
 		imagedestroy($this->file);
 	
 	}
 
 }
-?>

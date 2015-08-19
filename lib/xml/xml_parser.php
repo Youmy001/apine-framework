@@ -15,7 +15,7 @@
  *
  * Cette classe permet de lire un document XML. 
  *************************************************/
-class Parser extends XML{
+class Parser extends XML {
     
     /*********************************************
      * Méthode __construct
@@ -27,8 +27,10 @@ class Parser extends XML{
      * RETURN
      *    null
      *********************************************/
-    public function __construct(){
-        parent::__construct();
+    public function __construct() {
+    	
+    	parent::__construct();
+    	
     }
     
     /*********************************************
@@ -41,18 +43,22 @@ class Parser extends XML{
      * RETURN
      *    Element $element    Element correspondant
      *********************************************/
-    public function getElementById($a_id){
-        
-        if($this->hasChildNodes()){
-            foreach($this->getChildNodes() as $node){
-                if($node->nodeType==XML_ELEMENT_NODE)
-                    if($node->hasAttribute("id")&&$node->getAttribute("id")===$a_id)
-                        $element=$node;
+    public function getElementById($a_id) {
+    	
+    	if ($this->hasChildNodes()) {
+    		foreach ($this->getChildNodes() as $node) {
+    			if ($node->nodeType==XML_ELEMENT_NODE) {
+    				if ($node->hasAttribute("id")&&$node->getAttribute("id")===$a_id) {
+    					$element=$node;
+    				}
+    			}
             }
-        }else{
-            $element=null;
+    	} else {
+    		$element=null;
         }
-        return $element;
+        
+       return $element;
+       
     }
     
     /*********************************************
@@ -65,20 +71,25 @@ class Parser extends XML{
      * RETURN
      *    DOMNodeList         Liste d'éléments correspondant
      *********************************************/
-    public function getElementsByAttribute($a_attr){
-        
-        $list=$this->DOM_document->createElement("list");
-        if($this->hasChildNodes()){
-            foreach($this->getChildNodes() as $node){
-                if($node->nodeType==XML_ELEMENT_NODE)
-                    if($node->hasAttribute($a_attr))
-                        $list->appendChild($node->cloneNode());
-            }
-        }else{
-            $list=null;
-        }
-        return $list->childNodes;
-    }
+    public function getElementsByAttribute($a_attr) {
+
+		$list = $this->DOM_document->createElement("list");
+		
+		if ($this->hasChildNodes()) {
+			foreach ($this->getChildNodes() as $node) {
+				if ($node->nodeType == XML_ELEMENT_NODE) {
+					if ($node->hasAttribute($a_attr)) {
+						$list->appendChild($node->cloneNode());
+					}
+				}
+			}
+		} else {
+			$list = null;
+		}
+		
+		return $list->childNodes;
+	
+	}
     
     /*********************************************
      * Méthode getElementByAttributeValue
@@ -91,20 +102,25 @@ class Parser extends XML{
      * RETURN
      *    DOMNodeList         Liste d'éléments correspondant
      *********************************************/
-    public function getElementsByAttributeValue($a_attr,$a_value){
-        
-        $list=$this->DOM_document->createElement("list");
-        if($this->hasChildNodes()){
-            foreach($this->getChildNodes() as $node){
-                if($node->nodeType==XML_ELEMENT_NODE)
-                    if($node->hasAttribute($a_attr)&&$node->getAttribute($a_attr)===$a_value)
-                        $list->appendChild($node->cloneNode(true));
-            }
-        }else{
-            $list=null;
-        }
-        return $list->childNodes;
-    }
+    public function getElementsByAttributeValue($a_attr, $a_value) {
+
+		$list = $this->DOM_document->createElement("list");
+		
+		if ($this->hasChildNodes()) {
+			foreach ($this->getChildNodes() as $node) {
+				if ($node->nodeType == XML_ELEMENT_NODE) {
+					if ($node->hasAttribute($a_attr) && $node->getAttribute($a_attr) === $a_value) {
+						$list->appendChild($node->cloneNode(true));
+					}
+				}
+			}
+		} else {
+			$list = null;
+		}
+		
+		return $list->childNodes;
+	
+	}
     
     /*********************************************
      * Méthode getElementByTagName
@@ -116,13 +132,17 @@ class Parser extends XML{
      * RETURN
      *    DOMNodeList $list   Liste d'éléments correspondant
      *********************************************/
-    public function getElementByTagName($a_name){
-        $list=$this->DOM_document->getElementsByTagName($a_name);
-        if($list->length==0){
-            $list=null;
-        }
-        return $list;
-    }
+    public function getElementByTagName($a_name) {
+
+		$list = $this->DOM_document->getElementsByTagName($a_name);
+		
+		if ($list->length == 0) {
+			$list = null;
+		}
+		
+		return $list;
+	
+	}
     
      /*********************************************
      * Méthode getLineNumber
@@ -134,9 +154,11 @@ class Parser extends XML{
      * RETURN
      *    INTEGER             Numéro de line
      *********************************************/
-    public function getLineNumber(){
-        return $this->DOM_document->getLineNo();
-    }
+    public function getLineNumber() {
+
+		return $this->DOM_document->getLineNo();
+	
+	}
     
     /*********************************************
      * Méthode hasAttributes
@@ -148,9 +170,11 @@ class Parser extends XML{
      * RETURN
      *    BOOLEAN             Si il y a des attributs
      *********************************************/
-    public function hasAttributes(){
-        return $this->DOM_document->hasAttributes();
-    }
+    public function hasAttributes() {
+
+		return $this->DOM_document->hasAttributes();
+	
+	}
     
     /*********************************************
      * Méthode hasChildNodes
@@ -162,9 +186,11 @@ class Parser extends XML{
      * RETURN
      *    BOOLEAN             Si il y a des enfants
      *********************************************/
-    public function hasChildNodes(){
-        return $this->DOM_document->hasChildNodes();
-    }
+    public function hasChildNodes() {
+
+		return $this->DOM_document->hasChildNodes();
+	
+	}
     
     /*********************************************
      * Méthode getChildNodes
@@ -176,8 +202,12 @@ class Parser extends XML{
      * RETURN
      *    DOMNodeList $list   Liste d'éléments correspondant
      *********************************************/
-    public function getChildNodes(){
-        if($this->hasChildNodes())
-            return $this->getElementByTagName('*');
-    }
+    public function getChildNodes() {
+
+		if ($this->hasChildNodes()) {
+			return $this->getElementByTagName('*');
+		}
+	
+	}
+	
 }

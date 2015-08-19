@@ -8,7 +8,7 @@
  * @package bokaro
  * @subpackage factory
  */
-interface ApineFactoryInterface{
+interface ApineFactoryInterface {
 
 	/**
 	 * Procedure to fetch every rows in a factory's scope

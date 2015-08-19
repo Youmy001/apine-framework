@@ -27,7 +27,7 @@ define('SESSION_GUEST', 40);
  * Gestion and configuration of the a user session
  * This class manages user login and logout and register the state of the http request
  */
-class ApineSession{
+class ApineSession {
 	
 	private static $_instance;
 	
@@ -74,29 +74,24 @@ class ApineSession{
 	private $session_type = SESSION_GUEST;
 	
 	/**
-	 * Session Request Type
-	 * @var string
-	 */
-	private $session_request_type;
-	
-	/**
 	 * Construct the session handler
 	 * Fetch data from PHP structures and start the PHP session
 	 */
-	private function __construct(){
-		
-		//$this->session_request_type=$_SERVER['REQUEST_METHOD'];
+	private function __construct() {
 		
 		// Check the session cookie (if one)
-		if(Cookie::get_cookie('session') != null){
+		if (Cookie::get_cookie('session') != null) {
 			session_id(Cookie::get_cookie('session'));
 		}
+		
 		// Start PHP Session
 		session_start();
+		
 		// Set PHP session id
 		$this->php_session_id = session_id();
+		
 		// Check if a user ID is in the PHP session
-		if(isset($_SESSION['ID'])){
+		if (isset($_SESSION['ID'])) {
 			$this->logged_in = true;
 			$this->user_id = $_SESSION['ID'];
 			$this->session_type=ApineUserFactory::create_by_id($this->user_id)->get_type();
@@ -108,18 +103,21 @@ class ApineSession{
 	 * Singleton design pattern implementation
 	 * @return ApineSession
 	 */
-	public static function get_instance(){
-		if(!isset(self::$_instance)){
+	public static function get_instance() {
+		
+		if (!isset(self::$_instance)) {
 			self::$_instance = new static();
 		}
+		
 		return self::$_instance;
+		
 	}
 
 	/**
 	 * Verifies if a user is logged in
 	 * @return boolean
 	 */
-	public static function is_logged_in(){
+	public static function is_logged_in() {
 
 		return self::get_instance()->logged_in;
 	
@@ -129,10 +127,11 @@ class ApineSession{
 	 * Get logged in user's id
 	 * @return integer
 	 */
-	public static function get_user_id(){
+	public static function get_user_id() {
 
-		if(self::is_logged_in())
+		if (self::is_logged_in()) {
 			return $this->user_id;
+		}
 	
 	}
 
@@ -140,10 +139,11 @@ class ApineSession{
 	 * Get logged in user
 	 * @return User
 	 */
-	public static function get_user(){
+	public static function get_user() {
 
-		if(self::is_logged_in())
+		if (self::is_logged_in()) {
 			return new ApineUser(self::get_instance()->user_id);
+		}
 	
 	}
 
@@ -151,7 +151,7 @@ class ApineSession{
 	 * Get PHP's session Id
 	 * @return string
 	 */
-	public static function get_session_identifier(){
+	public static function get_session_identifier() {
 
 		return self::get_instance()->php_session_id;
 	
@@ -162,7 +162,7 @@ class ApineSession{
 	 * @param integer $type
 	 *        Session access level type
 	 */
-	public static function set_session_type($type){
+	public static function set_session_type($type) {
 
 		self::get_instance()->session_type = $type;
 	
@@ -172,7 +172,7 @@ class ApineSession{
 	 * Get current session access level
 	 * @return integer
 	 */
-	public static function get_session_type(){
+	public static function get_session_type() {
 
 		return self::get_instance()->session_type;
 	
@@ -188,13 +188,13 @@ class ApineSession{
 	 *        Password of the user
 	 * @return boolean
 	 */
-	public static function login($user_name, $password){
+	public static function login($user_name, $password) {
 
-		if(!self::is_logged_in()){
+		if (!self::is_logged_in()) {
 			$encode_pass = hash('sha256', $password);
-			
 			$user_id = ApineUserFactory::authentication($user_name, $encode_pass);
-			if($user_id){
+			
+			if ($user_id) {
 				self::get_instance()->user_id = $user_id;
 				self::get_instance()->logged_in = true;
 				$_SESSION['ID'] = $user_id;
@@ -202,10 +202,11 @@ class ApineSession{
 				$_SESSION['type'] = $new_user->get_type();
 				self::set_session_type($new_user->get_type());
 				return true;
-			}else{
+			} else {
 				return false;
 			}
-		}else{
+			
+		} else {
 			return false;
 		}
 	
@@ -214,9 +215,9 @@ class ApineSession{
 	/**
 	 * Log a user out
 	 */
-	public static function logout(){
+	public static function logout() {
 
-		if(self::is_logged_in()){
+		if (self::is_logged_in()) {
 			$_SESSION = array();
 			Cookie::set_cookie('session', self::get_instance()->php_session_id, time() - 7776000);
 			session_destroy();
@@ -229,10 +230,11 @@ class ApineSession{
 	/**
 	 * Make a logged un user's session permanent
 	 */
-	public static function make_permanent(){
+	public static function make_permanent() {
 
-		if(self::is_logged_in())
+		if (self::is_logged_in()) {
 			Cookie::set_cookie('session', self::get_instance()->php_session_id, time() + 7776000);
+		}
 	
 	}
 

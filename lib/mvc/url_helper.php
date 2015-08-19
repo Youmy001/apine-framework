@@ -1,6 +1,6 @@
 <?php
 
-class URL_Helper{
+class URL_Helper {
 	
 	private static $_instance;
 	/**
@@ -33,19 +33,21 @@ class URL_Helper{
 	 */
 	private $main_session_server;
 	
-	private function __construct(){
+	private function __construct() {
+		
 		// Set server address
 		$protocol = (Request::is_https())?'https://':'http://';
 		$this->session_server = $protocol . Request::server()['SERVER_NAME'];
 		$ar_domain = explode('.', Request::server()['SERVER_NAME']);
-		if(count($ar_domain) >= 3){
+		
+		if (count($ar_domain) >= 3) {
 			$start = strlen($ar_domain[0]) + 1;
 			$this->main_session_server = $protocol . substr(Request::server()['SERVER_NAME'], $start);
-		}else{
+		} else {
 			$this->main_session_server = $protocol . Request::server()['SERVER_NAME'];
 		}
 		
-		if((!Request::is_https()&&Request::get_request_port()!=80)||(Request::is_https()&&Request::get_request_port()!=443)){
+		if ((!Request::is_https()&&Request::get_request_port()!=80)||(Request::is_https()&&Request::get_request_port()!=443)) {
 			$this->session_server.=":".Request::get_request_port();
 			$this->main_session_server.=":".Request::get_request_port();
 		}
@@ -59,11 +61,12 @@ class URL_Helper{
 		
 	}
 	
-	public static function get_instance(){
+	public static function get_instance() {
 		
-		if(!isset(self::$_instance)){
+		if (!isset(self::$_instance)) {
 			self::$_instance = new static();
 		}
+		
 		return self::$_instance;
 		
 	}
@@ -74,7 +77,7 @@ class URL_Helper{
 	 *        String to append
 	 * @return string
 	 */
-	private static function write_url($path){
+	private static function write_url($path) {
 	
 		return self::get_instance()->session_server . '/' . $path;
 	
@@ -86,7 +89,7 @@ class URL_Helper{
 	 *        String to append
 	 * @return string
 	 */
-	private static function write_main_url($path){
+	private static function write_main_url($path) {
 	
 		return self::get_instance()->main_session_server . '/' . $path;
 	
@@ -98,7 +101,7 @@ class URL_Helper{
 	 *        String to append
 	 * @return string
 	 */
-	private static function write_relative_path($path){
+	private static function write_relative_path($path) {
 	
 		return self::get_instance()->session_current_path . '/' . $path;
 	
@@ -112,7 +115,7 @@ class URL_Helper{
 	 *        Whether to add language argument to path
 	 * @return string
 	 */
-	public static function path($path){
+	public static function path($path) {
 		
 		return self::write_url($path);
 		
@@ -127,7 +130,7 @@ class URL_Helper{
 	 *        Whether to add language argument to path
 	 * @return string
 	 */
-	public static function main_path($path){
+	public static function main_path($path) {
 		
 		return self::write_main_url($path);
 	
@@ -142,7 +145,7 @@ class URL_Helper{
 	 *        Whether to add language argument to path
 	 * @return string
 	 */
-	public static function relative_path($path){
+	public static function relative_path($path) {
 	
 		return self::write_relative_path($path);
 	
@@ -152,7 +155,7 @@ class URL_Helper{
 	 * Get current absolute path
 	 * @return string
 	 */
-	public static function get_current_path(){
+	public static function get_current_path() {
 	
 		return self::get_instance()->session_current;
 	
@@ -162,7 +165,7 @@ class URL_Helper{
 	 * Get current absolute server path
 	 * @return string
 	 */
-	public static function get_server_path(){
+	public static function get_server_path() {
 	
 		return self::get_instance()->session_server_path;
 	

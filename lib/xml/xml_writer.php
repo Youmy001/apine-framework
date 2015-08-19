@@ -16,7 +16,7 @@
  * Cette classe permet de modifier et écrire un
  * document XML. 
  *************************************************/
-class Writer extends Parser{
+class Writer extends Parser {
     
     /*********************************************
      * Méthode __construct
@@ -28,8 +28,10 @@ class Writer extends Parser{
      * RETURN
      *    null
      *********************************************/
-    public function __construct(){
-        parent::__construct(); // Appelle à la fois le contructeur de Parser et XML
+	public function __construct() {
+		
+		parent::__construct(); // Appelle à la fois le contructeur de Parser et XML
+		
     }
     
     /*********************************************
@@ -42,10 +44,11 @@ class Writer extends Parser{
      * RETURN
      *    DOMAttr $attribute     Attribute créé
      *********************************************/
-    public function createAttribute($a_attr){
-        $attribute=$this->DOM_document->createAttribute($a_attr);
-        
-        return $attribute;
+    public function createAttribute($a_attr) {
+    	
+    	$attribute=$this->DOM_document->createAttribute($a_attr);
+    	return $attribute;
+    	
     }
     
     /*********************************************
@@ -59,11 +62,12 @@ class Writer extends Parser{
      * RETURN
      *    Element $element    Element créé
      *********************************************/
-    public function createElement($name, $value=null){
-        $element=new Element($this->DOM_document, ($this->DOM_document->createElement($name, $value)));
-        
-        return $element;
-    }
+    public function createElement($name, $value = null){
+
+		$element = new Element($this->DOM_document, ($this->DOM_document->createElement($name, $value)));
+		return $element;
+	
+	}
     
     /*********************************************
      * Méthode createTextNode
@@ -75,10 +79,11 @@ class Writer extends Parser{
      * RETURN
      *    DOMTextNode $text    Node du texte
      *********************************************/
-    public function createTextNode($content){
-        $text=$this->DOM_document->createTextNode($content);
-        
-        return $text;
+    public function createTextNode($content) {
+    	
+    	$text=$this->DOM_document->createTextNode($content);
+    	return $text;
+    	
     }
     
     /*********************************************
@@ -91,11 +96,12 @@ class Writer extends Parser{
      * RETURN
      *    DOMComment $node    Node du commentaire ajouté
      *********************************************/
-    public function addComment($comment){
-        $node=$this->DOM_document->createComment($comment);
-        $node=$this->appendChild($node);
-        
-        return $node;
+    public function addComment($comment) {
+    	
+    	$node=$this->DOM_document->createComment($comment);
+    	$node=$this->appendChild($node);
+    	return $node;
+    	
     }
     
     /*********************************************
@@ -108,10 +114,11 @@ class Writer extends Parser{
      * RETURN
      *    DOMNode $node       Node ajouté
      *********************************************/
-    public function appendChild(DOMNode $node){
-        $node=$this->DOM_document->appendChild($node);
-        
-        return $node;
+    public function appendChild(DOMNode $node) {
+    	
+    	$node=$this->DOM_document->appendChild($node);
+    	return $node;
+    	
     }
     
     /*********************************************
@@ -125,15 +132,15 @@ class Writer extends Parser{
      * RETURN
      *    DOMNode $node       Node ajouté
      *********************************************/
-    public function insertBefore(DOMNode $new_node, DOMNode $ref_node=null){
-        
-        try{
-            $node=$this->DOM_document->insertBefore($new_node,$ref_node);
-            
-            return $node;
-        }catch(Exception $e){
-            throw new Exception("Erreur de DOM : ".$e->getMessage());
+    public function insertBefore(DOMNode $new_node, DOMNode $ref_node=null) {
+    	
+    	try {
+    		$node=$this->DOM_document->insertBefore($new_node,$ref_node);
+    		return $node;
+    	} catch(Exception $e) {
+    		throw new Exception("Erreur de DOM : ".$e->getMessage());
         }
+        
     }
     
     /*********************************************
@@ -146,10 +153,11 @@ class Writer extends Parser{
      * RETURN
      *    DOMNode $node       Node rétiré
      *********************************************/
-    public function removeChild(DOMNode $old_node){
-        $node=$this->DOM_document->removeChild($old_node);
-        
-        return $node;
+    public function removeChild(DOMNode $old_node) {
+    	
+    	$node=$this->DOM_document->removeChild($old_node);
+    	return $node;
+    	
     }
     
     /*********************************************
@@ -163,10 +171,11 @@ class Writer extends Parser{
      * RETURN
      *    DOMNode $node       Node ajouté
      *********************************************/
-    public function replaceChild(DOMNode $new_node, DOMNode $old_node){
-        $node=$this->DOM_document->replaceChild($new_node,$old_node);
-        
-        return $node;
+    public function replaceChild(DOMNode $new_node, DOMNode $old_node) {
+    	
+    	$node=$this->DOM_document->replaceChild($new_node,$old_node);
+    	return $node;
+    	
     }
     
     /*********************************************
@@ -179,10 +188,11 @@ class Writer extends Parser{
      * RETURN
      *    DOMNode $node       Node cloné
      *********************************************/
-    public function cloneNode(){
-        $node=$this->DOM_document->cloneNode();
-        
-        return $node;
+    public function cloneNode() {
+    	
+    	$node=$this->DOM_document->cloneNode();
+    	return $node;
+    	
     }
     
     /*********************************************
@@ -195,10 +205,11 @@ class Writer extends Parser{
      * RETURN
      *    DOMNode $node       Node importé
      *********************************************/
-    public function importNode(DOMNode $new_node){
-        $node=$this->DOM_document->importNode($new_node,true);
-        
-        return $node;
+    public function importNode(DOMNode $new_node) {
+    	
+    	$node=$this->DOM_document->importNode($new_node,true);
+    	return $node;
+    	
     }
 
 }

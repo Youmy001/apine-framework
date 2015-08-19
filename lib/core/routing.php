@@ -5,13 +5,13 @@
  * @author youmy
  *
  */
-class Routing{
+class Routing {
 	
 	/**
 	 * Something ambiguous returning something ambiguously concrete
 	 * @return mixed
 	 */
-	private static function xml_route(){
+	private static function xml_route() {
 		
 		$xml_routes=new Parser();
 		$xml_routes->load_from_file('routes.xml');
@@ -22,15 +22,14 @@ class Routing{
 		
 		$str_routes="";
 		$found_route=null;
-		foreach ($routes as $item){
+		
+		foreach ($routes as $item) {
 			
-			if($item->nodeType==XML_ELEMENT_NODE){
-				foreach($item->childNodes as $attr){
-					
-		        	if($attr->nodeType==XML_ELEMENT_NODE){
-		              
-		        		if($attr->tagName=="request"){
-		        			if($item->getAttribute('method')==$_SERVER['REQUEST_METHOD']){
+			if ($item->nodeType==XML_ELEMENT_NODE) {
+				foreach ($item->childNodes as $attr) {
+		        	if ($attr->nodeType==XML_ELEMENT_NODE){
+		        		if ($attr->tagName=="request") {
+		        			if ($item->getAttribute('method')==$_SERVER['REQUEST_METHOD']) {
 		        				$match_route=$item->cloneNode(true);
 		        				//print "{$match_route->getElementsByTagName('request')->item(0)->nodeValue}\n";
 		        				
@@ -41,11 +40,15 @@ class Routing{
 		        				//$match.="(\\/(.*))?";
 		        				$match='/^'.$match.'$/';
 		        				$replace="/$controller/$action";
-		        				if($match_route->getAttribute('args')==true){
+		        				
+		        				if ($match_route->getAttribute('args')==true) {
 		        					$number_args=($match_route->getAttribute('argsnum')!==null)?$match_route->getAttribute('argsnum'):1;
-		        					for($i=1;$i<=$number_args;$i++)
-		        					$replace.="/$".$i;
+		        					
+		        					for ($i=1;$i<=$number_args;$i++) {
+		        						$replace.="/$".$i;
+		        					}
 		        				}
+		        				
 		        				if(preg_match($match, $request)){
 		        					$request=preg_replace($match,$replace,$request);
 		        					$found_route=$item->cloneNode(true);
@@ -58,27 +61,31 @@ class Routing{
 		        	}
 				}
 		    }
-		    if($found_route!==null){
+		    
+		    if ($found_route!==null) {
 		    	break;
 		    }
 		}
 		
 		return $request;
+		
 	}
 	
 	/**
 	 * An ambiguous procedure on ambiguous stuff in order to generate a response whose concreteness is still ambiguous
 	 * @return number
 	 */
-	public static function route(){
+	public static function route() {
+		
 		$request=(isset(Request::get()['request']))?Request::get()['request']:'/index';
 		$route_found=false;
 		
 		$vanilla_route_found=self::check_route($request);
 		
-		if(!$vanilla_route_found){
+		if (!$vanilla_route_found) {
 			$xml_request=self::xml_route();
-			if($xml_request!==$request){
+			
+			if ($xml_request!==$request) {
 				$route_found=true;
 				$request=$xml_request;
 			}
@@ -86,31 +93,35 @@ class Routing{
 		
 		$args=explode("/",$request);
 		array_shift($args);
-		if(count($args)>1){
+		
+		if (count($args)>1) {
 			$controller=$args[0];
 			array_shift($args);
 			$action=$args[0];
 			array_shift($args);
-		}else{
+		} else {
 			$controller=$args[0];
 			array_shift($args);
 			$action="index";
 		}
 		
 		// Add post arguments to args array
-		if(Request::get_request_type()!="GET"){
+		if (Request::get_request_type()!="GET") {
 			$args=array_merge($args,Request::post());
 		}
-		if(!empty(Request::files())){
+		
+		if (!empty(Request::files())) {
 			$args=array_merge($args,array("uploads" => Request::files()));
 		}
 		
-		try{
+		try {
 			require_once('controllers/error_controller.php');
-			if(file_exists('controllers/'.$controller.'_controller.php')){
+			
+			if (file_exists('controllers/'.$controller.'_controller.php')) {
 				require_once('controllers/'.$controller.'_controller.php');
 				$maj_controller=ucfirst($controller).'Controller';
-				if(method_exists($maj_controller,$action)){
+
+				if (method_exists($maj_controller,$action)) {
 					//print "Found";
 					$controller=ucfirst($controller).'Controller';
 					$controller=new $controller();
@@ -118,20 +129,23 @@ class Routing{
 					return true;
 				}
 			}
-			if($route_found){
+			
+			if ($route_found) {
 				//print "Gone";
 				$controller=new ErrorController();
 				$controller->gone();
-			}else{
+			} else {
 				//print "Not Found";
 				$controller=new ErrorController();
 				$controller->notfound();
 			}
-		}catch(Exception $e){
+			
+		} catch(Exception $e) {
 			//print "Error";
 			$controller=new ErrorController();
 			$controller->server();
 		}
+		
 	}
 	
 	/**
@@ -139,36 +153,41 @@ class Routing{
 	 * @param mixed $a_route
 	 * @return boolean
 	 */
-	private static function check_route($a_route){
-		$args=explode("/",$a_route);
+	private static function check_route($a_route) {
 		
+		$args=explode("/",$a_route);
 		array_shift($args);
-		if(count($args)>1){
+		
+		if (count($args)>1) {
 			$controller=$args[0];
 			array_shift($args);
 			$action=$args[0];
 			array_shift($args);
-		}else{
+		} else {
 			$controller=$args[0];
 			array_shift($args);
 			$action="index";
 		}
 		
-		try{
-			if(file_exists('controllers/'.$controller.'_controller.php')){
+		try {
+			if (file_exists('controllers/'.$controller.'_controller.php')) {
 				require_once('controllers/'.$controller.'_controller.php');
 				$maj_controller=ucfirst($controller).'Controller';
-				if(method_exists($maj_controller,$action)){
+				
+				if (method_exists($maj_controller,$action)) {
 					//print "Found";
 					return true;
 				}
 			}
+			
 			return false;
-		}catch(Exception $e){
+		} catch(Exception $e) {
 			//print "Error";
 			$controller=new ErrorController();
 			$controller->server();
 			die();
 		}
-	} 
+		
+	}
+	
 }

@@ -5,10 +5,11 @@
  * @package apine-framework
  * @subpackage system
  */
+
 /**
  * PDOException class extention for error handling
  */
-class DatabaseException extends PDOException{
+class DatabaseException extends PDOException {
 }
 
 /**
@@ -20,7 +21,7 @@ class DatabaseException extends PDOException{
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  *        
  */
-class Database{
+class Database {
 
 	/**
 	 * PDO connection instance
@@ -44,11 +45,11 @@ class Database{
 	 * Database class' constructor
 	 * @throws DatabaseException If cannot connect to database server
 	 */
-	public function __construct(){
+	public function __construct() {
 
-		try{
+		try {
 			self::$_instance = $this->get_instance();
-		}catch(PDOException $e){
+		} catch(PDOException $e) {
 			throw new DatabaseException($e->getMessage());
 		}
 	
@@ -61,15 +62,18 @@ class Database{
 	 * @static
 	 *
 	 */
-	public static function get_instance(){
+	public static function get_instance() {
 
-		if(!isset(self::$_instance)){
-			try{
+		if (!isset(self::$_instance)) {
+			
+			try {
 				self::$_instance = new PDO(Config::get('database', 'type').':host='.Config::get('databse', 'host').';dbname='.Config::get('database', 'dbname').';charset='.Config::get('database', 'charset'), Config::get('database', 'username'), Config::get('database', 'password'));
-			}catch(PDOException $e){
+			} catch(PDOException $e) {
 				throw new DatabaseException($e->getMessage());
 			}
+			
 		}
+		
 		return self::$_instance;
 	
 	}
@@ -82,19 +86,24 @@ class Database{
 	 * @throws DatabaseException If unable to execute query
 	 * @return multitype:mixed Matching rows
 	 */
-	public function select($query){
+	public function select($query) {
 
 		$arResult = array();
-		try{
+		
+		try {
 			$result = self::$_instance->query($query);
-			if($result){
-				while($data = $result->fetch()){
+			
+			if ($result) {
+				
+				while ($data = $result->fetch()) {
 					$arResult[] = $data;
 				}
+				
 				$result->closeCursor();
 			}
+			
 			return $arResult;
-		}catch(PDOException $e){
+		} catch(PDOException $e) {
 			throw new DatabaseException($e->getMessage());
 		}
 	
@@ -114,14 +123,18 @@ class Database{
 		
 		$fields = array_keys($arValues);
 		$values = array_values($arValues);
-		// Quote string values
 		$new_values = array();
-		foreach($values as $val){
-			if(is_string($val)){
+		
+		// Quote string values
+		foreach ($values as $val) {
+			
+			if (is_string($val)) {
 				$val = $this->quote($val);
 			}
+			
 			$new_values[] = $val;
 		}
+		
 		// Create query
 		$query = "INSERT into $tableName (";
 		$query .= join(',', $fields);
@@ -129,13 +142,15 @@ class Database{
 		$query .= join(',', $new_values) . ')';
 		
 		//print $query;
-		try{
+		try {
 			$success = self::$_instance->exec($query);
-			if($success == 0){
+			
+			if ($success == 0) {
 				throw new PDOException('Cannot insert row');
 			}
+			
 			return $this->last_insert_id();
-		}catch(PDOException $e){
+		} catch(PDOException $e) {
 			throw new DatabaseException($e->getMessage());
 		}
 	
@@ -153,35 +168,42 @@ class Database{
 	 *        define the "WHERE" SQL statement
 	 * @throws DatabaseException If cannot execute update query
 	 */
-	public function update($tableName, $arValues, $arConditions){
+	public function update($tableName, $arValues, $arConditions) {
+		
+		$new_values = array();
+		$arWhere = array();
 		
 		// Quote string values
-		$new_values = array();
-		foreach($arValues as $field=>$val){
-			if(is_string($val)){
+		foreach ($arValues as $field=>$val) {
+			
+			if (is_string($val)) {
 				$val = $this->quote($val);
-			}elseif($val == null){
+			} else if ($val == null) {
 				$val = 'NULL';
 			}
+			
 			$new_values[] = "$field = $val";
 		}
+		
 		// Quote Conditions values
-		$arWhere = array();
-		foreach($arConditions as $field=>$val){
-			if(is_string($val) && !is_numeric($val)){
+		foreach ($arConditions as $field=>$val) {
+			
+			if (is_string($val) && !is_numeric($val)) {
 				$val = $this->quote($val);
 			}
+			
 			$arWhere[] = "$field = $val";
 		}
+		
 		// Create query
 		$query = "UPDATE $tableName SET ";
 		$query .= join(' , ', $new_values);
 		$query .= ' WHERE ' . join(' AND ', $arWhere);
 		
 		//print $query;
-		try{
+		try {
 			self::$_instance->exec($query);
-		}catch(PDOException $e){
+		} catch(PDOException $e) {
 			throw new DatabaseException($e->getMessage());
 		}
 	
@@ -198,24 +220,32 @@ class Database{
 	 * @throws DatabaseException If cannot execute delete query
 	 * @return boolean
 	 */
-	public function delete($tableName, $arCondition){
-		// Quote Conditions values
+	public function delete($tableName, $arCondition) {
+		
 		$arWhere = array();
+		
+		// Quote Conditions values
 		foreach($arCondition as $field=>$val){
-			if(is_string($val)){
+			
+			if (is_string($val)) {
 				$val = $this->quote($val);
 			}
+			
 			$arWhere[] = "$field = $val";
 		}
+		
 		// Create query
 		$query = "DELETE FROM $tableName WHERE " . join(' AND ', $arWhere);
-		try{
+		
+		try {
 			$success = self::$_instance->exec($query);
-			if($success == 0){
+			
+			if ($success == 0) {
 				return false;
 			}
+			
 			return true;
-		}catch(PDOException $e){
+		} catch(PDOException $e) {
 			throw new DatabaseException($e->getMessage());
 		}
 	
@@ -229,12 +259,12 @@ class Database{
 	 * @throws DatabaseException If cannot execute the query
 	 * @return integer
 	 */
-	public function exec($query){
+	public function exec($query) {
 
-		try{
+		try {
 			$result = self::$_instance->exec($query);
 			return $result;
-		}catch(PDOException $e){
+		} catch(PDOException $e) {
 			throw new DatabaseException($e->getMessage());
 		}
 	
@@ -249,7 +279,8 @@ class Database{
 	 *        href="http://php.net/manual/en/pdo.prepare.php">http://php.net/manual/en/pdo.prepare.php</a>
 	 * @return integer
 	 */
-	public function prepare($statement, $driver_options = array()){
+	public function prepare($statement, $driver_options = array()) {
+		
 		// Returns statement's index for later access
 		$this->_isExecute = true;
 		$this->Execute[] = self::$_instance->prepare($statement, $driver_options);
@@ -267,25 +298,31 @@ class Database{
 	 * @throws DatabaseException If cannot execute statement
 	 * @return multitype:mixed
 	 */
-	public function execute($input_parameters = array(), $index = null){
+	public function execute($input_parameters = array(), $index = null) {
+		
 		// When no index is passed, executes the oldest statement
-		if($this->_isExecute){
+		if ($this->_isExecute) {
 			$arResult = array();
-			if($index == null){
+			
+			if ($index == null) {
 				reset($this->Execute);
 				$index = key($this->Execute);
 			}
-			if(array_key_exists($index, $this->Execute) == true){
+			
+			if (array_key_exists($index, $this->Execute) == true) {
 				$result = $this->Execute[$index];
 			}
-			try{
+			
+			try {
 				$result->execute($input_parameters);
-				while($data = $result->fetch()){
+				
+				while ($data = $result->fetch()) {
 					$arResult[] = $data;
 				}
+				
 				$result->closeCursor();
 				return $arResult;
-			}catch(PDOException $e){
+			} catch(PDOException $e) {
 				throw new DatabaseException($e->getMessage());
 			}
 		}else{
@@ -299,38 +336,28 @@ class Database{
 	 * @param integer $index
 	 *        Identifier of the PDO tatement
 	 */
-	public function close_cursor($index = null){
+	public function close_cursor($index = null) {
+		
 		// If not index is passed, deletes the oldest statement
-		if($index == null){
+		if ($index == null) {
 			reset($this->Execute);
 			$index = key($this->Execute);
 		}
-		if(array_key_exists($index, $this->Execute) == true){
+		
+		if (array_key_exists($index, $this->Execute) == true) {
 			$result = $this->Execute[$index];
 		}
-		if(count($this->Execute) > 0){
+		
+		if (count($this->Execute) > 0) {
 			unset($this->Execute[$index]);
 		}
-		if(count($this->Execute) == 0){
+		
+		if (count($this->Execute) == 0) {
 			$this->_isExecute = false;
 		}
 	
 	}
-
-	/*
-	 * public function beginTransaction(){
-	 * self::$_instance->beginTransaction();
-	 * }
-	 * public function commit(){
-	 * self::$_instance->commit();
-	 * }
-	 * public function abort(){
-	 * self::$_instance->rollback();
-	 * }
-	 * public function inTransaction(){
-	 * return self::$_instance->inTransaction();
-	 * }
-	 */
+	
 	/**
 	 * Return the Id of the last inserted row
 	 * @param string $name
@@ -339,7 +366,7 @@ class Database{
 	 * @return integer
 	 * @see PDO::lastInsertID()
 	 */
-	public function last_insert_id($name = null){
+	public function last_insert_id($name = null) {
 
 		return self::$_instance->lastInsertID($name);
 	
@@ -354,11 +381,10 @@ class Database{
 	 *        alternate quoting styles.
 	 * @return string
 	 */
-	public function quote($string, $parameter_type = PDO::PARAM_STR){
+	public function quote($string, $parameter_type = PDO::PARAM_STR) {
 
 		return self::$_instance->quote($string, $parameter_type);
 	
 	}
 
 }
-?>
