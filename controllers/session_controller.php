@@ -132,10 +132,6 @@ class SessionController extends Controller {
 					$list_group->add_item(ApineUserGroupFactory::create_by_id(1));
 					$new_user->set_group($list_group);
 					
-					if (isset($realname)) {
-						$new_user->set_realname($realname);
-					}
-					
 					if (!empty($email)) {
 						$new_user->set_email_address($email);
 					}

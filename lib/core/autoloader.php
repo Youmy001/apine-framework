@@ -13,7 +13,7 @@
  */
 function load_module($module_name) {
 	
-	Autoload::load_module($module_name);
+	return Autoload::load_module($module_name);
 	
 }
 
@@ -44,6 +44,9 @@ class Autoload {
 			}
 		} else if(is_file('modules/'.$module_name)) {
 			require_once 'modules/'.$module_name;
+			return true;
+		}else{
+			return false;
 		}
 		
 	}

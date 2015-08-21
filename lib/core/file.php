@@ -218,7 +218,7 @@ class File {
 		if ($this->is_new) {
 			$type = $this->file_array["type"];
 		} else {
-			$type = exec("file -b '".$this->get_location()."'");
+			$type = exec("file -bi '".$this->get_location()."'");
 		}
 		
 		return $type;
@@ -293,6 +293,12 @@ class File {
 	
 		readfile($this->get_location());
 	
+	}
+	
+	public function handle() {
+		
+		return $this->file;
+		
 	}
 	
 	/**
