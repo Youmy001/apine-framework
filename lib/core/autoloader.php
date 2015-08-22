@@ -9,6 +9,7 @@
 
 /**
  * Loads all files recursively a user defined module in the model/ directory
+ * 
  * @param string $module_name Name of the folder of the module
  */
 function load_module($module_name) {
@@ -25,6 +26,7 @@ class Autoload {
 	
 	/**
 	 * Loads all files recursively of a user defined module in the model/ directory
+	 * 
 	 * @param string $module_name Name of the folder of the module
 	 */
 	static function load_module($module_name) {

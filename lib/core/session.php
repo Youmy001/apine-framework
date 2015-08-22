@@ -29,6 +29,11 @@ define('SESSION_GUEST', 40);
  */
 class ApineSession {
 	
+	/**
+	 * Instance of the Session Manager
+	 * Singleton Implementation
+	 * @var ApineSession
+	 */
 	private static $_instance;
 	
 	/**
@@ -80,8 +85,8 @@ class ApineSession {
 	private function __construct() {
 		
 		// Check the session cookie (if one)
-		if (Cookie::get_cookie('session') != null) {
-			session_id(Cookie::get_cookie('session'));
+		if (Cookie::get('session') != null) {
+			session_id(Cookie::get('session'));
 		}
 		
 		// Start PHP Session
@@ -219,7 +224,7 @@ class ApineSession {
 
 		if (self::is_logged_in()) {
 			$_SESSION = array();
-			Cookie::set_cookie('session', self::get_instance()->php_session_id, time() - 7776000);
+			Cookie::set('session', self::get_instance()->php_session_id, time() - 7776000);
 			session_destroy();
 			self::get_instance()->logged_in = false;
 			self::set_session_type(SESSION_GUEST);
@@ -233,7 +238,7 @@ class ApineSession {
 	public static function make_permanent() {
 
 		if (self::is_logged_in()) {
-			Cookie::set_cookie('session', self::get_instance()->php_session_id, time() + 7776000);
+			Cookie::set('session', self::get_instance()->php_session_id, time() + 7776000);
 		}
 	
 	}

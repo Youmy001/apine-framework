@@ -1,25 +1,28 @@
 <?php
 /**
- * This file contains the List collection Class
- * @author Tommy Teasdale <tteasdaleroads@gmail.com>
- * @package apine-framework
- * @subpackage system
+ * Liste Collection
+ * This file contains the Liste collection Class
+ * 
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
  */
 
 /**
- * Traversable collection that mimics an array while providing easy to
- * use features
+ * Liste Collection
+ * Traversable collection that mimics an array while providing easy to use features
  */
 class Liste implements IteratorAggregate {
 
 	/**
 	 * Object array
+	 * 
 	 * @var mixed[]
 	 */
 	private $items;
 
 	/**
 	 * Add an item to the collection
+	 * 
 	 * @param mixed $a_item
 	 *        Item to add to the collection
 	 * @param string $a_key
@@ -51,6 +54,7 @@ class Liste implements IteratorAggregate {
 
 	/**
 	 * Remove an item from the collection
+	 * 
 	 * @param string $a_key
 	 *        Key of the item to remove
 	 * @throws Exception If cannot remove item from the collection
@@ -81,6 +85,7 @@ class Liste implements IteratorAggregate {
 
 	/**
 	 * Fetch an item from the collection
+	 * 
 	 * @param string $a_key
 	 *        Key of the item to fetch
 	 * @throws Exception If cannot fetch the item fromthe collection
@@ -108,6 +113,7 @@ class Liste implements IteratorAggregate {
 
 	/**
 	 * Fetch all items from the collection
+	 * 
 	 * @throws Exception If cannot fetch items from the collection
 	 * @return multitype:mixed |boolean
 	 */
@@ -128,6 +134,7 @@ class Liste implements IteratorAggregate {
 
 	/**
 	 * Retrieve the first item from the collection
+	 * 
 	 * @throws Exception If cannot fetch the item from the collection
 	 * @return mixed|boolean
 	 */
@@ -148,6 +155,7 @@ class Liste implements IteratorAggregate {
 
 	/**
 	 * Retrieve the last item from the collection
+	 * 
 	 * @throws Exception If cannot fetch the item from the collection
 	 * @return mixed|boolean
 	 */
@@ -168,6 +176,7 @@ class Liste implements IteratorAggregate {
 
 	/**
 	 * Sort item from the collection in reverse order
+	 * 
 	 * @throws Exception If cannot reverse the collection
 	 * @return boolean
 	 */
@@ -189,6 +198,7 @@ class Liste implements IteratorAggregate {
 
 	/**
 	 * Sort items from collection by key
+	 * 
 	 * @throws Exception If cannot sort the collection
 	 * @return boolean
 	 */
@@ -210,6 +220,7 @@ class Liste implements IteratorAggregate {
 
 	/**
 	 * Get an array of every item keys in the collection
+	 * 
 	 * @throws Exception If cannot fetch item keys
 	 * @return string[]|boolean
 	 */
@@ -236,6 +247,7 @@ class Liste implements IteratorAggregate {
 
 	/**
 	 * Count all items in the collection
+	 * 
 	 * @return integer
 	 */
 	public function length() {
@@ -246,6 +258,7 @@ class Liste implements IteratorAggregate {
 
 	/**
 	 * Verify if key exists in the collection
+	 * 
 	 * @param string $a_key
 	 *        Key to verify
 	 * @throws Exception If cannot verify the key with the collection
@@ -268,6 +281,7 @@ class Liste implements IteratorAggregate {
 	
 	/**
 	 * Verify if value exists in the collection
+	 * 
 	 * @param mixed $a_value
 	 *        Value to verify
 	 * @throws Exception If the collection is empty
@@ -364,6 +378,7 @@ class Liste implements IteratorAggregate {
 
 	/**
 	 * Get Liste's iterator (non-PHPdoc)
+	 * 
 	 * @see IteratorAggregate::getIterator()
 	 */
 	public function getIterator() {

@@ -1,9 +1,10 @@
 <?php
 /**
- * This file contains the tools to communicate with the database
- * @author Tommy Teasdale <tteasdaleroads@gmail.com>
- * @package apine-framework
- * @subpackage system
+ * Database access tool
+ * This script contains an helper to enahnce communication with the database
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
  */
 
 /**
@@ -13,36 +14,39 @@ class DatabaseException extends PDOException {
 }
 
 /**
- * Database Class
+ * Database Access Tools
  *
  * Binding for PDO classes. Support select, insert, update and delete
  * statements, execute queries, prepared queries, transactions
- * and singleton.
- * @author Tommy Teasdale <tteasdaleroads@gmail.com>
- *        
+ * and singleton.     
  */
 class Database {
 
 	/**
 	 * PDO connection instance
+	 * 
+	 * @static
 	 * @var PDO
 	 */
 	private static $_instance;
 
 	/**
 	 * PDO Statement to execute
+	 * 
 	 * @var PDOStatement[]
 	 */
 	public $Execute = array();
 
 	/**
 	 * Is a PDOStatement is pending execution
-	 * @var unknown
+	 * 
+	 * @var boolean
 	 */
 	private $_isExecute;
 
 	/**
 	 * Database class' constructor
+	 * 
 	 * @throws DatabaseException If cannot connect to database server
 	 */
 	public function __construct() {
@@ -57,6 +61,7 @@ class Database {
 
 	/**
 	 * Fetch a PDO handler using the singleton pattern
+	 * 
 	 * @return PDO
 	 * @throws DatabaseException If cannot connect to database server
 	 * @static
@@ -81,6 +86,7 @@ class Database {
 	/**
 	 * Fetch table rows from database through the PDO handler with a
 	 * MySQL query
+	 * 
 	 * @param string $query
 	 *        Query of a SELECT type to execute
 	 * @throws DatabaseException If unable to execute query
@@ -112,6 +118,7 @@ class Database {
 	/**
 	 * Insert a new table row into the database through the PDO
 	 * handler
+	 * 
 	 * @param string $tableName
 	 *        Name of the table in which insert the row
 	 * @param string[] $arValues
@@ -159,6 +166,7 @@ class Database {
 	/**
 	 * Update one or many table rows from the database through the PDO
 	 * handler
+	 * 
 	 * @param string $tableName
 	 *        Name of the table in which modify rows
 	 * @param string[] $arValues
@@ -212,6 +220,7 @@ class Database {
 	/**
 	 * Delete one or many table rows from the database through the PDO
 	 * handler
+	 * 
 	 * @param string $tableName
 	 *        Name of the table in which delete rows
 	 * @param string[] $arCondition
@@ -254,6 +263,7 @@ class Database {
 	/**
 	 * Execute operation onto database through the PDO handler with a
 	 * MySQL query
+	 * 
 	 * @param string $query
 	 *        Query of any type to execute
 	 * @throws DatabaseException If cannot execute the query
@@ -272,6 +282,7 @@ class Database {
 
 	/**
 	 * Prepare a statement for later execution
+	 * 
 	 * @param string $statement
 	 *        MySQL query statement
 	 * @param array $driver_options
@@ -291,6 +302,7 @@ class Database {
 
 	/**
 	 * Execute a previously prepared statement
+	 * 
 	 * @param array $input_parameters
 	 *        Values to replace markers in statement
 	 * @param integer $index
@@ -333,6 +345,7 @@ class Database {
 
 	/**
 	 * Close a previously prepared PDO statement
+	 * 
 	 * @param integer $index
 	 *        Identifier of the PDO tatement
 	 */
@@ -360,6 +373,7 @@ class Database {
 	
 	/**
 	 * Return the Id of the last inserted row
+	 * 
 	 * @param string $name
 	 *        Name of the sequence object from which the ID should be
 	 *        returned.
@@ -374,6 +388,7 @@ class Database {
 
 	/**
 	 * Quotes a string for use in a query.
+	 * 
 	 * @param string $string
 	 *        String to quote following database server's settings
 	 * @param integer $parameter_type

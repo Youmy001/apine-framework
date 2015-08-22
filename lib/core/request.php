@@ -1,45 +1,100 @@
 <?php
+/**
+ * Request Management
+ * This script contains an helper to handle request information
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 
+/**
+ * Request Management Tool
+ * Handle information from the request and user inputs
+ */
 class Request {
 	
+	/**
+	 * Instance of the Request
+	 * Singleton Implementation
+	 * 
+	 * @var Request
+	 */
 	private static $_instance;
 	
 	/**
 	 * Session Request Type
+	 * 
 	 * @var string
 	 */
 	private $request_type;
 	
 	/**
 	 * Session Request Port
+	 * 
 	 * @var string
 	 */
 	private $request_port;
 	
 	/**
 	 * Is request from https protocol
+	 * 
 	 * @var boolean
 	 */
 	private $request_ssl;
 	
+	/**
+	 * Get method inputs
+	 * 
+	 * @var array
+	 */
 	private $get;
 	
+	/**
+	 * Post method inputs
+	 * 
+	 * @var array
+	 */
 	private $post;
 	
+	/**
+	 * Uploaded files input information
+	 * 
+	 * @var array
+	 */
 	private $files;
 	
+	/**
+	 * Request information
+	 * 
+	 * @var array
+	 */
 	private $request;
 	
+	/**
+	 * Server information
+	 * 
+	 * @var array
+	 */
 	private $server;
 	
+	/**
+	 * Session information
+	 * 
+	 * @var array
+	 */
 	public $session;
 	
 	/**
 	 * Session API Call
+	 * 
 	 * @var boolean
 	 */
 	private $api_call;
 	
+	/**
+	 * Construct the Request Management handler
+	 * Extract information from the request and clean user inputs 
+	 */
 	private function __construct() {
 		
 		$this->request_type=$_SERVER['REQUEST_METHOD'];
@@ -76,6 +131,11 @@ class Request {
 		
 	}
 	
+	/**
+	 * Singleton design pattern implementation
+	 * 
+	 * @return Request
+	 */
 	public static function get_instance() {
 		
 		if (!isset(self::$_instance)) {
@@ -87,6 +147,7 @@ class Request {
 	
 	/**
 	 * Return the type of the current http request
+	 * 
 	 * @return string
 	 */
 	public static function get_request_type() {
@@ -97,6 +158,7 @@ class Request {
 	
 	/**
 	 * Return the port used by the user in the current request
+	 * 
 	 * @return string
 	 */
 	public static function get_request_port() {
@@ -107,6 +169,7 @@ class Request {
 	
 	/**
 	 * Checks if the request is made through the HTTPS protocol
+	 * 
 	 * @return boolean
 	 */
 	public static function is_https() {
@@ -117,6 +180,7 @@ class Request {
 	
 	/**
 	 * Checks if the request is made to the API
+	 * 
 	 * @return boolean
 	 */
 	public static function is_api_call() {
@@ -133,6 +197,7 @@ class Request {
 	
 	/**
 	 * Returns weither the current http request is a GET request or not
+	 * 
 	 * @return boolean
 	 */
 	public static function is_get() {
@@ -148,6 +213,7 @@ class Request {
 	
 	/**
 	 * Returns weither the current http request is a POST request or not
+	 * 
 	 * @return boolean
 	 */
 	public static function is_post() {
@@ -163,6 +229,7 @@ class Request {
 	
 	/**
 	 * Returns weither the current http request is a PUT request or not
+	 * 
 	 * @return boolean
 	 */
 	public static function is_put() {
@@ -178,6 +245,7 @@ class Request {
 	
 	/**
 	 * Returns weither the current http request is a DELETE request or not
+	 * 
 	 * @return boolean
 	 */
 	public static function is_delete() {
@@ -191,36 +259,67 @@ class Request {
 		return $return;
 	}
 	
+	/**
+	 * Return GET input
+	 * 
+	 * @return array
+	 */
 	public static function get() {
 		
 		return self::get_instance()->get;
 		
 	}
 	
+	/**
+	 * Return POST input
+	 * 
+	 * @return array
+	 */
 	public static function post() {
 		
 		return self::get_instance()->post;
 		
 	}
 	
+	/**
+	 * Return uploaded file input
+	 * 
+	 * @return array
+	 */
 	public static function files() {
 		
 		return self::get_instance()->files;
 		
 	}
 	
+	/**
+	 * Return Request information
+	 * 
+	 * @return array
+	 */
 	public static function request() {
 		
 		return self::get_instance()->request;
 		
 	}
 	
+	/**
+	 * Return server information
+	 * 
+	 * @return array
+	 */
 	public static function server() {
 		
 		return self::get_instance()->server;
 		
 	}
 	
+	/**
+	 * Reformat the $_FILES array to something more handy
+	 * 
+	 * @param array $files
+	 * @return array
+	 */
 	private static function format_files_array(Array $files) {
 		
 		$result=array();

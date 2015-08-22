@@ -1,11 +1,39 @@
 <?php
+/**
+ * Configuration Reader
+ * This script contains an helper to read configuration files
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 
+/**
+ * Configuration Reader
+ * Read and write project's configuration file
+ */
 class Config{
 	
+	/**
+	 * Instance of the Config reader
+	 * Singleton Implementation
+	 * 
+	 * @var Config
+	 */
 	private static $_instance;
-	//private $settings = [];
-	private $settings;
 	
+	
+	/**
+	 * Setting strings extracted from the configuration file
+	 * 
+	 * @var array
+	 */
+	private $settings;
+	//private $settings = [];
+	
+	/**
+	 * Construct the Conguration Reader handler
+	 * Extract string from the configuration file 
+	 */
 	private function __construct() {
 		
 		if (file_exists('config.ini')) {
@@ -16,6 +44,12 @@ class Config{
 		
 	}
 	
+	/**
+	 * Singleton design pattern implementation
+	 * 
+	 * @static
+	 * @return Config
+	 */
 	public static function get_instance() {
 		
 		if (!isset(self::$_instance)) {
@@ -26,6 +60,13 @@ class Config{
 		
 	}
 	
+	/**
+	 * Fetch a configuration string
+	 * 
+	 * @param string $prefix
+	 * @param string $key
+	 * @return <NULL|array>
+	 */
 	public static function get($prefix, $key) {
 		
 		$prefix = strtolower($prefix);
@@ -34,6 +75,13 @@ class Config{
 		
 	}
 	
+	/**
+	 * Write or update a configuration string
+	 * 
+	 * @param string $prefix
+	 * @param string $key
+	 * @param string $value
+	 */
 	public static function set($prefix, $key, $value) {
 		
 		$prefix = strtolower($prefix);
@@ -46,6 +94,7 @@ class Config{
 }
 
 /**
+ * Write strings in a configuration file in INI format
  * Source: http://stackoverflow.com/questions/1268378/create-ini-file-write-values-in-php
  */
 function write_ini_file($assoc_arr, $path, $has_sections = FALSE) {

@@ -1,14 +1,21 @@
 <?php
+/**
+ * Request Router
+ * This script contains a routing helper to route the request toward controllers
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 
 /**
- * Something kind of concrete but still ambiguous to most
- * @author youmy
- *
+ * Request Router
+ * Route requests toward the best matching controller. This is part of the MVC architecture
  */
 class Routing {
 	
 	/**
-	 * Something ambiguous returning something ambiguously concrete
+	 * Find matching route in XML route configuration and return modified request string 
+	 * 
 	 * @return mixed
 	 */
 	private static function xml_route() {
@@ -72,8 +79,7 @@ class Routing {
 	}
 	
 	/**
-	 * An ambiguous procedure on ambiguous stuff in order to generate a response whose concreteness is still ambiguous
-	 * @return number
+	 * Route the request to the best matching controller and action
 	 */
 	public static function route() {
 		
@@ -126,7 +132,7 @@ class Routing {
 					$controller=ucfirst($controller).'Controller';
 					$controller=new $controller();
 					$controller->$action($args);
-					return true;
+					die();
 				}
 			}
 			
@@ -149,8 +155,9 @@ class Routing {
 	}
 	
 	/**
-	 * Verifies something ambiguous with a confusing response 
-	 * @param mixed $a_route
+	 * Verifies if the request string matches an existing controller
+	 *  
+	 * @param string $a_route
 	 * @return boolean
 	 */
 	private static function check_route($a_route) {
@@ -185,7 +192,7 @@ class Routing {
 			//print "Error";
 			$controller=new ErrorController();
 			$controller->server();
-			die();
+			return false;
 		}
 		
 	}

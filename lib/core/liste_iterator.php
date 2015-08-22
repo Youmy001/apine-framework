@@ -1,34 +1,38 @@
 <?php
 /**
- * Liste's class iterator
- *
- * This file contains an iterator for the Liste class.
- * @author Tommy Teasdale <tteasdaleroads@gmail.com>
- * @package apine-framework
- * @subpackage system
+ * Liste Collection Iterator
+ * This file contains an iterator for the Liste Collection
+ * 
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
  */
+
 class ListeIterator implements Iterator {
 
 	/**
 	 * Instance of the collection
+	 * 
 	 * @var Liste
 	 */
 	private $_liste;
 
 	/**
 	 * Current pointer position in the collection
+	 * 
 	 * @var integer
 	 */
 	private $_currIndex = 0;
 
 	/**
 	 * Array of all keys into the collection
+	 * 
 	 * @var string[]
 	 */
 	private $_keys;
 
 	/**
 	 * Iterator's constructor
+	 * 
 	 * @param Liste $a_liste
 	 *        Instance of the collection
 	 */
@@ -41,6 +45,7 @@ class ListeIterator implements Iterator {
 
 	/**
 	 * Return to the first item (non-PHPdoc)
+	 * 
 	 * @see Iterator::rewind()
 	 */
 	public function rewind() {
@@ -51,6 +56,7 @@ class ListeIterator implements Iterator {
 
 	/**
 	 * Return current item's key (non-PHPdoc)
+	 * 
 	 * @see Iterator::key()
 	 */
 	public function key() {
@@ -61,6 +67,7 @@ class ListeIterator implements Iterator {
 
 	/**
 	 * Get the item at current pointer position (non-PHPdoc)
+	 * 
 	 * @see Iterator::current()
 	 */
 	public function current() {
@@ -71,6 +78,7 @@ class ListeIterator implements Iterator {
 
 	/**
 	 * Move the pointer to the next position (non-PHPdoc)
+	 * 
 	 * @see Iterator::next()
 	 */
 	public function next() {
@@ -81,6 +89,7 @@ class ListeIterator implements Iterator {
 
 	/**
 	 * Validate pointer's position (non-PHPdoc)
+	 * 
 	 * @see Iterator::valid()
 	 */
 	public function valid() {
