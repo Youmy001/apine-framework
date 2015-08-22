@@ -69,8 +69,8 @@ class File {
 				$extension = end($ar_file_ext);
 				
 				// Get file name with extention
-				$ar_file_name = explode("/", reset($ar_file_ext));
-				$file_name = end($ar_file_name);
+				$ar_file_name = explode(".", $this->file_name);
+				$file_name = implode('.', array_splice($ar_file_name, 0, count($ar_file_name) - 1));
 				$this->file_name = $file_name . "." . $extension;
 				
 				$this->save_loc = substr($this->file_location, 0, strripos($location, "/") - 1);
