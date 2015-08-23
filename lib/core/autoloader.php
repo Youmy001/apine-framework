@@ -12,7 +12,7 @@
  * 
  * @param string $module_name Name of the folder of the module
  */
-function load_module($module_name) {
+function load_module ($module_name) {
 	
 	return Autoload::load_module($module_name);
 	
@@ -29,11 +29,11 @@ class Autoload {
 	 * 
 	 * @param string $module_name Name of the folder of the module
 	 */
-	static function load_module($module_name) {
+	static function load_module ($module_name) {
 		
-		if (is_dir('modules/'.$module_name.'/')) {
-			$dir='modules/'.$module_name.'/';
-			$files=self::get_folder_files($dir);
+		if (is_dir('modules/' . $module_name . '/')) {
+			$dir = 'modules/' . $module_name . '/';
+			$files = self::get_folder_files($dir);
 			
 			try {
 				foreach ($files as $file) {
@@ -41,13 +41,13 @@ class Autoload {
 				}
 				
 				return true;
-			} catch(Exception $e) {
+			} catch (Exception $e) {
 				return false;
 			}
-		} else if(is_file('modules/'.$module_name)) {
+		} else if (is_file('modules/'.$module_name)) {
 			require_once 'modules/'.$module_name;
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 		
@@ -81,24 +81,24 @@ class Autoload {
 	 * 			Weither the directory is the base folder for the recursive parser.
 	 * @return mixed[] List of all files in a directory
 	 */
-	private static function get_folder_files($directory,$root=true) {
+	private static function get_folder_files ($directory, $root = true) {
 		
-		$array=array();
+		$array = array();
 		
 		if (is_dir($directory)) {
 			
 			if (!$root) {
 				
 				// Extract directories and files
-				$a_dir=array();
-				$a_file=array();
+				$a_dir = array();
+				$a_file = array();
 				
 				foreach (scandir($directory) as $file) {
 					if ($file != "." && $file != "..") {
 						if (is_dir($directory . $file . '/')) {
-							$a_dir[]=$directory.$file;
-						}else{
-							$a_file[]=$directory.$file;
+							$a_dir[] = $directory . $file;
+						} else {
+							$a_file[] = $directory . $file;
 						}
 					}
 				}
@@ -106,30 +106,30 @@ class Autoload {
 				// Run sub-directories first
 				foreach ($a_dir as $file) {
 					if ($file != "." && $file != "..") {
-						$directory_array=self::get_folder_files($file . '/',false);
+						$directory_array=self::get_folder_files($file . '/', false);
 							
 						foreach ($directory_array as $directory_file) {
-							$array[]=$directory_file;
+							$array[] = $directory_file;
 						}
 					}
 				}
 					
 				// Then files
 				foreach ($a_file as $file) {
-					$array[]=$file;
+					$array[] = $file;
 				}
-			}else{
+			} else {
 				
 				foreach (scandir($directory) as $file) {
 					if ($file != "." && $file != "..") {
 						if (is_dir($directory . $file . '/')) {
-							$directory_array=self::get_folder_files($directory . $file . '/',false);
+							$directory_array = self::get_folder_files($directory . $file . '/', false);
 		
 							foreach ($directory_array as $directory_file) {
-								$array[]=$directory_file;
+								$array[] = $directory_file;
 							}
-						}else{
-							$array[]=$directory.$file;
+						} else {
+							$array[] = $directory.$file;
 						}
 					}
 				}

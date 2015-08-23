@@ -58,7 +58,7 @@ class ApineUser extends ApineEntityModel {
 	 * @param integer $a_id
 	 *        User identifier
 	 */
-	public function __construct($a_id = null) {
+	public function __construct ($a_id = null) {
 
 		$this->_initialize('apine_users', $a_id);
 		
@@ -72,7 +72,7 @@ class ApineUser extends ApineEntityModel {
 	 * Fetch user's identifier
 	 * @return integer
 	 */
-	public function get_id() {
+	public function get_id () {
 		
 		if ($this->loaded == 0) {
 			$this->load();
@@ -87,7 +87,7 @@ class ApineUser extends ApineEntityModel {
 	 * @param integer $a_id
 	 *        User's identifier
 	 */
-	public function set_id($a_id) {
+	public function set_id ($a_id) {
 
 		$this->id = $a_id;
 		$this->_set_id($a_id);
@@ -99,7 +99,7 @@ class ApineUser extends ApineEntityModel {
 	 * Fetch user's username
 	 * @return string
 	 */
-	public function get_username() {
+	public function get_username () {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -114,7 +114,7 @@ class ApineUser extends ApineEntityModel {
 	 * @param string $a_name
 	 *        User's username
 	 */
-	public function set_username($a_name) {
+	public function set_username ($a_name) {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -129,7 +129,7 @@ class ApineUser extends ApineEntityModel {
 	 * Fetch user's encrypted password
 	 * @return string
 	 */
-	public function get_password() {
+	public function get_password () {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -144,7 +144,7 @@ class ApineUser extends ApineEntityModel {
 	 * @param string $a_pass
 	 *        User's password
 	 */
-	public function set_password($a_pass) {
+	public function set_password ($a_pass) {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -159,7 +159,7 @@ class ApineUser extends ApineEntityModel {
 	 * Fetch user's permission level
 	 * @return integer
 	 */
-	public function get_type() {
+	public function get_type () {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -174,7 +174,7 @@ class ApineUser extends ApineEntityModel {
 	 * @param integer $a_type
 	 *        User's permissions
 	 */
-	public function set_type($a_type) {
+	public function set_type ($a_type) {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -189,7 +189,7 @@ class ApineUser extends ApineEntityModel {
 	 * Fetch user's group
 	 * @return Group
 	 */
-	public function get_group() {
+	public function get_group () {
 	
 		if ($this->group == null) {
 			$this->group=ApineUserGroupFactory::create_by_user($this->id);
@@ -204,7 +204,7 @@ class ApineUser extends ApineEntityModel {
 	 * @param <Liste[ApineUserGroup]> $a_group_list
 	 *        List of User's groups
 	 */
-	public function set_group($a_group_list) {
+	public function set_group ($a_group_list) {
 		
 		if ($this->loaded == 0) {
 			$this->load();
@@ -233,13 +233,13 @@ class ApineUser extends ApineEntityModel {
 	 * @param <ApineUserGroup, int> $a_group
 	 * @return boolean
 	 */
-	public function has_group($a_group) {
+	public function has_group ($a_group) {
 		
 		if ($this->group == null) {
 			$this->group=ApineUserGroupFactory::create_by_user($this->id);
 		}
 		
-		if (is_numeric($a_group)&&ApineUserGroupFactory::is_id_exist($a_group)) {
+		if (is_numeric($a_group) && ApineUserGroupFactory::is_id_exist($a_group)) {
 			$is_group=$this->group->value_exists(new ApineUserGroup($a_group));
 		} else if (get_class($a_group) == 'ApineUserGroup') {
 			$is_group=$this->group->value_exists($a_group);
@@ -255,7 +255,7 @@ class ApineUser extends ApineEntityModel {
 	 * Fetch user's email address
 	 * @return string
 	 */
-	public function get_email_address() {
+	public function get_email_address () {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -270,7 +270,7 @@ class ApineUser extends ApineEntityModel {
 	 * @param string $a_email
 	 *        User's email address
 	 */
-	public function set_email_address($a_email) {
+	public function set_email_address ($a_email) {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -285,7 +285,7 @@ class ApineUser extends ApineEntityModel {
 	 * Fetch user's registration date
 	 * @return string
 	 */
-	public function get_register_date() {
+	public function get_register_date () {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -300,7 +300,7 @@ class ApineUser extends ApineEntityModel {
 	 * @param string $a_timestamp
 	 *        User's registration date
 	 */
-	public function set_register_date($a_timestamp) {
+	public function set_register_date ($a_timestamp) {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -314,7 +314,7 @@ class ApineUser extends ApineEntityModel {
 	/**
 	 * @see ApineEntityInterface::load()
 	 */
-	public function load() {
+	public function load () {
 
 		if (!is_null($this->id)) {
 			$this->username = $this->_get_field('username');
@@ -330,16 +330,16 @@ class ApineUser extends ApineEntityModel {
 	/**
 	 * @see ApineEntityInterface::save()
 	 */
-	public function save() {
+	public function save () {
 
 		parent::_save();
 		$this->set_id($this->_get_id());
 		
-		$db=new Database();
-		$db->delete('apine_users_user_groups', array("user_id"=>$this->get_id()));
+		$db = new Database();
+		$db->delete('apine_users_user_groups', array("user_id" => $this->get_id()));
 		
 		foreach ($this->group as $item) {
-			$db->insert('apine_users_user_groups', array("user_id"=>$this->get_id(), "group_id"=>$item->get_id()));
+			$db->insert('apine_users_user_groups', array("user_id" => $this->get_id(), "group_id" => $item->get_id()));
 		}
 		
 	}
@@ -347,14 +347,14 @@ class ApineUser extends ApineEntityModel {
 	/**
 	 * @see ApineEntityInterface::delete()
 	 */
-	public function delete() {
+	public function delete () {
 		
 		if ($this->loaded == 0) {
 			$this->load();
 		}
 		
-		$db=new Database();
-		$db->delete('apine_users_user_groups', array("user_id"=>$this->get_id()));
+		$db = new Database();
+		$db->delete('apine_users_user_groups', array("user_id" => $this->get_id()));
 
 		parent::_destroy();
 		

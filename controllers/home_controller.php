@@ -2,7 +2,7 @@
 
 class HomeController extends Controller {
 	
-	public function index() {
+	public function index () {
 		
 		$this->_view->set_title('Home');
 		$this->_view->set_view('home/index');
@@ -12,7 +12,7 @@ class HomeController extends Controller {
 		
 	}
 	
-	public function about() {
+	public function about () {
 		
 		$this->_view->set_title('About');
 		$this->_view->set_view('home/about');

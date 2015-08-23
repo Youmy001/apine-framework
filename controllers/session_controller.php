@@ -6,14 +6,17 @@ class SessionController extends Controller {
 		
 		if (Request::is_post()) {
 			
-			if (isset($params['user']))
+			if (isset($params['user'])) {
 				$user = $params['user'];
+			}
 			
-			if (isset($params['pwd']))
+			if (isset($params['pwd'])) {
 				$pwd = $params['pwd'];
+			}
 			
-			if (isset($params['redirect']))
+			if (isset($params['redirect'])) {
 				$redirect = $params['redirect'];
+			}
 			
 			if (isset($params['perm'])) {
 				$permanent = $params['perm'];
@@ -44,14 +47,17 @@ class SessionController extends Controller {
 				}
 				
 				$message = 'Either the the username/email or the password is not valid. Please try again later.';
-			} catch(Exception $e) {
+				//$message = Translator::translate('en-US', 'errors', 'login_invalid_username');
+			} catch (Exception $e) {
 				$message = 'An unknown error occured when sending data to the server. Please try again later.';
+				//$message = Translator::translate('en-US', 'errors', 'form_invalid');
 			}
 			
 			$this->_view->set_param('error_code',true);
 			$this->_view->set_param('error_message', $message);
 		}
 		
+		//$this->_view->set_title(Translator::translate('en-US', 'login', 'title'));
 		$this->_view->set_title('Login');
 		$this->_view->set_view('session/login');
 		$this->_view->set_response_code(200);
@@ -59,7 +65,7 @@ class SessionController extends Controller {
 		
 	}
 	
-	public function logout() {
+	public function logout () {
 		
 		if (ApineSession::is_logged_in()) {
 			ApineSession::logout();
@@ -69,24 +75,29 @@ class SessionController extends Controller {
 		
 	}
 	
-	public function register($params) {
+	public function register ($params) {
 		
 		if (Request::is_post()&&!ApineSession::is_logged_in()) {
 			
-			if (isset($params['user']))
+			if (isset($params['user'])) {
 				$user = $params['user'];
+			}
 			
-			if (isset($params['pwd']))
+			if (isset($params['pwd'])) {
 				$pwd = $params['pwd'];
+			}
 			
-			if (isset($params['redirect']))
+			if (isset($params['redirect'])) {
 				$redirect = $params['redirect'];
+			}
 			
-			if (isset($params['pwd_confirm']))
+			if (isset($params['pwd_confirm'])) {
 				$pwdconfirm = $params['pwd_confirm'];
+			}
 			
-			if (isset($params['email']))
+			if (isset($params['email'])) {
 				$email = $params['email'];
+			}
 			
 			/*var_dump(filter_var($email,FILTER_VALIDATE_EMAIL));
 			var_dump(preg_match('/^(?!(?:(?:\\x22?\\x5C[\\x00-\\x7E]\\x22?)|(?:\\x22?[^\\x5C\\x22]\\x22?)){255,})(?!(?:(?:\\x22?\\x5C[\\x00-\\x7E]\\x22?)|(?:\\x22?[^\\x5C\\x22]\\x22?)){65,}@)(?:(?:[\\x21\\x23-\\x27\\x2A\\x2B\\x2D\\x2F-\\x39\\x3D\\x3F\\x5E-\\x7E]+)|(?:\\x22(?:[\\x01-\\x08\\x0B\\x0C\\x0E-\\x1F\\x21\\x23-\\x5B\\x5D-\\x7F]|(?:\\x5C[\\x00-\\x7F]))*\\x22))(?:\\.(?:(?:[\\x21\\x23-\\x27\\x2A\\x2B\\x2D\\x2F-\\x39\\x3D\\x3F\\x5E-\\x7E]+)|(?:\\x22(?:[\\x01-\\x08\\x0B\\x0C\\x0E-\\x1F\\x21\\x23-\\x5B\\x5D-\\x7F]|(?:\\x5C[\\x00-\\x7F]))*\\x22)))*@(?:(?:(?!.*[^.]{64,})(?:(?:(?:xn--)?[a-z0-9]+(?:-+[a-z0-9]+)*\\.){1,126}){1,}(?:(?:[a-z][a-z0-9]*)|(?:(?:xn--)[a-z0-9]+))(?:-+[a-z0-9]+)*)|(?:\\[(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){7})|(?:(?!(?:.*[a-f0-9][:\\]]){7,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?)))|(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){5}:)|(?:(?!(?:.*[a-f0-9]:){5,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3}:)?)))?(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))(?:\\.(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))){3}))\\]))$/iD', $email));
@@ -154,19 +165,24 @@ class SessionController extends Controller {
 				switch ($e->getMessage()) {
 					case 7:
 						$message='The email address is already taken.';
+						//$message = Translator::translate('en-US', 'errors', 'register_taken_email');
 						break;
 					case 4:
 						$message='The username is already taken by an user.';
+						//$message = Translator::translate('en-US', 'errors', 'register_taken_username');
 						break;
 					case 3:
 						$message='The password does not match the confirmation.';
+						//$message = Translator::translate('en-US', 'errors', 'register_invalid_password');
 						break;
 					case 2:
 						$message='The email address is not valid.';
+						//$message = Translator::translate('en-US', 'errors', 'register_invalid_email');
 						break;
 					case 0:
 					default:
 						$message='An unknown error occured when sending data to the server. Please try again later.';
+						//$message = Translator::translate('en-US', 'errors', 'form_invalid');
 				}
 				
 			}
@@ -175,7 +191,8 @@ class SessionController extends Controller {
 			$this->_view->set_param('error_message', $message);
 		}
 		
-		$this->_view->set_title('Sign Up');
+		//$this->_view->set_title(Translator::translate('en-US', 'register', 'title'));
+		$this->_view->set_title("Sign In");
 		$this->_view->set_view('session/register');
 		$this->_view->set_response_code(200);
 		$this->_view->draw();

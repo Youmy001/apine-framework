@@ -40,7 +40,7 @@ class TranslationLanguage {
 	 * @param string $a_code
 	 * @param string $a_file_path
 	 */
-	public function __construct($a_code=null, $a_file_path=null) {
+	public function __construct ($a_code = null, $a_file_path = null) {
 		
 		if (is_string($a_code) && is_string($a_file_path)) {
 			$this->code = $a_code;

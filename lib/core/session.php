@@ -82,7 +82,7 @@ class ApineSession {
 	 * Construct the session handler
 	 * Fetch data from PHP structures and start the PHP session
 	 */
-	private function __construct() {
+	private function __construct () {
 		
 		// Check the session cookie (if one)
 		if (Cookie::get('session') != null) {
@@ -99,7 +99,7 @@ class ApineSession {
 		if (isset($_SESSION['ID'])) {
 			$this->logged_in = true;
 			$this->user_id = $_SESSION['ID'];
-			$this->session_type=ApineUserFactory::create_by_id($this->user_id)->get_type();
+			$this->session_type = ApineUserFactory::create_by_id($this->user_id)->get_type();
 		}
 	
 	}
@@ -108,7 +108,7 @@ class ApineSession {
 	 * Singleton design pattern implementation
 	 * @return ApineSession
 	 */
-	public static function get_instance() {
+	public static function get_instance () {
 		
 		if (!isset(self::$_instance)) {
 			self::$_instance = new static();
@@ -122,7 +122,7 @@ class ApineSession {
 	 * Verifies if a user is logged in
 	 * @return boolean
 	 */
-	public static function is_logged_in() {
+	public static function is_logged_in () {
 
 		return self::get_instance()->logged_in;
 	
@@ -132,7 +132,7 @@ class ApineSession {
 	 * Get logged in user's id
 	 * @return integer
 	 */
-	public static function get_user_id() {
+	public static function get_user_id () {
 
 		if (self::is_logged_in()) {
 			return $this->user_id;
@@ -144,7 +144,7 @@ class ApineSession {
 	 * Get logged in user
 	 * @return User
 	 */
-	public static function get_user() {
+	public static function get_user () {
 
 		if (self::is_logged_in()) {
 			return new ApineUser(self::get_instance()->user_id);
@@ -156,7 +156,7 @@ class ApineSession {
 	 * Get PHP's session Id
 	 * @return string
 	 */
-	public static function get_session_identifier() {
+	public static function get_session_identifier () {
 
 		return self::get_instance()->php_session_id;
 	
@@ -167,7 +167,7 @@ class ApineSession {
 	 * @param integer $type
 	 *        Session access level type
 	 */
-	public static function set_session_type($type) {
+	public static function set_session_type ($type) {
 
 		self::get_instance()->session_type = $type;
 	
@@ -177,7 +177,7 @@ class ApineSession {
 	 * Get current session access level
 	 * @return integer
 	 */
-	public static function get_session_type() {
+	public static function get_session_type () {
 
 		return self::get_instance()->session_type;
 	
@@ -193,7 +193,7 @@ class ApineSession {
 	 *        Password of the user
 	 * @return boolean
 	 */
-	public static function login($user_name, $password) {
+	public static function login ($user_name, $password) {
 
 		if (!self::is_logged_in()) {
 			$encode_pass = hash('sha256', $password);
@@ -220,7 +220,7 @@ class ApineSession {
 	/**
 	 * Log a user out
 	 */
-	public static function logout() {
+	public static function logout () {
 
 		if (self::is_logged_in()) {
 			$_SESSION = array();
@@ -235,7 +235,7 @@ class ApineSession {
 	/**
 	 * Make a logged un user's session permanent
 	 */
-	public static function make_permanent() {
+	public static function make_permanent () {
 
 		if (self::is_logged_in()) {
 			Cookie::set('session', self::get_instance()->php_session_id, time() + 7776000);

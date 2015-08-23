@@ -15,10 +15,10 @@ class ApineImageFactory extends ApineFactory {
 	 * @param integer $image_id        
 	 * @return boolean
 	 */
-	public static function is_id_exist($image_id) {
+	public static function is_id_exist ($image_id) {
 		
 		//$id_sql = (new Database())
-		$database=new Database();
+		$database = new Database();
 		$id_sql = $database->select("SELECT `id` FROM `apine_images` WHERE `id`=$image_id");
 		
 		if ($id_sql) {
@@ -34,10 +34,10 @@ class ApineImageFactory extends ApineFactory {
 	 * @param string $image_id        
 	 * @return boolean
 	 */
-	public static function is_access_id_exist($image_id) {
+	public static function is_access_id_exist ($image_id) {
 		
 		//$id_sql = (new Database())
-		$database=new Database();
+		$database = new Database();
 		$id_sql = $database->select("SELECT `id` FROM `apine_images` WHERE `access_id`='$image_id'");
 		
 		if ($id_sql) {
@@ -52,7 +52,7 @@ class ApineImageFactory extends ApineFactory {
 	 * Verify if the folder is owned by the user
 	 * @param integer $user_id        
 	 */
-	public static function is_user_folder($user_id) {
+	public static function is_user_folder ($user_id) {
 
 	}
 
@@ -63,7 +63,7 @@ class ApineImageFactory extends ApineFactory {
 	public static function create_all() {
 		
 		//$request = (new Database())
-		$database=new Database();
+		$database = new Database();
 		$request = $database->select('SELECT `id` FROM `apine_images` ORDER BY `id`');
 		$liste = new Liste();
 		
@@ -83,10 +83,10 @@ class ApineImageFactory extends ApineFactory {
 	 *        Image folder
 	 * @return Liste
 	 */
-	public static function create_all_folder($a_folder) {
+	public static function create_all_folder ($a_folder) {
 		
 		//$request = (new Database())
-		$database=new Database();
+		$database = new Database();
 		$request = $database->select("SELECT `id` FROM `apine_images` WHERE `folder`=$a_folder ORDER BY `id`");
 		$liste = new Liste();
 		
@@ -106,9 +106,9 @@ class ApineImageFactory extends ApineFactory {
 	 *        Image identifier
 	 * @return Image
 	 */
-	public static function create_by_id($a_id) {
+	public static function create_by_id ($a_id) {
 		
-		$database=new Database();
+		$database = new Database();
 		$sql_id = $database->prepare('SELECT `id` FROM `apine_images` WHERE `id`=?');
 		$ar_sql = $database->execute(array(
 						$a_id
@@ -130,9 +130,9 @@ class ApineImageFactory extends ApineFactory {
 	 *        External Identifier
 	 * @return Image
 	 */
-	public static function create_by_access_id($access_id) {
+	public static function create_by_access_id ($access_id) {
 
-		$database=new Database();
+		$database = new Database();
 		$sql_id = $database->prepare('SELECT `id` FROM `apine_images` WHERE `access_id`=?');
 		$ar_sql = $database->execute(array(
 						$access_id
@@ -156,10 +156,10 @@ class ApineImageFactory extends ApineFactory {
 	 *        User identifier
 	 * @return Liste
 	 */
-	public static function create_by_user($a_user_id) {
+	public static function create_by_user ($a_user_id) {
 
 		//$request = (new Database())
-		$database=new Database();
+		$database = new Database();
 		$request = $database->select("SELECT `id` FROM `apine_images` WHERE `user_id`=$a_user_id");
 		$liste = new Liste();
 		
@@ -181,10 +181,10 @@ class ApineImageFactory extends ApineFactory {
 	 *        Folder name
 	 * @return Liste
 	 */
-	public static function create_by_user_folder($a_user_id, $a_folder) {
+	public static function create_by_user_folder ($a_user_id, $a_folder) {
 
 		//$request = (new Database())
-		$database=new Database();
+		$database = new Database();
 		$request = $database->select("SELECT `id` FROM `apine_images` WHERE `user_id`=$a_user_id AND `folder`=$a_folder");
 		$liste = new Liste();
 		
@@ -204,10 +204,10 @@ class ApineImageFactory extends ApineFactory {
 	 *        User identifier
 	 * @return Liste
 	 */
-	public static function create_by_user_public($a_user_id) {
+	public static function create_by_user_public ($a_user_id) {
 
 		//$request = (new Database())
-		$database=new Database();
+		$database = new Database();
 		$request = $database->select("SELECT `id` FROM `apine_images` WHERE `user_id`=$a_user_id OR `privacy`=2");
 		$liste = new Liste();
 		
@@ -229,9 +229,9 @@ class ApineImageFactory extends ApineFactory {
 	 *        Folder name
 	 * @return Liste
 	 */
-	public static function create_by_user_folder_public($a_user_id, $a_folder) {
+	public static function create_by_user_folder_public ($a_user_id, $a_folder) {
 
-		$database=new Database();
+		$database = new Database();
 		$request_id = $database->prepare("SELECT `id` FROM `apine_images` WHERE ( `user_id`=? AND `folder`=? ) OR ( `privacy`=2 AND `folder`=? )");
 		$request = $database->execute(array(
 						$a_user_id,
@@ -255,10 +255,10 @@ class ApineImageFactory extends ApineFactory {
 	 * @param integer $privacy Privacy level
 	 * @return Liste
 	 */
-	public static function create_by_privacy($privacy) {
+	public static function create_by_privacy ($privacy) {
 		
 		//$request = (new Database())
-		$database=new Database();
+		$database = new Database();
 		$request = $database->select("SELECT `id` FROM `apine_images` WHERE `privacy`=$privacy");
 		$liste = new Liste();
 		

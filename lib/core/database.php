@@ -49,11 +49,11 @@ class Database {
 	 * 
 	 * @throws DatabaseException If cannot connect to database server
 	 */
-	public function __construct() {
+	public function __construct () {
 
 		try {
 			self::$_instance = $this->get_instance();
-		} catch(PDOException $e) {
+		} catch (PDOException $e) {
 			throw new DatabaseException($e->getMessage());
 		}
 	
@@ -67,13 +67,13 @@ class Database {
 	 * @static
 	 *
 	 */
-	public static function get_instance() {
+	public static function get_instance () {
 
 		if (!isset(self::$_instance)) {
 			
 			try {
 				self::$_instance = new PDO(Config::get('database', 'type').':host='.Config::get('databse', 'host').';dbname='.Config::get('database', 'dbname').';charset='.Config::get('database', 'charset'), Config::get('database', 'username'), Config::get('database', 'password'));
-			} catch(PDOException $e) {
+			} catch (PDOException $e) {
 				throw new DatabaseException($e->getMessage());
 			}
 			
@@ -92,7 +92,7 @@ class Database {
 	 * @throws DatabaseException If unable to execute query
 	 * @return multitype:mixed Matching rows
 	 */
-	public function select($query) {
+	public function select ($query) {
 
 		$arResult = array();
 		
@@ -109,7 +109,7 @@ class Database {
 			}
 			
 			return $arResult;
-		} catch(PDOException $e) {
+		} catch (PDOException $e) {
 			throw new DatabaseException($e->getMessage());
 		}
 	
@@ -126,7 +126,7 @@ class Database {
 	 * @throws DatabaseException If cannot execute insertion query
 	 * @return string Id of the newly inserted row
 	 */
-	public function insert($tableName, $arValues){
+	public function insert ($tableName, $arValues) {
 		
 		$fields = array_keys($arValues);
 		$values = array_values($arValues);
@@ -157,7 +157,7 @@ class Database {
 			}
 			
 			return $this->last_insert_id();
-		} catch(PDOException $e) {
+		} catch (PDOException $e) {
 			throw new DatabaseException($e->getMessage());
 		}
 	
@@ -176,7 +176,7 @@ class Database {
 	 *        define the "WHERE" SQL statement
 	 * @throws DatabaseException If cannot execute update query
 	 */
-	public function update($tableName, $arValues, $arConditions) {
+	public function update ($tableName, $arValues, $arConditions) {
 		
 		$new_values = array();
 		$arWhere = array();
@@ -211,7 +211,7 @@ class Database {
 		//print $query;
 		try {
 			self::$_instance->exec($query);
-		} catch(PDOException $e) {
+		} catch (PDOException $e) {
 			throw new DatabaseException($e->getMessage());
 		}
 	
@@ -229,7 +229,7 @@ class Database {
 	 * @throws DatabaseException If cannot execute delete query
 	 * @return boolean
 	 */
-	public function delete($tableName, $arCondition) {
+	public function delete ($tableName, $arCondition) {
 		
 		$arWhere = array();
 		
@@ -254,7 +254,7 @@ class Database {
 			}
 			
 			return true;
-		} catch(PDOException $e) {
+		} catch (PDOException $e) {
 			throw new DatabaseException($e->getMessage());
 		}
 	
@@ -269,12 +269,12 @@ class Database {
 	 * @throws DatabaseException If cannot execute the query
 	 * @return integer
 	 */
-	public function exec($query) {
+	public function exec ($query) {
 
 		try {
 			$result = self::$_instance->exec($query);
 			return $result;
-		} catch(PDOException $e) {
+		} catch (PDOException $e) {
 			throw new DatabaseException($e->getMessage());
 		}
 	
@@ -290,7 +290,7 @@ class Database {
 	 *        href="http://php.net/manual/en/pdo.prepare.php">http://php.net/manual/en/pdo.prepare.php</a>
 	 * @return integer
 	 */
-	public function prepare($statement, $driver_options = array()) {
+	public function prepare ($statement, $driver_options = array()) {
 		
 		// Returns statement's index for later access
 		$this->_isExecute = true;
@@ -310,7 +310,7 @@ class Database {
 	 * @throws DatabaseException If cannot execute statement
 	 * @return multitype:mixed
 	 */
-	public function execute($input_parameters = array(), $index = null) {
+	public function execute ($input_parameters = array(), $index = null) {
 		
 		// When no index is passed, executes the oldest statement
 		if ($this->_isExecute) {
@@ -334,7 +334,7 @@ class Database {
 				
 				$result->closeCursor();
 				return $arResult;
-			} catch(PDOException $e) {
+			} catch (PDOException $e) {
 				throw new DatabaseException($e->getMessage());
 			}
 		}else{
@@ -349,7 +349,7 @@ class Database {
 	 * @param integer $index
 	 *        Identifier of the PDO tatement
 	 */
-	public function close_cursor($index = null) {
+	public function close_cursor ($index = null) {
 		
 		// If not index is passed, deletes the oldest statement
 		if ($index == null) {
@@ -380,7 +380,7 @@ class Database {
 	 * @return integer
 	 * @see PDO::lastInsertID()
 	 */
-	public function last_insert_id($name = null) {
+	public function last_insert_id ($name = null) {
 
 		return self::$_instance->lastInsertID($name);
 	
@@ -396,7 +396,7 @@ class Database {
 	 *        alternate quoting styles.
 	 * @return string
 	 */
-	public function quote($string, $parameter_type = PDO::PARAM_STR) {
+	public function quote ($string, $parameter_type = PDO::PARAM_STR) {
 
 		return self::$_instance->quote($string, $parameter_type);
 	

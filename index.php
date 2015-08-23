@@ -7,17 +7,17 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
-$before=microtime(true) * 1000;
+$before = microtime(true) * 1000;
 
 require_once('lib/core/autoloader.php');
 Autoload::load_kernel();
 ini_set('include_path', realpath(dirname(__FILE__)));
 
 if (Config::get('apine-framework', 'mode') == 'development') {
-	ini_set('display_errors','On');
+	ini_set('display_errors', 'On');
 	error_reporting(E_ALL | E_STRICT);
 } else {
-	ini_set('display_errors','Off');
+	ini_set('display_errors', 'Off');
 	error_reporting(E_ERROR);
 }
 
@@ -31,7 +31,7 @@ if (!function_exists('str_split_unicode')) {
 	 * @param number $l
 	 * @return string
 	 */
-	function str_split_unicode($str, $l = 0) {
+	function str_split_unicode ($str, $l = 0) {
 		
 		if ($l > 0) {
 			
@@ -56,11 +56,11 @@ if (!function_exists('str_split_unicode')) {
  * of the request up to now
  * @return string
  */
-function execution_time() {
+function execution_time () {
 	
 	global $before;
-	$after=microtime(true) * 1000;
-	return number_format((($after-$before)),1);
+	$after = microtime(true) * 1000;
+	return number_format($after - $before, 1);
 	
 }
 

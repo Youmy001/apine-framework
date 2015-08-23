@@ -2,7 +2,7 @@
 
 class ErrorController extends Controller {
 	
-	public function notfound() {
+	public function notfound () {
 		
 		$this->_view->set_title('Not Found');
 		$this->_view->set_view('error/error');
@@ -15,7 +15,7 @@ class ErrorController extends Controller {
 		
 	}
 	
-	public function forbidden() {
+	public function forbidden () {
 		
 		$this->_view->set_title('Forbidden');
 		$this->_view->set_view('error/error');
@@ -28,7 +28,7 @@ class ErrorController extends Controller {
 		
 	}
 	
-	public function gone() {
+	public function gone () {
 		
 		$this->_view->set_title('Gone');
 		$this->_view->set_view('error/error');
@@ -41,7 +41,7 @@ class ErrorController extends Controller {
 		
 	}
 	
-	public function unauthorized() {
+	public function unauthorized () {
 		
 		$this->_view->set_title('Unauthorized');
 		$this->_view->set_view('error/error');
@@ -54,7 +54,7 @@ class ErrorController extends Controller {
 		
 	}
 	
-	public function methodnotallowed() {
+	public function methodnotallowed () {
 		
 		$this->_view->set_title('Method Not Allowed');
 		$this->_view->set_view('error/error');
@@ -67,7 +67,7 @@ class ErrorController extends Controller {
 		
 	}
 	
-	public function server() {
+	public function server () {
 		
 		$this->_view->set_title('Internal Server Error');
 		$this->_view->set_view('error/error');
@@ -80,7 +80,7 @@ class ErrorController extends Controller {
 		
 	}
 	
-	public function badrequest() {
+	public function badrequest () {
 		
 		$this->_view->set_title('Bad Request');
 		$this->_view->set_view('error/error');
@@ -93,7 +93,7 @@ class ErrorController extends Controller {
 		
 	}
 	
-	public function custom($code,$message) {
+	public function custom ($code,$message) {
 		
 		$this->_view->set_title($message);
 		$this->_view->set_view('error/error');

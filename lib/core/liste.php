@@ -33,7 +33,7 @@ class Liste implements IteratorAggregate {
 	 * @throws Exception If cannot insert item into the collection
 	 * @return mixed|boolean
 	 */
-	public function add_item($a_item, $a_key = null) {
+	public function add_item ($a_item, $a_key = null) {
 
 		try {
 			
@@ -46,7 +46,7 @@ class Liste implements IteratorAggregate {
 			
 			// Retrieve and return the key
 			return array_search($a_item, $this->items, true);
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			return false;
 		}
 	
@@ -60,7 +60,7 @@ class Liste implements IteratorAggregate {
 	 * @throws Exception If cannot remove item from the collection
 	 * @return boolean
 	 */
-	public function remove_item($a_key) {
+	public function remove_item ($a_key) {
 
 		try {
 			
@@ -77,7 +77,7 @@ class Liste implements IteratorAggregate {
 			}
 			
 			return true;
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			return false;
 		}
 	
@@ -91,7 +91,7 @@ class Liste implements IteratorAggregate {
 	 * @throws Exception If cannot fetch the item fromthe collection
 	 * @return mixed |boolean
 	 */
-	public function get_item($a_key) {
+	public function get_item ($a_key) {
 
 		try {
 			
@@ -117,7 +117,7 @@ class Liste implements IteratorAggregate {
 	 * @throws Exception If cannot fetch items from the collection
 	 * @return multitype:mixed |boolean
 	 */
-	public function get_all() {
+	public function get_all () {
 
 		try {
 			
@@ -126,7 +126,7 @@ class Liste implements IteratorAggregate {
 			}
 			
 			return $this->items;
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			return false;
 		}
 	
@@ -138,7 +138,7 @@ class Liste implements IteratorAggregate {
 	 * @throws Exception If cannot fetch the item from the collection
 	 * @return mixed|boolean
 	 */
-	public function get_first() {
+	public function get_first () {
 
 		try {
 			
@@ -147,7 +147,7 @@ class Liste implements IteratorAggregate {
 			}
 			
 			return reset($this->items);
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			return false;
 		}
 	
@@ -159,7 +159,7 @@ class Liste implements IteratorAggregate {
 	 * @throws Exception If cannot fetch the item from the collection
 	 * @return mixed|boolean
 	 */
-	public function get_last() {
+	public function get_last () {
 
 		try {
 			
@@ -168,7 +168,7 @@ class Liste implements IteratorAggregate {
 			}
 			
 			return end($this->items);
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			return false;
 		}
 	
@@ -180,7 +180,7 @@ class Liste implements IteratorAggregate {
 	 * @throws Exception If cannot reverse the collection
 	 * @return boolean
 	 */
-	public function reverse() {
+	public function reverse () {
 
 		try {
 			
@@ -190,7 +190,7 @@ class Liste implements IteratorAggregate {
 			
 			$this->items = array_reverse($this->items);
 			return true;
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			return false;
 		}
 	
@@ -202,7 +202,7 @@ class Liste implements IteratorAggregate {
 	 * @throws Exception If cannot sort the collection
 	 * @return boolean
 	 */
-	public function ksort() {
+	public function ksort () {
 
 		try {
 			
@@ -212,7 +212,7 @@ class Liste implements IteratorAggregate {
 			
 			ksort($this->items);
 			return true;
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			return false;
 		}
 	
@@ -224,7 +224,7 @@ class Liste implements IteratorAggregate {
 	 * @throws Exception If cannot fetch item keys
 	 * @return string[]|boolean
 	 */
-	public function keys() {
+	public function keys () {
 
 		try {
 			
@@ -239,7 +239,7 @@ class Liste implements IteratorAggregate {
 				return array();
 			}
 			
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			return false;
 		}
 	
@@ -250,7 +250,7 @@ class Liste implements IteratorAggregate {
 	 * 
 	 * @return integer
 	 */
-	public function length() {
+	public function length () {
 
 		return sizeof($this->items);
 	
@@ -264,7 +264,7 @@ class Liste implements IteratorAggregate {
 	 * @throws Exception If cannot verify the key with the collection
 	 * @return boolean
 	 */
-	public function key_exists($a_key) {
+	public function key_exists ($a_key) {
 
 		try {
 			
@@ -273,7 +273,7 @@ class Liste implements IteratorAggregate {
 			}
 			
 			return (isset($this->items[$a_key]));
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			return false;
 		}
 	
@@ -287,73 +287,73 @@ class Liste implements IteratorAggregate {
 	 * @throws Exception If the collection is empty
 	 * @return boolean
 	 */
-	public function value_exists($a_value) {
+	public function value_exists ($a_value) {
 		
 		try {
 			if ($this->length() == 0) {
 				throw new Exception();
 			}
 			
-			$match_index=null;
-			$match_item=false;
+			$match_index = null;
+			$match_item = false;
 			
 			// Cycle through every items in the Liste
-			foreach ($this->items as $key=>$item) {
+			foreach ($this->items as $key => $item) {
 				// The value tested must be of a compatible type
 				// against the matching value in the Liste
 				
 				// Scalar types (string, integer, float and boolean) can be
 				// converted easily from one to another thus can be tested together
-				if ((is_string($a_value)||is_numeric($a_value)) &&
-					(is_string($item)||is_numeric($item))) {
+				if ((is_string($a_value) || is_numeric($a_value)) &&
+					(is_string($item) || is_numeric($item))) {
 						
-					if ($a_value==$item) {
-						$match_index=$key;
-						$match_item=true;
+					if ($a_value == $item) {
+						$match_index = $key;
+						$match_item = true;
 					}
 					
 				// If fact boolean are kind of fucked up and
 				// need a seperate condition
-				} else if (is_bool($a_value)&&is_bool($item)) {
+				} else if (is_bool($a_value) && is_bool($item)) {
 					
-					if ($a_value===$item) {
-						$match_index=$key;
-						$match_item=true;
+					if ($a_value === $item) {
+						$match_index = $key;
+						$match_item = true;
 					}
 					
 				// Arrays are kind of special and therefore need
 				// a different test method
-				} else if (is_array($a_value)&&is_array($item)) {
-					$diff=array_diff($a_value,$item);
+				} else if (is_array($a_value) && is_array($item)) {
+					$diff = array_diff($a_value,$item);
 					
-					if (count($diff)==0) {
-						$match_index=$key;
-						$match_item=true;
+					if (count($diff) == 0) {
+						$match_index = $key;
+						$match_item = true;
 					}
 					
 				// Objects are aggregations of the two previous
-				} else if ((is_object($a_value)&&is_object($item))&&(get_class($a_value)&&get_class($item))) {
+				} else if ((is_object($a_value) && is_object($item)) && (get_class($a_value) && get_class($item))) {
 					
 					// If objects are both ApineEntity we can easily
 					// check for their ids
-					if (get_parent_class($a_value)=="ApineEntityModel" &&
-						get_parent_class($item)=="ApineEntityModel") {
+					if (get_parent_class($a_value) == "ApineEntityModel" &&
+						get_parent_class($item) == "ApineEntityModel") {
 						
-						if ($a_value->get_id()==$item->get_id()) {
-							$match_index=$key;
-							$match_item=true;
+						if ($a_value->get_id() == $item->get_id()) {
+							$match_index = $key;
+							$match_item = true;
 						}
 						
 					} else {
-						$array_value=(array)$a_value;
-						$array_item=(array)$item;
+						$array_value = (array) $a_value;
+						$array_item = (array) $item;
 						
-						if (get_class($a_value)==get_class($item)) {
-							$diff=array_diff_assoc($array_value,$array_item);
+						if (get_class($a_value) == get_class($item)) {
+							$diff = array_diff_assoc($array_value,$array_item);
 							
-							if (count($diff)==0) {
-								$match_index=$key;
-								$match_item=true;
+							if (count($diff) == 0) {
+								$match_index = $key;
+								$match_item = true;
 							}
 							
 						}

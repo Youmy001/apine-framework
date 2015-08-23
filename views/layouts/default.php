@@ -41,19 +41,19 @@
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li><a href="<?= URL_Helper::path('home') ?>">Home</a></li>
-					<li><a href="<?= URL_Helper::path('about') ?>">About</a></li>
-					<li><a href="<?= URL_Helper::path('contact') ?>">Contact</a></li>
+					<li><a href="<?= URL_Helper::path('home') ?>"><?= Translator::translate("en-US", "menu","home"); ?></a></li>
+					<li><a href="<?= URL_Helper::path('about') ?>"><?= Translator::translate("en-US", "menu","about"); ?></a></li>
+					<li><a href="<?= URL_Helper::path('contact') ?>"><?= Translator::translate("en-US", "menu","contact"); ?></a></li>
 				</ul>
 				<?php if(!ApineSession::is_logged_in()){?>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="<?= URL_Helper::path('login');?>">Login</a></li>
-					<li><a href="<?= URL_Helper::path('register');?>">Sign Up</a></li>
+					<li><a href="<?= URL_Helper::path('login');?>"><?= Translator::translate("en-US", "menu","login"); ?></a></li>
+					<li><a href="<?= URL_Helper::path('register');?>"><?= Translator::translate("en-US", "menu","register"); ?></a></li>
 				</ul>
 				<?php }else{?>
 				<ul class="nav navbar-nav navbar-right">
 					<p class="navbar-text">Signed in as <?= ApineSession::get_user()->get_username() ?> (<i><?= ((int)ApineSession::get_session_type()===SESSION_ADMIN)?'Admin':'User' ?></i>)</p>
-					<li><a href="<?= URL_Helper::path('logout') ?>">Logout</a></li>
+					<li><a href="<?= URL_Helper::path('logout') ?>"><?= Translator::translate("en-US", "menu","logout"); ?></a></li>
 				</ul>
 				<?php } ?>
 			</div>

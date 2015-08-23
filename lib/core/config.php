@@ -11,7 +11,7 @@
  * Configuration Reader
  * Read and write project's configuration file
  */
-class Config{
+class Config {
 	
 	/**
 	 * Instance of the Config reader
@@ -34,7 +34,7 @@ class Config{
 	 * Construct the Conguration Reader handler
 	 * Extract string from the configuration file 
 	 */
-	private function __construct() {
+	private function __construct () {
 		
 		if (file_exists('config.ini')) {
 			$this->settings = parse_ini_file('config.ini', true);
@@ -50,7 +50,7 @@ class Config{
 	 * @static
 	 * @return Config
 	 */
-	public static function get_instance() {
+	public static function get_instance () {
 		
 		if (!isset(self::$_instance)) {
 			self::$_instance = new static();
@@ -67,7 +67,7 @@ class Config{
 	 * @param string $key
 	 * @return <NULL|array>
 	 */
-	public static function get($prefix, $key) {
+	public static function get ($prefix, $key) {
 		
 		$prefix = strtolower($prefix);
 		$key = strtolower($key);
@@ -82,13 +82,13 @@ class Config{
 	 * @param string $key
 	 * @param string $value
 	 */
-	public static function set($prefix, $key, $value) {
+	public static function set ($prefix, $key, $value) {
 		
 		$prefix = strtolower($prefix);
 		$key = strtolower($key);
 		
-		self::get_instance()->settings[$prefix][$key]=$value;
-		write_ini_file(self::get_instance()->settings, 'config.ini',true);
+		self::get_instance()->settings[$prefix][$key] = $value;
+		write_ini_file(self::get_instance()->settings, 'config.ini', true);
 		
 	}
 }
@@ -97,7 +97,7 @@ class Config{
  * Write strings in a configuration file in INI format
  * Source: http://stackoverflow.com/questions/1268378/create-ini-file-write-values-in-php
  */
-function write_ini_file($assoc_arr, $path, $has_sections = FALSE) {
+function write_ini_file ($assoc_arr, $path, $has_sections = FALSE) {
 
 	$content = "";
 	

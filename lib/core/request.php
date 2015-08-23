@@ -95,36 +95,36 @@ class Request {
 	 * Construct the Request Management handler
 	 * Extract information from the request and clean user inputs 
 	 */
-	private function __construct() {
+	private function __construct () {
 		
-		$this->request_type=$_SERVER['REQUEST_METHOD'];
-		$this->request_port=$_SERVER['SERVER_PORT'];
-		$this->request_ssl=(isset($_SERVER['HTTPS'])&&!empty($_SERVER['HTTPS']));
-		$this->api_call=(isset($_GET['api']) && $_GET['api']==='api');
+		$this->request_type	= $_SERVER['REQUEST_METHOD'];
+		$this->request_port	= $_SERVER['SERVER_PORT'];
+		$this->request_ssl	= (isset($_SERVER['HTTPS'])&&!empty($_SERVER['HTTPS']));
+		$this->api_call		= (isset($_GET['api']) && $_GET['api']==='api');
 		
-		$this->get=$_GET;
-		$this->post=$_POST;
-		$this->files=$_FILES;
-		$this->request=$_REQUEST;
-		$this->server=$_SERVER;
-		$this->session=&$_SESSION;
+		$this->get 		= $_GET;
+		$this->post		= $_POST;
+		$this->files		= $_FILES;
+		$this->request	= $_REQUEST;
+		$this->server		= $_SERVER;
+		$this->session	= &$_SESSION;
 		
-		$_GET=null;
-		$_POST=null;
-		$_FILES=null;
-		$_REQUEST=null;
+		$_GET		= null;
+		$_POST		= null;
+		$_FILES	= null;
+		$_REQUEST	= null;
 		//$_SERVER=null;
 		
 		foreach ($this->post as $key=>$value) {
-			$this->post[$key]=filter_var($value,FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+			$this->post[$key] = filter_var($value,FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 		}
 		
 		// Format Files Array
-		if (is_array($this->files)&&!empty($this->files)) {
-			$first=reset($this->files);
+		if (is_array($this->files) && !empty($this->files)) {
+			$first =reset($this->files);
 			
 			if (isset($first['name']) && $count($first['name'])>1) {
-				$this->files=self::format_files_array($this->files);
+				$this->files = self::format_files_array($this->files);
 			}
 			
 		}
@@ -136,7 +136,7 @@ class Request {
 	 * 
 	 * @return Request
 	 */
-	public static function get_instance() {
+	public static function get_instance () {
 		
 		if (!isset(self::$_instance)) {
 			self::$_instance = new static();
@@ -150,7 +150,7 @@ class Request {
 	 * 
 	 * @return string
 	 */
-	public static function get_request_type() {
+	public static function get_request_type () {
 		
 		return self::get_instance()->request_type;
 		
@@ -161,7 +161,7 @@ class Request {
 	 * 
 	 * @return string
 	 */
-	public static function get_request_port() {
+	public static function get_request_port () {
 		
 		return self::get_instance()->request_port;
 		
@@ -172,7 +172,7 @@ class Request {
 	 * 
 	 * @return boolean
 	 */
-	public static function is_https() {
+	public static function is_https () {
 		
 		return self::get_instance()->request_ssl;
 		
@@ -183,12 +183,12 @@ class Request {
 	 * 
 	 * @return boolean
 	 */
-	public static function is_api_call() {
+	public static function is_api_call () {
 		
-		$return=false;
+		$return = false;
 		
-		if (self::get_instance()->api_call==true) {
-			$return=true;
+		if (self::get_instance()->api_call == true) {
+			$return = true;
 		}
 		
 		return $return;
@@ -200,11 +200,11 @@ class Request {
 	 * 
 	 * @return boolean
 	 */
-	public static function is_get() {
+	public static function is_get () {
 		
 		$return=false;
 		
-		if (self::get_instance()->request_type=="GET") {
+		if (self::get_instance()->request_type == "GET") {
 			$return=true;
 		}
 		
@@ -216,12 +216,12 @@ class Request {
 	 * 
 	 * @return boolean
 	 */
-	public static function is_post() {
+	public static function is_post () {
 		
-		$return=false;
+		$return = false;
 		
-		if (self::get_instance()->request_type=="POST") {
-			$return=true;
+		if (self::get_instance()->request_type == "POST") {
+			$return = true;
 		}
 		
 		return $return;
@@ -232,12 +232,12 @@ class Request {
 	 * 
 	 * @return boolean
 	 */
-	public static function is_put() {
+	public static function is_put () {
 		
-		$return=false;
+		$return = false;
 		
-		if (self::get_instance()->request_type=="PUT") {
-			$return=true;
+		if (self::get_instance()->request_type == "PUT") {
+			$return = true;
 		}
 		
 		return $return;
@@ -248,12 +248,12 @@ class Request {
 	 * 
 	 * @return boolean
 	 */
-	public static function is_delete() {
+	public static function is_delete () {
 		
-		$return=false;
+		$return = false;
 		
-		if (self::get_instance()->request_type=="DELETE") {
-			$return=true;
+		if (self::get_instance()->request_type == "DELETE") {
+			$return = true;
 		}
 		
 		return $return;
@@ -264,7 +264,7 @@ class Request {
 	 * 
 	 * @return array
 	 */
-	public static function get() {
+	public static function get () {
 		
 		return self::get_instance()->get;
 		
@@ -275,7 +275,7 @@ class Request {
 	 * 
 	 * @return array
 	 */
-	public static function post() {
+	public static function post () {
 		
 		return self::get_instance()->post;
 		
@@ -286,7 +286,7 @@ class Request {
 	 * 
 	 * @return array
 	 */
-	public static function files() {
+	public static function files () {
 		
 		return self::get_instance()->files;
 		
@@ -297,7 +297,7 @@ class Request {
 	 * 
 	 * @return array
 	 */
-	public static function request() {
+	public static function request () {
 		
 		return self::get_instance()->request;
 		
@@ -308,7 +308,7 @@ class Request {
 	 * 
 	 * @return array
 	 */
-	public static function server() {
+	public static function server () {
 		
 		return self::get_instance()->server;
 		
@@ -320,13 +320,13 @@ class Request {
 	 * @param array $files
 	 * @return array
 	 */
-	private static function format_files_array(Array $files) {
+	private static function format_files_array (Array $files) {
 		
-		$result=array();
+		$result = array();
 		
 		foreach ($files as $key1 => $value1) {
 			foreach ($value1 as $key2 => $value2) {
-				$result[$key2][$key1]=$value2;
+				$result[$key2][$key1] = $value2;
 			}
 		}
 		

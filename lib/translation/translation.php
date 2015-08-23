@@ -34,29 +34,29 @@ class Translation {
 	 * @param TranslationLanguage $a_language
 	 * @throws Exception If the file is inexistant or invalid
 	 */
-	public function __construct(TranslationLanguage $a_language) {
+	public function __construct (TranslationLanguage $a_language) {
 		
 		$this->language = $a_language;
 		
 		if (file_exists($this->language->file_path)) {
-			$file=new File($this->language->file_path);
+			$file = new File($this->language->file_path);
 			
-			if($file->get_extention()=="json"){
-				$content=fread($file->handle(),$file->get_size());
-				$content=json_decode($content);
-				$array=array();
+			if($file->get_extention() == "json"){
+				$content = fread($file->handle(), $file->get_size());
+				$content = json_decode($content);
+				$array = array();
 				
-				foreach ($content as $part=>$sub_content) {
+				foreach ($content as $part => $sub_content) {
 					if (is_string($sub_content)){
 						$array[$part] = $sub_content;
 					} else {
-						foreach ($sub_content as $key=>$value) {
+						foreach ($sub_content as $key => $value) {
 							$array[$part][$key] = $value;
 						}
 					}
 				}
 				
-				$this->entries=$array;
+				$this->entries = $array;
 			}else{
 				throw new Exception("Invalid File");
 			}
@@ -73,11 +73,11 @@ class Translation {
 	 * @param string $a_key
 	 * @return string
 	 */
-	public function get($a_prefix, $a_key=null) {
+	public function get ($a_prefix, $a_key = null) {
 		
 		$prefix = strtolower($a_prefix);
 		
-		if ($a_key!=null) {
+		if ($a_key != null) {
 			$key = strtolower($a_key);
 			return isset($this->entries[$prefix][$key]) ? $this->entries[$prefix][$key] : null;
 		} else {
@@ -94,7 +94,7 @@ class Translation {
 	 * @param string $a_pattern
 	 * @return string
 	 */
-	public function parse($a_key, $a_index=null, $a_pattern=null) {
+	public function parse ($a_key, $a_index = null, $a_pattern = null) {
 		
 		if (!is_array($a_pattern)) {
 			$a_pattern = array($a_pattern);
@@ -110,7 +110,7 @@ class Translation {
 	 * 
 	 * @return TranslationLanguage
 	 */
-	public function get_language() {
+	public function get_language () {
 		
 		return $this->language;
 		

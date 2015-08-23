@@ -30,13 +30,13 @@ abstract class ApineFactory implements ApineFactoryInterface {
 	 * @deprecated
 	 *
 	 */
-	protected static function _get_connection() {
+	protected static function _get_connection () {
 
 		if (!isset(self::$_instance)) {
 			
 			try {
 				self::$_instance = new Database();
-			} catch(DatabaseException $e) {
+			} catch (DatabaseException $e) {
 				throw new DatabaseException($e->getMessage());
 			}
 			
@@ -57,7 +57,7 @@ abstract class ApineFactory implements ApineFactoryInterface {
 	 * @deprecated
 	 *
 	 */
-	public static function get_table_row($table_name, $row_id) {
+	public static function get_table_row ($table_name, $row_id) {
 
 		$row_id = self::_get_connection()->quote($row_id);
 		return self::_get_connection()->select("SELECT * from $table_name where ID=$row_id");
@@ -75,7 +75,7 @@ abstract class ApineFactory implements ApineFactoryInterface {
 	 * @deprecated
 	 * 
 	 */
-	public static function set_table_row($table_name, $ar_row) {
+	public static function set_table_row ($table_name, $ar_row) {
 
 		return self::_get_connection()->insert($table_name, $ar_row);
 	
@@ -93,7 +93,7 @@ abstract class ApineFactory implements ApineFactoryInterface {
 	 * @deprecated
 	 *
 	 */
-	public static function update_table_row($table_name, $ar_row, $ar_cond) {
+	public static function update_table_row ($table_name, $ar_row, $ar_cond) {
 
 		self::_get_connection()->update($table_name, $ar_row, $ar_cond);
 	
@@ -110,7 +110,7 @@ abstract class ApineFactory implements ApineFactoryInterface {
 	 * @deprecated
 	 *
 	 */
-	public static function remove_table_row($table_name, $ar_cond) {
+	public static function remove_table_row ($table_name, $ar_cond) {
 
 		return self::_get_connection()->delete($table_name, $ar_cond);
 	

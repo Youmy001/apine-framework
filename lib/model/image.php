@@ -52,7 +52,7 @@ class ApineImage extends ApineEntityModel {
 	 * @param integer $a_id
 	 *        Image identifier on database
 	 */
-	public function __construct($a_id = null) {
+	public function __construct ($a_id = null) {
 
 		$this->_initialize('apine_images', $a_id);
 		
@@ -66,7 +66,7 @@ class ApineImage extends ApineEntityModel {
 	 * Fetch image's identifier on database
 	 * @return integer
 	 */
-	public function get_id() {
+	public function get_id () {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -80,7 +80,7 @@ class ApineImage extends ApineEntityModel {
 	 * Set image's identifier on database
 	 * @param integer $a_id        
 	 */
-	public function set_id($a_id) {
+	public function set_id ($a_id) {
 
 		$this->id = $a_id;
 		$this->_set_id($a_id);
@@ -92,7 +92,7 @@ class ApineImage extends ApineEntityModel {
 	 * Fetch image's external identifier
 	 * @return string
 	 */
-	public function get_access_id() {
+	public function get_access_id () {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -107,7 +107,7 @@ class ApineImage extends ApineEntityModel {
 	 * @param string $a_access_id
 	 *        Image's external identifier
 	 */
-	public function set_access_id($a_access_id) {
+	public function set_access_id ($a_access_id) {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -122,7 +122,7 @@ class ApineImage extends ApineEntityModel {
 	 * Fetch image's privacy level
 	 * @return interger
 	 */
-	public function get_privacy() {
+	public function get_privacy () {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -137,7 +137,7 @@ class ApineImage extends ApineEntityModel {
 	 * @param integer $a_privacy
 	 *        Image's privacy level
 	 */
-	public function set_privacy($a_privacy) {
+	public function set_privacy ($a_privacy) {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -152,7 +152,7 @@ class ApineImage extends ApineEntityModel {
 	 * Fetch image's folder
 	 * @return string
 	 */
-	public function get_folder() {
+	public function get_folder () {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -167,7 +167,7 @@ class ApineImage extends ApineEntityModel {
 	 * @param string $a_folder
 	 *        Image folder
 	 */
-	public function set_folder($a_folder) {
+	public function set_folder ($a_folder) {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -182,7 +182,7 @@ class ApineImage extends ApineEntityModel {
 	 * Fetch image's owner
 	 * @return User
 	 */
-	public function get_user() {
+	public function get_user () {
 
 		if($this->loaded == 0) {
 			$this->load();
@@ -197,7 +197,7 @@ class ApineImage extends ApineEntityModel {
 	 * @param integer|User $a_user
 	 *        Image's owner
 	 */
-	public function set_user($a_user) {
+	public function set_user ($a_user) {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -207,7 +207,7 @@ class ApineImage extends ApineEntityModel {
 			if (UserFactory::is_id_exist($a_user)) {
 				$this->user = UserFactory::create_by_id($a_user);
 			}
-		} else if(get_class($a_user) == 'User') {
+		} else if (get_class($a_user) == 'User') {
 			$this->user = $a_user;
 		}
 		
@@ -219,7 +219,7 @@ class ApineImage extends ApineEntityModel {
 	 * Fetch image's file resource
 	 * @return File_Image
 	 */
-	public function get_file() {
+	public function get_file () {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -234,7 +234,7 @@ class ApineImage extends ApineEntityModel {
 	 * @param string|File_Image $a_file
 	 *        File location or file ressource
 	 */
-	public function set_file($a_file) {
+	public function set_file ($a_file) {
 
 		if ($this->loaded == 0) {
 			$this->load();
@@ -242,7 +242,7 @@ class ApineImage extends ApineEntityModel {
 		
 		if (is_string($a_file)) {
 			$this->file = new FileImage($a_file);
-		} else if(get_class($a_file) == 'File_Image') {
+		} else if (get_class($a_file) == 'File_Image') {
 			$this->file = $a_file;
 		}
 		
@@ -257,7 +257,7 @@ class ApineImage extends ApineEntityModel {
 	 * (non-PHPdoc)
 	 * @see ApineEntityInterface::load()
 	 */
-	public function load() {
+	public function load () {
 
 		if (!is_null($this->id)) {
 			$this->access_id = $this->_get_field('access_id');
@@ -274,7 +274,7 @@ class ApineImage extends ApineEntityModel {
 	 * (non-PHPdoc)
 	 * @see ApineEntityInterface::save()
 	 */
-	public function save() {
+	public function save () {
 
 		parent::_save();
 		// Save
@@ -284,7 +284,7 @@ class ApineImage extends ApineEntityModel {
 	 * (non-PHPdoc)
 	 * @see ApineEntityInterface::delete()
 	 */
-	public function delete() {
+	public function delete () {
 
 		if ($this->loaded == 0) {
 			$this->load();
