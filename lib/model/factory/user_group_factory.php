@@ -6,7 +6,7 @@ class ApineUserGroupFactory extends ApineFactory{
 
 		//$request = (new Database())
 		$database=new Database();
-		$request = $request->select("SELECT `id` FROM `apine_user_groups` WHERE `id`=$a_id");
+		$request = $database->select("SELECT `id` FROM `apine_user_groups` WHERE `id`=$a_id");
 		
 		if ($request != null && count($request) > 0) {
 			return true;
@@ -20,7 +20,7 @@ class ApineUserGroupFactory extends ApineFactory{
 
 		//$request = (new Database())
 		$database=new Database();
-		$request = $request->select("SELECT `id` FROM `apine_user_groups` ORDER BY `id`");
+		$request = $database->select("SELECT `id` FROM `apine_user_groups` ORDER BY `id`");
 		$liste = new Liste();
 		
 		if ($request != null && count($request) > 0) {
@@ -37,7 +37,7 @@ class ApineUserGroupFactory extends ApineFactory{
 
 		//$request = (new Database())
 		$database=new Database();
-		$request = $request->select("SELECT `id` FROM `apine_user_groups` WHERE `id`=$a_id");
+		$request = $database->select("SELECT `id` FROM `apine_user_groups` WHERE `id`=$a_id");
 		
 		if ($request != null && count($request) > 0) {
 			$return = new ApineUserGroup($request[0]['id']);
@@ -59,7 +59,7 @@ class ApineUserGroupFactory extends ApineFactory{
 	
 		//$request = (new Database())
 		$database=new Database();
-		$request = $request->select("SELECT `group_id` FROM `apine_users_user_groups` WHERE `user_id`=$user");
+		$request = $database->select("SELECT `group_id` FROM `apine_users_user_groups` WHERE `user_id`=$user");
 		$liste = new Liste();
 		
 		if ($request != null && count($request) > 0) {

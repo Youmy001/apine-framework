@@ -19,7 +19,7 @@ class ApineImageFactory extends ApineFactory {
 		
 		//$id_sql = (new Database())
 		$database=new Database();
-		$id_sql = $request->select("SELECT `id` FROM `apine_images` WHERE `id`=$image_id");
+		$id_sql = $database->select("SELECT `id` FROM `apine_images` WHERE `id`=$image_id");
 		
 		if ($id_sql) {
 			return true;
@@ -38,7 +38,7 @@ class ApineImageFactory extends ApineFactory {
 		
 		//$id_sql = (new Database())
 		$database=new Database();
-		$id_sql = $request->select("SELECT `id` FROM `apine_images` WHERE `access_id`='$image_id'");
+		$id_sql = $database->select("SELECT `id` FROM `apine_images` WHERE `access_id`='$image_id'");
 		
 		if ($id_sql) {
 			return true;
@@ -64,7 +64,7 @@ class ApineImageFactory extends ApineFactory {
 		
 		//$request = (new Database())
 		$database=new Database();
-		$request = $request->select('SELECT `id` FROM `apine_images` ORDER BY `id`');
+		$request = $database->select('SELECT `id` FROM `apine_images` ORDER BY `id`');
 		$liste = new Liste();
 		
 		if ($request != null && count($request) > 0) {
@@ -87,7 +87,7 @@ class ApineImageFactory extends ApineFactory {
 		
 		//$request = (new Database())
 		$database=new Database();
-		$request = $request->select("SELECT `id` FROM `apine_images` WHERE `folder`=$a_folder ORDER BY `id`");
+		$request = $database->select("SELECT `id` FROM `apine_images` WHERE `folder`=$a_folder ORDER BY `id`");
 		$liste = new Liste();
 		
 		if ($request != null && count($request) > 0) {
@@ -160,7 +160,7 @@ class ApineImageFactory extends ApineFactory {
 
 		//$request = (new Database())
 		$database=new Database();
-		$request = $request->select("SELECT `id` FROM `apine_images` WHERE `user_id`=$a_user_id");
+		$request = $database->select("SELECT `id` FROM `apine_images` WHERE `user_id`=$a_user_id");
 		$liste = new Liste();
 		
 		if ($request != null && count($request) > 0) {
@@ -185,7 +185,7 @@ class ApineImageFactory extends ApineFactory {
 
 		//$request = (new Database())
 		$database=new Database();
-		$request = $request->select("SELECT `id` FROM `apine_images` WHERE `user_id`=$a_user_id AND `folder`=$a_folder");
+		$request = $database->select("SELECT `id` FROM `apine_images` WHERE `user_id`=$a_user_id AND `folder`=$a_folder");
 		$liste = new Liste();
 		
 		if ($request != null && count($request) > 0) {
@@ -208,7 +208,7 @@ class ApineImageFactory extends ApineFactory {
 
 		//$request = (new Database())
 		$database=new Database();
-		$request = $request->select("SELECT `id` FROM `apine_images` WHERE `user_id`=$a_user_id OR `privacy`=2");
+		$request = $database->select("SELECT `id` FROM `apine_images` WHERE `user_id`=$a_user_id OR `privacy`=2");
 		$liste = new Liste();
 		
 		if ($request != null && count($request) > 0) {
@@ -259,7 +259,7 @@ class ApineImageFactory extends ApineFactory {
 		
 		//$request = (new Database())
 		$database=new Database();
-		$request = $request->select("SELECT `id` FROM `apine_images` WHERE `privacy`=$privacy");
+		$request = $database->select("SELECT `id` FROM `apine_images` WHERE `privacy`=$privacy");
 		$liste = new Liste();
 		
 		if ($request != null && count($request) > 0) {

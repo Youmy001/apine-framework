@@ -11,19 +11,20 @@ $before=microtime(true) * 1000;
 
 require_once('lib/core/autoloader.php');
 Autoload::load_kernel();
-
-ini_set('display_errors',Config::get('apine-framework', 'display_errors'));
 ini_set('include_path', realpath(dirname(__FILE__)));
 
-if (Config::get('apine-framework', 'mode')=='development') {
+if (Config::get('apine-framework', 'mode') == 'development') {
+	ini_set('display_errors','On');
 	error_reporting(E_ALL | E_STRICT);
 } else {
+	ini_set('display_errors','Off');
 	error_reporting(E_ERROR);
 }
 
 date_default_timezone_set(Config::get('dateformat', 'timezone'));
 
 if (!function_exists('str_split_unicode')) {
+	
 	/**
 	 * A split method that supports unicode characters
 	 * @param string $str

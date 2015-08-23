@@ -19,7 +19,7 @@ class ApineUserFactory extends ApineFactory {
 
 		//$id_sql = (new Database())
 		$database=new Database();
-		$id_sql = $request->select("SELECT `id` FROM `apine_users` WHERE `id`=$user_id");
+		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `id`=$user_id");
 		
 		if ($id_sql) {
 			return true;
@@ -39,7 +39,7 @@ class ApineUserFactory extends ApineFactory {
 
 		//$id_sql = (new Database())
 		$database=new Database();
-		$id_sql = $request->select("SELECT `id` FROM `apine_users` WHERE `username`='$user_name'");
+		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `username`='$user_name'");
 		
 		if ($id_sql) {
 			return true;
@@ -59,7 +59,7 @@ class ApineUserFactory extends ApineFactory {
 
 		//$id_sql = (new Database())
 		$database=new Database();
-		$id_sql = $request->select("SELECT `id` FROM `apine_users` WHERE `email`='$user_mail'");
+		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `email`='$user_mail'");
 		
 		if ($id_sql) {
 			return true;
@@ -76,7 +76,7 @@ class ApineUserFactory extends ApineFactory {
 
 		//$request = (new Database())
 		$database=new Database();
-		$request = $request->select('SELECT `id` from `apine_users` ORDER BY `username`');
+		$request = $database->select('SELECT `id` from `apine_users` ORDER BY `username`');
 		$liste = new Liste();
 		
 		if ($request != null && count($request) > 0) {
@@ -149,7 +149,7 @@ class ApineUserFactory extends ApineFactory {
 
 		//$request = (new Database())
 		$database=new Database();
-		$request = $request->select("SELECT `id` FROM `apine_users` WHERE `type`=$access");
+		$request = $database->select("SELECT `id` FROM `apine_users` WHERE `type`=$access");
 		$liste = new Liste();
 		
 		if ($request != null && count($request) > 0) {
@@ -172,7 +172,7 @@ class ApineUserFactory extends ApineFactory {
 	
 		//$request = (new Database())
 		$database=new Database();
-		$request = $request->select("SELECT `user_id` FROM `apine_users_user_group` WHERE `group_id`=$group");
+		$request = $database->select("SELECT `user_id` FROM `apine_users_user_group` WHERE `group_id`=$group");
 		$liste = new Liste();
 		
 		if ($request != null && count($request) > 0) {
