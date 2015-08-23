@@ -102,6 +102,8 @@ class Request {
 		$this->request_ssl	= (isset($_SERVER['HTTPS'])&&!empty($_SERVER['HTTPS']));
 		$this->api_call		= (isset($_GET['api']) && $_GET['api']==='api');
 		
+		//print_r($_FILES);
+		
 		$this->get 		= $_GET;
 		$this->post		= $_POST;
 		$this->files		= $_FILES;
@@ -121,12 +123,17 @@ class Request {
 		
 		// Format Files Array
 		if (is_array($this->files) && !empty($this->files)) {
-			$first =reset($this->files);
+			$file = array();
 			
-			if (isset($first['name']) && $count($first['name'])>1) {
-				$this->files = self::format_files_array($this->files);
+			foreach ($this->files as $item => $value) {
+				if (isset($value['name']) && is_array($value['name'])) {
+					$file[$item] = self::format_files_array($value);
+				} else {
+					$file[$item][] = $value;
+				}
 			}
 			
+			$this->files = $file;
 		}
 		
 	}
