@@ -386,26 +386,5 @@ class Liste implements IteratorAggregate {
 		return new ListeIterator(clone $this);
 	
 	}
-	
-	/**
-	 * @deprecated
-	 * @return string
-	 */
-	public function __toString() {
-
-		$string = "";
-		
-		for($i = 0;$i < $this->length();$i++){
-			
-			if($i > 0) {
-				$string .= ', ';
-			}
-			
-			$string .= $this->get_item($i)->getName();
-		}
-		
-		return $string;
-	
-	}
 
 }

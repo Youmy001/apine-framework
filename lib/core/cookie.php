@@ -27,18 +27,6 @@ class Cookie {
 	}
 	
 	/**
-	 * Get cookie by name
-	 * 
-	 * @param string $cookie_name
-	 * @deprecated
-	 */
-	public static function get_cookie ($cookie_name) {
-		
-		return self::get($cookie_name);
-		
-	}
-	
-	/**
 	 * Set a new cookie value
 	 * 
 	 * @param string $cookie_name
@@ -63,22 +51,6 @@ class Cookie {
 		}
 		
 		return setcookie($cookie_name, $value, $expiration_time, '/', $main_session_server);
-	
-	}
-	
-	/**
-	 * Set a new cookie value
-	 * 
-	 * @param string $cookie_name
-	 * @param string $value
-	 * @param integer $expiration_time
-	 *        Expiration date in miliseconds
-	 * @return boolean
-	 * @deprecated
-	 */
-	public static function set_cookie ($cookie_name, $value, $expiration_time = 0) {
-	
-		return self::set($cookie_name, $value, $expiration_time);
 	
 	}
 }

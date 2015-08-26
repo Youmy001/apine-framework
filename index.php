@@ -64,6 +64,14 @@ function execution_time () {
 	
 }
 
+$file=new ApineFile('resources/languages/en-US.json');
+print $file->type();
+/*$file->name('en-CA.json');
+$file->save(); // Copy
+$file->name('en-US_old.json');
+$file->move('resources/languages/deprecated/en-CA_old.json'); // Move/Rename
+//print $file->name();*/
+
 /**
  * Main Execution
  */

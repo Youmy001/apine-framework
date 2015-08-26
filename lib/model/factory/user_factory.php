@@ -8,7 +8,7 @@
  * @subpackage system
  */
 
-class ApineUserFactory extends ApineFactory {
+class ApineUserFactory extends ApineEntityFactory {
 
 	/**
 	 * Verify if the identifier exists

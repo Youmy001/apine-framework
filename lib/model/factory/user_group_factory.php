@@ -1,6 +1,6 @@
 <?php
 
-class ApineUserGroupFactory extends ApineFactory {
+class ApineUserGroupFactory extends ApineEntityFactory {
 
 	public static function is_id_exist ($a_id) {
 
