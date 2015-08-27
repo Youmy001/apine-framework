@@ -39,10 +39,10 @@ class Translation {
 		$this->language = $a_language;
 		
 		if (file_exists($this->language->file_path)) {
-			$file = new File($this->language->file_path);
+			$file = new ApineFile($this->language->file_path);
 			
-			if($file->get_extention() == "json"){
-				$content = fread($file->handle(), $file->get_size());
+			if($file->extention() == "json"){
+				$content = $file->content();
 				$content = json_decode($content);
 				$array = array();
 				

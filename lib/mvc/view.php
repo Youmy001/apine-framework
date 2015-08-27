@@ -236,8 +236,8 @@ class FileView extends HTTPView {
 		
 		if (!$a_file==null) {
 			if (is_string($a_file)) {
-				$this->_file = new File($a_file);
-			} else if (is_a($a_file,'File')) {
+				$this->_file = new ApineFile($a_file);
+			} else if (is_a($a_file,'ApineFile')) {
 				$this->_file = $a_file;
 			}
 		}
