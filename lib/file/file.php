@@ -125,7 +125,12 @@ class ApineFile {
 	public function extention () {
 
 		$dot_pos = strpos($this->name, ".");
-		$extention = substr($this->name, $dot_pos + 1);
+		
+		if ($dot_pos > 0) {
+			$extention = substr($this->name, $dot_pos + 1);
+		} else {
+			$extention = $this->name;
+		}
 
 		return $extention;
 
@@ -243,7 +248,7 @@ class ApineFile {
 	/**
 	 * Output file to output stream
 	 */
-	public function read() {
+	public function output() {
 
 		readfile($this->path);
 

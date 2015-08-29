@@ -245,6 +245,11 @@ class ApineFileImage extends ApineFile {
 
 	}
 	
+	/**
+	 * Write changes to the file
+	 * 
+	 * @param Resource $a_image Modified Image Resource Stream
+	 */
 	public function write ($a_image = null) {
 		
 		if (is_null(a_image)) {

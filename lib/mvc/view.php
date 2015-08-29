@@ -1,9 +1,29 @@
 <?php
+/**
+ * Views
+ * This script contains views for MVC pattern implementation
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 
+/**
+ * Abstraction of the View part of the MVC pattern implementation
+ * 
+ * @author Tommy Teasdale
+ * @abstract
+ */
 abstract class View {
 	
+	/**
+	 * Variables to be accessible by the view
+	 * @var unknown
+	 */
 	protected $_params;
 	
+	/**
+	 * Construct abstract View
+	 */
 	public function __construct() {
 		
 		$this->_params=new Liste();
@@ -16,18 +36,33 @@ abstract class View {
 		
 	}
 	
+	/**
+	 * Set a variable to be accessible by the view
+	 * 
+	 * @param string $a_name
+	 * @param mixed $a_data
+	 */
 	public function set_param($a_name,$a_data) {
 		
 		$this->_params->add_item($a_data,$a_name);
 		
 	}
 	
+	/**
+	 * Set a header rule
+	 * 
+	 * @param string $a_rule
+	 * @param string $a_name
+	 */
 	public function set_header_rule($a_rule,$a_name=null) {
 		
 		$this->_headers->add_item($a_name,$a_rule);
 		
 	}
 	
+	/**
+	 * Apply header rules
+	 */
 	public function apply_headers() {
 		
 		if ($this->_headers->length()>0) {
@@ -42,10 +77,14 @@ abstract class View {
 		
 	}
 	
+	/**
+	 * Set HTTP Response Code Header 
+	 * @param integer $code
+	 * @return integer
+	 */
 	public function set_response_code($code) {
 		
 		if ($code !== NULL) {
-		
 			switch ($code) {
 				case 100: $text = 'Continue'; break;
 				case 101: $text = 'Switching Protocols'; break;
@@ -90,29 +129,39 @@ abstract class View {
 			}
 		
 			$protocol = (isset(Request::server()['SERVER_PROTOCOL']) ? Request::server()['SERVER_PROTOCOL'] : 'HTTP/1.0');
-		
 			$this->set_header_rule($protocol . ' ' . $code . ' ' . $text);
-		
 			$GLOBALS['http_response_code'] = $code;
-		
 		} else {
-		
 			$code = (isset($GLOBALS['http_response_code']) ? $GLOBALS['http_response_code'] : 200);
-		
 		}
 		
 		return $code;
 		
 	}
 	
+	/**
+	 * Send the view to output
+	 */
 	abstract function draw();
 	
 }
 
+/**
+ * HTTP View
+ * 
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ */
 class HTTPView extends View {
 	
+	/**
+	 * List of HTTP headers to apply
+	 * @var Liste
+	 */
 	protected $_headers;
 	
+	/**
+	 * Construct the HTTP View
+	 */
 	public function __construct() {
 		
 		parent::__construct();
@@ -120,6 +169,9 @@ class HTTPView extends View {
 		
 	}
 	
+	/**
+	 * Send view to output 
+	 */
 	public function draw() {
 		
 		$this->apply_headers();
@@ -128,16 +180,45 @@ class HTTPView extends View {
 	
 }
 
+/**
+ * HTML View
+ * 
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ */
 class HTMLView extends HTTPView {
 	
+	/**
+	 * Path to layout file
+	 * 
+	 * @var string
+	 */
 	private $_layout;
 	
+	/**
+	 * Path to view file
+	 * @var string
+	 */
 	private $_view;
 	
+	/**
+	 * Page Title
+	 * @var string
+	 */
 	private $_title;
 	
+	/**
+	 * List of scripts to include
+	 * @var Liste
+	 */
 	private $_scripts;
 	
+	/**
+	 * Construct the HTML view
+	 * 
+	 * @param string $a_title
+	 * @param string $a_view
+	 * @param string $a_layout
+	 */
 	public function __construct($a_title="",$a_view="default",$a_layout="default") {
 		
 		parent::__construct();
@@ -150,6 +231,11 @@ class HTMLView extends HTTPView {
 		
 	}
 	
+	/**
+	 * Set page title
+	 * 
+	 * @param string $a_title
+	 */
 	public function set_title($a_title) {
 		
 		if ($a_title!="") {
@@ -158,60 +244,73 @@ class HTMLView extends HTTPView {
 		
 	}
 	
+	/**
+	 * Set path to layout file
+	 * 
+	 * @param string $a_layout
+	 */
 	public function set_layout($a_layout) {
 		
 		if ($a_layout!="") {
-			
 			// Verify if the layout file exists
 			if (file_exists("views/layouts/$a_layout.php")) {
 				$this->_layout=$a_layout;
 			} else {
 				$this->_layout='default';
 			}
-			
 		}
 		
 	}
 	
+	/**
+	 * Set path to view file
+	 * 
+	 * @param string $a_view
+	 */
 	public function set_view($a_view) {
 		
 		if ($a_view!="") {
-			
 			// Verify if the view file exists
 			if (file_exists("views/$a_view.php")) {
 				$this->_view=$a_view;
 			} else {
 				$this->_view='default';
 			}
-			
 		}
 		
 	}
 	
+	/**
+	 * Append javascript script to view
+	 * 
+	 * @param string $a_script URL to script
+	 */
 	public function add_script($a_script) {
 		
 		if ($a_script!="") {
-			
 			if (file_exists("resources/public/js/$a_script.js")) {
 				$this->_scripts->add_item(URL_Helper::path("resources/public/js/$a_script.js",false));
 			}
-			
 		}
 		
 	}
 	
+	/**
+	 * Insert script into the view
+	 */
 	public function apply_script() {
 		
 		if ($this->_scripts->length()>0) {
-			
 			foreach ($this->_scripts as $value) {
 				print("<script src=\"$value\"></script>");
 			}
-			
 		}
 		
 	}
 	
+	/**
+	 * Send the view to output
+	 */
 	public function draw() {
 		
 		$this->apply_headers();
@@ -220,11 +319,26 @@ class HTMLView extends HTTPView {
 	}
 }
 
+/**
+ * File View
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ */
 class FileView extends HTTPView {
 	
+	/**
+	 * View File
+	 * 
+	 * @var ApineFile
+	 */
 	private $_file;
 	
-	public function __construct(File $a_file=null) {
+	/**
+	 * Construct File View 
+	 * 
+	 * @param ApineFile $a_file
+	 */
+	public function __construct(ApineFile $a_file=null) {
 		
 		parent::__construct();
 		
@@ -232,6 +346,11 @@ class FileView extends HTTPView {
 		
 	}
 	
+	/**
+	 * Set file
+	 * 
+	 * @param string|ApineFile $a_file
+	 */
 	public function set_file($a_file=null) {
 		
 		if (!$a_file==null) {
@@ -244,26 +363,45 @@ class FileView extends HTTPView {
 		
 	}
 	
+	/**
+	 * Send View to output
+	 */
 	public function draw() {
 		
 		if (!$this->_file==null) {
 			// Set headers
 			// PHP must return an image instead of a html
-			header("Content-type: ".$this->_file->get_type());
+			header("Content-type: ".$this->_file->type());
 			// Tell the browser the image size
-			header("Content-Length: " . $this->_file->get_size());
+			header("Content-Length: " . $this->_file->size());
 			
-			$this->_file->read();
+			$this->_file->output();
 		}
 		
 	}
 	
 }
 
-class JSONView extends View {
+/**
+ * JSON View
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ */
+class JSONView extends HTTPView {
 	
+	/**
+	 * Json File
+	 * 
+	 * @var string
+	 */
 	private $_json_file;
 	
+	/**
+	 * Set Json File
+	 * 
+	 * @param string|array $a_json
+	 * @return string
+	 */
 	public function set_json_file($a_json) {
 		
 		if (is_string($a_json)) {
@@ -276,7 +414,6 @@ class JSONView extends View {
 			}else{
 				$return=null;
 			}
-			
 		} else if (is_object($a_json)) {
 			$this->_json_file=json_encode($a_json);
 			$return=$this->_json_file;
@@ -291,6 +428,9 @@ class JSONView extends View {
 		
 	}
 	
+	/**
+	 * Send View to output
+	 */
 	public function draw() {
 		
 		header('Content-type: application/json');

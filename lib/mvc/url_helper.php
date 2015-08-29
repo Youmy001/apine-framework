@@ -1,5 +1,18 @@
 <?php
+/**
+ * Internal URL Writer
+ * This script contains an helper to write internal URL
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 
+/**
+ * Internal URL Writer
+ * Write URL from server's informations
+ * 
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ */
 class URL_Helper {
 	
 	private static $_instance;
@@ -33,6 +46,10 @@ class URL_Helper {
 	 */
 	private $main_session_server;
 	
+	/**
+	 * Construct the URL Writer helper
+	 * Extract string from server configuration
+	 */
 	private function __construct() {
 		
 		// Set server address
@@ -61,6 +78,12 @@ class URL_Helper {
 		
 	}
 	
+	/**
+	 * Singleton design pattern implementation
+	 *
+	 * @static
+	 * @return URL_Helper
+	 */
 	public static function get_instance() {
 		
 		if (!isset(self::$_instance)) {
@@ -73,6 +96,7 @@ class URL_Helper {
 	
 	/**
 	 * Append a path to the current absolute path
+	 * 
 	 * @param string $path
 	 *        String to append
 	 * @return string
@@ -85,6 +109,7 @@ class URL_Helper {
 	
 	/**
 	 * Append a path to the main domain absolute path
+	 * 
 	 * @param string $path
 	 *        String to append
 	 * @return string
@@ -97,6 +122,7 @@ class URL_Helper {
 	
 	/**
 	 * Append a path to the current relative path
+	 * 
 	 * @param string $path
 	 *        String to append
 	 * @return string
@@ -109,6 +135,7 @@ class URL_Helper {
 	
 	/**
 	 * Retrieve the http path to a ressource relative to site's root
+	 * 
 	 * @param string $path
 	 *        String to append
 	 * @param boolean $add_arg
@@ -124,6 +151,7 @@ class URL_Helper {
 	/**
 	 * Retrieve the http path to a ressource relative to site's main
 	 * domains's root
+	 * 
 	 * @param string $path
 	 *        String to append
 	 * @param boolean $add_arg
@@ -139,6 +167,7 @@ class URL_Helper {
 	/**
 	 * Retrieve the http path to a ressource relative to current
 	 * ressource
+	 * 
 	 * @param string $path
 	 *        String to append
 	 * @param string $add_arg
@@ -153,6 +182,7 @@ class URL_Helper {
 	
 	/**
 	 * Get current absolute path
+	 * 
 	 * @return string
 	 */
 	public static function get_current_path() {
@@ -163,6 +193,7 @@ class URL_Helper {
 	
 	/**
 	 * Get current absolute server path
+	 * 
 	 * @return string
 	 */
 	public static function get_server_path() {

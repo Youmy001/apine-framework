@@ -6,6 +6,7 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
+require_once ('lib/file/file.php');
 
 /**
  * Loads all files recursively a user defined module in the model/ directory
@@ -37,7 +38,11 @@ class Autoload {
 			
 			try {
 				foreach ($files as $file) {
-					require_once $file;
+					$a_file = new ApineFile($file);
+				
+					if ($a_file->extention() === "php") {
+						require_once $file;
+					}
 				}
 				
 				return true;
@@ -45,7 +50,12 @@ class Autoload {
 				return false;
 			}
 		} else if (is_file('modules/'.$module_name)) {
-			require_once 'modules/'.$module_name;
+			$a_file = new ApineFile('modules/'.$module_name);
+				
+			if ($a_file->extention() === "php") {
+				require_once 'modules/'.$module_name;
+			}
+			
 			return true;
 		} else {
 			return false;
@@ -62,7 +72,11 @@ class Autoload {
 		
 		try {
 			foreach ($files as $file) {
-				require_once $file;
+				$a_file = new ApineFile($file);
+				
+				if ($a_file->extention() === "php") {
+					require_once $file;
+				}
 			}
 			
 			return true;
