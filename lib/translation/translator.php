@@ -52,7 +52,10 @@ class Translator {
 			if ($file != "." && $file != "..") {
 				$file_name = explode(".", $file);
 				$file_name = $file_name[0];
-				$this->languages[$file_name] = new TranslationLanguage($file_name, 'resources/languages/' . $file);
+				
+				if (is_file('resources/languages/' . $file)) {
+					$this->languages[$file_name] = new TranslationLanguage($file_name, 'resources/languages/' . $file);
+				}
 			}
 		}
 		
