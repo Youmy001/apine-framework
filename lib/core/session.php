@@ -196,7 +196,13 @@ class ApineSession {
 	public static function login ($user_name, $password) {
 
 		if (!self::is_logged_in()) {
-			$encode_pass = hash('sha256', $password);
+			if ((ApineUserFactory::is_name_exist($user_name) || ApineUserFactory::is_email_exist($user_name)) && 
+								ApineUserFactory::create_by_name($user_name)->get_register_date()<"2015-09-04") {
+				$encode_pass = hash('sha256', $password);
+			} else {
+				$encode_pass = Encryption::hash_password($password, ApineUserFactory::create_by_name($user_name)->get_username());
+			}
+			
 			$user_id = ApineUserFactory::authentication($user_name, $encode_pass);
 			
 			if ($user_id) {

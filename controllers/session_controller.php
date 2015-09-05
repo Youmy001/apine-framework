@@ -115,7 +115,7 @@ class SessionController extends Controller {
 					
 					// Verify both passwords are identical
 					if (($pwd === $pwdconfirm)) {
-						$encoded_pwd = hash('sha256', $pwd);
+						$encoded_pwd = Encryption::hash_password($pwd, $user);
 					} else {
 						throw new Exception("3"); // Wrong password
 					}

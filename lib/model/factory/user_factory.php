@@ -122,8 +122,9 @@ class ApineUserFactory extends ApineEntityFactory {
 	public static function create_by_name ($name) {
 
 		$database = new Database();
-		$user_sql_id = $database->prepare('SELECT `id` FROM `apine_users` WHERE `username`=?');
+		$user_sql_id = $database->prepare('SELECT `id` FROM `apine_users` WHERE `username`=? OR `email`=?');
 		$ar_user_sql = $database->execute(array(
+						$name,
 						$name
 		), $user_sql_id);
 		

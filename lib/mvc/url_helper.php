@@ -101,9 +101,13 @@ class URL_Helper {
 	 *        String to append
 	 * @return string
 	 */
-	private static function write_url($path) {
+	private static function write_url($path, $add_arg) {
 	
-		return self::get_instance()->session_server . '/' . $path;
+		if ($add_arg) {
+			return self::get_instance()->session_server . '/' . ApineSession::language()->code . '/' . $path;
+		} else {
+			return self::get_instance()->session_server . '/' . $path;
+		}
 	
 	}
 	
@@ -114,9 +118,13 @@ class URL_Helper {
 	 *        String to append
 	 * @return string
 	 */
-	private static function write_main_url($path) {
+	private static function write_main_url($path, $add_arg) {
 	
-		return self::get_instance()->main_session_server . '/' . $path;
+		if ($add_arg) {
+			return self::get_instance()->main_session_server . '/' . ApineSession::language()->code . '/' . $path;
+		} else {
+			return self::get_instance()->main_session_server . '/' . $path;
+		}
 	
 	}
 	
@@ -127,9 +135,13 @@ class URL_Helper {
 	 *        String to append
 	 * @return string
 	 */
-	private static function write_relative_path($path) {
+	private static function write_relative_path($path, $add_arg) {
 	
-		return self::get_instance()->session_current_path . '/' . $path;
+		if ($add_arg) {
+			return self::get_instance()->session_current_path . '/' . ApineSession::language()->code . '/' . $path;
+		} else {
+			return self::get_instance()->session_current_path . '/' . $path;
+		}
 	
 	}
 	
@@ -142,9 +154,9 @@ class URL_Helper {
 	 *        Whether to add language argument to path
 	 * @return string
 	 */
-	public static function path($path) {
+	public static function path($path, $add_arg = false) {
 		
-		return self::write_url($path);
+		return self::write_url($path, $add_arg);
 		
 	}
 	
@@ -158,9 +170,9 @@ class URL_Helper {
 	 *        Whether to add language argument to path
 	 * @return string
 	 */
-	public static function main_path($path) {
+	public static function main_path($path, $add_arg = false) {
 		
-		return self::write_main_url($path);
+		return self::write_main_url($path, $add_arg);
 	
 	}
 	
@@ -174,9 +186,9 @@ class URL_Helper {
 	 *        Whether to add language argument to path
 	 * @return string
 	 */
-	public static function relative_path($path) {
+	public static function relative_path($path, $add_arg = false) {
 	
-		return self::write_relative_path($path);
+		return self::write_relative_path($path, $add_arg);
 	
 	}
 	
