@@ -7,10 +7,25 @@
  * @copyright 2015 Tommy Teasdale
  */
 
+/**
+ * Encryption Tools
+ * Encrypt and decrypt string namely for security concerns
+ */
 class Encryption {
 	
+	/**
+	 * Encryption String
+	 * 
+	 * @var string
+	 */
 	const ENCRYPT_KEY = 'apine_framework';
 	
+	/**
+	 * Encrypt a string against the encryption string
+	 * 
+	 * @param string $origin_string
+	 * @return string
+	 */
 	public static function encrypt ($origin_string) {
 		
 		$iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
@@ -21,6 +36,12 @@ class Encryption {
 		
 	}
 	
+	/**
+	 * Decrypt a string from the encryption string
+	 * 
+	 * @param string $encrypted_string
+	 * @return string
+	 */
 	public static function decrypt ($encrypted_string) {
 		
 		$iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
@@ -31,6 +52,13 @@ class Encryption {
 		
 	}
 	
+	/**
+	 * Cipher a user password
+	 * 
+	 * @param string $clear_password
+	 * @param string $username
+	 * @return string
+	 */
 	public static function hash_password ($clear_password, $username) {
 		
 		$encrypt_user = self::encrypt($username);
@@ -41,6 +69,9 @@ class Encryption {
 		
 	}
 	
+	/**
+	 * Cipher an application access key
+	 */
 	public static function hash_app_key () {
 		
 		// Magic Here

@@ -97,50 +97,23 @@ class URL_Helper {
 	/**
 	 * Append a path to the current absolute path
 	 * 
+	 * @param string $base
 	 * @param string $path
 	 *        String to append
 	 * @return string
 	 */
-	private static function write_url($path, $add_arg) {
+	private static function write_url($base, $path, $add_arg) {
 	
-		if ($add_arg) {
-			return self::get_instance()->session_server . '/' . ApineSession::language()->code . '/' . $path;
+		if ($add_arg && isset(Request::get()['language'])) {
+			if (Request::get()['language'] == ApineSession::language()->code || Request::get()['language'] == ApineSession::language()->code_short) {
+				$language = Request::get()['language'];
+			} else {
+				$language = ApineSession::language()->code_short;
+			}
+			
+			return $base . '/' . $language . '/' . $path;
 		} else {
-			return self::get_instance()->session_server . '/' . $path;
-		}
-	
-	}
-	
-	/**
-	 * Append a path to the main domain absolute path
-	 * 
-	 * @param string $path
-	 *        String to append
-	 * @return string
-	 */
-	private static function write_main_url($path, $add_arg) {
-	
-		if ($add_arg) {
-			return self::get_instance()->main_session_server . '/' . ApineSession::language()->code . '/' . $path;
-		} else {
-			return self::get_instance()->main_session_server . '/' . $path;
-		}
-	
-	}
-	
-	/**
-	 * Append a path to the current relative path
-	 * 
-	 * @param string $path
-	 *        String to append
-	 * @return string
-	 */
-	private static function write_relative_path($path, $add_arg) {
-	
-		if ($add_arg) {
-			return self::get_instance()->session_current_path . '/' . ApineSession::language()->code . '/' . $path;
-		} else {
-			return self::get_instance()->session_current_path . '/' . $path;
+			return $base . '/' . $path;
 		}
 	
 	}
@@ -156,7 +129,7 @@ class URL_Helper {
 	 */
 	public static function path($path, $add_arg = false) {
 		
-		return self::write_url($path, $add_arg);
+		return self::write_url(self::get_instance()->session_server, $path, $add_arg);
 		
 	}
 	
@@ -172,7 +145,7 @@ class URL_Helper {
 	 */
 	public static function main_path($path, $add_arg = false) {
 		
-		return self::write_main_url($path, $add_arg);
+		return self::write_url(self::get_instance()->main_session_server, $path, $add_arg);
 	
 	}
 	
@@ -188,7 +161,7 @@ class URL_Helper {
 	 */
 	public static function relative_path($path, $add_arg = false) {
 	
-		return self::write_relative_path($path, $add_arg);
+		return self::write_url(self::get_instance()->session_current_path, $path, $add_arg);
 	
 	}
 	
