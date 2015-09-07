@@ -23,34 +23,6 @@ if (Config::get('apine-framework', 'mode') == 'development') {
 
 date_default_timezone_set(Config::get('dateformat', 'timezone'));
 
-if (!function_exists('str_split_unicode')) {
-	
-	/**
-	 * A split method that supports unicode characters
-	 * @param string $str
-	 * @param number $l
-	 * @return string
-	 */
-	function str_split_unicode ($str, $l = 0) {
-		
-		if ($l > 0) {
-			
-			$ret = array();
-			$len = mb_strlen($str, "UTF-8");
-			
-			for ($i = 0; $i < $len; $i += $l) {
-				$ret[] = mb_substr($str, $i, $l, "UTF-8");
-			}
-			
-			return $ret;
-	    }
-	    
-	    return preg_split("//u", $str, -1, PREG_SPLIT_NO_EMPTY);
-	    
-	}
-	
-}
-
 /**
  * Calculate the total execution time 
  * of the request up to now
@@ -63,6 +35,33 @@ function execution_time () {
 	return number_format($after - $before, 1);
 	
 }
+
+//$locale = new TranslationLocale(ApineSession::language());
+//print ($locale->timezone());
+//date_default_timezone_set($locale->timezone());
+//var_dump(ApineSession::translation());
+
+//print (date($locale->datehour(),time("now")));
+
+//var_dump(is_numeric("2015-09-10 10:30:00"));
+//var_dump(is_timestamp("2015-09-10 10:30:00 +00:00"));
+
+//print strtotime("2015-09")."\n";
+//print strtotime("2015-09-10 10:30")."\n";
+//print strtotime("2015-09-10 10:30:00")."\n";
+//print strtotime("2015-09-10 10:30:00 EDT")."\n";
+//print (date($locale->datehour(), time("now"))."\n");
+//print (date($locale->datehour(), strtotime("2015-09-10 10:30:00 GMT")));
+
+/*$locale = new TranslationLocale(ApineSession::language());
+$datetime = new DateTime($locale->timezone());
+var_dump("Raw Offset (seconds) = ".$locale->offset());
+var_dump("ISO Offset (Signed Hours) = ".$locale->iso_offset());*/
+
+$class = new ConcreteClass();
+
+var_dump($class->session());
+
 
 /**
  * Main Execution

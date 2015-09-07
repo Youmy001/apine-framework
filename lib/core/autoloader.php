@@ -9,17 +9,6 @@
 require_once ('lib/file/file.php');
 
 /**
- * Loads all files recursively a user defined module in the model/ directory
- * 
- * @param string $module_name Name of the folder of the module
- */
-function load_module ($module_name) {
-	
-	return Autoload::load_module($module_name);
-	
-}
-
-/**
  * Module Files Loading Tool
  * Tools to load files in batches from various locations in the project's directory
  */

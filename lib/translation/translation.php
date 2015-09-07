@@ -21,6 +21,13 @@ class Translation {
 	private $language;
 	
 	/**
+	 * Representation of a language for translation
+	 *
+	 * @var TranslationLocale
+	 */
+	private $locale;
+	
+	/**
 	 * Translation strings extracted from the translation file
 	 * 
 	 * @var array
@@ -37,6 +44,7 @@ class Translation {
 	public function __construct (TranslationLanguage $a_language) {
 		
 		$this->language = $a_language;
+		$this->locale = new TranslationLocale($this->language);
 		
 		if (file_exists($this->language->file_path)) {
 			$file = new ApineFile($this->language->file_path);
@@ -114,6 +122,11 @@ class Translation {
 		
 		return $this->language;
 		
+	}
+	
+	public function get_locale () {
+		
+		return $this->locale;
 	}
 	
 }

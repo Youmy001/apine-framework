@@ -286,31 +286,3 @@ class ApineFile {
 	}
 
 }
-
-/**
- * Daniel Convissor
- * http://stackoverflow.com/questions/3938120/check-if-exec-is-disabled
- */
-function is_exec_available () {
-	
-	static $available;
-
-	if (!isset($available)) {
-		$available = true;
-		if (ini_get('safe_mode')) {
-			$available = false;
-		} else {
-			$d = ini_get('disable_functions');
-			$s = ini_get('suhosin.executor.func.blacklist');
-			if ("$d$s") {
-				$array = preg_split('/,\s*/', "$d,$s");
-				if (in_array('exec', $array)) {
-					$available = false;
-				}
-			}
-		}
-	}
-
-	return $available;
-	
-}
