@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<?= ApineSession::language()->code_short;?>">
+<html lang="<?= ApineTranslator::language()->code_short;?>">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -41,19 +41,19 @@
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li><a href="<?= URL_Helper::path('home',true) ?>">Home</a></li>
-					<li><a href="<?= URL_Helper::path('about',true) ?>">About</a></li>
-					<li><a href="<?= URL_Helper::path('contact',true) ?>">Contact</a></li>
+					<li><a href="<?= URL_Helper::path('home',true) ?>"><?= ApineTranslator::translate('menu','home') ?></a></li>
+					<li><a href="<?= URL_Helper::path('about',true) ?>"><?= ApineTranslator::translate('menu','about') ?></a></li>
+					<li><a href="<?= URL_Helper::path('contact',true) ?>"><?= ApineTranslator::translate('menu','contact') ?></a></li>
 				</ul>
 				<?php if(!ApineSession::is_logged_in()){?>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="<?= URL_Helper::path('login',true);?>">Login</a></li>
-					<li><a href="<?= URL_Helper::path('register',true);?>">Register</a></li>
+					<li><a href="<?= URL_Helper::path('login',true);?>"><?= ApineTranslator::translate('menu','login') ?></a></li>
+					<li><a href="<?= URL_Helper::path('register',true);?>"><?= ApineTranslator::translate('menu','register') ?></a></li>
 				</ul>
 				<?php }else{?>
 				<ul class="nav navbar-nav navbar-right">
-					<p class="navbar-text">Signed in as <?= ApineSession::get_user()->get_username() ?> (<i><?= ((int)ApineSession::get_session_type()===SESSION_ADMIN)?'Admin':'User' ?></i>)</p>
-					<li><a href="<?= URL_Helper::path('logout',true) ?>">Logout</a></li>
+					<p class="navbar-text"><?= ApineTranslator::translate('menu','signed_in') ?> <?= ApineSession::get_user()->get_username() ?> (<i><?= ((int)ApineSession::get_session_type()===SESSION_ADMIN)?'Admin':'User' ?></i>)</p>
+					<li><a href="<?= URL_Helper::path('logout',true) ?>"><?= ApineTranslator::translate('menu','logout') ?></a></li>
 				</ul>
 				<?php } ?>
 			</div>
@@ -69,7 +69,7 @@
     <footer class="container">
     	<hr>
     	<p class="pull-left">&copy; 2015 <?= Config::get('application', 'author'); ?></p>
-    	<p class="pull-right"><?= "Generated in ".execution_time()." milliseconds" ?></p>
+    	<p class="pull-right"><?= ApineTranslator::translate('menu','generation').execution_time().ApineTranslator::translate('menu','milliseconds') ?></p>
     	<p class="text-center">APIne Framework&nbsp;<br class="visible-xs">ver. <?= Version::framework() ?></p>
     </footer>
 	<!-- /.container -->

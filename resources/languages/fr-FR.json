@@ -1,0 +1,78 @@
+{
+	"language": {
+		"code": "fr-FR",
+		"shortcode": "fr",
+		"name": "français",
+		"priority" : "1"
+	},
+	"application": {
+		"description": "Une application d'exemple construite avec APIne Framework et Bootstrap 3."
+	},
+	"locale": {
+		"timezone": "Europe/Paris",
+		"datehour": "d/m/Y H:i",
+		"date" : "d/m/Y",
+		"hour" : "H:i"
+	},
+	"menu": {
+		"home": "Accueil",
+		"about": "À propos",
+		"contact": "Contact",
+		"login": "Connexion",
+		"logout": "Déconnection",
+		"register": "S'incrire",
+		"signed_in": "Connecté en tant que ",
+		"generation": "Généré en ",
+		"milliseconds": " millisecondes"
+	},
+	"form": {
+		"warning": "Attention!",
+		"error": "Erreur!",
+		"danger": "Danger!",
+		"send": "Envoyer",
+		"save": "Enregister",
+		"edit": "Modifier",
+		"reset": "Réinitialiser",
+		"modify": "Modifier",
+		"update": "Mettre à jour",
+		"delete": "Supprimer"
+	},
+	"login": {
+		"title": "Connexion",
+		"username_email": "Identifiant",
+		"username": "Identifiant",
+		"password": "Mot de passe",
+		"remember": "Me laisser connecté",
+		"forgot": "Mot de passe oublié?",
+		"submit": "Connexion"
+	},
+	"register": {
+		"title": "Inscription",
+		"username": "Nom d'utilisateur",
+		"password": "Mot de Passe",
+		"password_confirm": "Confirmer le mot de passe",
+		"email": "Adresse e-mail",
+		"submit": "S'inscrire"
+	},
+	"errors": {
+		"400": "Mauvaise Requête",
+		"401": "Non autorisé",
+		"403": "Interdit",
+		"404": "Inexistant",
+		"405": "Méthode non permise",
+		"410": "Plus disponible",
+		"500": "Erreur serveur",
+		"login_invalid_username": "L'identifiant et/ou le mot de passe n'est pas valide.",
+		"form_invalid": "Une erreur inconnue s'est produite lors de la transmission des données vers le serveur. Veuillez réessayer plus tard.",
+		"register_invalid_email": "L'adresse e-mail n'est pas valide.",
+		"register_taken_email": "L'adresse e-mail est déjà en cours d'utilisation.",
+		"register_taken_username": "Le nom d'utilisateur est déjà utilisé par un autre utilisateur.",
+		"register_invalid_password": "La confirmation du mot de passe est invalide."
+	},
+	"home": {
+		"title": "APIne Framework",
+		"description": "APIne Framework est un Framework MVC modulaire, simple à utiliser et prêt pour l'IoT (L'Internet des choses). Il s'agit d'un framework multi-usage permettant de construire autant une application web qu'un API RESTful. APIne s'occupe de la gestion des sessions, de l'authentification et de la connexion à la base de donnée sans inclure d'outil inutile.",
+		"small_one": "Utilisez cet exemple pour démarrer rapidement un nouveau projet.",
+		"small_two": "Cet exemple expose des vues simples et la gestion de session."
+	}
+}

@@ -1,0 +1,78 @@
+{
+	"language": {
+		"code": "en-GB",
+		"shortcode": "en",
+		"name": "English",
+		"priority" : "0.8"
+	},
+	"application": {
+		"description": "A small example application built with the APIne framework including Bootstrap 3."
+	},
+	"locale": {
+		"timezone": "Europe/London",
+		"datehour": "d/m/Y H:i",
+		"date" : "d/m/Y",
+		"hour" : "H:i"
+	},
+	"menu": {
+		"home": "Home",
+		"about": "About",
+		"contact": "Contact",
+		"login": "Login",
+		"logout": "Logout",
+		"register": "Sign up",
+		"signed_in": "Logged in as ",
+		"generation": "Generated in ",
+		"milliseconds": " milliseconds"
+	},
+	"form": {
+		"warning": "Warning !",
+		"error": "Error !",
+		"danger": "Danger !",
+		"send": "Send",
+		"save": "Save",
+		"edit": "Edit",
+		"reset": "Reset",
+		"modify": "Modify",
+		"update": "Update",
+		"delete": "Delete"
+	},
+	"login": {
+		"title": "Login",
+		"username_email": "Username or Email Address",
+		"username": "Username",
+		"password": "Password",
+		"remember": "Keep me logged in",
+		"forgot": "Forgot your password?",
+		"submit": "Login"
+	},
+	"register": {
+		"title": "Sign up",
+		"username": "Username",
+		"password": "Password",
+		"password_confirm": "Confirm Password",
+		"email": "Email Address",
+		"submit": "Sign up"
+	},
+	"errors": {
+		"400": "Bad Request",
+		"401": "Unauthorised",
+		"403": "Forbidden",
+		"404": "Not Found",
+		"405": "Method not Allowed",
+		"410": "Gone",
+		"500": "Internal Server Error",
+		"login_invalid_username": "Either the the username/email or the password is not valid. Please try again later.",
+		"form_invalid": "An unknown error occured when sending data to the server. Please try again later.",
+		"register_invalid_email": "The email address is not valid.",
+		"register_taken_email": "The email address is already taken.",
+		"register_taken_username": "The username is already taken by an user.",
+		"register_invalid_password": "The password does not match the confirmation."
+	},
+	"home": {
+		"title": "APIne Framework",
+		"description": "APIne is a simple to use modular MVC Framework ready for the IoT (Internet of Things). It intends to be a general purpose framework and API providing session management, authentication and DAL abstraction without including useless tools.",
+		"small_one": "Use this example project as a way to quickly start any new project.",
+		"small_two": "This example shows simple views and session management."
+	}
+}

@@ -1,5 +1,16 @@
 <?php
+/**
+ * Translation Locale
+ * This script contains a representation of locales for Translator core module
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 
+/**
+ * Translation Locales
+ * Representation of a locales for translations
+ */
 class TranslationLocale {
 	
 	//private $locale_entries = [];
@@ -106,7 +117,7 @@ class TranslationLocale {
 		
 	}
 	
-	public function format ($locale_str, $string) {
+	/*public function format ($locale_str, $string) {
 		
-	}
+	}*/
 }

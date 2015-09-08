@@ -46,19 +46,19 @@ class SessionController extends Controller {
 					
 				}
 				
-				$message = 'Either the the username/email or the password is not valid. Please try again later.';
-				//$message = Translator::translate('en-US', 'errors', 'login_invalid_username');
+				//$message = 'Either the the username/email or the password is not valid. Please try again later.';
+				$message = ApineTranslator::translate('errors', 'login_invalid_username');
 			} catch (Exception $e) {
-				$message = 'An unknown error occured when sending data to the server. Please try again later.';
-				//$message = Translator::translate('en-US', 'errors', 'form_invalid');
+				//$message = 'An unknown error occured when sending data to the server. Please try again later.';
+				$message = ApineTranslator::translate('errors', 'form_invalid');
 			}
 			
 			$this->_view->set_param('error_code',true);
 			$this->_view->set_param('error_message', $message);
 		}
 		
-		//$this->_view->set_title(Translator::translate('en-US', 'login', 'title'));
-		$this->_view->set_title('Login');
+		$this->_view->set_title(ApineTranslator::translate('login', 'title'));
+		//$this->_view->set_title('Login');
 		$this->_view->set_view('session/login');
 		$this->_view->set_response_code(200);
 		$this->_view->draw();
@@ -164,25 +164,25 @@ class SessionController extends Controller {
 				
 				switch ($e->getMessage()) {
 					case 7:
-						$message='The email address is already taken.';
-						//$message = Translator::translate('en-US', 'errors', 'register_taken_email');
+						//$message='The email address is already taken.';
+						$message = ApineTranslator::translate('errors', 'register_taken_email');
 						break;
 					case 4:
-						$message='The username is already taken by an user.';
-						//$message = Translator::translate('en-US', 'errors', 'register_taken_username');
+						//$message='The username is already taken by an user.';
+						$message = ApineTranslator::translate('errors', 'register_taken_username');
 						break;
 					case 3:
-						$message='The password does not match the confirmation.';
-						//$message = Translator::translate('en-US', 'errors', 'register_invalid_password');
+						//$message='The password does not match the confirmation.';
+						$message = ApineTranslator::translate('errors', 'register_invalid_password');
 						break;
 					case 2:
-						$message='The email address is not valid.';
-						//$message = Translator::translate('en-US', 'errors', 'register_invalid_email');
+						//$message='The email address is not valid.';
+						$message = ApineTranslator::translate('errors', 'register_invalid_email');
 						break;
 					case 0:
 					default:
-						$message='An unknown error occured when sending data to the server. Please try again later.';
-						//$message = Translator::translate('en-US', 'errors', 'form_invalid');
+						//$message='An unknown error occured when sending data to the server. Please try again later.';
+						$message = ApineTranslator::translate('errors', 'form_invalid');
 				}
 				
 			}
@@ -191,8 +191,8 @@ class SessionController extends Controller {
 			$this->_view->set_param('error_message', $message);
 		}
 		
-		//$this->_view->set_title(Translator::translate('en-US', 'register', 'title'));
-		$this->_view->set_title("Sign In");
+		$this->_view->set_title(ApineTranslator::translate('register', 'title'));
+		//$this->_view->set_title("Sign In");
 		$this->_view->set_view('session/register');
 		$this->_view->set_response_code(200);
 		$this->_view->draw();
