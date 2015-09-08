@@ -105,10 +105,10 @@ class URL_Helper {
 	private static function write_url($base, $path, $add_arg) {
 	
 		if ($add_arg && isset(Request::get()['language'])) {
-			if (Request::get()['language'] == ApineSession::language()->code || Request::get()['language'] == ApineSession::language()->code_short) {
+			if (Request::get()['language'] == ApineTranslator::language()->code || Request::get()['language'] == ApineTranslator::language()->code_short) {
 				$language = Request::get()['language'];
 			} else {
-				$language = ApineSession::language()->code_short;
+				$language = ApineTranslator::language()->code_short;
 			}
 			
 			return $base . '/' . $language . '/' . $path;

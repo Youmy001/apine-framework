@@ -184,3 +184,20 @@ if (!function_exists('is_exec_available')) {
 	}
 	
 }
+
+if (!function_exists('execution_time')) {
+	
+	/**
+	 * Calculate the total execution time
+	 * of the request up to now
+	 * @return string
+	 */
+	function execution_time () {
+	
+		global $before;
+		$after = microtime(true) * 1000;
+		return number_format($after - $before, 1);
+	
+	}
+	
+}

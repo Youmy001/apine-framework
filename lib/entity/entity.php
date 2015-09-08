@@ -11,6 +11,7 @@
 /**
  * This is the implementation of the data mapper
  * design patern.
+ * 
  * @abstract
  *
  */
@@ -107,7 +108,14 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 			$this->_load();
 		}
 		
-		return $this->database_fields[$a_field];
+		if (isset($this->database_fields[$a_field]) && is_timestamp($this->database_fields[$a_field])) {
+			$locale = ApineTranslator::translation()->get_locale();
+			$time = strtotime($this->database_fields[$a_field]);
+			$time += $locale->offset();
+			return date("Y-m-d H:i:s", $time);
+		} else {
+			return $this->database_fields[$a_field];
+		}
 
 	}
 
@@ -196,6 +204,14 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 
 		if ($this->field_loaded == 0) {
 			$this->_load();
+		}
+		
+		if (is_timestamp($value)) {
+			$locale = ApineTranslator::translation()->get_locale();
+			$time = strtotime($value);
+			$time -= $locale->offset();
+			$value = date("Y-m-d H:i:s", $time);
+			
 		}
 		
 		$this->database_fields[$field] = $value;
@@ -396,4 +412,3 @@ class ApineEntity extends ApineEntityModel {
 	}
 
 }
-

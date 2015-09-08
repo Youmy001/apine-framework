@@ -50,7 +50,7 @@ class Cookie {
 			$main_session_server = $_SERVER['SERVER_NAME'];
 		}
 		
-		return setcookie($cookie_name, $value, $expiration_time, '/', $main_session_server);
+		return setcookie($cookie_name, $value, $expiration_time, '/');
 	
 	}
 }

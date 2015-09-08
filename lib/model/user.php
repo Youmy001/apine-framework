@@ -291,7 +291,7 @@ class ApineUser extends ApineEntityModel {
 			$this->load();
 		}
 		
-		return date(strtotime($this->register_date));
+		return $this->register_date;
 	
 	}
 
