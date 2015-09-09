@@ -59,10 +59,11 @@ class Encryption {
 	 * @param string $username
 	 * @return string
 	 */
-	public static function hash_password ($clear_password, $username) {
+	public static function hash_password ($clear_password) {
 		
-		$encrypt_user = self::encrypt($username);
-		$password = $clear_password . $encrypt_user;
+		$encrypt_password = self::encrypt($clear_password);
+		$password = $clear_password . $encrypt_password;
+		$password = self::encrypt($password);
 		$ciphered_password = hash('sha256', $password);
 
 		return $ciphered_password;
