@@ -72,6 +72,8 @@ class ApineTranslator {
 			}
 		}
 		
+		setlocale(LC_TIME, self::get_instance()->language->code);
+		
 		/*if (ApineSession::is_logged_in()) {
 			// If User is logged in and has a custom language
 		}*/

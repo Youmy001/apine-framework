@@ -18,7 +18,7 @@ class Encryption {
 	 * 
 	 * @var string
 	 */
-	const ENCRYPT_KEY = 'apine_framework';
+	//const ENCRYPT_KEY = 'apine_framework';
 	
 	/**
 	 * Encrypt a string against the encryption string
@@ -28,9 +28,13 @@ class Encryption {
 	 */
 	public static function encrypt ($origin_string) {
 		
+		if (!Config::get('runtime', 'encryption_key')) {
+			self::generate_key();
+		}
+		
 		$iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-		$encrypted_string = mcrypt_encrypt(MCRYPT_BLOWFISH, self::ENCRYPT_KEY, utf8_encode($origin_string), MCRYPT_MODE_ECB, $iv);
+		$encrypted_string = mcrypt_encrypt(MCRYPT_BLOWFISH, Config::get('runtime', 'encryption_key'), utf8_encode($origin_string), MCRYPT_MODE_ECB, $iv);
 		
 		return $encrypted_string;
 		
@@ -44,11 +48,22 @@ class Encryption {
 	 */
 	public static function decrypt ($encrypted_string) {
 		
+		if (!Config::get('runtime', 'encryption_key')) {
+			self::generate_key();
+		}
+		
 		$iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-		$decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, self::ENCRYPT_KEY, $encrypted_string, MCRYPT_MODE_ECB, $iv);
+		$decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, Config::get('runtime', 'encryption_key'), $encrypted_string, MCRYPT_MODE_ECB, $iv);
 		
 		return $decrypted_string;
+		
+	}
+	
+	private static function generate_key() {
+		
+		$hash = PseudoCrypt::hash(intval(rand(1, 1000)), 10);
+		Config::set('runtime', 'encryption_key', $hash);
 		
 	}
 	

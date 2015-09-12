@@ -13,15 +13,40 @@
  */
 class TranslationLocale {
 	
+	/**
+	 * Entries linke to locales
+	 * 
+	 * @var string[]
+	 */
 	//private $locale_entries = [];
 	private $locale_entries;
 	
+	/**
+	 * Timezone name
+	 * 
+	 * @var string
+	 */
 	private $timezone;
 	
+	/**
+	 * Timezone offset
+	 * 
+	 * @var integer
+	 */
 	private $offset;
 	
+	/**
+	 * Formatted offset
+	 * 
+	 * @var string
+	 */
 	private $iso_offset;
 	
+	/**
+	 * Locales related Language
+	 * 
+	 * @var TranslationLanguage
+	 */
 	private $language;
 	
 	public function __construct(TranslationLanguage $a_language) {

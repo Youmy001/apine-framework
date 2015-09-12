@@ -53,6 +53,12 @@ class ApineSession {
 	 * @var integer
 	 */
 	private $user_id;
+	
+	/**
+	 * Name of the user class
+	 * @var string
+	 */
+	private $user_class_name;
 
 	/**
 	 * Session timeout
@@ -89,11 +95,28 @@ class ApineSession {
 		// Set PHP session id
 		$this->php_session_id = session_id();
 		
+		if (Config::get('runtime', 'user_class')) {
+			$pos_slash = strpos(Config::get('runtime', 'user_class'), '/');
+			$module = substr(Config::get('runtime', 'user_class'), 0, $pos_slash);
+			$class = substr(Config::get('runtime', 'user_class'), $pos_slash+1);
+			load_module($module);
+			
+			if (class_exists($class) && is_subclass_of($class, 'ApineUser')) {
+				$this->user_class_name = $class;
+			} else {
+				$this->user_class_name = 'ApineUser';
+			}
+			
+		} else {
+			$this->user_class_name = "ApineUser";
+		}
+		
 		// Check if a user ID is in the PHP session
 		if (isset($_SESSION['ID'])) {
 			$this->logged_in = true;
 			$this->user_id = $_SESSION['ID'];
 			$this->session_type = ApineUserFactory::create_by_id($this->user_id)->get_type();
+			//die("test");
 		} else {
 			$this->logged_in = false;
 		}
@@ -135,6 +158,17 @@ class ApineSession {
 		}
 	
 	}
+	
+	/**
+	 * Get the name of the user class in use
+	 * 
+	 * @return string
+	 */
+	public static function get_user_class () {
+		
+		return self::get_instance()->user_class_name;
+		
+	}
 
 	/**
 	 * Get logged in user
@@ -143,7 +177,11 @@ class ApineSession {
 	public static function get_user () {
 
 		if (self::is_logged_in()) {
-			return new ApineUser(self::get_instance()->user_id);
+			$class = self::get_instance()->user_class_name;
+				
+			$instance = new $class(self::get_instance()->user_id);
+			
+			return $instance;
 		}
 	
 	}

@@ -13,7 +13,7 @@ require_once('lib/core/autoloader.php');
 Autoload::load_kernel();
 ini_set('include_path', realpath(dirname(__FILE__)));
 
-if (Config::get('apine-framework', 'mode') == 'development') {
+if (Config::get('runtime', 'mode') == 'development') {
 	ini_set('display_errors', 'On');
 	error_reporting(E_ALL | E_STRICT);
 } else {

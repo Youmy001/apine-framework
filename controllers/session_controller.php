@@ -49,6 +49,7 @@ class SessionController extends Controller {
 				//$message = 'Either the the username/email or the password is not valid. Please try again later.';
 				$message = ApineTranslator::translate('errors', 'login_invalid_username');
 			} catch (Exception $e) {
+				//var_dump($e);
 				//$message = 'An unknown error occured when sending data to the server. Please try again later.';
 				$message = ApineTranslator::translate('errors', 'form_invalid');
 			}

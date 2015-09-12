@@ -81,7 +81,8 @@ class ApineUserFactory extends ApineEntityFactory {
 		
 		if ($request != null && count($request) > 0) {
 			foreach ($request as $item) {
-				$liste->add_item(new ApineUser($item['id']));
+				$class = self::get_user_class();
+				$liste->add_item(new $class($item['id']));
 			}
 		}
 		
@@ -104,7 +105,8 @@ class ApineUserFactory extends ApineEntityFactory {
 		), $user_sql_id);
 		
 		if ($ar_user_sql) {
-			$return = new ApineUser($ar_user_sql[0]['id']);
+			$class = self::get_user_class();
+			$return = new $class($ar_user_sql[0]['id']);
 		} else {
 			$return = null;
 		}
@@ -129,14 +131,13 @@ class ApineUserFactory extends ApineEntityFactory {
 		), $user_sql_id);
 		
 		if ($ar_user_sql) {
-			$user_id = end($ar_user_sql);
-			$user_id = $user_id['id'];
-			$lang = new ApineUser($user_id);
+			$class = self::get_user_class();
+			$return = new $class($ar_user_sql[0]['id']);
 		} else {
-			$lang = null;
+			$return = null;
 		}
 		
-		return $lang;
+		return $return;
 	
 	}
 
@@ -155,7 +156,8 @@ class ApineUserFactory extends ApineEntityFactory {
 		
 		if ($request != null && count($request) > 0) {
 			foreach ($request as $item) {
-				$liste->add_item(new ApineUser($item['id']));
+				$class = self::get_user_class();
+				$liste->add_item(new $class($item['id']));
 			}
 		}
 		
@@ -178,7 +180,8 @@ class ApineUserFactory extends ApineEntityFactory {
 		
 		if ($request != null && count($request) > 0) {
 			foreach ($request as $item) {
-				$liste->add_item(new ApineUser($item['user_id']));
+				$class = self::get_user_class();
+				$liste->add_item(new $class($item['user_id']));
 			}
 		}
 		
@@ -215,6 +218,32 @@ class ApineUserFactory extends ApineEntityFactory {
 		
 		return $connect;
 	
+	}
+	
+	/**
+	 * Get name of the user class to use
+	 * 
+	 * @return string
+	 */
+	private static function get_user_class () {
+		
+		static $class;
+	
+		if (is_null($class)) {
+			if (Config::get('runtime', 'user_class')) {
+				$pos_slash = strpos(Config::get('runtime', 'user_class'), '/');
+				$class = substr(Config::get('runtime', 'user_class'), $pos_slash+1);
+				
+				if (!class_exists($class) || !is_subclass_of($class, 'ApineUser')) {
+					$class = 'ApineUser';
+				}
+			} else {
+				$class = "ApineUser";
+			}
+		}
+		
+		return $class;
+		
 	}
 
 }
