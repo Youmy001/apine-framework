@@ -27,7 +27,7 @@ class Autoload {
 			
 			try {
 				foreach ($files as $file) {
-					$a_file = new ApineFile($file);
+					$a_file = new ApineFile($file, true);
 				
 					if ($a_file->extention() === "php") {
 						require_once $file;
@@ -39,7 +39,7 @@ class Autoload {
 				return false;
 			}
 		} else if (is_file('modules/'.$module_name)) {
-			$a_file = new ApineFile('modules/'.$module_name);
+			$a_file = new ApineFile('modules/'.$module_name, true);
 				
 			if ($a_file->extention() === "php") {
 				require_once 'modules/'.$module_name;
@@ -61,7 +61,7 @@ class Autoload {
 		
 		try {
 			foreach ($files as $file) {
-				$a_file = new ApineFile($file);
+				$a_file = new ApineFile($file, true);
 				
 				if ($a_file->extention() === "php") {
 					require_once $file;

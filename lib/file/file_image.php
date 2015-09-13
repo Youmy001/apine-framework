@@ -122,53 +122,55 @@ class ApineFileImage extends ApineFile {
 	 *        Desired height/width ratio
 	 */
 	public function crop_to_ratio ($a_ratio) {
-
-		$ratio_w;
-		$ratio_h;
-		$ratio;
-
-		if (strpos($a_ratio, ":")) {
-			$ar_ratio = explode(':', $a_ratio);
-			$ratio_w = (int) $ar_ratio[0];
-			$ratio_h = (int) $ar_ratio[1];
-			$ratio = (double) $ratio_w / $ratio_h;
-		} else if (strpos($a_ratio, "/")) {
-			$ar_ratio = explode('/', $a_ratio);
-			$ratio_w = (int) $ar_ratio[0];
-			$ratio_h = (int) $ar_ratio[1];
-			$ratio = (double) $ratio_w / $ratio_h;
-		} else if (floatval($a_ratio) > 0) {
-			$ratio = (double) floatval($a_ratio);
-			$s_ratio = float2rat($ratio);
-			$ar_ratio = explode('/', $s_ratio);
-			$ratio_w = (int) $ar_ratio[0];
-			$ratio_h = (int) $ar_ratio[1];
-		}
-
-		$crop_w = $this->width;
-		$crop_h = ceil($crop_w / $ratio);
-
-		// Crop image if size is different
-		if (($crop_h != $this->height()) || ($crop_w != $this->width())) {
-
-			if ($crop_h < $this->height) {						// If current heigth is bigger
-				$new_image = imagecreatetruecolor($crop_w, $crop_h);
-				$x = 0;
-				$y = floor(0.5 * ($this->height() - $crop_h));
-				imagecopyresized($new_image, $this->file, 0, 0, $x, $y, $crop_w, $crop_h, $crop_w, $crop_h);
-			} else if($crop_h > $this->height()) {				// If current height is smaller
-				$crop_h = $this->height();
-				$crop_w = ceil($ratio * $crop_h);
-				$new_image = imagecreatetruecolor($crop_w, $crop_h);
-				$y = 0;
-				$x = floor(0.5 * ($this->width() - $crop_w));
-				imagecopyresized($new_image, $this->file, 0, 0, $x, $y, $crop_w, $crop_h, $crop_w, $crop_h);
+		
+		if (!$this->readonly) {
+			$ratio_w;
+			$ratio_h;
+			$ratio;
+	
+			if (strpos($a_ratio, ":")) {
+				$ar_ratio = explode(':', $a_ratio);
+				$ratio_w = (int) $ar_ratio[0];
+				$ratio_h = (int) $ar_ratio[1];
+				$ratio = (double) $ratio_w / $ratio_h;
+			} else if (strpos($a_ratio, "/")) {
+				$ar_ratio = explode('/', $a_ratio);
+				$ratio_w = (int) $ar_ratio[0];
+				$ratio_h = (int) $ar_ratio[1];
+				$ratio = (double) $ratio_w / $ratio_h;
+			} else if (floatval($a_ratio) > 0) {
+				$ratio = (double) floatval($a_ratio);
+				$s_ratio = float2rat($ratio);
+				$ar_ratio = explode('/', $s_ratio);
+				$ratio_w = (int) $ar_ratio[0];
+				$ratio_h = (int) $ar_ratio[1];
 			}
-
-			if (isset($new_image)) {
-				write($new_image);
+	
+			$crop_w = $this->width;
+			$crop_h = ceil($crop_w / $ratio);
+	
+			// Crop image if size is different
+			if (($crop_h != $this->height()) || ($crop_w != $this->width())) {
+	
+				if ($crop_h < $this->height) {						// If current heigth is bigger
+					$new_image = imagecreatetruecolor($crop_w, $crop_h);
+					$x = 0;
+					$y = floor(0.5 * ($this->height() - $crop_h));
+					imagecopyresized($new_image, $this->file, 0, 0, $x, $y, $crop_w, $crop_h, $crop_w, $crop_h);
+				} else if($crop_h > $this->height()) {				// If current height is smaller
+					$crop_h = $this->height();
+					$crop_w = ceil($ratio * $crop_h);
+					$new_image = imagecreatetruecolor($crop_w, $crop_h);
+					$y = 0;
+					$x = floor(0.5 * ($this->width() - $crop_w));
+					imagecopyresized($new_image, $this->file, 0, 0, $x, $y, $crop_w, $crop_h, $crop_w, $crop_h);
+				}
+	
+				if (isset($new_image)) {
+					write($new_image);
+				}
+	
 			}
-
 		}
 
 	}
@@ -189,11 +191,13 @@ class ApineFileImage extends ApineFile {
 	 */
 	public function crop($n_width, $n_height, $x, $y) {
 	
-		$new_image = imagecreatetruecolor($n_width, $n_height);
-		imagecopyresized($new_image, $this->file, 0, 0, $x, $y, $n_width, $n_height, $this->width(), $this->height());
-		
-		if (isset($new_image)) {
-			write($new_image);
+		if (!$this->readonly) {
+			$new_image = imagecreatetruecolor($n_width, $n_height);
+			imagecopyresized($new_image, $this->file, 0, 0, $x, $y, $n_width, $n_height, $this->width(), $this->height());
+			
+			if (isset($new_image)) {
+				write($new_image);
+			}
 		}
 	
 	}
@@ -216,8 +220,10 @@ class ApineFileImage extends ApineFile {
 	 */
 	public function filter($filtertype, $arg1 = null, $arg2 = null, $arg3 = null, $arg4 = null) {
 	
-		imagefilter($this->file, $filtertype, $arg1, $arg2, $arg3, $arg4);
-		write($this->file);
+		if (!$this->readonly) {
+			imagefilter($this->file, $filtertype, $arg1, $arg2, $arg3, $arg4);
+			write($this->file);
+		}
 		
 	}
 	
@@ -231,8 +237,10 @@ class ApineFileImage extends ApineFile {
 	 */
 	public function flip($mode) {
 	
-		imageflip($this->file, $mode);
-		write($this->file);
+		if (!$this->readonly) {
+			imageflip($this->file, $mode);
+			write($this->file);
+		}
 		
 	}
 
@@ -252,31 +260,33 @@ class ApineFileImage extends ApineFile {
 	 */
 	public function write ($a_image = null) {
 		
-		if (is_null(a_image)) {
-			if (($this->get_type() == "image/png") || ($this->get_type() == "image/PNG")) {
-				imagepng(a_image, $this->path);
-			} else if (($this->get_type() == "image/jpg") || ($this->get_type() == "image/jpeg") || ($this->get_type() == "image/JPG") || ($this->get_type() == "image/JPEG")) {
-				imagejpeg(a_image, $this->path);
-			} else if (($this->get_type() == "image/GIF") || ($this->get_type() == "image/gif")) {
-				imagegif(a_image, $this->path);
-			} else {
-				throw new Exception('Invalid file format');
-			}
-		} else {
-			if ($this->is_valid_image()) {
+		if (!$this->readonly) {
+			if (is_null(a_image)) {
 				if (($this->get_type() == "image/png") || ($this->get_type() == "image/PNG")) {
-					$this->file = imagecreatefrompng($this->path);
+					imagepng(a_image, $this->path);
 				} else if (($this->get_type() == "image/jpg") || ($this->get_type() == "image/jpeg") || ($this->get_type() == "image/JPG") || ($this->get_type() == "image/JPEG")) {
-					$this->file = imagecreatefromjpeg($this->path);
+					imagejpeg(a_image, $this->path);
 				} else if (($this->get_type() == "image/GIF") || ($this->get_type() == "image/gif")) {
-					$this->file = imagecreatefromgif($this->path);
+					imagegif(a_image, $this->path);
+				} else {
+					throw new Exception('Invalid file format');
 				}
-				$this->write();
 			} else {
-				throw new Exception('Invalid file format');
+				if ($this->is_valid_image()) {
+					if (($this->get_type() == "image/png") || ($this->get_type() == "image/PNG")) {
+						$this->file = imagecreatefrompng($this->path);
+					} else if (($this->get_type() == "image/jpg") || ($this->get_type() == "image/jpeg") || ($this->get_type() == "image/JPG") || ($this->get_type() == "image/JPEG")) {
+						$this->file = imagecreatefromjpeg($this->path);
+					} else if (($this->get_type() == "image/GIF") || ($this->get_type() == "image/gif")) {
+						$this->file = imagecreatefromgif($this->path);
+					}
+					$this->write();
+				} else {
+					throw new Exception('Invalid file format');
+				}
 			}
 		}
-		
+			
 	}
 
 }

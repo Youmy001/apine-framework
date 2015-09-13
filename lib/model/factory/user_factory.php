@@ -175,7 +175,7 @@ class ApineUserFactory extends ApineEntityFactory {
 	
 		//$request = (new Database())
 		$database = new Database();
-		$request = $database->select("SELECT `user_id` FROM `apine_users_user_group` WHERE `group_id`=$group");
+		$request = $database->select("SELECT `user_id` FROM `apine_users_user_groups` WHERE `group_id`=$group");
 		$liste = new Liste();
 		
 		if ($request != null && count($request) > 0) {

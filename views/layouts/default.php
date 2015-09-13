@@ -12,7 +12,7 @@
 	<title><?= Config::get('application', 'title').' - '.$this->_title ?></title>
 
 	<!-- Bootstrap core CSS -->
-	<link href="<?= URL_Helper::path('resources/public/css/bootstrap.min.css',false); ?>" rel="stylesheet">
+	<link href="<?= URL_Helper::resource('resources/public/css/bootstrap.min.css'); ?>" rel="stylesheet">
 
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
@@ -79,7 +79,7 @@
     ================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
 	<script
-		src="<?= URL_Helper::path('resources/public/scripts/jquery.min.js',false); ?>"></script>
-	<script src="<?= URL_Helper::path('resources/public/scripts/bootstrap.min.js',false); ?>"></script>
+		src="<?= URL_Helper::resource('resources/public/scripts/jquery.min.js'); ?>"></script>
+	<script src="<?= URL_Helper::resource('resources/public/scripts/bootstrap.min.js'); ?>"></script>
 </body>
 </html>

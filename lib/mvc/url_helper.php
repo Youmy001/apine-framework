@@ -102,9 +102,9 @@ class URL_Helper {
 	 *        String to append
 	 * @return string
 	 */
-	private static function write_url($base, $path, $add_arg) {
+	private static function write_url ($base, $path) {
 	
-		if ($add_arg && isset(Request::get()['language'])) {
+		if (isset(Request::get()['language'])) {
 			if (Request::get()['language'] == ApineTranslator::language()->code || Request::get()['language'] == ApineTranslator::language()->code_short) {
 				$language = Request::get()['language'];
 			} else {
@@ -118,6 +118,12 @@ class URL_Helper {
 	
 	}
 	
+	public static function resource ($path) {
+		
+		return self::get_instance()->session_server . '/' . $path;
+		
+	}
+	
 	/**
 	 * Retrieve the http path to a ressource relative to site's root
 	 * 
@@ -127,9 +133,9 @@ class URL_Helper {
 	 *        Whether to add language argument to path
 	 * @return string
 	 */
-	public static function path($path, $add_arg = false) {
+	public static function path($path) {
 		
-		return self::write_url(self::get_instance()->session_server, $path, $add_arg);
+		return self::write_url(self::get_instance()->session_server, $path);
 		
 	}
 	
@@ -143,9 +149,9 @@ class URL_Helper {
 	 *        Whether to add language argument to path
 	 * @return string
 	 */
-	public static function main_path($path, $add_arg = false) {
+	public static function main_path($path) {
 		
-		return self::write_url(self::get_instance()->main_session_server, $path, $add_arg);
+		return self::write_url(self::get_instance()->main_session_server, $path);
 	
 	}
 	
@@ -159,9 +165,9 @@ class URL_Helper {
 	 *        Whether to add language argument to path
 	 * @return string
 	 */
-	public static function relative_path($path, $add_arg = false) {
+	public static function relative_path($path) {
 	
-		return self::write_url(self::get_instance()->session_current_path, $path, $add_arg);
+		return self::write_url(self::get_instance()->session_current_path, $path);
 	
 	}
 	

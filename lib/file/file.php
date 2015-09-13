@@ -42,6 +42,8 @@ class ApineFile {
 	private $name;
 
 	private $content;
+	
+	private $readonly;
 
 	/**
 	 * Construct the file handler
@@ -50,11 +52,16 @@ class ApineFile {
 	 * @param string $a_path
 	 * @throws Exception
 	 */
-	public function __construct ($a_path) {
+	public function __construct ($a_path, $a_readonly = false) {
 
 		if (is_file($a_path)) {
 			// Open File
-			$this->file = fopen($a_path, "c+");
+			if ($a_readonly) {
+				$this->file = fopen($a_path, "r");
+			} else {
+				$this->file = fopen($a_path, "c+");
+			}
+			$this->readonly = $a_readonly;
 			$this->path = $a_path;
 			$this->name = basename($a_path);
 			$this->location = substr($this->path, 0, strripos($a_path, "/") + 1);
@@ -176,14 +183,16 @@ class ApineFile {
 	 */
 	public function write ($a_content, $a_append = true) {
 
-		if ($a_append) {
-			$this->content .= $a_content;
-		} else {
-			$this->content = $a_content;
+		if (!$this->readonly) {
+			if ($a_append) {
+				$this->content .= $a_content;
+			} else {
+				$this->content = $a_content;
+			}
+	
+			ftruncate($this->file, 0);
+			fwrite($this->file, $this->content);
 		}
-
-		ftruncate($this->file, 0);
-		fwrite($this->file, $this->content);
 
 	}
 
@@ -196,37 +205,39 @@ class ApineFile {
 	 */
 	public function save ($a_path = null) {
 
-		if ($a_path == null) {
-			$directory = substr($this->path, 0, strripos($this->path, '/') + 1);
-			$path = $directory . $this->name;
-				
-			$success = copy($this->path, $path);
-				
-			$this->path = $path;
-			$this->location = $directory;
-			fclose($this->file);
-			$this->file = fopen($path, "c+");
-		} else {
-			// Verify is there's a filename in the path
-			$file_name = substr($a_path, strripos($a_path, '/') + 1);
-			$directory = substr($a_path, 0, strripos($a_path, '/') + 1);
-				
-			if ($file_name != '') {
-				$this->name = $file_name;
-				$path = $a_path;
-			}else{
-				$path = $directory . '/' . $this->name;
+		if (!$this->readonly) {
+			if ($a_path == null) {
+				$directory = substr($this->path, 0, strripos($this->path, '/') + 1);
+				$path = $directory . $this->name;
+					
+				$success = copy($this->path, $path);
+					
+				$this->path = $path;
+				$this->location = $directory;
+				fclose($this->file);
+				$this->file = fopen($path, "c+");
+			} else {
+				// Verify is there's a filename in the path
+				$file_name = substr($a_path, strripos($a_path, '/') + 1);
+				$directory = substr($a_path, 0, strripos($a_path, '/') + 1);
+					
+				if ($file_name != '') {
+					$this->name = $file_name;
+					$path = $a_path;
+				}else{
+					$path = $directory . '/' . $this->name;
+				}
+					
+				// If there's a filename, configure the class's name
+				$success = rename($this->path, $path);
+				$this->path = $path;
+				$this->location = $directory;
+				fclose($this->file);
+				$this->file = fopen($path, "c+");
 			}
-				
-			// If there's a filename, configure the class's name
-			$success = rename($this->path, $path);
-			$this->path = $path;
-			$this->location = $directory;
-			fclose($this->file);
-			$this->file = fopen($path, "c+");
+			
+			return $success;
 		}
-
-		return $success;
 
 	}
 
@@ -237,10 +248,12 @@ class ApineFile {
 	 */
 	public function move($a_move_path) {
 
-		if (is_null($a_move_path)) {
-			return $this->save($this->location);
-		} else {
-			return $this->save($a_move_path);
+		if (!$this->readonly) {
+			if (is_null($a_move_path)) {
+				return $this->save($this->location);
+			} else {
+				return $this->save($a_move_path);
+			}
 		}
 
 	}
@@ -271,7 +284,9 @@ class ApineFile {
 	 */
 	public function delete () {
 
-		unlink($this->path);
+		if (!$this->readonly) {
+			unlink($this->path);
+		}
 
 	}
 

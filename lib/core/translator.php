@@ -48,7 +48,7 @@ class ApineTranslator {
 	 * @param string $a_lang_code
 	 *        Language identifier
 	 */
-	private static function set_language ($a_lang_code = null) {
+	public static function set_language ($a_lang_code = null) {
 		
 		if (is_null($a_lang_code)) {
 			if (Config::get('languages', 'detection') == "yes") {
@@ -72,7 +72,7 @@ class ApineTranslator {
 			}
 		}
 		
-		setlocale(LC_TIME, self::get_instance()->language->code);
+		setlocale(LC_TIME, self::get_instance()->language->get_language()->code);
 		
 		/*if (ApineSession::is_logged_in()) {
 			// If User is logged in and has a custom language
@@ -85,7 +85,7 @@ class ApineTranslator {
 	 *
 	 * @return Translation
 	 */
-	public static function cookie_best () {
+	private static function cookie_best () {
 	
 		if (Config::get('languages', 'use_cookie') === "yes" && Cookie::get('language')) {
 			return self::best(Cookie::get('language'));
@@ -100,7 +100,7 @@ class ApineTranslator {
 	 *
 	 * @return Translation
 	 */
-	public static function request_best () {
+	private static function request_best () {
 	
 		if (isset(Request::get()['language'])) {
 			return self::best(Request::get()['language']);
@@ -115,7 +115,7 @@ class ApineTranslator {
 	 *
 	 * @return Translation
 	 */
-	public static function user_agent_best () {
+	private static function user_agent_best () {
 	
 		if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
 			return Translator::get_translation(Config::get('languages', 'default'))->get_language()->code;
