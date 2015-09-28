@@ -349,7 +349,8 @@ class Liste implements IteratorAggregate {
 						$array_item = (array) $item;
 						
 						if (get_class($a_value) == get_class($item)) {
-							$diff = array_diff_assoc($array_value,$array_item);
+							//$diff = array_diff_assoc($array_value, $array_item);
+							$diff = array_map('unserialize', array_diff(array_map('serialize', $array_value), array_map('serialize', $array_item)));
 							
 							if (count($diff) == 0) {
 								$match_index = $key;
