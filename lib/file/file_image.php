@@ -26,6 +26,17 @@ class ApineFileImage extends ApineFile {
 	 * @var integer
 	 */
 	private $width;
+	
+	const ALLOWED_EXTENSIONS = array(
+					"jpeg",
+					"jpg",
+					"png",
+					"gif",
+					"PNG",
+					"JPG",
+					"JPEG",
+					"GIF"
+	);
 
 	/**
 	 * Construct the FileImage handler
@@ -33,25 +44,27 @@ class ApineFileImage extends ApineFile {
 	 * @param string $a_path
 	 * @throws Exception If the file isn't an image or does not exists
 	 */
-	public function __construct($a_path = null) {
+	public function __construct ($a_path = null) {
 
-		if (is_file($a_path)) {
-			// Open File
-			//$this->file = fopen($a_path, "c+");
-			$this->path = $a_path;
-			$this->name = basename($a_path);
-			$this->location = substr($this->path, 0, strripos($a_path, "/") + 1);
-				
-			try {
-				$this->write();
-			} catch (Exception $e) {
-				throw new Exception($e->getMessage());
-			}
-				
-		} else {
-			throw new Exception('File not found');
+		try {
+			parent::__construct($a_path);
+			$this->write();
+		} catch (Exception $e) {
+			throw $e;
 		}
 
+	}
+	
+	/**
+	 * Create a new empty file
+	 * 
+	 * @param string $a_path
+	 * @throws Exception ApineFileImage can't handle empty files
+	 */
+	public static function create ($a_path) {
+		
+		throw new Exception('ApineFileImage cannot handle empty image files');
+		
 	}
 
 
@@ -60,21 +73,11 @@ class ApineFileImage extends ApineFile {
 	 *
 	 * @return boolean
 	 */
-	public function is_valid_image() {
+	public function is_valid_image () {
 
-		$allowedExts = array(
-						"jpeg",
-						"jpg",
-						"png",
-						"PNG",
-						"JPG",
-						"JPEG",
-						"gif",
-						"GIF"
-		);
-		$extension = $this->extention();
+		$extension = $this->extension();
 
-		if ((($this->type() == "image/jpeg") || ($this->type() == "image/jpg") || ($this->type() == "image/png") || ($this->type() == "image/GIF") || ($this->type() == "image/gif")) && in_array($extension, $allowedExts)) {
+		if ((($this->type() == "image/jpeg") || ($this->type() == "image/jpg") || ($this->type() == "image/png") || ($this->type() == "image/GIF") || ($this->type() == "image/gif")) && in_array($extension, $this::ALLOWED_EXTENSIONS)) {
 			return true;
 		} else {
 			return false;
@@ -87,7 +90,7 @@ class ApineFileImage extends ApineFile {
 	 *
 	 * @return integer
 	 */
-	public function width() {
+	public function width () {
 
 		if (is_null($this->width)) {
 			$sizearray = getimagesize($this->path);
@@ -103,7 +106,7 @@ class ApineFileImage extends ApineFile {
 	 *
 	 * @return integer
 	 */
-	public function height() {
+	public function height () {
 
 		if (is_null($this->height)) {
 			$sizearray = getimagesize($this->path);
@@ -171,6 +174,8 @@ class ApineFileImage extends ApineFile {
 				}
 	
 			}
+		} else {
+			throw new Exception("Can't modify images in read-only mode");
 		}
 
 	}
@@ -189,7 +194,7 @@ class ApineFileImage extends ApineFile {
 	 *        Vertical Position of the cropped image inside the
 	 *        original image from the upp-left corner.
 	 */
-	public function crop($n_width, $n_height, $x, $y) {
+	public function crop ($n_width, $n_height, $x, $y) {
 	
 		if (!$this->readonly) {
 			$new_image = imagecreatetruecolor($n_width, $n_height);
@@ -198,6 +203,8 @@ class ApineFileImage extends ApineFile {
 			if (isset($new_image)) {
 				write($new_image);
 			}
+		} else {
+			throw new Exception("Can't modify images in read-only mode");
 		}
 	
 	}
@@ -218,11 +225,13 @@ class ApineFileImage extends ApineFile {
 	 *        See the php manual for a list of optional arguments.
 	 * @link http://www.php.net/manual/en/function.imagefilter.php
 	 */
-	public function filter($filtertype, $arg1 = null, $arg2 = null, $arg3 = null, $arg4 = null) {
+	public function filter ($filtertype, $arg1 = null, $arg2 = null, $arg3 = null, $arg4 = null) {
 	
 		if (!$this->readonly) {
 			imagefilter($this->file, $filtertype, $arg1, $arg2, $arg3, $arg4);
 			write($this->file);
+		} else {
+			throw new Exception("Can't modify images in read-only mode");
 		}
 		
 	}
@@ -235,11 +244,13 @@ class ApineFileImage extends ApineFile {
 	 *        modes.
 	 * @link http://php.net/manual/en/function.imageflip.php
 	 */
-	public function flip($mode) {
+	public function flip ($mode) {
 	
 		if (!$this->readonly) {
 			imageflip($this->file, $mode);
 			write($this->file);
+		} else {
+			throw new Exception("Can't modify images in read-only mode");
 		}
 		
 	}
@@ -261,23 +272,23 @@ class ApineFileImage extends ApineFile {
 	public function write ($a_image = null) {
 		
 		if (!$this->readonly) {
-			if (is_null(a_image)) {
-				if (($this->get_type() == "image/png") || ($this->get_type() == "image/PNG")) {
+			if (is_null($a_image)) {
+				if (($this->type() == "image/png") || ($this->type() == "image/PNG")) {
 					imagepng(a_image, $this->path);
-				} else if (($this->get_type() == "image/jpg") || ($this->get_type() == "image/jpeg") || ($this->get_type() == "image/JPG") || ($this->get_type() == "image/JPEG")) {
+				} else if (($this->type() == "image/jpg") || ($this->type() == "image/jpeg") || ($this->type() == "image/JPG") || ($this->type() == "image/JPEG")) {
 					imagejpeg(a_image, $this->path);
-				} else if (($this->get_type() == "image/GIF") || ($this->get_type() == "image/gif")) {
+				} else if (($this->type() == "image/GIF") || ($this->type() == "image/gif")) {
 					imagegif(a_image, $this->path);
 				} else {
 					throw new Exception('Invalid file format');
 				}
 			} else {
 				if ($this->is_valid_image()) {
-					if (($this->get_type() == "image/png") || ($this->get_type() == "image/PNG")) {
+					if (($this->type() == "image/png") || ($this->type() == "image/PNG")) {
 						$this->file = imagecreatefrompng($this->path);
-					} else if (($this->get_type() == "image/jpg") || ($this->get_type() == "image/jpeg") || ($this->get_type() == "image/JPG") || ($this->get_type() == "image/JPEG")) {
+					} else if (($this->type() == "image/jpg") || ($this->type() == "image/jpeg") || ($this->type() == "image/JPG") || ($this->type() == "image/JPEG")) {
 						$this->file = imagecreatefromjpeg($this->path);
-					} else if (($this->get_type() == "image/GIF") || ($this->get_type() == "image/gif")) {
+					} else if (($this->type() == "image/GIF") || ($this->type() == "image/gif")) {
 						$this->file = imagecreatefromgif($this->path);
 					}
 					$this->write();
@@ -285,6 +296,8 @@ class ApineFileImage extends ApineFile {
 					throw new Exception('Invalid file format');
 				}
 			}
+		} else {
+			throw new Exception("Can't open images in read-only mode");
 		}
 			
 	}

@@ -43,7 +43,7 @@ class ApineFile {
 
 	private $content;
 	
-	private $readonly;
+	protected $readonly;
 
 	/**
 	 * Construct the file handler
@@ -52,24 +52,57 @@ class ApineFile {
 	 * @param string $a_path
 	 * @throws Exception
 	 */
-	public function __construct ($a_path, $a_readonly = false) {
+	public function __construct ($a_path, $a_readonly = false, $a_new = false) {
 
-		if (is_file($a_path)) {
-			// Open File
-			if ($a_readonly) {
-				$this->file = fopen($a_path, "r");
+		try {
+			if (!is_file($a_path) && $a_new == false) {
+				throw new Exception('File not found');
+			} else if ($a_new == true) {
+				$this->file = fopen($a_path, "w+");
+				
+				if (!$this->file) {
+					throw new Exception('Could not create file');
+				}
+				
+				$this->path = $a_path;
+				$this->name = basename($a_path);
+				$this->location = substr($this->path, 0, strripos($a_path, "/") + 1);
+				$this->content = "";
 			} else {
-				$this->file = fopen($a_path, "c+");
+			
+				if (filesize($a_path) == 0) {
+					throw new Exception('Empty file');
+				}
+				
+				// Open File
+				if ($a_readonly) {
+					$this->file = fopen($a_path, "r");
+				} else {
+					$this->file = fopen($a_path, "c+");
+				}
+				
+				$this->readonly = $a_readonly;
+				$this->path = $a_path;
+				$this->name = basename($a_path);
+				$this->location = substr($this->path, 0, strripos($a_path, "/") + 1);
+				$this->content = fread($this->file, filesize($a_path));
 			}
-			$this->readonly = $a_readonly;
-			$this->path = $a_path;
-			$this->name = basename($a_path);
-			$this->location = substr($this->path, 0, strripos($a_path, "/") + 1);
-			$this->content = fread($this->file, filesize($a_path));
-		} else {
-			throw new Exception('File not found');
+		} catch (Exception $e) {
+			throw $e;
 		}
 
+	}
+	
+	/**
+	 * Create a new empty file
+	 * 
+	 * @param string $a_path
+	 * @return ApineFile
+	 */
+	public static function create ($a_path) {
+		
+		return new self($a_path, false, true);
+		
 	}
 
 	/**
@@ -129,18 +162,28 @@ class ApineFile {
 	 * 
 	 * @return string
 	 */
-	public function extention () {
+	public function extension () {
 
 		$dot_pos = strpos($this->name, ".");
 		
 		if ($dot_pos > 0) {
-			$extention = substr($this->name, $dot_pos + 1);
+			$extension = substr($this->name, $dot_pos + 1);
 		} else {
-			$extention = $this->name;
+			$extension = $this->name;
 		}
 
-		return $extention;
+		return $extension;
 
+	}
+	
+	/**
+	 * Alias of ApineFile::extension()
+	 * @return string
+	 */
+	public function extention () {
+		
+		return $this->extension();
+		
 	}
 
 	/**
