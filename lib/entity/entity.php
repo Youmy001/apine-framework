@@ -72,8 +72,14 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 		
 		$db = new Database();
 		
-		$this->database_fields = ($this->id !== null) ? $db->select("SELECT * from $this->table_name where id=$this->id") : null;
-		$this->database_fields = $this->database_fields[0];
+		if ($this->id !== null) {
+			$database_fields = $db->select("SELECT * from $this->table_name where id=$this->id");
+			
+			if ($database_fields) {
+				$this->database_fields = $database_fields[0];
+			}
+		}
+		
 		$this->field_loaded = 1;
 		
 		if (sizeof($this->modified_fields) > 0) {
@@ -359,7 +365,7 @@ class ApineEntity extends ApineEntityModel {
 	 */
 	public function get_field ($a_field) {
 
-		if ($a_table != null) {
+		if ($a_field != null) {
 			return $this->_get_field($a_field);
 		}
 	
@@ -375,7 +381,7 @@ class ApineEntity extends ApineEntityModel {
 	 */
 	public function set_field ($a_field, $a_value) {
 
-		if ($a_table != null) {
+		if ($a_field != null) {
 			return $this->_set_field($a_field, $a_value);
 		}
 	
