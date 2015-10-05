@@ -55,7 +55,7 @@ class TranslationLocale {
 		$this->language = $a_language;
 		
 		if (file_exists($this->language->file_path)) {
-			$file = new ApineFile($this->language->file_path);
+			$file = new ApineFile($this->language->file_path, true);
 				
 			if($file->extention() == "json"){
 				$content = $file->content();

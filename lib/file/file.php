@@ -32,7 +32,7 @@ class ApineFile {
 	 *
 	 * @var string
 	 */
-	private $path;
+	protected $path;
 
 	/**
 	 * File name
@@ -56,12 +56,12 @@ class ApineFile {
 
 		try {
 			if (!is_file($a_path) && $a_new == false) {
-				throw new Exception('File not found');
+				throw new ApineException('File not found');
 			} else if ($a_new == true) {
 				$this->file = fopen($a_path, "w+");
 				
 				if (!$this->file) {
-					throw new Exception('Could not create file');
+					throw new ApineException('Could not create file');
 				}
 				
 				$this->path = $a_path;
@@ -71,7 +71,7 @@ class ApineFile {
 			} else {
 			
 				if (filesize($a_path) == 0) {
-					throw new Exception('Empty file');
+					throw new ApineException('Empty file');
 				}
 				
 				// Open File
@@ -87,6 +87,8 @@ class ApineFile {
 				$this->location = substr($this->path, 0, strripos($a_path, "/") + 1);
 				$this->content = fread($this->file, filesize($a_path));
 			}
+		} catch (ApineException $e) {
+			throw $e;
 		} catch (Exception $e) {
 			throw $e;
 		}

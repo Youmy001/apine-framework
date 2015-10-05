@@ -29,10 +29,10 @@ class Version {
 	public static function module ($module_name) {
 		
 		if (is_file('modules/' . $module_name . '/VERSION')) {
-			$file = new ApineFile('modules/' . $module_name . '/VERSION');
+			$file = new ApineFile('modules/' . $module_name . '/VERSION', true);
 			$version = $file->content();
 		} else if (is_file($module_name. '/VERSION')) {
-			$file = new ApineFile($module_name . '/VERSION');
+			$file = new ApineFile($module_name . '/VERSION', true);
 			$version = $file->content();
 		}
 		
@@ -52,7 +52,7 @@ class Version {
 	public static function application () {
 		
 		if (is_file('VERSION')) {
-			$file = new ApineFile('VERSION');
+			$file = new ApineFile('VERSION', true);
 			$version = $file->content();
 		} else if (Config::get('application', 'version')) {
 			$version = Config::get('application', 'version');
@@ -74,7 +74,7 @@ class Version {
 	public static function framework () {
 		
 		if (is_file('lib/VERSION')) {
-			$file = new ApineFile('lib/VERSION');
+			$file = new ApineFile('lib/VERSION', true);
 			$version = $file->content();
 		} else if (Config::get('apine-framework', 'version')) {
 			$version = Config::get('apine-framework', 'version');

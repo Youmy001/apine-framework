@@ -39,7 +39,7 @@ class Config {
 		if (file_exists('config.ini')) {
 			$this->settings = parse_ini_file('config.ini', true);
 		} else {
-			die("No config file founded.");
+			die("No config file found.");
 		}
 		
 	}
