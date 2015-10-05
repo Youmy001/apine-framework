@@ -338,7 +338,7 @@ class ApineUser extends ApineEntityModel {
 		$db = new Database();
 		$db->delete('apine_users_user_groups', array("user_id" => $this->get_id()));
 		
-		foreach ($this->group as $item) {
+		foreach ($this->get_group() as $item) {
 			$db->insert('apine_users_user_groups', array("user_id" => $this->get_id(), "group_id" => $item->get_id()));
 		}
 		

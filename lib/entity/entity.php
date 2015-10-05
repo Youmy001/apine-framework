@@ -64,6 +64,8 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 	 * @var boolean
 	 */
 	protected $loaded = 0;
+	
+	private $load_field;
 	// Methods
 	/**
 	* Fetch database fields and values for entity
@@ -73,14 +75,13 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 		$db = new Database();
 		
 		if ($this->id !== null) {
-			$database_fields = $db->select("SELECT * from $this->table_name where id=$this->id");
+			$database_fields = $db->select("SELECT * from $this->table_name where $this->load_field = $this->id");
 			
 			if ($database_fields) {
 				$this->database_fields = $database_fields[0];
+				$this->field_loaded = 1;
 			}
 		}
-		
-		$this->field_loaded = 1;
 		
 		if (sizeof($this->modified_fields) > 0) {
 			foreach ($this->modified_fields as $key => $values) {
@@ -114,13 +115,17 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 			$this->_load();
 		}
 		
-		if (isset($this->database_fields[$a_field]) && is_timestamp($this->database_fields[$a_field])) {
-			$locale = ApineTranslator::translation()->get_locale();
-			$time = strtotime($this->database_fields[$a_field]);
-			$time += $locale->offset();
-			return date("Y-m-d H:i:s", $time);
-		} else {
-			return $this->database_fields[$a_field];
+		if (isset($this->database_fields[$a_field])) {
+			if (is_timestamp($this->database_fields[$a_field])) {
+				$locale = ApineTranslator::translation()->get_locale();
+				$time = strtotime($this->database_fields[$a_field]);
+				$time += $locale->offset();
+				return date("Y-m-d H:i:s", $time);
+			} else {
+				return $this->database_fields[$a_field];
+			}
+		} else  {
+			return null;
 		}
 
 	}
@@ -189,10 +194,11 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 	 * @param string $tuple_id
 	 *        Entity identifier
 	 */
-	protected function _initialize ($table_name, $tuple_id = null) {
+	protected function _initialize ($table_name, $tuple_id = null, $field_name = "id") {
 
 		$this->table_name = $table_name;
 		$this->id = $tuple_id;
+		$this->load_field = $field_name;
 		
 		//echo get_class($this)."\n";
 		//print_r(get_class_vars('ApineUser'));
@@ -217,7 +223,6 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 			$time = strtotime($value);
 			$time -= $locale->offset();
 			$value = date("Y-m-d H:i:s", $time);
-			
 		}
 		
 		$this->database_fields[$field] = $value;
@@ -322,10 +327,10 @@ class ApineEntity extends ApineEntityModel {
 	 * @param string $a_table        
 	 * @param string $a_id        
 	 */
-	public function initialize ($a_table, $a_id = null) {
+	public function initialize ($a_table, $a_id = null , $a_field = "id") {
 
 		if (!$this->loaded) {
-			$this->_initialize($a_table, $a_id);
+			$this->_initialize($a_table, $a_id, $a_field);
 		} else {
 			
 			if ($a_id != null) {

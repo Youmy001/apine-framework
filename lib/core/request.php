@@ -118,7 +118,7 @@ class Request {
 		//$_SERVER=null;
 		
 		foreach ($this->post as $key=>$value) {
-			$this->post[$key] = filter_var($value,FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+			$this->post[$key] = filter_var($value,FILTER_SANITIZE_SPECIAL_CHARS);
 		}
 		
 		// Format Files Array

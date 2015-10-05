@@ -42,7 +42,7 @@ ALTER TABLE `apine_images`
 
 CREATE TABLE IF NOT EXISTS `apine_users` (
   `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `username` varchar(25) NOT NULL,
+  `username` varchar(32) NOT NULL,
   `password` varchar(64) NOT NULL,
   `type` tinyint(4) NOT NULL DEFAULT '65',
   `email` varchar(100) NOT NULL,
