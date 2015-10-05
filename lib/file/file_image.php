@@ -27,6 +27,8 @@ class ApineFileImage extends ApineFile {
 	 */
 	private $width;
 	
+	private $image;
+	
 	const ALLOWED_EXTENSIONS = array(
 					"jpeg",
 					"jpg",
@@ -36,6 +38,14 @@ class ApineFileImage extends ApineFile {
 					"JPG",
 					"JPEG",
 					"GIF"
+	);
+	
+	const ALLOWED_MIME_TYPE = array(
+					"image/jpeg",
+					"image/jpg",
+					"image/png",
+					"image/GIF",
+					"image/gif"
 	);
 
 	/**
@@ -48,11 +58,28 @@ class ApineFileImage extends ApineFile {
 
 		try {
 			parent::__construct($a_path);
-			$this->write();
-		} catch (Exception $e) {
+			//$this->write();
+			$this->load();
+		} catch (ApineException $e) {
 			throw $e;
 		}
 
+	}
+	
+	private function load () {
+		
+		if(!$this->is_valid_image()) {
+			throw new ApineException("Invalid file format (" . $this->path . ")");
+		}
+		
+		if ($this->type() == "image/jpeg" || $this->type() == "image/jpg") {
+			$this->image = imagecreatefromjpeg($this->path);
+		} else if ($this->type() == "image/png") {
+			$this->image = imagecreatefrompng($this->path);
+		} else if ($this->type() == "image/gif" || $this->type() == "image/GIF") {
+			$this->image = imagecreatefromgif($this->path);
+		}
+		
 	}
 	
 	/**
@@ -63,7 +90,7 @@ class ApineFileImage extends ApineFile {
 	 */
 	public static function create ($a_path) {
 		
-		throw new Exception('ApineFileImage cannot handle empty image files');
+		throw new ApineException('ApineFileImage cannot handle empty image files');
 		
 	}
 
@@ -77,7 +104,7 @@ class ApineFileImage extends ApineFile {
 
 		$extension = $this->extension();
 
-		if ((($this->type() == "image/jpeg") || ($this->type() == "image/jpg") || ($this->type() == "image/png") || ($this->type() == "image/GIF") || ($this->type() == "image/gif")) && in_array($extension, $this::ALLOWED_EXTENSIONS)) {
+		if (in_array($this->type(), $this::ALLOWED_MIME_TYPE) && in_array($extension, $this::ALLOWED_EXTENSIONS)) {
 			return true;
 		} else {
 			return false;
@@ -149,33 +176,33 @@ class ApineFileImage extends ApineFile {
 				$ratio_h = (int) $ar_ratio[1];
 			}
 	
-			$crop_w = $this->width;
+			$crop_w = $this->width();
 			$crop_h = ceil($crop_w / $ratio);
 	
 			// Crop image if size is different
 			if (($crop_h != $this->height()) || ($crop_w != $this->width())) {
 	
-				if ($crop_h < $this->height) {						// If current heigth is bigger
+				if ($crop_h < $this->height()) {						// If current heigth is bigger
 					$new_image = imagecreatetruecolor($crop_w, $crop_h);
 					$x = 0;
 					$y = floor(0.5 * ($this->height() - $crop_h));
-					imagecopyresized($new_image, $this->file, 0, 0, $x, $y, $crop_w, $crop_h, $crop_w, $crop_h);
+					imagecopyresized($new_image, $this->image, 0, 0, $x, $y, $crop_w, $crop_h, $crop_w, $crop_h);
 				} else if($crop_h > $this->height()) {				// If current height is smaller
 					$crop_h = $this->height();
 					$crop_w = ceil($ratio * $crop_h);
 					$new_image = imagecreatetruecolor($crop_w, $crop_h);
 					$y = 0;
 					$x = floor(0.5 * ($this->width() - $crop_w));
-					imagecopyresized($new_image, $this->file, 0, 0, $x, $y, $crop_w, $crop_h, $crop_w, $crop_h);
+					imagecopyresized($new_image, $this->image, 0, 0, $x, $y, $crop_w, $crop_h, $crop_w, $crop_h);
 				}
 	
 				if (isset($new_image)) {
-					write($new_image);
+					$this->write($new_image);
 				}
 	
 			}
 		} else {
-			throw new Exception("Can't modify images in read-only mode");
+			throw new ApineException("Can't modify images in read-only mode");
 		}
 
 	}
@@ -197,14 +224,42 @@ class ApineFileImage extends ApineFile {
 	public function crop ($n_width, $n_height, $x, $y) {
 	
 		if (!$this->readonly) {
+			
+			if (($n_width + $x) > $this->width() || ($n_height + $y) > $this->height()) {
+				throw new ApineException("Invalid cropping dimensions");
+			}
+			
 			$new_image = imagecreatetruecolor($n_width, $n_height);
-			imagecopyresized($new_image, $this->file, 0, 0, $x, $y, $n_width, $n_height, $this->width(), $this->height());
+			imagecopyresized($new_image, $this->image, 0, 0, $x, $y, $n_width, $n_height, $n_width, $n_height);
 			
 			if (isset($new_image)) {
-				write($new_image);
+				$this->write($new_image);
 			}
 		} else {
-			throw new Exception("Can't modify images in read-only mode");
+			throw new ApineException("Can't modify images in read-only mode");
+		}
+	
+	}
+	
+	/**
+	 * Resize the image to a desired size.
+	 *
+	 * @param integer $n_width
+	 *        Desired width in pixels
+	 * @param integer $n_height
+	 *        Desired heigth in pixels
+	 */
+	public function resize ($n_width, $n_height) {
+	
+		if (!$this->readonly) {
+			$new_image = imagecreatetruecolor($n_width, $n_height);
+			imagecopyresized($new_image, $this->image, 0, 0, 0, 0, $n_width, $n_height, $this->width(), $this->height());
+				
+			if (isset($new_image)) {
+				$this->write($new_image);
+			}
+		} else {
+			throw new ApineException("Can't modify images in read-only mode");
 		}
 	
 	}
@@ -228,10 +283,10 @@ class ApineFileImage extends ApineFile {
 	public function filter ($filtertype, $arg1 = null, $arg2 = null, $arg3 = null, $arg4 = null) {
 	
 		if (!$this->readonly) {
-			imagefilter($this->file, $filtertype, $arg1, $arg2, $arg3, $arg4);
-			write($this->file);
+			imagefilter($this->image, $filtertype, $arg1, $arg2, $arg3, $arg4);
+			$this->write($this->image);
 		} else {
-			throw new Exception("Can't modify images in read-only mode");
+			throw new ApineException("Can't modify images in read-only mode");
 		}
 		
 	}
@@ -247,10 +302,10 @@ class ApineFileImage extends ApineFile {
 	public function flip ($mode) {
 	
 		if (!$this->readonly) {
-			imageflip($this->file, $mode);
-			write($this->file);
+			imageflip($this->image, $mode);
+			$this->write($this->image);
 		} else {
-			throw new Exception("Can't modify images in read-only mode");
+			throw new ApineException("Can't modify images in read-only mode");
 		}
 		
 	}
@@ -260,7 +315,7 @@ class ApineFileImage extends ApineFile {
 	 */
 	public function __destruct () {
 
-		imagedestroy($this->file);
+		imagedestroy($this->image);
 
 	}
 	
@@ -271,33 +326,35 @@ class ApineFileImage extends ApineFile {
 	 */
 	public function write ($a_image = null) {
 		
+		if(!$this->is_valid_image()) {
+			throw new ApineException("Invalid file format (" . $this->path . ")");
+		}
+		
 		if (!$this->readonly) {
-			if (is_null($a_image)) {
+			if (!is_null($a_image)) {
 				if (($this->type() == "image/png") || ($this->type() == "image/PNG")) {
-					imagepng(a_image, $this->path);
+					imagepng($a_image, $this->path);
 				} else if (($this->type() == "image/jpg") || ($this->type() == "image/jpeg") || ($this->type() == "image/JPG") || ($this->type() == "image/JPEG")) {
-					imagejpeg(a_image, $this->path);
+					imagejpeg($a_image, $this->path);
 				} else if (($this->type() == "image/GIF") || ($this->type() == "image/gif")) {
-					imagegif(a_image, $this->path);
+					imagegif($a_image, $this->path);
 				} else {
-					throw new Exception('Invalid file format');
-				}
-			} else {
-				if ($this->is_valid_image()) {
-					if (($this->type() == "image/png") || ($this->type() == "image/PNG")) {
-						$this->file = imagecreatefrompng($this->path);
-					} else if (($this->type() == "image/jpg") || ($this->type() == "image/jpeg") || ($this->type() == "image/JPG") || ($this->type() == "image/JPEG")) {
-						$this->file = imagecreatefromjpeg($this->path);
-					} else if (($this->type() == "image/GIF") || ($this->type() == "image/gif")) {
-						$this->file = imagecreatefromgif($this->path);
-					}
-					$this->write();
-				} else {
-					throw new Exception('Invalid file format');
+					throw new ApineException('Invalid file format');
 				}
 			}
+			
+			if (($this->type() == "image/png") || ($this->type() == "image/PNG")) {
+				$this->file = imagecreatefrompng($this->path);
+			} else if (($this->type() == "image/jpg") || ($this->type() == "image/jpeg") || ($this->type() == "image/JPG") || ($this->type() == "image/JPEG")) {
+				$this->file = imagecreatefromjpeg($this->path);
+			} else if (($this->type() == "image/GIF") || ($this->type() == "image/gif")) {
+				$this->file = imagecreatefromgif($this->path);
+			}
+			
+			$this->width = null;
+			$this->height = null;
 		} else {
-			throw new Exception("Can't open images in read-only mode");
+			throw new ApineException("Can't open images in read-only mode");
 		}
 			
 	}

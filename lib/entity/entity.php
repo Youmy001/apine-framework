@@ -116,7 +116,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 		}
 		
 		if (isset($this->database_fields[$a_field])) {
-			if (is_timestamp($this->database_fields[$a_field])) {
+			if (is_timestamp($this->database_fields[$a_field]) && !is_numeric($this->database_fields[$a_field])) {
 				$locale = ApineTranslator::translation()->get_locale();
 				$time = strtotime($this->database_fields[$a_field]);
 				$time += $locale->offset();
@@ -218,7 +218,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 			$this->_load();
 		}
 		
-		if (is_timestamp($value)) {
+		if (is_timestamp($value) && !is_numeric($value)) {
 			$locale = ApineTranslator::translation()->get_locale();
 			$time = strtotime($value);
 			$time -= $locale->offset();
@@ -240,7 +240,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 		
 		if ($this->id) {
 			$db->delete($this->table_name, array(
-							'id' => $this->id
+							$this->load_field => $this->id
 			));
 		}
 
@@ -293,7 +293,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 			}
 			
 			$db->update($this->table_name, $arUpdate, array(
-							'ID' => $this->id
+							$this->load_field => $this->id
 			));
 		}
 
@@ -313,10 +313,10 @@ class ApineEntity extends ApineEntityModel {
 	 *        identifier of the entity in the
 	 *        table
 	 */
-	public function __construct ($a_table = null, $a_id = null) {
+	public function __construct ($a_table = null, $a_id = null, $a_field = "id") {
 
 		if ($a_table != null) {
-			$this->_initialize($a_table, $a_id);
+			$this->_initialize($a_table, $a_id, $a_field);
 			$this->loaded = true;
 		}
 	
