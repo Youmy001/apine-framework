@@ -299,8 +299,82 @@ class ApineFile {
 			} else {
 				return $this->save($a_move_path);
 			}
+		} else {
+			return false;
 		}
 
+	}
+	
+	/**
+	 * Copy the file to another location
+	 * 
+	 * @param string $a_copy_path
+	 * @throws ApineException
+	 * @return boolean
+	 */
+	public function copy ($a_copy_path) {
+		
+		if (!$this->readonly) {
+			
+			if (is_null($a_copy_path)) {
+				throw new ApineException('Invalid Path');
+			}
+			
+			if (stripos($a_copy_path, '/') !== false) {
+				$directory = substr($a_copy_path, 0, strripos($a_copy_path, '/') + 1);
+				$name = substr($a_copy_path, strripos($a_copy_path, '/'));
+				$path = $directory . $name;
+			} else {
+				$name = $a_copy_path;
+				$directory = substr($this->path, 0, strripos($this->path, '/') + 1);
+				$path = $directory . $name;
+			}
+			
+			$success = copy($this->path, $path);
+			
+			$this->name = $name;
+			$this->path = $a_copy_path;
+			$this->location = $directory;
+			
+			fclose($this->file);
+			$this->file = fopen($path, "c+");
+			
+			return $success;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Rename the file
+	 * 
+	 * @param string $a_file_name
+	 * @throws ApineException
+	 * @return boolean
+	 */
+	public function rename ($a_file_name) {
+		
+		if (!$this->readonly) {
+			if (stripos($a_file_name, '/') !== false) {
+				throw new ApineException('Invalid File name');
+			}
+			
+			$directory = substr($this->path, 0, strripos($this->path, '/') + 1);
+			$path = $directory . $a_file_name;
+			
+			$success = rename($this->path, $path);
+			
+			$this->name = $file_name;
+			$this->path = $path;
+				
+			fclose($this->file);
+			$this->file = fopen($path, "c+");
+			
+			return $success;
+		} else {
+			return false;
+		}
+		
 	}
 
 	/**

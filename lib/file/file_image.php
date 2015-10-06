@@ -27,6 +27,11 @@ class ApineFileImage extends ApineFile {
 	 */
 	private $width;
 	
+	/**
+	 * Image resource
+	 * 
+	 * @var resource
+	 */
 	private $image;
 	
 	const ALLOWED_EXTENSIONS = array(
