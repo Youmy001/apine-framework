@@ -24,7 +24,7 @@ if (Config::get('runtime', 'mode') == 'development') {
 
 date_default_timezone_set(Config::get('dateformat', 'timezone'));
 ini_set('session.gc_maxlifetime', 604800);
-print_r(Request::get());
+
 /**
  * Main Execution
  */

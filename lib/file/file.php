@@ -85,7 +85,6 @@ class ApineFile {
 				$this->path = $a_path;
 				$this->name = basename($a_path);
 				$this->location = substr($this->path, 0, strripos($a_path, "/") + 1);
-				$this->content = fread($this->file, filesize($a_path));
 			}
 		} catch (ApineException $e) {
 			throw $e;
@@ -216,6 +215,10 @@ class ApineFile {
 	 * @return mixed
 	 */
 	public function content () {
+		
+		if ($this->size() > 0 && $this->content === null) {
+			$this->content = fread($this->file, filesize($this->path));
+		}
 
 		return $this->content;
 
@@ -248,7 +251,7 @@ class ApineFile {
 	 * @param string $a_path
 	 * @return boolean
 	 */
-	public function save ($a_path = null) {
+	private function save ($a_path = null) {
 
 		if (!$this->readonly) {
 			if ($a_path == null) {

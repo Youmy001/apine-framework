@@ -92,6 +92,13 @@ class Request {
 	private $api_call;
 	
 	/**
+	 * Headers received
+	 * 
+	 * @var string[]
+	 */
+	private $request_headers;
+	
+	/**
 	 * Construct the Request Management handler
 	 * Extract information from the request and clean user inputs 
 	 */
@@ -136,6 +143,8 @@ class Request {
 			$this->files = $file;
 		}
 		
+		$this->request_headers = apache_request_headers();
+		
 	}
 	
 	/**
@@ -172,6 +181,17 @@ class Request {
 		
 		return self::get_instance()->request_port;
 		
+	}
+	
+	/**
+	 * Return headers received from the current request
+	 *
+	 * @return string
+	 */
+	public static function get_request_headers () {
+	
+		return self::get_instance()->request_headers;
+	
 	}
 	
 	/**
