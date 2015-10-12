@@ -27,9 +27,7 @@ class SessionController extends Controller {
 			try {
 				
 				if ((isset($user) && isset($pwd)) && (!ApineSession::is_logged_in())) {
-					
 					if (ApineSession::login($user, $pwd)) {
-						
 						if ($permanent == 'on') {
 							ApineSession::make_permanent();
 						}
@@ -43,7 +41,6 @@ class SessionController extends Controller {
 						
 						die();
 					}
-					
 				}
 				
 				//$message = 'Either the the username/email or the password is not valid. Please try again later.';
