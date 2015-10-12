@@ -121,35 +121,30 @@ class Routing {
 		}
 		
 		try {
-			require_once('controllers/error_controller.php');
-			
-			if (file_exists('controllers/' . $controller . '_controller.php')) {
+			$maj_controller = ucfirst($controller) . 'Controller';
+			if (class_exists($maj_controller) && method_exists($maj_controller, $action)) {
+				self::execute($maj_controller, $action, $args);
+			}else if (file_exists('controllers/' . $controller . '_controller.php')) {
 				require_once('controllers/' . $controller . '_controller.php');
-				$maj_controller = ucfirst($controller) . 'Controller';
 
 				if (method_exists($maj_controller, $action)) {
-					//print "Found";
-					$controller = ucfirst($controller) . 'Controller';
-					$controller = new $controller();
-					$controller->$action($args);
-					die();
+					self::execute($maj_controller, $action, $args);
 				}
 			}
 			
 			if ($route_found) {
 				//print "Gone";
-				$controller = new ErrorController();
-				$controller->gone();
+				self::execute('ErrorController', 'gone');
 			} else {
 				//print "Not Found";
-				$controller = new ErrorController();
-				$controller->notfound();
+				self::execute('ErrorController', 'notfound');
 			}
 			
 		} catch (Exception $e) {
 			//print "Error";
-			$controller = new ErrorController();
-			$controller->server();
+			/*$controller = new ErrorController();
+			$controller->server();*/
+			throw new ApineException($e->getMessage(), $e->getCode(), $e);
 		}
 		
 	}
@@ -177,9 +172,11 @@ class Routing {
 		}
 		
 		try {
-			if (file_exists('controllers/' . $controller . '_controller.php')) {
+			$maj_controller = ucfirst($controller) . 'Controller';
+			if (class_exists($maj_controller) && method_exists($maj_controller, $action)) {
+				return true;
+			}else if (file_exists('controllers/' . $controller . '_controller.php')) {
 				require_once('controllers/' . $controller . '_controller.php');
-				$maj_controller = ucfirst($controller) . 'Controller';
 				
 				if (method_exists($maj_controller, $action)) {
 					//print "Found";
@@ -190,10 +187,18 @@ class Routing {
 			return false;
 		} catch (Exception $e) {
 			//print "Error";
-			$controller = new ErrorController();
-			$controller->server();
-			return false;
+			//self::execute('ErrorController', 'server');
+			//return false;
+			throw new ApineException($e->getMessage(), $e->getCode(), $e);
 		}
+		
+	}
+	
+	public static function execute ($controller, $action, $args = null) {
+		
+		$controller = new $controller();
+		$controller->$action($args);
+		die();
 		
 	}
 	

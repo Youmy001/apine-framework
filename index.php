@@ -67,7 +67,6 @@ try {
 			print $e->getMessage().' on '.$e->getFile().' ('.$e->getLine().")\n\n";
 			print $e->getTraceAsString();
 		} else {
-			require_once('controllers/error_controller.php');
 			$error = new ErrorController();
 			$error->custom($e->getCode(), $e->getMessage());
 		}

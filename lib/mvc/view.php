@@ -219,15 +219,18 @@ class HTMLView extends HTTPView {
 	 * @param string $a_view
 	 * @param string $a_layout
 	 */
-	public function __construct($a_title="",$a_view="default",$a_layout="default") {
+	public function __construct($a_title = "", $a_view = "default", $a_layout = "default") {
 		
 		parent::__construct();
 		$this->_scripts=new Liste();
 		
 		$this->_title=$a_title;
-		
-		$this->set_layout($a_layout);
 		$this->set_view($a_view);
+		
+		if ($a_layout == "default") {
+			$a_layout = Config::get('application', 'default_layout');
+		}
+		$this->set_layout($a_layout);
 		
 	}
 	

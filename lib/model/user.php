@@ -306,8 +306,16 @@ class ApineUser extends ApineEntityModel {
 			$this->load();
 		}
 		
-		$this->register_date = $a_timestamp;
-		$this->_set_field('register', $a_timestamp);
+		if (is_string($a_timestamp) && strtotime($a_timestamp)) {
+			$this->register_date = date('Y-m-d H:i:s', strtotime($a_timestamp));
+		} else if (is_long($a_timestamp) && date('u', $a_timestamp)) {
+			$this->register_date = date('Y-m-d H:i:s', $a_timestamp);
+		} else {
+			return false;
+		}
+		
+		$this->_set_field('register', $this->register_date);
+		return $this->register_date;
 	
 	}
 	

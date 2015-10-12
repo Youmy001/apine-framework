@@ -101,6 +101,12 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 		$this->field_loaded = 1;
 
 	}
+	
+	protected function _is_loaded () {
+		
+		return (bool) $this->loaded;
+		
+	}
 
 	/**
 	 * Fetch a field's value
