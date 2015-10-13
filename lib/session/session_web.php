@@ -182,7 +182,7 @@ class ApineWebSession implements ApineSessionInterface {
 	 *        Password of the user
 	 * @return boolean
 	 */
-	public function login ($user_name, $password) {
+	public function login ($user_name, $password, $options = array()) {
 		
 		if (!$this->is_logged_in()) {
 			
@@ -201,6 +201,11 @@ class ApineWebSession implements ApineSessionInterface {
 				$new_user = $this->get_user();
 				$_SESSION['type'] = $new_user->get_type();
 				$this->set_session_type($new_user->get_type());
+				
+				if (isset($options[0]) && $options[0] === true) {
+					$this->make_permanent();
+				}
+				
 				return true;
 			} else {
 				return false;
@@ -219,12 +224,20 @@ class ApineWebSession implements ApineSessionInterface {
 		
 		if ($this->is_logged_in()) {
 			$_SESSION = array();
-			Cookie::set('session', $this->php_session_id, time() - 604800);
+			Cookie::set('session', $this->php_session_id, time() - 604801);
 			session_destroy();
 			$this->logged_in = false;
 			$this->set_session_type(SESSION_GUEST);
 		}
 
+	}
+	
+	private function make_permanent () {
+		
+		if ($this->is_logged_in()) {
+			Cookie::set('session', $this->php_session_id, time() + 604800);
+		}
+		
 	}
 
 }

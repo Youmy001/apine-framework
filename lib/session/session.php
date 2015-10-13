@@ -23,6 +23,10 @@ define('SESSION_GUEST', 40);
 // Can't access ACP or UCP at all. Can only view content.
 // Can also subscribe or register to newsletter.
 
+/**
+ * Abstraction for session management using the strategy pattern
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ */
 class ApineSession {
 
 	/**
@@ -102,7 +106,16 @@ class ApineSession {
 
 	public static function login ($username, $password) {
 		
-		return self::get_instance()->strategy->login($username, $password);
+		if(func_num_args() > 2) {
+			$args = func_get_args();
+			array_shift($args);
+			array_shift($args);
+			$options = $args;
+		} else {
+			$options = array();
+		}
+		
+		return self::get_instance()->strategy->login($username, $password, $options);
 
 	}
 
@@ -110,6 +123,12 @@ class ApineSession {
 		
 		return self::get_instance()->strategy->logout();
 
+	}
+	
+	public static function args_num () {
+		
+		return func_get_args();
+		
 	}
 
 }

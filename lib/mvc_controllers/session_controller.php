@@ -19,19 +19,15 @@ class SessionController extends Controller {
 			}
 			
 			if (isset($params['perm'])) {
-				$permanent = $params['perm'];
+				$permanent = true;
 			} else {
-				$permanent = 'off';
+				$permanent = false;
 			}
 			
 			try {
 				
 				if ((isset($user) && isset($pwd)) && (!ApineSession::is_logged_in())) {
-					if (ApineSession::login($user, $pwd)) {
-						if ($permanent == 'on') {
-							ApineSession::make_permanent();
-						}
-						
+					if (ApineSession::login($user, $pwd, $permanent)) {
 						if (isset($redirect) && $redirect != "") {
 							header("Location: " . $redirect);
 						} else {
