@@ -11,7 +11,7 @@
  * Translation Locales
  * Representation of a locales for translations
  */
-class TranslationLocale {
+final class TranslationLocale {
 	
 	/**
 	 * Entries linke to locales

@@ -11,7 +11,7 @@
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  */
-class Version {
+final class Version {
 	
 	/**
 	 * Regular expression for a valid semantic version number

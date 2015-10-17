@@ -22,11 +22,18 @@ abstract class View {
 	protected $_params;
 	
 	/**
+	 * List of HTTP headers to apply
+	 * @var Liste
+	 */
+	protected $_headers;
+	
+	/**
 	 * Construct abstract View
 	 */
 	public function __construct() {
 		
 		$this->_params=new Liste();
+		$this->_headers=new Liste();
 		
 	}
 	
@@ -42,7 +49,7 @@ abstract class View {
 	 * @param string $a_name
 	 * @param mixed $a_data
 	 */
-	public function set_param($a_name,$a_data) {
+	final public function set_param($a_name,$a_data) {
 		
 		$this->_params->add_item($a_data,$a_name);
 		
@@ -54,7 +61,7 @@ abstract class View {
 	 * @param string $a_rule
 	 * @param string $a_name
 	 */
-	public function set_header_rule($a_rule,$a_name=null) {
+	final public function set_header_rule($a_rule,$a_name=null) {
 		
 		$this->_headers->add_item($a_name,$a_rule);
 		
@@ -63,7 +70,7 @@ abstract class View {
 	/**
 	 * Apply header rules
 	 */
-	public function apply_headers() {
+	final public function apply_headers() {
 		
 		if ($this->_headers->length()>0) {
 			foreach ($this->_headers as $key=>$value) {
@@ -82,7 +89,7 @@ abstract class View {
 	 * @param integer $code
 	 * @return integer
 	 */
-	public function set_response_code($code) {
+	final public function set_response_code($code) {
 		
 		if ($code !== NULL) {
 			switch ($code) {
@@ -142,41 +149,7 @@ abstract class View {
 	/**
 	 * Send the view to output
 	 */
-	abstract function draw();
-	
-}
-
-/**
- * HTTP View
- * 
- * @author Tommy Teasdale <tteasdaleroads@gmail.com>
- */
-class HTTPView extends View {
-	
-	/**
-	 * List of HTTP headers to apply
-	 * @var Liste
-	 */
-	protected $_headers;
-	
-	/**
-	 * Construct the HTTP View
-	 */
-	public function __construct() {
-		
-		parent::__construct();
-		$this->_headers=new Liste();
-		
-	}
-	
-	/**
-	 * Send view to output 
-	 */
-	public function draw() {
-		
-		$this->apply_headers();
-		
-	}
+	abstract public function draw();
 	
 }
 
@@ -185,7 +158,7 @@ class HTTPView extends View {
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  */
-class HTMLView extends HTTPView {
+final class HTMLView extends View {
 	
 	/**
 	 * Path to layout file
@@ -327,7 +300,7 @@ class HTMLView extends HTTPView {
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  */
-class FileView extends HTTPView {
+final class FileView extends View {
 	
 	/**
 	 * View File
@@ -390,7 +363,7 @@ class FileView extends HTTPView {
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  */
-class JSONView extends HTTPView {
+final class JSONView extends HTTPView {
 	
 	/**
 	 * Json File

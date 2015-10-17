@@ -27,7 +27,7 @@ class SessionController extends Controller {
 			try {
 				
 				if ((isset($user) && isset($pwd)) && (!ApineSession::is_logged_in())) {
-					if (ApineSession::login($user, $pwd, $permanent)) {
+					if (ApineSession::login($user, $pwd, array("remember" => $permanent))) {
 						if (isset($redirect) && $redirect != "") {
 							header("Location: " . $redirect);
 						} else {
@@ -131,7 +131,7 @@ class SessionController extends Controller {
 					$new_user = new ApineUser();
 					$new_user->set_username($user);
 					$new_user->set_password($encoded_pwd);
-					$new_user->set_type(SESSION_USER);
+					$new_user->set_type(APINE_SESSION_USER);
 					
 					$list_group=new Liste();
 					$list_group->add_item(ApineUserGroupFactory::create_by_id(1));

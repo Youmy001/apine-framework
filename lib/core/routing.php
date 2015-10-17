@@ -11,7 +11,7 @@
  * Request Router
  * Route requests toward the best matching controller. This is part of the MVC architecture
  */
-class Routing {
+final class Routing {
 	
 	/**
 	 * Find matching route in XML route configuration and return modified request string 

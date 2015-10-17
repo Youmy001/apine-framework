@@ -12,7 +12,7 @@ require_once ('lib/file/file.php');
  * Module Files Loading Tool
  * Tools to load files in batches from various locations in the project's directory
  */
-class Autoload {
+final class Autoload {
 	
 	/**
 	 * Loads all files recursively of a user defined module in the modules/ directory

@@ -11,7 +11,7 @@
  * Liste Collection
  * Traversable collection that mimics an array while providing easy to use features
  */
-class Liste implements IteratorAggregate {
+final class Liste implements IteratorAggregate {
 
 	/**
 	 * Object array

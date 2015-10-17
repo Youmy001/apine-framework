@@ -11,7 +11,7 @@
  * Language Translation
  * Representation of a translations for a language
  */
-class Translation {
+final class Translation {
 
 	/**
 	 * Representation of a language for translation

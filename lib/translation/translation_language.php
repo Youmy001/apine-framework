@@ -11,7 +11,7 @@
  * Translation Language
  * Representation of a language for translations
  */
-class TranslationLanguage {
+final class TranslationLanguage {
 	
 	/**
 	 * Full language ISO code

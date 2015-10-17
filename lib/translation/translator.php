@@ -11,7 +11,7 @@
  * Language Translator Tool
  * Manage multi-language configuration
  */
-class Translator {
+final class Translator {
 	
 	/**
 	 * Availables languages for translations

@@ -11,7 +11,7 @@
  * Execution Translator
  * Manage Multi-Languages setups
  */
-class ApineTranslator {
+final class ApineTranslator {
 	
 	/**
 	 * Instance of the Session Manager

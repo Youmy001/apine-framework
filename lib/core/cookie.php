@@ -11,7 +11,7 @@
  * Cookie writing and reading tool
  * Tool to easily read and write cookies
  */
-class Cookie {
+final class Cookie {
 	
 	/**
 	 * Get cookie by name

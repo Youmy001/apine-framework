@@ -66,11 +66,11 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 	protected $loaded = 0;
 	
 	private $load_field;
-	// Methods
+	
 	/**
 	* Fetch database fields and values for entity
 	*/
-	protected function _load () {
+	final protected function _load () {
 		
 		$db = new Database();
 		
@@ -96,13 +96,13 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 	/**
 	 * Mark entity has loaded
 	 */
-	protected function _force_loaded () {
+	final protected function _force_loaded () {
 
 		$this->field_loaded = 1;
 
 	}
 	
-	protected function _is_loaded () {
+	final protected function _is_loaded () {
 		
 		return (bool) $this->loaded;
 		
@@ -114,7 +114,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 	 *        Field name
 	 * @return mixed
 	 */
-	protected function _get_field ($a_field) {
+	final protected function _get_field ($a_field) {
 		
 		// Load entity if not loaded yet
 		if ($this->field_loaded == 0) {
@@ -140,7 +140,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 	 * Fetch all fields' names and values
 	 * @return array
 	 */
-	protected function _get_all_fields () {
+	final protected function _get_all_fields () {
 		
 		// Load entity if not loaded yet
 		if ($this->field_loaded == 0) {
@@ -155,7 +155,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 	 * Get entity identifier
 	 * @return string
 	 */
-	protected function _get_id () {
+	final protected function _get_id () {
 
 		return $this->id;
 
@@ -166,7 +166,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 	 * @param string $id
 	 *        Entity identifier
 	 */
-	protected function _set_id ($id) {
+	final protected function _set_id ($id) {
 
 		$this->id = $id;
 
@@ -176,7 +176,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 	 * Get entity table name
 	 * @return string
 	 */
-	protected function _get_table_name () {
+	final protected function _get_table_name () {
 
 		return $this->table_name;
 
@@ -187,7 +187,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 	 * @param string $table
 	 *        Entity table name
 	 */
-	protected function _set_table_name ($table) {
+	final protected function _set_table_name ($table) {
 
 		$this->table_name = $table;
 
@@ -200,7 +200,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 	 * @param string $tuple_id
 	 *        Entity identifier
 	 */
-	protected function _initialize ($table_name, $tuple_id = null, $field_name = "id") {
+	final protected function _initialize ($table_name, $tuple_id = null, $field_name = "id") {
 
 		$this->table_name = $table_name;
 		$this->id = $tuple_id;
@@ -218,7 +218,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 	 * @param mixed $value
 	 *        Field value
 	 */
-	protected function _set_field ($field, $value) {
+	final protected function _set_field ($field, $value) {
 
 		if ($this->field_loaded == 0) {
 			$this->_load();
@@ -240,7 +240,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 	/**
 	 * Delete Entity from database
 	 */
-	protected function _destroy () {
+	final protected function _destroy () {
 		
 		$db = new Database();
 		
@@ -255,7 +255,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 	/**
 	 * Save Entity state to database
 	 */
-	protected function _save () {
+	final protected function _save () {
 		
 		$db = new Database();
 

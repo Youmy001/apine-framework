@@ -111,7 +111,7 @@ class ApineFile {
 	 *
 	 * @return string
 	 */
-	public function path () {
+	final public function path () {
 
 		return $this->path;
 
@@ -122,7 +122,7 @@ class ApineFile {
 	 *
 	 * @return string
 	 */
-	public function directory () {
+	final public function directory () {
 
 		return $this->location;
 
@@ -133,7 +133,7 @@ class ApineFile {
 	 *
 	 * @return integer
 	 */
-	public function size () {
+	final public function size () {
 
 		return filesize($this->path);
 
@@ -144,7 +144,7 @@ class ApineFile {
 	 *
 	 * @return string
 	 */
-	public function type () {
+	final public function type () {
 
 		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' || !is_exec_available()) {
 			$finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -163,7 +163,7 @@ class ApineFile {
 	 * 
 	 * @return string
 	 */
-	public function extension () {
+	final public function extension () {
 
 		$dot_pos = strpos($this->name, ".");
 		
@@ -181,7 +181,7 @@ class ApineFile {
 	 * Alias of ApineFile::extension()
 	 * @return string
 	 */
-	public function extention () {
+	final public function extention () {
 		
 		return $this->extension();
 		
@@ -193,7 +193,7 @@ class ApineFile {
 	 * @param string $a_name
 	 * @return string
 	 */
-	public function name ($a_name = null) {
+	final public function name ($a_name = null) {
 
 		if (!is_null($a_name)) {
 			if (!strpos($this->name, ".")) {
@@ -251,7 +251,7 @@ class ApineFile {
 	 * @param string $a_path
 	 * @return boolean
 	 */
-	private function save ($a_path = null) {
+	final private function save ($a_path = null) {
 
 		if (!$this->readonly) {
 			if ($a_path == null) {
@@ -292,9 +292,10 @@ class ApineFile {
 	/**
 	 * Move the file to another location
 	 * 
+	 * @param string $a_move_path
 	 * @return boolean
 	 */
-	public function move($a_move_path) {
+	final public function move($a_move_path) {
 
 		if (!$this->readonly) {
 			if (is_null($a_move_path)) {
@@ -315,7 +316,7 @@ class ApineFile {
 	 * @throws ApineException
 	 * @return boolean
 	 */
-	public function copy ($a_copy_path) {
+	final public function copy ($a_copy_path) {
 		
 		if (!$this->readonly) {
 			
@@ -355,7 +356,7 @@ class ApineFile {
 	 * @throws ApineException
 	 * @return boolean
 	 */
-	public function rename ($a_file_name) {
+	final public function rename ($a_file_name) {
 		
 		if (!$this->readonly) {
 			if (stripos($a_file_name, '/') !== false) {
@@ -404,7 +405,7 @@ class ApineFile {
 	 * Remove file from disk.
 	 * This action literaly erases the ressource from the hard drive.
 	 */
-	public function delete () {
+	final public function delete () {
 
 		if (!$this->readonly) {
 			unlink($this->path);

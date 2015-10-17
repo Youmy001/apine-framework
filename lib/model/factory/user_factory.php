@@ -19,7 +19,7 @@ class ApineUserFactory extends ApineEntityFactory {
 
 		//$id_sql = (new Database())
 		$database = new Database();
-		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `id`=$user_id");
+		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `id=$user_id");
 		
 		if ($id_sql) {
 			return true;
@@ -94,7 +94,7 @@ class ApineUserFactory extends ApineEntityFactory {
 	 *
 	 * @param integer $a_id
 	 *        User Identifier
-	 * @return User
+	 * @return ApineUser
 	 */
 	public static function create_by_id ($a_id) {
 		
@@ -119,7 +119,7 @@ class ApineUserFactory extends ApineEntityFactory {
 	 * Fetch a user by username
 	 * @param string $name
 	 *        User username
-	 * @return User
+	 * @return ApineUser
 	 */
 	public static function create_by_name ($name) {
 
@@ -225,7 +225,7 @@ class ApineUserFactory extends ApineEntityFactory {
 	 * 
 	 * @return string
 	 */
-	private static function get_user_class () {
+	public static function get_user_class () {
 		
 		static $class;
 	

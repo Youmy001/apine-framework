@@ -11,7 +11,7 @@
  * Request Management Tool
  * Handle information from the request and user inputs
  */
-class Request {
+final class Request {
 	
 	/**
 	 * Instance of the Request

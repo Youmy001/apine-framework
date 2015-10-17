@@ -11,7 +11,7 @@
  * Image File Resource Handler
  * Manager wrapping PHP image method in an easy Object Oriented way
  */
-class ApineFileImage extends ApineFile {
+final class ApineFileImage extends ApineFile {
 
 	/**
 	 * Image's height in pixels

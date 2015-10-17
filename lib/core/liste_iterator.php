@@ -7,7 +7,7 @@
  * @copyright 2015 Tommy Teasdale
  */
 
-class ListeIterator implements Iterator {
+final class ListeIterator implements Iterator {
 
 	/**
 	 * Instance of the collection

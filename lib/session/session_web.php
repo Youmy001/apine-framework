@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file contains the session management class for web apps
  *
@@ -9,52 +8,59 @@
  */
 
 /**
- * Gestion and configuration of the a user session
+ * Gestion and configuration of the a user session on a web app
  * This class manages user login and logout
  */
-class ApineWebSession implements ApineSessionInterface {
+final class ApineWebSession implements ApineSessionInterface {
 
 	/**
 	 * PHP session's Id
+	 * 
 	 * @var string
 	 */
 	private $php_session_id;
 
 	/**
 	 * Is a user logged in or not
+	 * 
 	 * @var boolean
 	 */
 	private $logged_in;
 
 	/**
 	 * Logged in user id
+	 * 
 	 * @var integer
 	 */
 	private $user_id;
 
 	/**
 	 * Name of the user class
+	 * 
 	 * @var string
 	 */
 	private $user_class_name;
 
 	/**
 	 * Session timeout
+	 * 
 	 * @var integer
 	 */
 	private $session_timeout = 1000;
 
 	/**
 	 * Session duration
+	 * 
 	 * @var integer
 	 */
 	private $session_lifespan = 7200;
 
 	/**
 	 * Type of the current user
+	 * 
 	 * @var integer
 	 */
-	private $session_type = SESSION_GUEST;
+	private $session_type = APINE_SESSION_GUEST;
 
 	/**
 	 * Construct the session handler
@@ -100,19 +106,32 @@ class ApineWebSession implements ApineSessionInterface {
 		}
 	
 	}
+	
+	/**
+	 * Get PHP's session Id
+	 * 
+	 * @return string
+	 */
+	public static function get_session_identifier () {
+	
+		return self::get_instance()->php_session_id;
+	
+	}
 
 	/**
 	 * Verifies if a user is logged in
+	 * 
 	 * @return boolean
 	 */
 	public function is_logged_in () {
 
-		return $this->logged_in;
+		return (boolean) $this->logged_in;
 	
 	}
 
 	/**
 	 * Get logged in user
+	 * 
 	 * @return ApineUser
 	 */
 	public function get_user () {
@@ -129,6 +148,7 @@ class ApineWebSession implements ApineSessionInterface {
 
 	/**
 	 * Get logged in user's id
+	 * 
 	 * @return integer
 	 */
 	public function get_user_id () {
@@ -152,6 +172,7 @@ class ApineWebSession implements ApineSessionInterface {
 
 	/**
 	 * Get current session access level
+	 * 
 	 * @return integer
 	 */
 	public function get_session_type () {
@@ -162,12 +183,24 @@ class ApineWebSession implements ApineSessionInterface {
 
 	/**
 	 * Set current session access level
-	 * @param integer $type
+	 * 
+	 * @param integer $a_type
 	 *        Session access level type
 	 */
 	public function set_session_type ($a_type) {
 
-		$this->session_type = $a_type;
+		$constants = get_defined_constants(true);
+		$constants = $constants['user'];
+		$type = false;
+		
+		foreach ($constants as $name => $value) {
+			if(strstr($name, 'APINE_SESSION') && $value == $a_type) {
+				$type = $a_type;
+				$this->session_type = $a_type;
+			}
+		}
+		
+		return $type;
 	
 	}
 
@@ -180,10 +213,12 @@ class ApineWebSession implements ApineSessionInterface {
 	 *        Username of the user
 	 * @param string $password
 	 *        Password of the user
+	 * @param string[] $options
+	 *        Login Options
 	 * @return boolean
 	 */
 	public function login ($user_name, $password, $options = array()) {
-		
+
 		if (!$this->is_logged_in()) {
 			
 			if ((ApineUserFactory::is_name_exist($user_name) || ApineUserFactory::is_email_exist($user_name)) && ApineUserFactory::create_by_name($user_name)->get_register_date() < "2015-09-04") {
@@ -202,7 +237,7 @@ class ApineWebSession implements ApineSessionInterface {
 				$_SESSION['type'] = $new_user->get_type();
 				$this->set_session_type($new_user->get_type());
 				
-				if (isset($options[0]) && $options[0] === true) {
+				if (isset($options["remember"]) && $options["remember"] === true) {
 					$this->make_permanent();
 				}
 				
@@ -221,7 +256,7 @@ class ApineWebSession implements ApineSessionInterface {
 	 * Log a user out
 	 */
 	public function logout () {
-		
+
 		if ($this->is_logged_in()) {
 			$_SESSION = array();
 			Cookie::set('session', $this->php_session_id, time() - 604801);
@@ -229,15 +264,18 @@ class ApineWebSession implements ApineSessionInterface {
 			$this->logged_in = false;
 			$this->set_session_type(SESSION_GUEST);
 		}
-
-	}
 	
+	}
+
+	/**
+	 * Make a logged un user's session permanent
+	 */
 	private function make_permanent () {
-		
+
 		if ($this->is_logged_in()) {
 			Cookie::set('session', $this->php_session_id, time() + 604800);
 		}
-		
+	
 	}
 
 }

@@ -13,7 +13,7 @@
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  */
-class URL_Helper {
+final class URL_Helper {
 	
 	private static $_instance;
 	/**

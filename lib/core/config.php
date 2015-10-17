@@ -11,7 +11,7 @@
  * Configuration Reader
  * Read and write project's configuration file
  */
-class Config {
+final class Config {
 	
 	/**
 	 * Instance of the Config reader

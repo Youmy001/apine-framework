@@ -52,7 +52,7 @@
 				</ul>
 				<?php }else{?>
 				<ul class="nav navbar-nav navbar-right">
-					<p class="navbar-text"><?= ApineTranslator::translate('menu','signed_in') ?> <?= ApineSession::get_user()->get_username() ?> (<i><?= ((int)ApineSession::get_session_type()===SESSION_ADMIN)?'Admin':'User' ?></i>)</p>
+					<p class="navbar-text"><?= ApineTranslator::translate('menu','signed_in') ?> <?= ApineSession::get_user()->get_username() ?> (<i><?= ((int)ApineSession::get_session_type()===APINE_SESSION_ADMIN)?'Admin':'User' ?></i>)</p>
 					<li><a href="<?= URL_Helper::path('logout',true) ?>"><?= ApineTranslator::translate('menu','logout') ?></a></li>
 				</ul>
 				<?php } ?>

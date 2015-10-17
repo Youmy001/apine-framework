@@ -8,19 +8,13 @@
  */
 
 /**
- * PDOException class extention for error handling
- */
-class DatabaseException extends PDOException {
-}
-
-/**
  * Database Access Tools
  *
  * Binding for PDO classes. Support select, insert, update and delete
  * statements, execute queries, prepared queries, transactions
  * and singleton.     
  */
-class Database {
+final class Database {
 
 	/**
 	 * PDO connection instance
@@ -54,7 +48,7 @@ class Database {
 		try {
 			self::$_instance = $this->get_instance();
 		} catch (PDOException $e) {
-			throw new DatabaseException($e->getMessage());
+			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
 	
 	}
@@ -73,8 +67,9 @@ class Database {
 			
 			try {
 				self::$_instance = new PDO(Config::get('database', 'type').':host='.Config::get('databse', 'host').';dbname='.Config::get('database', 'dbname').';charset='.Config::get('database', 'charset'), Config::get('database', 'username'), Config::get('database', 'password'));
+				self::$_instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			} catch (PDOException $e) {
-				throw new DatabaseException($e->getMessage());
+				throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
 			}
 			
 		}
@@ -110,7 +105,7 @@ class Database {
 			
 			return $arResult;
 		} catch (PDOException $e) {
-			throw new DatabaseException($e->getMessage());
+			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
 	
 	}
@@ -158,7 +153,7 @@ class Database {
 			
 			return $this->last_insert_id();
 		} catch (PDOException $e) {
-			throw new DatabaseException($e->getMessage());
+			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
 	
 	}
@@ -212,7 +207,7 @@ class Database {
 		try {
 			self::$_instance->exec($query);
 		} catch (PDOException $e) {
-			throw new DatabaseException($e->getMessage());
+			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
 	
 	}
@@ -255,7 +250,7 @@ class Database {
 			
 			return true;
 		} catch (PDOException $e) {
-			throw new DatabaseException($e->getMessage());
+			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
 	
 	}
@@ -275,7 +270,7 @@ class Database {
 			$result = self::$_instance->exec($query);
 			return $result;
 		} catch (PDOException $e) {
-			throw new DatabaseException($e->getMessage());
+			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
 	
 	}
@@ -335,10 +330,10 @@ class Database {
 				$result->closeCursor();
 				return $arResult;
 			} catch (PDOException $e) {
-				throw new DatabaseException($e->getMessage());
+				throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
 			}
 		}else{
-			throw new DatabaseException('Trying to fetch on non-existent PDO Statement.');
+			throw new DatabaseException('Trying to fetch on non-existent PDO Statement.', 500);
 		}
 	
 	}

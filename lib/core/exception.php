@@ -24,3 +24,11 @@ class ApineException extends Exception {
 	}
 
 }
+
+/**
+ * Custom implementation of the PDO exception handler
+ * 
+ * @author Tommy Teasdale
+ */
+class DatabaseException extends PDOException {
+}

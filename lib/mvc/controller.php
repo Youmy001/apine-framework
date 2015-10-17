@@ -53,7 +53,14 @@ abstract class Controller {
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  */
-abstract class APIController extends Controller implements APIActions {
+abstract class APIController implements APIActions {
+	
+	/**
+	 * Controller View
+	 *
+	 * @var View
+	 */
+	protected $_view;
 	
 	/**
 	 * Construct the API Controller
