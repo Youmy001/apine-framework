@@ -19,7 +19,7 @@ class ApineUserFactory extends ApineEntityFactory {
 
 		//$id_sql = (new Database())
 		$database = new Database();
-		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `id=$user_id");
+		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `id`=$user_id");
 		
 		if ($id_sql) {
 			return true;
