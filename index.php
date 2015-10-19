@@ -42,8 +42,10 @@ try {
 		// TODO RESTful Implementation
 		throw new ApineException("RESTful API call not implemented yet", 501);
 	} else {
-		Routing::route();
+		$route = ApineRouter::route(Request::get()['request']);
+		ApineRouter::execute($route->controller, $route->action, $route->args);
 	}
+	
 } catch (ApineException $e) {
 	// Handle application errors
 	

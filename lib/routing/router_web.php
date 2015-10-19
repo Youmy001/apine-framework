@@ -11,14 +11,14 @@
  * Request Router
  * Route requests toward the best matching controller. This is part of the MVC architecture
  */
-final class Routing {
+final class ApineWebRouter implements ApineRouterInterface {
 	
 	/**
 	 * Find matching route in XML route configuration and return modified request string 
 	 * 
 	 * @return mixed
 	 */
-	private static function xml_route () {
+	private function xml_route () {
 		
 		$xml_routes = new Parser();
 		$xml_routes->load_from_file('routes.xml');
@@ -80,10 +80,13 @@ final class Routing {
 	
 	/**
 	 * Route the request to the best matching controller and action
+	 * 
+	 * @param string $request
+	 * @return ApineRoute
 	 */
-	public static function route () {
+	public function route ($request = "/index") {
 		
-		$request = (isset(Request::get()['request'])) ? Request::get()['request'] : '/index';
+		//$request = (isset(Request::get()['request'])) ? Request::get()['request'] : '/index';
 		$route_found = false;
 		
 		$vanilla_route_found = self::check_route($request);
@@ -123,27 +126,26 @@ final class Routing {
 		try {
 			$maj_controller = ucfirst($controller) . 'Controller';
 			if (class_exists($maj_controller) && method_exists($maj_controller, $action)) {
-				self::execute($maj_controller, $action, $args);
+				$route = new ApineRoute($controller, $action, $args);
 			}else if (file_exists('controllers/' . $controller . '_controller.php')) {
 				require_once('controllers/' . $controller . '_controller.php');
 
 				if (method_exists($maj_controller, $action)) {
-					self::execute($maj_controller, $action, $args);
+					$route = new ApineRoute($controller, $action, $args);
 				}
 			}
 			
-			if ($route_found) {
-				//print "Gone";
-				self::execute('ErrorController', 'gone');
-			} else {
-				//print "Not Found";
-				self::execute('ErrorController', 'notfound');
+			if (!isset($route)) {
+				if ($route_found) {
+					throw new ApineException("Reference Found but Action not Accessible for Route \"$controller\"", 410);
+				} else {
+					throw new ApineException("Route \"$controller\" not Found", 404);
+				}
 			}
 			
+			return $route;
+			
 		} catch (Exception $e) {
-			//print "Error";
-			/*$controller = new ErrorController();
-			$controller->server();*/
 			throw new ApineException($e->getMessage(), $e->getCode(), $e);
 		}
 		
@@ -155,7 +157,7 @@ final class Routing {
 	 * @param string $a_route
 	 * @return boolean
 	 */
-	private static function check_route ($a_route) {
+	private function check_route ($a_route) {
 		
 		$args = explode("/",$a_route);
 		array_shift($args);
@@ -194,11 +196,15 @@ final class Routing {
 		
 	}
 	
-	public static function execute ($controller, $action, $args = null) {
+	public function execute ($controller, $action, $args = null) {
 		
-		$controller = new $controller();
-		$controller->$action($args);
-		die();
+		if (self::check_route("/$controller/$action")) {
+			$maj_controller = ucfirst($controller) . 'Controller';
+			$controller = new $maj_controller();
+			$controller->$action($args);
+		} else {
+			throw new ApineException("Route \"$controller\" Not found", 404);
+		}
 		
 	}
 	

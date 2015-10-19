@@ -363,7 +363,7 @@ final class FileView extends View {
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  */
-final class JSONView extends HTTPView {
+final class JSONView extends View {
 	
 	/**
 	 * Json File

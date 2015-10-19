@@ -174,7 +174,7 @@ final class ApineSession {
 	 * 
 	 * @return ApineSessionInterface
 	 */
-	public static function get_handle () {
+	public static function get_handler () {
 		
 		return self::get_instance()->strategy;
 		

@@ -257,12 +257,20 @@ final class ApineWebSession implements ApineSessionInterface {
 	 */
 	public function logout () {
 
-		if ($this->is_logged_in()) {
-			$_SESSION = array();
-			Cookie::set('session', $this->php_session_id, time() - 604801);
-			session_destroy();
-			$this->logged_in = false;
-			$this->set_session_type(SESSION_GUEST);
+		try {
+			if ($this->is_logged_in()) {
+				$_SESSION = array();
+				Cookie::set('session', $this->php_session_id, time() - 604801);
+				session_destroy();
+				$this->logged_in = false;
+				$this->set_session_type(SESSION_GUEST);
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception $e) {
+			throw new ApineException($e->getMessage(), $e->getCode(), $e);
+			return false;
 		}
 	
 	}
