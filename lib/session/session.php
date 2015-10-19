@@ -45,6 +45,9 @@ final class ApineSession {
 	 */
 	private static $_instance;
 
+	/**
+	 * Instantiation of the strategy
+	 */
 	private function __construct () {
 		
 		if (Request::is_api_call()) {

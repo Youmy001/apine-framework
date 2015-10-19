@@ -1,6 +1,6 @@
 <?php
 /**
- * Request Router
+ * Request Router for Web apps
  * This script contains a routing helper to route the request toward controllers
  *
  * @license MIT
@@ -8,8 +8,10 @@
  */
 
 /**
- * Request Router
+ * Web App Request Router
  * Route requests toward the best matching controller. This is part of the MVC architecture
+ * 
+ * @author Tommy Teasdale
  */
 final class ApineWebRouter implements ApineRouterInterface {
 	
@@ -79,10 +81,9 @@ final class ApineWebRouter implements ApineRouterInterface {
 	}
 	
 	/**
-	 * Route the request to the best matching controller and action
 	 * 
-	 * @param string $request
-	 * @return ApineRoute
+	 * {@inheritDoc}
+	 * @see ApineRouterInterface::route()
 	 */
 	public function route ($request = "/index") {
 		
@@ -125,6 +126,7 @@ final class ApineWebRouter implements ApineRouterInterface {
 		
 		try {
 			$maj_controller = ucfirst($controller) . 'Controller';
+			
 			if (class_exists($maj_controller) && method_exists($maj_controller, $action)) {
 				$route = new ApineRoute($controller, $action, $args);
 			}else if (file_exists('controllers/' . $controller . '_controller.php')) {
@@ -196,6 +198,11 @@ final class ApineWebRouter implements ApineRouterInterface {
 		
 	}
 	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see ApineRouterInterface::execute()
+	 */
 	public function execute ($controller, $action, $args = null) {
 		
 		if (self::check_route("/$controller/$action")) {

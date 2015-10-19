@@ -17,6 +17,9 @@ final class ApineRouter {
 	 */
 	private static $_instance;
 	
+	/**
+	 * Instantiation of the strategy
+	 */
 	private function __construct () {
 	
 		if (Request::is_api_call()) {
@@ -43,14 +46,24 @@ final class ApineRouter {
 	}
 	
 	/**
+	 * Route the request to the best matching controller and action
+	 *
+	 * @param string $request
 	 * @return ApineRoute
 	 */
-	public static function route () {
+	public static function route ($request) {
 	
-		return self::get_instance()->strategy->route();
+		return self::get_instance()->strategy->route($request);
 	
 	}
 	
+	/**
+	 * Execute an action
+	 *
+	 * @param string $controller
+	 * @param string $action
+	 * @param array $args
+	 */
 	public static function execute ($controller, $action, $args = null) {
 	
 		return self::get_instance()->strategy->execute($controller, $action, $args);
@@ -72,8 +85,21 @@ final class ApineRouter {
 
 interface ApineRouterInterface {
 	
-	public function route ();
+	/**
+	 * Route the request to the best matching controller and action
+	 *
+	 * @param string $request
+	 * @return ApineRoute
+	 */
+	public function route ($request);
 	
+	/**
+	 * Execute an action
+	 * 
+	 * @param string $controller
+	 * @param string $action
+	 * @param array $args
+	 */
 	public function execute ($controller, $action, $args);
 	
 }

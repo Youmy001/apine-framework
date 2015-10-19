@@ -77,7 +77,7 @@
 	# APIne Rules
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteRule ^api(/(.+))?$ /?request=/$1&api=api [QSA,L]
+	RewriteRule ^api(/(.+))?$ /?request=$1&api=api [QSA,L]
 	
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
