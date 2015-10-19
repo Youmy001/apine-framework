@@ -410,6 +410,7 @@ final class JSONView extends View {
 	public function draw() {
 		
 		header('Content-type: application/json');
+		$this->apply_headers();
 		
 		if($this->_json_file===null){
 			// Encode Objects to Array

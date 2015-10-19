@@ -85,9 +85,8 @@ final class ApineWebRouter implements ApineRouterInterface {
 	 * {@inheritDoc}
 	 * @see ApineRouterInterface::route()
 	 */
-	public function route ($request = "/index") {
+	public function route ($request) {
 		
-		//$request = (isset(Request::get()['request'])) ? Request::get()['request'] : '/index';
 		$route_found = false;
 		
 		$vanilla_route_found = self::check_route($request);

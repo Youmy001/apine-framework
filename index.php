@@ -42,7 +42,9 @@ try {
 		// TODO RESTful Implementation
 		throw new ApineException("RESTful API call not implemented yet", 501);
 	} else {
-		$route = ApineRouter::route(Request::get()['request']);
+		
+		$request = (isset(Request::get()['request'])) ? Request::get()['request'] : '/index';
+		$route = ApineRouter::route($request);
 		ApineRouter::execute($route->controller, $route->action, $route->args);
 	}
 	
@@ -57,7 +59,7 @@ try {
 		
 		if (Config::get('runtime', 'mode') == 'development') {
 			$error_array['file'] = $e->getFile();
-			$error_array['line'] = $e->getFile();
+			$error_array['line'] = $e->getLine();
 			$error_array['trace'] = $e->getTraceAsString();
 		}
 		
