@@ -38,7 +38,7 @@ final class ApineAPISession implements ApineSessionInterface{
 	 * 
 	 * @var integer
 	 */
-	private $session_type = SESSION_GUEST;
+	private $session_type = APINE_SESSION_GUEST;
 	
 	/**
 	 * Construct the session handler

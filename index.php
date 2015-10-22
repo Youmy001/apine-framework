@@ -42,38 +42,28 @@ try {
 		// TODO RESTful Implementation
 		throw new ApineException("RESTful API call not implemented yet", 501);
 	} else {
+		if (!Request::is_api_call()) {
+			$request = (isset(Request::get()['request'])) ? Request::get()['request'] : '/index';
+		} else {
+			$request = Request::get()['request'];
+		}
 		
-		$request = (isset(Request::get()['request'])) ? Request::get()['request'] : '/index';
 		$route = ApineRouter::route($request);
 		ApineRouter::execute($route->controller, $route->action, $route->args);
 	}
 	
 } catch (ApineException $e) {
 	// Handle application errors
+	$error = new ErrorController();
 	
-	if (Request::is_api_call()) {
-		$json_view = new JSONView();
-		$json_view->set_response_code($e->getCode());
-		$error_array = array();
-		$error_array['message'] = $e->getMessage();
-		
-		if (Config::get('runtime', 'mode') == 'development') {
-			$error_array['file'] = $e->getFile();
-			$error_array['line'] = $e->getLine();
-			$error_array['trace'] = $e->getTraceAsString();
-		}
-		
-		$json_view->set_json_file($error_array);
-		$json_view->draw();
-	} else {
-		if (Config::get('runtime', 'mode') == 'development') {
-			header("Content-type: text/plain");
-			print $e->getMessage().' on '.$e->getFile().' ('.$e->getLine().")\n\n";
-			print $e->getTraceAsString();
+	if (Config::get('runtime', 'mode') != 'development'){
+		if ($error_name = $error->method_for_code($e->getCode())) {
+			$error->$error_name();
 		} else {
-			$error = new ErrorController();
-			$error->custom($e->getCode(), $e->getMessage());
+			$error->server();
 		}
+	} else {
+		$error->custom($e->getCode(), $e->getMessage(), $e);
 	}
 } catch (Exception $e) {
 	print $e->getMessage().' on '.$e->getFile().' ('.$e->getLine().")\n\n";

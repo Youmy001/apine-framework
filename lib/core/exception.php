@@ -25,6 +25,16 @@ class ApineException extends Exception {
 
 }
 
+class ApineHttpException extends Exception {
+	
+	public function __construct($code, Exception $previous = null) {
+		
+		parent::__construct('', $code, $previous);
+		
+	}
+	
+}
+
 /**
  * Custom implementation of the PDO exception handler
  * 
