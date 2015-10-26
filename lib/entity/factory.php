@@ -38,4 +38,4 @@ abstract class ApineEntityFactory {
  * design patern.
  * @deprecated
  */
-abstract class ApineFactory extends ApineEntityFactory{}
+//abstract class ApineFactory extends ApineEntityFactory{}

@@ -4,7 +4,7 @@ class SessionController extends Controller {
 	
 	public function login ($params) {
 		
-		if (Request::is_post()) {
+		if (ApineRequest::is_post()) {
 			
 			if (isset($params['user'])) {
 				$user = $params['user'];
@@ -40,18 +40,18 @@ class SessionController extends Controller {
 				}
 				
 				//$message = 'Either the the username/email or the password is not valid. Please try again later.';
-				$message = ApineTranslator::translate('errors', 'login_invalid_username');
+				$message = ApineAppTranslator::translate('errors', 'login_invalid_username');
 			} catch (Exception $e) {
 				//var_dump($e);
 				//$message = 'An unknown error occured when sending data to the server. Please try again later.';
-				$message = ApineTranslator::translate('errors', 'form_invalid');
+				$message = ApineAppTranslator::translate('errors', 'form_invalid');
 			}
 			
 			$this->_view->set_param('error_code',true);
 			$this->_view->set_param('error_message', $message);
 		}
 		
-		$this->_view->set_title(ApineTranslator::translate('login', 'title'));
+		$this->_view->set_title(ApineAppTranslator::translate('login', 'title'));
 		//$this->_view->set_title('Login');
 		$this->_view->set_view('session/login');
 		$this->_view->set_response_code(200);
@@ -71,7 +71,7 @@ class SessionController extends Controller {
 	
 	public function register ($params) {
 		
-		if (Request::is_post()&&!ApineSession::is_logged_in()) {
+		if (ApineRequest::is_post()&&!ApineSession::is_logged_in()) {
 			
 			if (isset($params['user'])) {
 				$user = $params['user'];
@@ -109,7 +109,7 @@ class SessionController extends Controller {
 					
 					// Verify both passwords are identical
 					if (($pwd === $pwdconfirm)) {
-						$encoded_pwd = Encryption::hash_password($pwd, $user);
+						$encoded_pwd = ApineEncryption::hash_password($pwd, $user);
 					} else {
 						throw new Exception("3"); // Wrong password
 					}
@@ -159,24 +159,24 @@ class SessionController extends Controller {
 				switch ($e->getMessage()) {
 					case 7:
 						//$message='The email address is already taken.';
-						$message = ApineTranslator::translate('errors', 'register_taken_email');
+						$message = ApineAppTranslator::translate('errors', 'register_taken_email');
 						break;
 					case 4:
 						//$message='The username is already taken by an user.';
-						$message = ApineTranslator::translate('errors', 'register_taken_username');
+						$message = ApineAppTranslator::translate('errors', 'register_taken_username');
 						break;
 					case 3:
 						//$message='The password does not match the confirmation.';
-						$message = ApineTranslator::translate('errors', 'register_invalid_password');
+						$message = ApineAppTranslator::translate('errors', 'register_invalid_password');
 						break;
 					case 2:
 						//$message='The email address is not valid.';
-						$message = ApineTranslator::translate('errors', 'register_invalid_email');
+						$message = ApineAppTranslator::translate('errors', 'register_invalid_email');
 						break;
 					case 0:
 					default:
 						//$message='An unknown error occured when sending data to the server. Please try again later.';
-						$message = ApineTranslator::translate('errors', 'form_invalid');
+						$message = ApineAppTranslator::translate('errors', 'form_invalid');
 				}
 				
 			}
@@ -185,11 +185,25 @@ class SessionController extends Controller {
 			$this->_view->set_param('error_message', $message);
 		}
 		
-		$this->_view->set_title(ApineTranslator::translate('register', 'title'));
+		$this->_view->set_title(ApineAppTranslator::translate('register', 'title'));
 		//$this->_view->set_title("Sign In");
 		$this->_view->set_view('session/register');
 		$this->_view->set_response_code(200);
 		$this->_view->draw();
 		
+	}
+	
+	public function recovery ($params) {
+		
+	}
+	
+	public function api () {
+	
+		$this->_view->set_response_code(200);
+		$this->_view->set_title('API Instructions');
+		$this->_view->set_view('session/api');
+		
+		$this->_view->draw();
+	
 	}
 }

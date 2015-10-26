@@ -37,7 +37,7 @@ class ApineUser extends ApineEntityModel {
 	
 	/**
 	 * User Group
-	 * @var Liste[ApineUserGroup]
+	 * @var ApineCollection[ApineUserGroup]
 	 */
 	protected $group;
 
@@ -187,7 +187,7 @@ class ApineUser extends ApineEntityModel {
 	
 	/**
 	 * Fetch user's group
-	 * @return Group
+	 * @return ApineUserGroup
 	 */
 	public function get_group () {
 	
@@ -201,7 +201,7 @@ class ApineUser extends ApineEntityModel {
 	
 	/**
 	 * Set user's group
-	 * @param <Liste[ApineUserGroup]> $a_group_list
+	 * @param <ApineCollection[ApineUserGroup]> $a_group_list
 	 *        List of User's groups
 	 */
 	public function set_group ($a_group_list) {
@@ -210,7 +210,7 @@ class ApineUser extends ApineEntityModel {
 			$this->load();
 		}
 	
-		if (get_class($a_group_list) == 'Liste') {
+		if (get_class($a_group_list) == 'ApineCollection') {
 			$valid=true;
 			
 			foreach ($a_group_list as $item) {
@@ -343,7 +343,7 @@ class ApineUser extends ApineEntityModel {
 		parent::_save();
 		$this->set_id($this->_get_id());
 		
-		$db = new Database();
+		$db = new ApineDatabase();
 		$db->delete('apine_users_user_groups', array("user_id" => $this->get_id()));
 		
 		foreach ($this->get_group() as $item) {
@@ -361,7 +361,7 @@ class ApineUser extends ApineEntityModel {
 			$this->load();
 		}
 		
-		$db = new Database();
+		$db = new ApineDatabase();
 		$db->delete('apine_users_user_groups', array("user_id" => $this->get_id()));
 
 		parent::_destroy();

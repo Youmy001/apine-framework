@@ -92,6 +92,28 @@ ALTER TABLE `apine_users_user_groups`
 ADD CONSTRAINT `apine_users_user_groups_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `apine_user_groups` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
 ADD CONSTRAINT `apine_users_user_groups_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `apine_users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `apine_api_users_tokens`
+--
+
+CREATE TABLE IF NOT EXISTS `apine_api_users_tokens` (
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `token` varchar(64) NOT NULL,
+  `origin` varchar(256) NOT NULL,
+  `creation_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_access_date` timestamp NULL,
+  `disabled` tinyint(1) NOT NULL DEFAULT 0,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `apine_api_users_tokens`
+ ADD KEY `user_id` (`user_id`);
+
+ALTER TABLE `apine_api_users_tokens`
+ ADD CONSTRAINT `apine_api_users_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `apine_users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

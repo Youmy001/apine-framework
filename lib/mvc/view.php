@@ -13,17 +13,17 @@
  * @author Tommy Teasdale
  * @abstract
  */
-abstract class View {
+abstract class ApineView {
 	
 	/**
 	 * Variables to be accessible by the view
-	 * @var unknown
+	 * @var ApineCollection
 	 */
 	protected $_params;
 	
 	/**
 	 * List of HTTP headers to apply
-	 * @var Liste
+	 * @var ApineCollection
 	 */
 	protected $_headers;
 	
@@ -32,8 +32,8 @@ abstract class View {
 	 */
 	public function __construct() {
 		
-		$this->_params=new Liste();
-		$this->_headers=new Liste();
+		$this->_params=new ApineCollection();
+		$this->_headers=new ApineCollection();
 		
 	}
 	
@@ -124,6 +124,7 @@ abstract class View {
 				case 413: $text = 'Request Entity Too Large'; break;
 				case 414: $text = 'Request-URI Too Large'; break;
 				case 415: $text = 'Unsupported Media Type'; break;
+				case 418: $text = 'I\'m a teapot'; break;
 				case 500: $text = 'Internal Server Error'; break;
 				case 501: $text = 'Not Implemented'; break;
 				case 502: $text = 'Bad Gateway'; break;
@@ -135,7 +136,7 @@ abstract class View {
 					break;
 			}
 		
-			$protocol = (isset(Request::server()['SERVER_PROTOCOL']) ? Request::server()['SERVER_PROTOCOL'] : 'HTTP/1.0');
+			$protocol = (isset(ApineRequest::server()['SERVER_PROTOCOL']) ? ApineRequest::server()['SERVER_PROTOCOL'] : 'HTTP/1.0');
 			$this->set_header_rule($protocol . ' ' . $code . ' ' . $text);
 			$GLOBALS['http_response_code'] = $code;
 		} else {
@@ -158,7 +159,7 @@ abstract class View {
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  */
-final class HTMLView extends View {
+final class ApineHTMLView extends ApineView {
 	
 	/**
 	 * Path to layout file
@@ -181,7 +182,7 @@ final class HTMLView extends View {
 	
 	/**
 	 * List of scripts to include
-	 * @var Liste
+	 * @var ApineCollection
 	 */
 	private $_scripts;
 	
@@ -195,13 +196,13 @@ final class HTMLView extends View {
 	public function __construct($a_title = "", $a_view = "default", $a_layout = "default") {
 		
 		parent::__construct();
-		$this->_scripts=new Liste();
+		$this->_scripts=new ApineCollection();
 		
 		$this->_title=$a_title;
 		$this->set_view($a_view);
 		
 		if ($a_layout == "default") {
-			$a_layout = Config::get('application', 'default_layout');
+			$a_layout = ApineConfig::get('application', 'default_layout');
 		}
 		$this->set_layout($a_layout);
 		
@@ -265,7 +266,7 @@ final class HTMLView extends View {
 		
 		if ($a_script!="") {
 			if (file_exists("resources/public/js/$a_script.js")) {
-				$this->_scripts->add_item(URL_Helper::resource("resources/public/js/$a_script.js"));
+				$this->_scripts->add_item(ApineURLHelper::resource("resources/public/js/$a_script.js"));
 			}
 		}
 		
@@ -300,7 +301,7 @@ final class HTMLView extends View {
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  */
-final class FileView extends View {
+final class ApineFileView extends ApineView {
 	
 	/**
 	 * View File
@@ -363,7 +364,7 @@ final class FileView extends View {
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  */
-final class JSONView extends View {
+final class ApineJSONView extends ApineView {
 	
 	/**
 	 * Json File
@@ -425,3 +426,8 @@ final class JSONView extends View {
 	}
 	
 }
+
+class_alias('ApineView', 'View');
+class_alias('ApineHTMLView', 'HMTLView');
+class_alias('ApineFileView', 'FileView');
+class_alias('ApineJSONView', 'JSONView');

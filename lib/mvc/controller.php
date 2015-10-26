@@ -11,7 +11,7 @@
  * API Actions Interface
  * Interface for mandatory actions in API controllers
  */
-interface APIActions {
+interface ApineAPIActions {
 
 	public function post($params);
 
@@ -28,12 +28,12 @@ interface APIActions {
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  */
-abstract class Controller {
+abstract class ApineController {
 	
 	/**
 	 * Controller View
 	 * 
-	 * @var View
+	 * @var ApineView
 	 */
 	protected $_view;
 	
@@ -42,7 +42,7 @@ abstract class Controller {
 	 */
 	public function __construct() {
 		
-		$this->_view=new HTMLView();
+		$this->_view=new ApineHTMLView();
 		
 	}
 }
@@ -53,10 +53,10 @@ abstract class Controller {
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  */
-abstract class APIController implements APIActions {
+abstract class ApineAPIController implements ApineAPIActions {
 	
 	/**
-	 * Controller View
+	 * Controller ApineView
 	 *
 	 * @var View
 	 */
@@ -67,7 +67,11 @@ abstract class APIController implements APIActions {
 	 */
 	public function __construct() {
 		
-		$this->_view=new JSONView();
+		$this->_view=new ApineJSONView();
 		
 	}
 }
+
+class_alias('ApineController', 'Controller');
+class_alias('ApineAPIController', 'APIController');
+class_alias('ApineAPIActions', 'APIActions');

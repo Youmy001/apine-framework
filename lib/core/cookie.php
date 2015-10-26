@@ -11,7 +11,7 @@
  * Cookie writing and reading tool
  * Tool to easily read and write cookies
  */
-final class Cookie {
+final class ApineCookie {
 	
 	/**
 	 * Get cookie by name
@@ -54,3 +54,5 @@ final class Cookie {
 	
 	}
 }
+
+class_alias('ApineCookie','Cookie');

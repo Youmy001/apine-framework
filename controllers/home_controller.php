@@ -1,6 +1,6 @@
 <?php
 
-class HomeController extends Controller {
+class HomeController extends ApineController {
 	
 	public function index () {
 		
@@ -21,4 +21,5 @@ class HomeController extends Controller {
 		$this->_view->draw();
 		
 	}
+	
 }

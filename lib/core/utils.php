@@ -55,7 +55,7 @@ if (!function_exists('load_module')) {
 	 */
 	function load_module ($module_name) {
 	
-		return Autoload::load_module($module_name);
+		return ApineAutoload::load_module($module_name);
 	
 	}
 	

@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="<?= ApineTranslator::language()->code_short;?>">
+<html lang="<?= ApineAppTranslator::language()->code_short;?>">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-	<meta name="description" content="<?= Config::get('application', 'description') ?>">
-	<meta name="author" content="<?= Config::get('application', 'author') ?>">
+	<meta name="description" content="<?= ApineConfig::get('application', 'description') ?>">
+	<meta name="author" content="<?= ApineConfig::get('application', 'author') ?>">
 	<link rel="icon" href="../../favicon.ico">
 
-	<title><?= Config::get('application', 'title').' - '.$this->_title ?></title>
+	<title><?= ApineConfig::get('application', 'title').' - '.$this->_title ?></title>
 
 	<!-- Bootstrap core CSS -->
-	<link href="<?= URL_Helper::resource('resources/public/css/bootstrap.min.css'); ?>" rel="stylesheet">
+	<link href="<?= ApineURLHelper::resource('resources/public/css/bootstrap.min.css'); ?>" rel="stylesheet">
 
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
@@ -37,23 +37,23 @@
 						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="<?= URL_Helper::path('home',true) ?>"><?= Config::get('application', 'title') ?></a>
+				<a class="navbar-brand" href="<?= ApineURLHelper::path('home',true) ?>"><?= ApineConfig::get('application', 'title') ?></a>
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li><a href="<?= URL_Helper::path('home',true) ?>"><?= ApineTranslator::translate('menu','home') ?></a></li>
-					<li><a href="<?= URL_Helper::path('about',true) ?>"><?= ApineTranslator::translate('menu','about') ?></a></li>
-					<li><a href="<?= URL_Helper::path('contact',true) ?>"><?= ApineTranslator::translate('menu','contact') ?></a></li>
+					<li><a href="<?= ApineURLHelper::path('home',true) ?>"><?= ApineAppTranslator::translate('menu','home') ?></a></li>
+					<li><a href="<?= ApineURLHelper::path('about',true) ?>"><?= ApineAppTranslator::translate('menu','about') ?></a></li>
+					<li><a href="<?= ApineURLHelper::path('contact',true) ?>"><?= ApineAppTranslator::translate('menu','contact') ?></a></li>
 				</ul>
 				<?php if(!ApineSession::is_logged_in()){?>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="<?= URL_Helper::path('login',true);?>"><?= ApineTranslator::translate('menu','login') ?></a></li>
-					<li><a href="<?= URL_Helper::path('register',true);?>"><?= ApineTranslator::translate('menu','register') ?></a></li>
+					<li><a href="<?= ApineURLHelper::path('login',true);?>"><?= ApineAppTranslator::translate('menu','login') ?></a></li>
+					<li><a href="<?= ApineURLHelper::path('register',true);?>"><?= ApineAppTranslator::translate('menu','register') ?></a></li>
 				</ul>
 				<?php }else{?>
 				<ul class="nav navbar-nav navbar-right">
-					<p class="navbar-text"><?= ApineTranslator::translate('menu','signed_in') ?> <?= ApineSession::get_user()->get_username() ?> (<i><?= ((int)ApineSession::get_session_type()===APINE_SESSION_ADMIN)?'Admin':'User' ?></i>)</p>
-					<li><a href="<?= URL_Helper::path('logout',true) ?>"><?= ApineTranslator::translate('menu','logout') ?></a></li>
+					<p class="navbar-text"><?= ApineAppTranslator::translate('menu','signed_in') ?> <?= ApineSession::get_user()->get_username() ?> (<i><?= ((int)ApineSession::get_session_type()===APINE_SESSION_ADMIN)?'Admin':'User' ?></i>)</p>
+					<li><a href="<?= ApineURLHelper::path('logout',true) ?>"><?= ApineAppTranslator::translate('menu','logout') ?></a></li>
 				</ul>
 				<?php } ?>
 			</div>
@@ -68,9 +68,9 @@
     </div>
     <footer class="container">
     	<hr>
-    	<p class="pull-left">&copy; 2015 <?= Config::get('application', 'author'); ?></p>
-    	<p class="pull-right"><?= ApineTranslator::translate('menu','generation').execution_time().ApineTranslator::translate('menu','milliseconds') ?></p>
-    	<p class="text-center">APIne Framework&nbsp;<br class="visible-xs">ver. <?= Version::framework() ?></p>
+    	<p class="pull-left">&copy; 2015 <?= ApineConfig::get('application', 'author'); ?></p>
+    	<p class="pull-right"><?= ApineAppTranslator::translate('menu','generation').execution_time().ApineAppTranslator::translate('menu','milliseconds') ?></p>
+    	<p class="text-center">APIne Framework&nbsp;<br class="visible-xs">ver. <?= ApineVersion::framework() ?></p>
     </footer>
 	<!-- /.container -->
 
@@ -79,7 +79,7 @@
     ================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
 	<script
-		src="<?= URL_Helper::resource('resources/public/scripts/jquery.min.js'); ?>"></script>
-	<script src="<?= URL_Helper::resource('resources/public/scripts/bootstrap.min.js'); ?>"></script>
+		src="<?= ApineURLHelper::resource('resources/public/scripts/jquery.min.js'); ?>"></script>
+	<script src="<?= ApineURLHelper::resource('resources/public/scripts/bootstrap.min.js'); ?>"></script>
 </body>
 </html>

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <routes>
+    <route args="false" method="GET">
+		<request>/api</request>
+       <controller>session</controller>
+		<action>api</action>
+	</route>
 	<route args="false" method="GET">
 		<request>/index</request>
        <controller>home</controller>

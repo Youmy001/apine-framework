@@ -11,7 +11,7 @@
  * Language Translation
  * Representation of a translations for a language
  */
-final class Translation {
+final class ApineTranslation {
 
 	/**
 	 * Representation of a language for translation
@@ -41,10 +41,10 @@ final class Translation {
 	 * @param TranslationLanguage $a_language
 	 * @throws Exception If the file is inexistant or invalid
 	 */
-	public function __construct (TranslationLanguage $a_language) {
+	public function __construct (ApineTranslationLanguage $a_language) {
 		
 		$this->language = $a_language;
-		$this->locale = new TranslationLocale($this->language);
+		$this->locale = new ApineTranslationLocale($this->language);
 		
 		if (file_exists($this->language->file_path)) {
 			$file = new ApineFile($this->language->file_path, true);
@@ -116,7 +116,7 @@ final class Translation {
 	/**
 	 * Return the Translation Language
 	 * 
-	 * @return TranslationLanguage
+	 * @return ApineTranslationLanguage
 	 */
 	public function get_language () {
 		

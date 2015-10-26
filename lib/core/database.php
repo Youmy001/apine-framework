@@ -14,7 +14,7 @@
  * statements, execute queries, prepared queries, transactions
  * and singleton.     
  */
-final class Database {
+final class ApineDatabase {
 
 	/**
 	 * PDO connection instance
@@ -41,14 +41,14 @@ final class Database {
 	/**
 	 * Database class' constructor
 	 * 
-	 * @throws DatabaseException If cannot connect to database server
+	 * @throws ApineDatabaseException If cannot connect to database server
 	 */
 	public function __construct () {
 
 		try {
 			self::$_instance = $this->get_instance();
 		} catch (PDOException $e) {
-			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
+			throw new ApineDatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
 	
 	}
@@ -57,7 +57,7 @@ final class Database {
 	 * Fetch a PDO handler using the singleton pattern
 	 * 
 	 * @return PDO
-	 * @throws DatabaseException If cannot connect to database server
+	 * @throws ApineDatabaseException If cannot connect to database server
 	 * @static
 	 *
 	 */
@@ -66,10 +66,10 @@ final class Database {
 		if (!isset(self::$_instance)) {
 			
 			try {
-				self::$_instance = new PDO(Config::get('database', 'type').':host='.Config::get('databse', 'host').';dbname='.Config::get('database', 'dbname').';charset='.Config::get('database', 'charset'), Config::get('database', 'username'), Config::get('database', 'password'));
+				self::$_instance = new PDO(ApineConfig::get('database', 'type').':host='.ApineConfig::get('databse', 'host').';dbname='.ApineConfig::get('database', 'dbname').';charset='.ApineConfig::get('database', 'charset'), ApineConfig::get('database', 'username'), ApineConfig::get('database', 'password'));
 				self::$_instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			} catch (PDOException $e) {
-				throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
+				throw new ApineDatabaseException($e->getMessage(), $e->getCode(), $e);
 			}
 			
 		}
@@ -84,7 +84,7 @@ final class Database {
 	 * 
 	 * @param string $query
 	 *        Query of a SELECT type to execute
-	 * @throws DatabaseException If unable to execute query
+	 * @throws ApineDatabaseException If unable to execute query
 	 * @return multitype:mixed Matching rows
 	 */
 	public function select ($query) {
@@ -105,7 +105,7 @@ final class Database {
 			
 			return $arResult;
 		} catch (PDOException $e) {
-			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
+			throw new ApineDatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
 	
 	}
@@ -118,7 +118,7 @@ final class Database {
 	 *        Name of the table in which insert the row
 	 * @param string[] $arValues
 	 *        Field names and values to include in the row
-	 * @throws DatabaseException If cannot execute insertion query
+	 * @throws ApineDatabaseException If cannot execute insertion query
 	 * @return string Id of the newly inserted row
 	 */
 	public function insert ($tableName, $arValues) {
@@ -153,7 +153,7 @@ final class Database {
 			
 			return $this->last_insert_id();
 		} catch (PDOException $e) {
-			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
+			throw new ApineDatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
 	
 	}
@@ -169,7 +169,7 @@ final class Database {
 	 * @param string[] $arConditions
 	 *        Field names and values to match desired rows - Used to
 	 *        define the "WHERE" SQL statement
-	 * @throws DatabaseException If cannot execute update query
+	 * @throws ApineDatabaseException If cannot execute update query
 	 */
 	public function update ($tableName, $arValues, $arConditions) {
 		
@@ -207,7 +207,7 @@ final class Database {
 		try {
 			self::$_instance->exec($query);
 		} catch (PDOException $e) {
-			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
+			throw new ApineDatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
 	
 	}
@@ -221,7 +221,7 @@ final class Database {
 	 * @param string[] $arCondition
 	 *        Field names and values to match desired rows - Used to
 	 *        define the "WHERE" SQL statement
-	 * @throws DatabaseException If cannot execute delete query
+	 * @throws ApineDatabaseException If cannot execute delete query
 	 * @return boolean
 	 */
 	public function delete ($tableName, $arCondition) {
@@ -250,7 +250,7 @@ final class Database {
 			
 			return true;
 		} catch (PDOException $e) {
-			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
+			throw new ApineDatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
 	
 	}
@@ -261,7 +261,7 @@ final class Database {
 	 * 
 	 * @param string $query
 	 *        Query of any type to execute
-	 * @throws DatabaseException If cannot execute the query
+	 * @throws ApineDatabaseException If cannot execute the query
 	 * @return integer
 	 */
 	public function exec ($query) {
@@ -270,7 +270,7 @@ final class Database {
 			$result = self::$_instance->exec($query);
 			return $result;
 		} catch (PDOException $e) {
-			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
+			throw new ApineDatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
 	
 	}
@@ -302,7 +302,7 @@ final class Database {
 	 *        Values to replace markers in statement
 	 * @param integer $index
 	 *        Id of the statement to execute
-	 * @throws DatabaseException If cannot execute statement
+	 * @throws ApineDatabaseException If cannot execute statement
 	 * @return multitype:mixed
 	 */
 	public function execute ($input_parameters = array(), $index = null) {
@@ -330,10 +330,10 @@ final class Database {
 				$result->closeCursor();
 				return $arResult;
 			} catch (PDOException $e) {
-				throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
+				throw new ApineDatabaseException($e->getMessage(), $e->getCode(), $e);
 			}
 		}else{
-			throw new DatabaseException('Trying to fetch on non-existent PDO Statement.', 500);
+			throw new ApineDatabaseException('Trying to fetch on non-existent PDO Statement.', 500);
 		}
 	
 	}
@@ -398,3 +398,5 @@ final class Database {
 	}
 
 }
+
+class_alias('ApineDatabase','Database');

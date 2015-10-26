@@ -13,9 +13,10 @@
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  */
-final class URL_Helper {
+final class ApineURLHelper {
 	
 	private static $_instance;
+	
 	/**
 	 * Server Domain Name
 	 * @var string
@@ -53,26 +54,26 @@ final class URL_Helper {
 	private function __construct() {
 		
 		// Set server address
-		$protocol = (Request::is_https())?'https://':'http://';
-		$this->session_server = $protocol . Request::server()['SERVER_NAME'];
-		$ar_domain = explode('.', Request::server()['SERVER_NAME']);
+		$protocol = (ApineRequest::is_https())?'https://':'http://';
+		$this->session_server = $protocol . ApineRequest::server()['SERVER_NAME'];
+		$ar_domain = explode('.', ApineRequest::server()['SERVER_NAME']);
 		
 		if (count($ar_domain) >= 3) {
 			$start = strlen($ar_domain[0]) + 1;
-			$this->main_session_server = $protocol . substr(Request::server()['SERVER_NAME'], $start);
+			$this->main_session_server = $protocol . substr(ApineRequest::server()['SERVER_NAME'], $start);
 		} else {
-			$this->main_session_server = $protocol . Request::server()['SERVER_NAME'];
+			$this->main_session_server = $protocol . ApineRequest::server()['SERVER_NAME'];
 		}
 		
-		if ((!Request::is_https()&&Request::get_request_port()!=80)||(Request::is_https()&&Request::get_request_port()!=443)) {
-			$this->session_server.=":".Request::get_request_port();
-			$this->main_session_server.=":".Request::get_request_port();
+		if ((!ApineRequest::is_https() && ApineRequest::get_request_port() != 80) || (ApineRequest::is_https() && ApineRequest::get_request_port() != 443)) {
+			$this->session_server .= ":" . ApineRequest::get_request_port();
+			$this->main_session_server .= ":" . ApineRequest::get_request_port();
 		}
 		
 		// Set script name
-		$this->session_current = $protocol . Request::server()['SERVER_NAME'] . Request::server()['PHP_SELF'];
+		$this->session_current = $protocol . ApineRequest::server()['SERVER_NAME'] . ApineRequest::server()['PHP_SELF'];
 		// Set script path
-		$this->session_current_path = $protocol . Request::server()['SERVER_NAME'] . dirname(Request::server()['PHP_SELF']);
+		$this->session_current_path = $protocol . ApineRequest::server()['SERVER_NAME'] . dirname(ApineRequest::server()['PHP_SELF']);
 		// Set server path
 		$this->session_server_path = realpath(dirname(dirname(__FILE__)) . '/..');
 		
@@ -104,11 +105,11 @@ final class URL_Helper {
 	 */
 	private static function write_url ($base, $path) {
 	
-		if (isset(Request::get()['language'])) {
-			if (Request::get()['language'] == ApineTranslator::language()->code || Request::get()['language'] == ApineTranslator::language()->code_short) {
-				$language = Request::get()['language'];
+		if (isset(ApineRequest::get()['language'])) {
+			if (ApineRequest::get()['language'] == ApineAppTranslator::language()->code || ApineRequest::get()['language'] == ApineAppTranslator::language()->code_short) {
+				$language = ApineRequest::get()['language'];
 			} else {
-				$language = ApineTranslator::language()->code_short;
+				$language = ApineAppTranslator::language()->code_short;
 			}
 			
 			return $base . '/' . $language . '/' . $path;
@@ -193,3 +194,5 @@ final class URL_Helper {
 	
 	}
 }
+
+class_alias('ApineURLHelper','URL_Helper');

@@ -69,8 +69,8 @@ final class ApineWebSession implements ApineSessionInterface {
 	public function __construct () {
 		
 		// Check the session cookie (if one)
-		if (Cookie::get('session') != null) {
-			session_id(Cookie::get('session'));
+		if (ApineCookie::get('session') != null) {
+			session_id(ApineCookie::get('session'));
 		}
 		
 		// Start PHP Session
@@ -79,10 +79,10 @@ final class ApineWebSession implements ApineSessionInterface {
 		// Set PHP session id
 		$this->php_session_id = session_id();
 		
-		if (Config::get('runtime', 'user_class')) {
-			$pos_slash = strpos(Config::get('runtime', 'user_class'), '/');
-			$module = substr(Config::get('runtime', 'user_class'), 0, $pos_slash);
-			$class = substr(Config::get('runtime', 'user_class'), $pos_slash + 1);
+		if (ApineConfig::get('runtime', 'user_class')) {
+			$pos_slash = strpos(ApineConfig::get('runtime', 'user_class'), '/');
+			$module = substr(ApineConfig::get('runtime', 'user_class'), 0, $pos_slash);
+			$class = substr(ApineConfig::get('runtime', 'user_class'), $pos_slash + 1);
 			load_module($module);
 			
 			if (class_exists($class) && is_subclass_of($class, 'ApineUser')) {
@@ -221,11 +221,11 @@ final class ApineWebSession implements ApineSessionInterface {
 
 		if (!$this->is_logged_in()) {
 			
-			if ((ApineUserFactory::is_name_exist($user_name) || ApineUserFactory::is_email_exist($user_name)) && ApineUserFactory::create_by_name($user_name)->get_register_date() < "2015-09-04") {
+			/*if ((ApineUserFactory::is_name_exist($user_name) || ApineUserFactory::is_email_exist($user_name)) && ApineUserFactory::create_by_name($user_name)->get_register_date() < "2015-09-04") {
 				$encode_pass = hash('sha256', $password);
-			} else {
-				$encode_pass = Encryption::hash_password($password, ApineUserFactory::create_by_name($user_name)->get_username());
-			}
+			} else {*/
+				$encode_pass = ApineEncryption::hash_password($password, ApineUserFactory::create_by_name($user_name)->get_username());
+			//}
 			
 			$user_id = ApineUserFactory::authentication($user_name, $encode_pass);
 			
@@ -281,7 +281,7 @@ final class ApineWebSession implements ApineSessionInterface {
 	private function make_permanent () {
 
 		if ($this->is_logged_in()) {
-			Cookie::set('session', $this->php_session_id, time() + 604800);
+			ApineCookie::set('session', $this->php_session_id, time() + 604800);
 		}
 	
 	}

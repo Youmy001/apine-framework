@@ -18,7 +18,7 @@ class ApineUserFactory extends ApineEntityFactory {
 	public static function is_id_exist ($user_id) {
 
 		//$id_sql = (new Database())
-		$database = new Database();
+		$database = new ApineDatabase();
 		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `id`=$user_id");
 		
 		if ($id_sql) {
@@ -38,7 +38,7 @@ class ApineUserFactory extends ApineEntityFactory {
 	public static function is_name_exist ($user_name){
 
 		//$id_sql = (new Database())
-		$database = new Database();
+		$database = new ApineDatabase();
 		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `username`='$user_name'");
 		
 		if ($id_sql) {
@@ -58,7 +58,7 @@ class ApineUserFactory extends ApineEntityFactory {
 	public static function is_email_exist ($user_mail) {
 
 		//$id_sql = (new Database())
-		$database = new Database();
+		$database = new ApineDatabase();
 		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `email`='$user_mail'");
 		
 		if ($id_sql) {
@@ -75,9 +75,9 @@ class ApineUserFactory extends ApineEntityFactory {
 	public static function create_all () {
 
 		//$request = (new Database())
-		$database = new Database();
+		$database = new ApineDatabase();
 		$request = $database->select('SELECT `id` from `apine_users` ORDER BY `username`');
-		$liste = new Liste();
+		$liste = new ApineCollection();
 		
 		if ($request != null && count($request) > 0) {
 			foreach ($request as $item) {
@@ -98,7 +98,7 @@ class ApineUserFactory extends ApineEntityFactory {
 	 */
 	public static function create_by_id ($a_id) {
 		
-		$database=new Database();
+		$database=new ApineDatabase();
 		$user_sql_id = $database->prepare('SELECT `id` FROM `apine_users` WHERE `id`=?');
 		$ar_user_sql = $database->execute(array(
 						$a_id
@@ -123,7 +123,7 @@ class ApineUserFactory extends ApineEntityFactory {
 	 */
 	public static function create_by_name ($name) {
 
-		$database = new Database();
+		$database = new ApineDatabase();
 		$user_sql_id = $database->prepare('SELECT `id` FROM `apine_users` WHERE `username`=? OR `email`=?');
 		$ar_user_sql = $database->execute(array(
 						$name,
@@ -150,9 +150,9 @@ class ApineUserFactory extends ApineEntityFactory {
 	public static function create_by_access_right ($access) {
 
 		//$request = (new Database())
-		$database = new Database();
+		$database = new ApineDatabase();
 		$request = $database->select("SELECT `id` FROM `apine_users` WHERE `type`=$access");
-		$liste = new Liste();
+		$liste = new ApineCollection();
 		
 		if ($request != null && count($request) > 0) {
 			foreach ($request as $item) {
@@ -174,9 +174,9 @@ class ApineUserFactory extends ApineEntityFactory {
 	public static function create_by_group ($group) {
 	
 		//$request = (new Database())
-		$database = new Database();
+		$database = new ApineDatabase();
 		$request = $database->select("SELECT `user_id` FROM `apine_users_user_groups` WHERE `group_id`=$group");
-		$liste = new Liste();
+		$liste = new ApineCollection();
 		
 		if ($request != null && count($request) > 0) {
 			foreach ($request as $item) {
@@ -201,7 +201,7 @@ class ApineUserFactory extends ApineEntityFactory {
 	 */
 	public static function authentication ($name, $pass) {
 		
-		$database = new Database();
+		$database = new ApineDatabase();
 		$connect_sql_id = $database->prepare('SELECT `id` FROM `apine_users` WHERE `username`=? OR `email`=? AND `password`=?');
 		$ar_connect_sql = $database->execute(array(
 						$name,
@@ -230,9 +230,9 @@ class ApineUserFactory extends ApineEntityFactory {
 		static $class;
 	
 		if (is_null($class)) {
-			if (Config::get('runtime', 'user_class')) {
-				$pos_slash = strpos(Config::get('runtime', 'user_class'), '/');
-				$class = substr(Config::get('runtime', 'user_class'), $pos_slash+1);
+			if (ApineConfig::get('runtime', 'user_class')) {
+				$pos_slash = strpos(ApineConfig::get('runtime', 'user_class'), '/');
+				$class = substr(ApineConfig::get('runtime', 'user_class'), $pos_slash+1);
 				
 				if (!class_exists($class) || !is_subclass_of($class, 'ApineUser')) {
 					$class = 'ApineUser';

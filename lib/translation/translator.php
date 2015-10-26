@@ -11,19 +11,19 @@
  * Language Translator Tool
  * Manage multi-language configuration
  */
-final class Translator {
+final class ApineTranslator {
 	
 	/**
 	 * Availables languages for translations
 	 * 
-	 * @var TranslationLanguage[]
+	 * @var ApineTranslationLanguage[]
 	 */
 	private $languages;
 	
 	/**
 	 * Translations for available languages
 	 * 
-	 * @var Translation[]
+	 * @var ApineTranslation[]
 	 */
 	private $translations;
 	
@@ -31,7 +31,7 @@ final class Translator {
 	 * Instance of the Translator
 	 * Singleton Implementation
 	 *
-	 * @var Translator
+	 * @var ApineTranslator
 	 */
 	private static $_instance;
 	
@@ -54,7 +54,7 @@ final class Translator {
 				$file_name = $file_name[0];
 				
 				if (is_file('resources/languages/' . $file)) {
-					$this->languages[$file_name] = new TranslationLanguage($file_name, 'resources/languages/' . $file);
+					$this->languages[$file_name] = new ApineTranslationLanguage($file_name, 'resources/languages/' . $file);
 				}
 			}
 		}
@@ -65,7 +65,7 @@ final class Translator {
 	 * Singleton design pattern implementation
 	 *
 	 * @static
-	 * @return Translator
+	 * @return ApineTranslator
 	 */
 	public static function get_instance () {
 		
@@ -80,7 +80,7 @@ final class Translator {
 	/**
 	 * Fetch a list of every translation language available 
 	 * 
-	 * @return TranslationLanguage[]
+	 * @return ApineTranslationLanguage[]
 	 */
 	public static function get_all_languages () {
 		
@@ -93,7 +93,7 @@ final class Translator {
 	 * Fetch an available translation language
 	 * 
 	 * @param string $a_language_code
-	 * @return TranslationLanguage
+	 * @return ApineTranslationLanguage
 	 */
 	public static function get_language ($a_language_code) {
 		
@@ -120,14 +120,14 @@ final class Translator {
 	 * Fetch a translation
 	 * 
 	 * @param string $a_language_code
-	 * @return Translation
+	 * @return ApineTranslation
 	 */
 	public static function get_translation ($a_language_code) {
 		
 		// Load and return translation string of a language whose code matches the parameter
 		if (isset(self::get_instance()->languages[$a_language_code])) {
 			if(!isset(self::get_instance()->translations[$a_language_code])) {
-				self::get_instance()->translations[$a_language_code] = new Translation(self::get_instance()->languages[$a_language_code]);
+				self::get_instance()->translations[$a_language_code] = new ApineTranslation(self::get_instance()->languages[$a_language_code]);
 			}
 			
 			return self::get_instance()->translations[$a_language_code];

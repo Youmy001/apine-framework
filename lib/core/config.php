@@ -11,7 +11,7 @@
  * Configuration Reader
  * Read and write project's configuration file
  */
-final class Config {
+final class ApineConfig {
 	
 	/**
 	 * Instance of the Config reader
@@ -92,3 +92,5 @@ final class Config {
 		
 	}
 }
+
+class_alias('ApineConfig','Config');

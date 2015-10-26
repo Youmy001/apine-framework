@@ -22,22 +22,22 @@ final class ApineAPIRouter implements ApineRouterInterface {
 	 */
 	public function route ($request) {
 		
-		$args = explode("/",$request);
-		array_shift($args);
-		
-		$controller = $args[0];
-		array_shift($args);
-		
-		// Add post arguments to args array
-		if (Request::get_request_type() != "GET") {
-			$args = array_merge($args, Request::post());
-		}
-		
-		if (!empty(Request::files())) {
-			$args = array_merge($args, array("uploads" => Request::files()));
-		}
-		
 		try {
+			$args = explode("/",$request);
+			array_shift($args);
+			
+			$controller = $args[0];
+			array_shift($args);
+			
+			// Add post arguments to args array
+			if (ApineRequest::get_request_type() != "GET") {
+				$args = array_merge($args, ApineRequest::post());
+			}
+			
+			if (!empty(ApineRequest::files())) {
+				$args = array_merge($args, array("uploads" => ApineRequest::files()));
+			}
+			
 			$maj_controller = ucfirst($controller) . 'Controller';
 			
 			if (self::check_route($request)) {

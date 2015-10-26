@@ -12,7 +12,7 @@ require_once ('lib/file/file.php');
  * Module Files Loading Tool
  * Tools to load files in batches from various locations in the project's directory
  */
-final class Autoload {
+final class ApineAutoload {
 	
 	/**
 	 * Loads all files recursively of a user defined module in the modules/ directory
@@ -61,6 +61,7 @@ final class Autoload {
 		
 		try {
 			foreach ($files as $file) {
+				//print "$file\n";
 				$a_file = new ApineFile($file, true);
 				
 				if ($a_file->extention() === "php") {
@@ -84,7 +85,7 @@ final class Autoload {
 	 * 			Weither the directory is the base folder for the recursive parser.
 	 * @return mixed[] List of all files in a directory
 	 */
-	private static function get_folder_files ($directory, $root = true) {
+	public static function get_folder_files ($directory, $root = true) {
 		
 		$array = array();
 		
@@ -146,3 +147,6 @@ final class Autoload {
 	}
 	
 }
+
+
+class_alias('ApineAutoload','Autoload');

@@ -11,7 +11,7 @@
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  */
-final class Version {
+final class ApineVersion {
 	
 	/**
 	 * Regular expression for a valid semantic version number
@@ -54,8 +54,8 @@ final class Version {
 		if (is_file('VERSION')) {
 			$file = new ApineFile('VERSION', true);
 			$version = $file->content();
-		} else if (Config::get('application', 'version')) {
-			$version = Config::get('application', 'version');
+		} else if (ApineConfig::get('application', 'version')) {
+			$version = ApineConfig::get('application', 'version');
 		}
 		
 		if (isset($version) && self::validate($version)) {
@@ -76,8 +76,8 @@ final class Version {
 		if (is_file('lib/VERSION')) {
 			$file = new ApineFile('lib/VERSION', true);
 			$version = $file->content();
-		} else if (Config::get('apine-framework', 'version')) {
-			$version = Config::get('apine-framework', 'version');
+		} else if (ApineConfig::get('apine-framework', 'version')) {
+			$version = ApineConfig::get('apine-framework', 'version');
 		}
 		
 		return (isset($version) && self::validate($version)) ? $version : null;
@@ -96,3 +96,5 @@ final class Version {
 	}
 	
 }
+
+class_alias('ApineVersion','Version');

@@ -24,10 +24,10 @@ final class ApineWebRouter implements ApineRouterInterface {
 		
 		$xml_routes = new Parser();
 		$xml_routes->load_from_file('routes.xml');
-		$request = (isset(Request::get()['request'])) ? Request::get()['request'] : '/index';
+		$request = (isset(ApineRequest::get()['request'])) ? ApineRequest::get()['request'] : '/index';
 		$route_found = false;
 		
-		$routes = $xml_routes->getElementsByAttributeValue('method', Request::get_request_type());
+		$routes = $xml_routes->getElementsByAttributeValue('method', ApineRequest::get_request_type());
 		
 		$str_routes = "";
 		$found_route = null;
@@ -115,12 +115,12 @@ final class ApineWebRouter implements ApineRouterInterface {
 		}
 		
 		// Add post arguments to args array
-		if (Request::get_request_type() != "GET") {
+		if (ApineRequest::get_request_type() != "GET") {
 			$args = array_merge($args, Request::post());
 		}
 		
-		if (!empty(Request::files())) {
-			$args = array_merge($args, array("uploads" => Request::files()));
+		if (!empty(ApineRequest::files())) {
+			$args = array_merge($args, array("uploads" => ApineRequest::files()));
 		}
 		
 		try {

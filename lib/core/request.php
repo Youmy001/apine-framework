@@ -11,7 +11,7 @@
  * Request Management Tool
  * Handle information from the request and user inputs
  */
-final class Request {
+final class ApineRequest {
 	
 	/**
 	 * Instance of the Request
@@ -361,3 +361,6 @@ final class Request {
 		
 	}
 }
+
+
+class_alias('ApineRequest','Request');

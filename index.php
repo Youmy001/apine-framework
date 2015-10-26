@@ -11,18 +11,22 @@ $before = microtime(true) * 1000;
 
 require_once('lib/core/autoloader.php');
 ini_set('display_errors', 'On');
-Autoload::load_kernel();
 ini_set('include_path', realpath(dirname(__FILE__)));
+ApineAutoload::load_kernel();
+//header("Content-Type: text/plain");
+//print_r(ApineAutoload::get_folder_files('lib'));
+//$after = microtime(true) * 1000;
+//die(number_format($after - $before, 1));
 
-if (Config::get('runtime', 'mode') == 'development') {
+if (ApineConfig::get('runtime', 'mode') == 'development') {
 	ini_set('display_errors', 'On');
 	error_reporting(E_ALL | E_STRICT);
-} else if (Config::get('runtime', 'mode') == 'production') {
+} else if (ApineConfig::get('runtime', 'mode') == 'production') {
 	ini_set('display_errors', 'Off');
 	error_reporting(E_ERROR);
 }
 
-date_default_timezone_set(Config::get('dateformat', 'timezone'));
+date_default_timezone_set(ApineConfig::get('dateformat', 'timezone'));
 ini_set('session.gc_maxlifetime', 604800);
 
 /**
@@ -30,33 +34,33 @@ ini_set('session.gc_maxlifetime', 604800);
  */
 try {
 	// Make sure application runs with a valid execution mode
-	if (Config::get('runtime', 'mode') != 'development' && Config::get('runtime', 'mode') != 'production') {
-		throw new ApineException("Invalid Execution Mode \"".Config::get('runtime', 'mode')."\"");
+	if (ApineConfig::get('runtime', 'mode') != 'development' && ApineConfig::get('runtime', 'mode') != 'production') {
+		throw new ApineException("Invalid Execution Mode \"".ApineConfig::get('runtime', 'mode')."\"", 418);
 	}
 	
 	// Analyse and execute user request
 	// This framework has to possible ways to handle user requests :
 	//   - A RESTfull API
 	//   - A regular Web Application
-	if (Request::is_api_call()) {
+	/*if (Request::is_api_call()) {
 		// TODO RESTful Implementation
 		throw new ApineException("RESTful API call not implemented yet", 501);
-	} else {
-		if (!Request::is_api_call()) {
-			$request = (isset(Request::get()['request'])) ? Request::get()['request'] : '/index';
+	} else {*/
+		if (!ApineRequest::is_api_call()) {
+			$request = (isset(ApineRequest::get()['request'])) ? ApineRequest::get()['request'] : '/index';
 		} else {
-			$request = Request::get()['request'];
+			$request = ApineRequest::get()['request'];
 		}
 		
 		$route = ApineRouter::route($request);
 		ApineRouter::execute($route->controller, $route->action, $route->args);
-	}
+	//}
 	
 } catch (ApineException $e) {
 	// Handle application errors
 	$error = new ErrorController();
 	
-	if (Config::get('runtime', 'mode') != 'development'){
+	if (ApineConfig::get('runtime', 'mode') != 'development'){
 		if ($error_name = $error->method_for_code($e->getCode())) {
 			$error->$error_name();
 		} else {
@@ -66,5 +70,6 @@ try {
 		$error->custom($e->getCode(), $e->getMessage(), $e);
 	}
 } catch (Exception $e) {
-	print $e->getMessage().' on '.$e->getFile().' ('.$e->getLine().")\n\n";
+	$error = new ErrorController();
+	$error->custom(500, $e->getMessage(), $e);
 }

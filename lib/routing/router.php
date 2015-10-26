@@ -22,7 +22,7 @@ final class ApineRouter {
 	 */
 	private function __construct () {
 	
-		if (Request::is_api_call()) {
+		if (ApineRequest::is_api_call()) {
 			$this->strategy = new ApineAPIRouter();
 		} else {
 			$this->strategy = new ApineWebRouter();

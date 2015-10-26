@@ -7,14 +7,14 @@
  * @copyright 2015 Tommy Teasdale
  */
 
-final class ListeIterator implements Iterator {
+final class ApineCollectionIterator implements Iterator {
 
 	/**
 	 * Instance of the collection
 	 * 
 	 * @var Liste
 	 */
-	private $_liste;
+	private $_collection;
 
 	/**
 	 * Current pointer position in the collection
@@ -36,10 +36,10 @@ final class ListeIterator implements Iterator {
 	 * @param Liste $a_liste
 	 *        Instance of the collection
 	 */
-	public function __construct (Liste $a_liste) {
+	public function __construct (Collection $a_collection) {
 
-		$this->_liste = $a_liste;
-		$this->_keys = $this->_liste->keys();
+		$this->_collection = $a_collection;
+		$this->_keys = $this->_collection->keys();
 	
 	}
 
@@ -72,7 +72,7 @@ final class ListeIterator implements Iterator {
 	 */
 	public function current () {
 
-		return $this->_liste->get_item($this->_keys[$this->_currIndex]);
+		return $this->_collection->get_item($this->_keys[$this->_currIndex]);
 	
 	}
 
@@ -94,7 +94,7 @@ final class ListeIterator implements Iterator {
 	 */
 	public function valid () {
 
-		return $this->_currIndex < $this->_liste->length();
+		return $this->_currIndex < $this->_collection->length();
 	
 	}
 

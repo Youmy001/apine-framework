@@ -11,7 +11,7 @@
  * Translation Language
  * Representation of a language for translations
  */
-final class TranslationLanguage {
+final class ApineTranslationLanguage {
 	
 	/**
 	 * Full language ISO code

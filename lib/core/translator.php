@@ -11,26 +11,26 @@
  * Execution Translator
  * Manage Multi-Languages setups
  */
-final class ApineTranslator {
+final class ApineAppTranslator {
 	
 	/**
-	 * Instance of the Session Manager
+	 * Instance of the Translation Manager
 	 * Singleton Implementation
 	 * 
-	 * @var ApineSession
+	 * @var ApineAppTranslator
 	 */
 	private static $_instance;
 	
 	/**
 	 * Current Language
 	 * 
-	 * @var Translation
+	 * @var ApineTranslation
 	 */
 	private $language;
 	
 	/**
 	 * Singleton design pattern implementation
-	 * @return ApineSession
+	 * @return ApineAppTranslator
 	 */
 	public static function get_instance () {
 	
@@ -51,24 +51,24 @@ final class ApineTranslator {
 	public static function set_language ($a_lang_code = null) {
 		
 		if (is_null($a_lang_code)) {
-			if (Config::get('languages', 'detection') == "yes") {
+			if (ApineConfig::get('languages', 'detection') == "yes") {
 				$language = self::user_agent_best();
 				$language = self::cookie_best();
 				$language = self::request_best();
 	
 				if (!$language) {
-					$language = Translator::get_translation(Config::get('languages', 'default'));
+					$language = ApineTranslator::get_translation(ApineConfig::get('languages', 'default'));
 				}
 	
 				self::get_instance()->language = $language;
 			} else {
-				self::get_instance()->language = Translator::get_translation(Config::get('languages', 'default'));
+				self::get_instance()->language = ApineTranslator::get_translation(ApineConfig::get('languages', 'default'));
 			}
 		} else {
 			if (Translator::is_exist_language($a_lang_code)) {
-				self::get_instance()->language = Translator::get_translation($a_lang_code);
+				self::get_instance()->language = ApineTranslator::get_translation($a_lang_code);
 			} else {
-				self::get_instance()->language = Translator::get_translation(Config::get('languages', 'default'));
+				self::get_instance()->language = Translator::get_translation(ApineConfig::get('languages', 'default'));
 			}
 		}
 		
@@ -83,12 +83,12 @@ final class ApineTranslator {
 	/**
 	 * Detect the best language according to language cookie
 	 *
-	 * @return Translation
+	 * @return ApineTranslation
 	 */
 	private static function cookie_best () {
 	
-		if (Config::get('languages', 'use_cookie') === "yes" && Cookie::get('language')) {
-			return self::best(Cookie::get('language'));
+		if (ApineConfig::get('languages', 'use_cookie') === "yes" && ApineCookie::get('language')) {
+			return self::best(ApineCookie::get('language'));
 		} else {
 			return null;
 		}
@@ -98,12 +98,12 @@ final class ApineTranslator {
 	/**
 	 * Detect the best language according to language parameter in request
 	 *
-	 * @return Translation
+	 * @return ApineTranslation
 	 */
 	private static function request_best () {
 	
-		if (isset(Request::get()['language'])) {
-			return self::best(Request::get()['language']);
+		if (isset(ApineRequest::get()['language'])) {
+			return self::best(ApineRequest::get()['language']);
 		} else {
 			return null;
 		}
@@ -113,12 +113,12 @@ final class ApineTranslator {
 	/**
 	 * Detect the best language according to language headers
 	 *
-	 * @return Translation
+	 * @return ApineTranslation
 	 */
 	private static function user_agent_best () {
 	
 		if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-			return Translator::get_translation(Config::get('languages', 'default'))->get_language()->code;
+			return ApineTranslator::get_translation(ApineConfig::get('languages', 'default'))->get_language()->code;
 		}
 	
 		$user_languages = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
@@ -148,13 +148,13 @@ final class ApineTranslator {
 	 * Guess the best language to use from a ISO language identifier
 	 *
 	 * @param string $a_language_code
-	 * @return Translation
+	 * @return ApineTranslation
 	 */
 	private static function best ($a_language_code) {
 	
-		if (Translator::is_exist_language($a_language_code)) {
+		if (ApineTranslator::is_exist_language($a_language_code)) {
 			$is_found = true;
-			$found_language = Translator::get_translation($a_language_code);
+			$found_language = ApineTranslator::get_translation($a_language_code);
 		} else {
 			if (strlen($a_language_code) > 2) {
 				$a_language_code = substr($a_language_code, 0, 2);
@@ -163,9 +163,9 @@ final class ApineTranslator {
 			$matches = array();
 			$translations = array();
 	
-			foreach (Translator::get_all_languages() as $item) {
+			foreach (ApineTranslator::get_all_languages() as $item) {
 				if($item->code_short == $a_language_code) {
-					$translation = Translator::get_translation($item->code);
+					$translation = ApineTranslator::get_translation($item->code);
 					$matches[$item->code] = $translation->get('language','priority');
 					$translations[$item->code] = $translation;
 				}
@@ -210,7 +210,7 @@ final class ApineTranslator {
 	/**
 	 * Fetch current session language
 	 *
-	 * @return TranslationLanguage
+	 * @return ApineTranslationLanguage
 	 */
 	public static function language () {
 	
@@ -225,7 +225,7 @@ final class ApineTranslator {
 	/**
 	 * Fetch current session language
 	 *
-	 * @return Translation
+	 * @return ApineTranslation
 	 */
 	public static function translation () {
 	

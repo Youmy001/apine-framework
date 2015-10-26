@@ -11,7 +11,7 @@
  * Translation Locales
  * Representation of a locales for translations
  */
-final class TranslationLocale {
+final class ApineTranslationLocale {
 	
 	/**
 	 * Entries linke to locales
@@ -49,7 +49,7 @@ final class TranslationLocale {
 	 */
 	private $language;
 	
-	public function __construct(TranslationLanguage $a_language) {
+	public function __construct(ApineTranslationLanguage $a_language) {
 		
 		$this->locale_string = array();
 		$this->language = $a_language;

@@ -46,16 +46,16 @@ final class ApineAPISession implements ApineSessionInterface{
 	 */
 	public function __construct() {
 		
-		if (is_null(Config::get('runtime', 'token_lifespan'))) {
-			$this->token_lifespan = Config::get('runtime', 'token_lifespan');
+		if (is_null(ApineConfig::get('runtime', 'token_lifespan'))) {
+			$this->token_lifespan = ApineConfig::get('runtime', 'token_lifespan');
 		}
 		
-		if (isset(Request::get_request_headers()['Authorization'])) {
+		if (isset(ApineRequest::get_request_headers()['Authorization'])) {
 		
 			$token_id = ApineUserTokenFactory::authentication($name, $token, $this->token_lifespan);
 			$token = ApineUserTokenFactory::create_by_id($token_id);
 			
-			if ($token_id && $token->get_origin() == Request::server()['HTTP_REFERER'].Request::server()['HTTP_USER_AGENT']) {
+			if ($token_id && $token->get_origin() == ApineRequest::server()['HTTP_REFERER'].ApineRequest::server()['HTTP_USER_AGENT']) {
 				$this->logged_in = true;
 				$this->token = $token;
 				$this->session_type = $this->token->get_user()->get_type();
@@ -175,11 +175,11 @@ final class ApineAPISession implements ApineSessionInterface{
 	public function login ($a_user_name, $a_password) {
 		
 		if (!$this->is_logged_in()) {
-			if ((ApineUserFactory::is_name_exist($a_user_name) || ApineUserFactory::is_email_exist($a_user_name)) && ApineUserFactory::create_by_name($a_user_name)->get_register_date() < "2015-09-04") {
+			/*if ((ApineUserFactory::is_name_exist($a_user_name) || ApineUserFactory::is_email_exist($a_user_name)) && ApineUserFactory::create_by_name($a_user_name)->get_register_date() < "2015-09-04") {
 				$encode_pass = hash('sha256', $a_password);
-			} else {
-				$encode_pass = Encryption::hash_password($a_password, ApineUserFactory::create_by_name($a_user_name)->get_username());
-			}
+			} else {*/
+				$encode_pass = ApineEncryption::hash_password($a_password, ApineUserFactory::create_by_name($a_user_name)->get_username());
+			//}
 			
 			$user_id = ApineUserFactory::authentication($a_user_name, $encode_pass);
 			
@@ -187,7 +187,7 @@ final class ApineAPISession implements ApineSessionInterface{
 				$creation_time = time();
 				$new_user_token = new ApineUserToken();
 				$new_user_token->set_user($user_id);
-				$new_user_token->set_token(Encryption::hash_api_user_token($a_user_name, $a_password, $creation_time));
+				$new_user_token->set_token(ApineEncryption::hash_api_user_token($a_user_name, $a_password, $creation_time));
 				$new_user_token->set_creation_date($creation_time);
 				
 				$this->token = $new_user_token;

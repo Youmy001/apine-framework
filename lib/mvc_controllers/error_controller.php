@@ -6,10 +6,28 @@ class ErrorController extends Controller {
 		
 		parent::__construct();
 		
-		if (Request::is_api_call()) {
-			$this->_view = new JSONView();
+		if (ApineRequest::is_api_call()) {
+			$this->_view = new ApineJSONView();
 		}
 		
+	}
+	
+	public function badrequest ($a_exception = null) {
+	
+		$this->custom(400, 'Bad Request', $a_exception);
+	
+	}
+	
+	public function unauthorized ($a_exception = null) {
+	
+		$this->custom(401, 'Unauthorized', $a_exception);
+	
+	}
+	
+	public function forbidden ($a_exception = null) {
+	
+		$this->custom(403, 'Forbidden', $a_exception);
+	
 	}
 	
 	public function notfound ($a_exception = null) {
@@ -18,10 +36,10 @@ class ErrorController extends Controller {
 		
 	}
 	
-	public function forbidden ($a_exception = null) {
-		
-		$this->custom(403, 'Forbidden', $a_exception);
-		
+	public function methodnotallowed ($a_exception = null) {
+	
+		$this->custom(405, 'Method Not Allowed', $a_exception);
+	
 	}
 	
 	public function gone ($a_exception = null) {
@@ -30,16 +48,10 @@ class ErrorController extends Controller {
 		
 	}
 	
-	public function unauthorized ($a_exception = null) {
-		
-		$this->custom(401, 'Unauthorized', $a_exception);
-		
-	}
+	public function teapot ($a_exception = null) {
 	
-	public function methodnotallowed ($a_exception = null) {
-		
-		$this->custom(405, 'Method Not Allowed', $a_exception);
-		
+		$this->custom(418, 'I\'m a teapot', $a_exception);
+	
 	}
 	
 	public function server ($a_exception = null) {
@@ -48,10 +60,16 @@ class ErrorController extends Controller {
 		
 	}
 	
-	public function badrequest ($a_exception = null) {
-		
-		$this->custom(400, 'Bad Request', $a_exception);
-		
+	public function notimplemented ($a_exception = null) {
+	
+		$this->custom(501, 'Not Implemented', $a_exception);
+	
+	}
+	
+	public function unavailable ($a_exception = null) {
+	
+		$this->custom(503, 'Service Unavailable', $a_exception);
+	
 	}
 	
 	public function custom ($a_code, $a_message, $a_exception = null) {
@@ -59,7 +77,7 @@ class ErrorController extends Controller {
 		$this->_view->set_param('code', $a_code);
 		$this->_view->set_param('message', $a_message);
 		
-		if (Request::is_api_call()) {
+		if (ApineRequest::is_api_call()) {
 			$this->_view->set_param('request', Request::get()['request']);
 		} else {
 			$this->_view->set_title($a_message);
@@ -103,8 +121,17 @@ class ErrorController extends Controller {
 			case '410':
 				$return = 'gone';
 				break;
+			case '418':
+				$return = 'teapot';
+				break;
 			case '500':
 				$return = 'server';
+				break;
+			case '501':
+				$return = 'notimplemented';
+				break;
+			case '503':
+				$return = 'unavailable';
 				break;
 			default:
 				$return = false;
@@ -123,7 +150,10 @@ class ErrorController extends Controller {
 			case '404':
 			case '405':
 			case '410':
+			case '418':
 			case '500':
+			case '501':
+			case '503':
 				return true;
 			default:
 				return false;

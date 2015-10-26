@@ -72,7 +72,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 	*/
 	final protected function _load () {
 		
-		$db = new Database();
+		$db = new ApineDatabase();
 		
 		if ($this->id !== null) {
 			$database_fields = $db->select("SELECT * from $this->table_name where $this->load_field = $this->id");
@@ -123,7 +123,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 		
 		if (isset($this->database_fields[$a_field])) {
 			if (is_timestamp($this->database_fields[$a_field]) && !is_numeric($this->database_fields[$a_field])) {
-				$locale = ApineTranslator::translation()->get_locale();
+				$locale = ApineAppTranslator::translation()->get_locale();
 				$time = strtotime($this->database_fields[$a_field]);
 				$time += $locale->offset();
 				return date("Y-m-d H:i:s", $time);
@@ -225,7 +225,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 		}
 		
 		if (is_timestamp($value) && !is_numeric($value)) {
-			$locale = ApineTranslator::translation()->get_locale();
+			$locale = ApineAppTranslator::translation()->get_locale();
 			$time = strtotime($value);
 			$time -= $locale->offset();
 			$value = date("Y-m-d H:i:s", $time);
@@ -242,7 +242,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 	 */
 	final protected function _destroy () {
 		
-		$db = new Database();
+		$db = new ApineDatabase();
 		
 		if ($this->id) {
 			$db->delete($this->table_name, array(
@@ -257,7 +257,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 	 */
 	final protected function _save () {
 		
-		$db = new Database();
+		$db = new ApineDatabase();
 
 		if ($this->id === null) {
 			$this->field_loaded = 0;

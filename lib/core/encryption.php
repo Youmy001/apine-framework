@@ -11,14 +11,7 @@
  * Encryption Tools
  * Encrypt and decrypt string namely for security concerns
  */
-final class Encryption {
-	
-	/**
-	 * Encryption String
-	 * 
-	 * @var string
-	 */
-	//const ENCRYPT_KEY = 'apine_framework';
+final class ApineEncryption {
 	
 	/**
 	 * Encrypt a string against the encryption string
@@ -28,13 +21,13 @@ final class Encryption {
 	 */
 	public static function encrypt ($origin_string) {
 		
-		if (!Config::get('runtime', 'encryption_key')) {
+		if (!ApineConfig::get('runtime', 'encryption_key')) {
 			self::generate_key();
 		}
 		
 		$iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-		$encrypted_string = mcrypt_encrypt(MCRYPT_BLOWFISH, Config::get('runtime', 'encryption_key'), utf8_encode($origin_string), MCRYPT_MODE_ECB, $iv);
+		$encrypted_string = mcrypt_encrypt(MCRYPT_BLOWFISH, ApineConfig::get('runtime', 'encryption_key'), utf8_encode($origin_string), MCRYPT_MODE_ECB, $iv);
 		
 		return $encrypted_string;
 		
@@ -48,13 +41,13 @@ final class Encryption {
 	 */
 	public static function decrypt ($encrypted_string) {
 		
-		if (!Config::get('runtime', 'encryption_key')) {
+		if (!ApineConfig::get('runtime', 'encryption_key')) {
 			self::generate_key();
 		}
 		
 		$iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-		$decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, Config::get('runtime', 'encryption_key'), $encrypted_string, MCRYPT_MODE_ECB, $iv);
+		$decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, ApineConfig::get('runtime', 'encryption_key'), $encrypted_string, MCRYPT_MODE_ECB, $iv);
 		
 		return $decrypted_string;
 		
@@ -63,7 +56,7 @@ final class Encryption {
 	private static function generate_key() {
 		
 		$hash = PseudoCrypt::hash(intval(rand(1, 1000)), 10);
-		Config::set('runtime', 'encryption_key', $hash);
+		ApineConfig::set('runtime', 'encryption_key', $hash);
 		
 	}
 	
@@ -105,3 +98,5 @@ final class Encryption {
 	}
 	
 }
+
+class_alias('ApineEncryption','Encryption');

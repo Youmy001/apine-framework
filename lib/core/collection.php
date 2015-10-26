@@ -11,7 +11,7 @@
  * Liste Collection
  * Traversable collection that mimics an array while providing easy to use features
  */
-final class Liste implements IteratorAggregate {
+final class ApineCollection implements IteratorAggregate {
 
 	/**
 	 * Object array
@@ -384,8 +384,11 @@ final class Liste implements IteratorAggregate {
 	 */
 	public function getIterator() {
 
-		return new ListeIterator(clone $this);
+		return new ApineCollectionIterator(clone $this);
 	
 	}
 
 }
+
+class_alias('ApineCollection', 'Liste');
+class_alias('ApineCollection', 'Collection');

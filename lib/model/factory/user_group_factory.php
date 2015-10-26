@@ -5,7 +5,7 @@ class ApineUserGroupFactory extends ApineEntityFactory {
 	public static function is_id_exist ($a_id) {
 
 		//$request = (new Database())
-		$database = new Database();
+		$database = new ApineDatabase();
 		$request = $database->select("SELECT `id` FROM `apine_user_groups` WHERE `id`=$a_id");
 		
 		if ($request != null && count($request) > 0) {
@@ -19,9 +19,9 @@ class ApineUserGroupFactory extends ApineEntityFactory {
 	public static function create_all () {
 
 		//$request = (new Database())
-		$database = new Database();
+		$database = new ApineDatabase();
 		$request = $database->select("SELECT `id` FROM `apine_user_groups` ORDER BY `id`");
-		$liste = new Liste();
+		$liste = new ApineCollection();
 		
 		if ($request != null && count($request) > 0) {
 			foreach ($request as $item) {
@@ -36,7 +36,7 @@ class ApineUserGroupFactory extends ApineEntityFactory {
 	public static function create_by_id ($a_id) {
 
 		//$request = (new Database())
-		$database = new Database();
+		$database = new ApineDatabase();
 		$request = $database->select("SELECT `id` FROM `apine_user_groups` WHERE `id`=$a_id");
 		
 		if ($request != null && count($request) > 0) {
@@ -58,9 +58,9 @@ class ApineUserGroupFactory extends ApineEntityFactory {
 	public static function create_by_user ($user) {
 	
 		//$request = (new Database())
-		$database = new Database();
+		$database = new ApineDatabase();
 		$request = $database->select("SELECT `group_id` FROM `apine_users_user_groups` WHERE `user_id`=$user");
-		$liste = new Liste();
+		$liste = new ApineCollection();
 		
 		if ($request != null && count($request) > 0) {
 			foreach ($request as $item) {
