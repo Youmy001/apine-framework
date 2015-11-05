@@ -1,5 +1,4 @@
 <?php
-
 /**
  * API Login Token
  * This script contains the model representation of login tokens for

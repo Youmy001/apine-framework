@@ -20,11 +20,11 @@ final class ApineWebRouter implements ApineRouterInterface {
 	 * 
 	 * @return mixed
 	 */
-	private function xml_route () {
+	private function xml_route ($request) {
 		
 		$xml_routes = new Parser();
 		$xml_routes->load_from_file('routes.xml');
-		$request = (isset(ApineRequest::get()['request'])) ? ApineRequest::get()['request'] : '/index';
+		//$request = (isset(ApineRequest::get()['request'])) ? ApineRequest::get()['request'] : '/index';
 		$route_found = false;
 		
 		$routes = $xml_routes->getElementsByAttributeValue('method', ApineRequest::get_request_type());
@@ -92,7 +92,7 @@ final class ApineWebRouter implements ApineRouterInterface {
 		$vanilla_route_found = self::check_route($request);
 		
 		if (!$vanilla_route_found) {
-			$xml_request = self::xml_route();
+			$xml_request = self::xml_route($request);
 			
 			if ($xml_request !== $request) {
 				$route_found = true;
@@ -207,7 +207,7 @@ final class ApineWebRouter implements ApineRouterInterface {
 		if (self::check_route("/$controller/$action")) {
 			$maj_controller = ucfirst($controller) . 'Controller';
 			$controller = new $maj_controller();
-			$controller->$action($args);
+			return $controller->$action($args);
 		} else {
 			throw new ApineException("Route \"$controller\" Not found", 404);
 		}

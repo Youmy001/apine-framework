@@ -220,12 +220,11 @@ final class ApineWebSession implements ApineSessionInterface {
 	public function login ($user_name, $password, $options = array()) {
 
 		if (!$this->is_logged_in()) {
-			
-			/*if ((ApineUserFactory::is_name_exist($user_name) || ApineUserFactory::is_email_exist($user_name)) && ApineUserFactory::create_by_name($user_name)->get_register_date() < "2015-09-04") {
-				$encode_pass = hash('sha256', $password);
-			} else {*/
-				$encode_pass = ApineEncryption::hash_password($password, ApineUserFactory::create_by_name($user_name)->get_username());
-			//}
+			if ((ApineUserFactory::is_name_exist($user_name) || ApineUserFactory::is_email_exist($user_name))) {
+				$encode_pass = ApineEncryption::hash_password($password);
+			} else {
+				return false;
+			}
 			
 			$user_id = ApineUserFactory::authentication($user_name, $encode_pass);
 			

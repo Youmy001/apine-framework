@@ -175,11 +175,11 @@ final class ApineAPISession implements ApineSessionInterface{
 	public function login ($a_user_name, $a_password) {
 		
 		if (!$this->is_logged_in()) {
-			/*if ((ApineUserFactory::is_name_exist($a_user_name) || ApineUserFactory::is_email_exist($a_user_name)) && ApineUserFactory::create_by_name($a_user_name)->get_register_date() < "2015-09-04") {
-				$encode_pass = hash('sha256', $a_password);
-			} else {*/
-				$encode_pass = ApineEncryption::hash_password($a_password, ApineUserFactory::create_by_name($a_user_name)->get_username());
-			//}
+			if ((ApineUserFactory::is_name_exist($a_user_name) || ApineUserFactory::is_email_exist($a_user_name))) {
+				$encode_pass = ApineEncryption::hash_password($password);
+			} else {
+				return false;
+			}
 			
 			$user_id = ApineUserFactory::authentication($a_user_name, $encode_pass);
 			

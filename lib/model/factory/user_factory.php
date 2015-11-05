@@ -39,7 +39,7 @@ class ApineUserFactory extends ApineEntityFactory {
 
 		//$id_sql = (new Database())
 		$database = new ApineDatabase();
-		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `username`='$user_name'");
+		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `username`='$user_name' OR `email`='$user_name'");
 		
 		if ($id_sql) {
 			return true;
@@ -202,7 +202,7 @@ class ApineUserFactory extends ApineEntityFactory {
 	public static function authentication ($name, $pass) {
 		
 		$database = new ApineDatabase();
-		$connect_sql_id = $database->prepare('SELECT `id` FROM `apine_users` WHERE `username`=? OR `email`=? AND `password`=?');
+		$connect_sql_id = $database->prepare('SELECT `id` FROM `apine_users` WHERE ( `username`=? OR `email`=? ) AND `password`=?');
 		$ar_connect_sql = $database->execute(array(
 						$name,
 						$name,

@@ -152,6 +152,11 @@ abstract class ApineView {
 	 */
 	abstract public function draw();
 	
+	/**
+	 * Return the content of the view
+	 */
+	abstract public function content();
+	
 }
 
 /**
@@ -185,6 +190,12 @@ final class ApineHTMLView extends ApineView {
 	 * @var ApineCollection
 	 */
 	private $_scripts;
+	
+	/**
+	 * View's HTML Document
+	 * @var string $content
+	 */
+	private $content;
 	
 	/**
 	 * Construct the HTML view
@@ -291,7 +302,28 @@ final class ApineHTMLView extends ApineView {
 	public function draw() {
 		
 		$this->apply_headers();
+		
+		if (is_null($this->content)) {
+			$this->content();
+		}
+		
+		print $this->content;
+		
+	}
+	
+	/**
+	 * Return the content of the view
+	 */
+	public function content() {
+		
+		ob_start();
 		include_once("views/layouts/$this->_layout.php");
+		$content = ob_get_contents();
+		ob_end_clean();
+		//die($content);
+		$this->content = $content;
+		
+		return $content;
 		
 	}
 }
@@ -354,6 +386,20 @@ final class ApineFileView extends ApineView {
 			
 			$this->_file->output();
 		}
+		
+	}
+	
+	/**
+	 * Return the content of the view
+	 */
+	public function content () {
+		
+		ob_start();
+		$this->_file->output();
+		$content = ob_get_contents();
+		ob_end_clean();
+		
+		return $content;
 		
 	}
 	
@@ -422,6 +468,19 @@ final class ApineJSONView extends ApineView {
 		}
 		
 		print $this->_json_file;
+		
+	}
+	
+	/**
+	 * Return the content of the view
+	 */
+	public function content () {
+		
+		if (is_null($this->_json_file)) {
+			$this->set_json_file($this->_params->get_all());
+		}
+		
+		return $this->_json_file;
 		
 	}
 	

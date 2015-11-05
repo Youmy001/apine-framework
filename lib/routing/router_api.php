@@ -94,7 +94,7 @@ final class ApineAPIRouter implements ApineRouterInterface {
 		if (self::check_route("/$controller")) {
 			$maj_controller = ucfirst($controller) . 'Controller';
 			$controller = new $maj_controller();
-			$controller->$method($args);
+			return $controller->$method($args);
 		} else {
 			throw new ApineException("Route \"$controller\" Not found", 404);
 		}

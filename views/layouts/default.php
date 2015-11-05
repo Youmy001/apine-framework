@@ -12,7 +12,7 @@
 	<title><?= ApineConfig::get('application', 'title').' - '.$this->_title ?></title>
 
 	<!-- Bootstrap core CSS -->
-	<link href="<?= ApineURLHelper::resource('resources/public/css/bootstrap.min.css'); ?>" rel="stylesheet">
+	<link href="<?= ApineURLHelper::resource('resources/public/css/bootstrap.min.css'); ?>" rel="stylesheet" />
 
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>

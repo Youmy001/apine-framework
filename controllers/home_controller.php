@@ -8,6 +8,8 @@ class HomeController extends ApineController {
 		$this->_view->set_view('home/index');
 		
 		$this->_view->set_response_code(200);
+		
+		//return $this->_view;
 		$this->_view->draw();
 		
 	}
@@ -18,6 +20,7 @@ class HomeController extends ApineController {
 		$this->_view->set_view('home/about');
 	
 		$this->_view->set_response_code(200);
+		
 		$this->_view->draw();
 		
 	}

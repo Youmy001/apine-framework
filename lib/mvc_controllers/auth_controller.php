@@ -27,7 +27,7 @@ class AuthController extends APIController {
 			}
 			
 			$this->_view->set_response_code(200);
-			$this->_view->draw();
+			return $this->_view;
 		} else {
 			throw new ApineException("Missing arguments", 400);
 		}

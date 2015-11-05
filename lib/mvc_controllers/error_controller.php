@@ -14,61 +14,79 @@ class ErrorController extends Controller {
 	
 	public function badrequest ($a_exception = null) {
 	
-		$this->custom(400, 'Bad Request', $a_exception);
+		return $this->custom(400, ApineAppTranslator::translate('errors', '400'), $a_exception);
 	
 	}
 	
 	public function unauthorized ($a_exception = null) {
 	
-		$this->custom(401, 'Unauthorized', $a_exception);
+		return $this->custom(401, ApineAppTranslator::translate('errors', '401'), $a_exception);
 	
 	}
 	
 	public function forbidden ($a_exception = null) {
 	
-		$this->custom(403, 'Forbidden', $a_exception);
+		return $this->custom(403, ApineAppTranslator::translate('errors', '403'), $a_exception);
 	
 	}
 	
 	public function notfound ($a_exception = null) {
 		
-		$this->custom(404, 'Not Found', $a_exception);
+		return $this->custom(404, ApineAppTranslator::translate('errors', '404'), $a_exception);
 		
 	}
 	
 	public function methodnotallowed ($a_exception = null) {
 	
-		$this->custom(405, 'Method Not Allowed', $a_exception);
+		return $this->custom(405, ApineAppTranslator::translate('errors', '405'), $a_exception);
+	
+	}
+	
+	public function notacceptable ($a_exception = null) {
+	
+		return $this->custom(406, ApineAppTranslator::translate('errors', '406'), $a_exception);
 	
 	}
 	
 	public function gone ($a_exception = null) {
 		
-		$this->custom(410, 'Gone', $a_exception);
+		return $this->custom(410, ApineAppTranslator::translate('errors', '410'), $a_exception);
 		
 	}
 	
 	public function teapot ($a_exception = null) {
 	
-		$this->custom(418, 'I\'m a teapot', $a_exception);
+		return $this->custom(418, ApineAppTranslator::translate('errors', '418'), $a_exception);
 	
 	}
 	
 	public function server ($a_exception = null) {
 		
-		$this->custom(500, 'Internal Server Error', $a_exception);
+		return $this->custom(500, ApineAppTranslator::translate('errors', '500'), $a_exception);
 		
 	}
 	
 	public function notimplemented ($a_exception = null) {
 	
-		$this->custom(501, 'Not Implemented', $a_exception);
+		return $this->custom(501, ApineAppTranslator::translate('errors', '501'), $a_exception);
+	
+	}
+	
+	public function badgateway ($a_exception = null) {
+	
+		return $this->custom(502, ApineAppTranslator::translate('errors', '502'), $a_exception);
 	
 	}
 	
 	public function unavailable ($a_exception = null) {
 	
-		$this->custom(503, 'Service Unavailable', $a_exception);
+		return $this->custom(503, ApineAppTranslator::translate('errors', '503'), $a_exception);
+	
+	}
+	
+	public function gatewaytimeout ($a_exception = null) {
+	
+		return $this->custom(504, ApineAppTranslator::translate('errors', '504'), $a_exception);
 	
 	}
 	
@@ -84,7 +102,7 @@ class ErrorController extends Controller {
 			$this->_view->set_view('error/error');
 		}
 		
-		if ($a_exception !== null) {
+		if ($a_exception !== null && !is_array($a_exception)) {
 			$this->_view->set_param('file', $a_exception->getFile());
 			$this->_view->set_param('line', $a_exception->getLine());
 			$this->_view->set_param('trace', $a_exception->getTraceAsString());
@@ -96,7 +114,7 @@ class ErrorController extends Controller {
 			$this->_view->set_response_code(500);
 		}
 		
-		$this->_view->draw();
+		return $this->_view;
 		
 	}
 	
@@ -118,6 +136,9 @@ class ErrorController extends Controller {
 			case '405':
 				$return = 'methodnotallowed';
 				break;
+			case '406':
+				$return = 'notacceptable';
+				break;
 			case '410':
 				$return = 'gone';
 				break;
@@ -130,8 +151,14 @@ class ErrorController extends Controller {
 			case '501':
 				$return = 'notimplemented';
 				break;
+			case '502':
+				$return = 'badgateway';
+				break;
 			case '503':
 				$return = 'unavailable';
+				break;
+			case '504':
+				$return = 'gatewaytimeout';
 				break;
 			default:
 				$return = false;
@@ -149,11 +176,14 @@ class ErrorController extends Controller {
 			case '403':
 			case '404':
 			case '405':
+			case '406':
 			case '410':
 			case '418':
 			case '500':
 			case '501':
+			case '502':
 			case '503':
+			case '504':
 				return true;
 			default:
 				return false;

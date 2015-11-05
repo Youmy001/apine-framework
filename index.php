@@ -35,26 +35,25 @@ ini_set('session.gc_maxlifetime', 604800);
 try {
 	// Make sure application runs with a valid execution mode
 	if (ApineConfig::get('runtime', 'mode') != 'development' && ApineConfig::get('runtime', 'mode') != 'production') {
-		throw new ApineException("Invalid Execution Mode \"".ApineConfig::get('runtime', 'mode')."\"", 418);
+		throw new ApineException('Invalid Execution Mode \"'.ApineConfig::get('runtime', 'mode').'"', 418);
 	}
 	
 	// Analyse and execute user request
 	// This framework has to possible ways to handle user requests :
 	//   - A RESTfull API
 	//   - A regular Web Application
-	/*if (Request::is_api_call()) {
-		// TODO RESTful Implementation
-		throw new ApineException("RESTful API call not implemented yet", 501);
-	} else {*/
-		if (!ApineRequest::is_api_call()) {
-			$request = (isset(ApineRequest::get()['request'])) ? ApineRequest::get()['request'] : '/index';
-		} else {
-			$request = ApineRequest::get()['request'];
-		}
-		
-		$route = ApineRouter::route($request);
-		ApineRouter::execute($route->controller, $route->action, $route->args);
-	//}
+	if (!ApineRequest::is_api_call()) {
+		$request = (!empty(ApineRequest::get()['request'])) ? ApineRequest::get()['request'] : '/index';
+	} else {
+		$request = ApineRequest::get()['request'];
+	}
+	
+	$route = ApineRouter::route($request);
+	$view = ApineRouter::execute($route->controller, $route->action, $route->args);
+	
+	if(!is_null($view) && is_object($view) && get_parent_class($view) == 'ApineView') {
+		$view->draw();
+	}
 	
 } catch (ApineException $e) {
 	// Handle application errors
@@ -62,14 +61,17 @@ try {
 	
 	if (ApineConfig::get('runtime', 'mode') != 'development'){
 		if ($error_name = $error->method_for_code($e->getCode())) {
-			$error->$error_name();
+			$view = $error->$error_name();
 		} else {
-			$error->server();
+			$view = $error->server();
 		}
 	} else {
-		$error->custom($e->getCode(), $e->getMessage(), $e);
+		$view = $error->custom($e->getCode(), $e->getMessage(), $e);
 	}
+	
+	$view->draw();
 } catch (Exception $e) {
 	$error = new ErrorController();
-	$error->custom(500, $e->getMessage(), $e);
+	$view = $error->custom(500, $e->getMessage(), $e);
+	$view->draw();
 }

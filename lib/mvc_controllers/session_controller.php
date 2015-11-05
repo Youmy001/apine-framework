@@ -1,4 +1,5 @@
 <?php
+load_module('email');
 
 class SessionController extends Controller {
 	
@@ -55,7 +56,7 @@ class SessionController extends Controller {
 		//$this->_view->set_title('Login');
 		$this->_view->set_view('session/login');
 		$this->_view->set_response_code(200);
-		$this->_view->draw();
+		return $this->_view;
 		
 	}
 	
@@ -109,7 +110,7 @@ class SessionController extends Controller {
 					
 					// Verify both passwords are identical
 					if (($pwd === $pwdconfirm)) {
-						$encoded_pwd = ApineEncryption::hash_password($pwd, $user);
+						$encoded_pwd = ApineEncryption::hash_password($pwd);
 					} else {
 						throw new Exception("3"); // Wrong password
 					}
@@ -158,24 +159,19 @@ class SessionController extends Controller {
 				
 				switch ($e->getMessage()) {
 					case 7:
-						//$message='The email address is already taken.';
 						$message = ApineAppTranslator::translate('errors', 'register_taken_email');
 						break;
 					case 4:
-						//$message='The username is already taken by an user.';
 						$message = ApineAppTranslator::translate('errors', 'register_taken_username');
 						break;
 					case 3:
-						//$message='The password does not match the confirmation.';
 						$message = ApineAppTranslator::translate('errors', 'register_invalid_password');
 						break;
 					case 2:
-						//$message='The email address is not valid.';
 						$message = ApineAppTranslator::translate('errors', 'register_invalid_email');
 						break;
 					case 0:
 					default:
-						//$message='An unknown error occured when sending data to the server. Please try again later.';
 						$message = ApineAppTranslator::translate('errors', 'form_invalid');
 				}
 				
@@ -189,11 +185,40 @@ class SessionController extends Controller {
 		//$this->_view->set_title("Sign In");
 		$this->_view->set_view('session/register');
 		$this->_view->set_response_code(200);
-		$this->_view->draw();
+		return $this->_view;
 		
 	}
 	
-	public function recovery ($params) {
+	public function restore ($params) {
+		
+		if (!ApineSession::is_logged_in()){
+			try {
+				if (ApineRequest::is_post()) {
+					
+					if (isset($params['action'])) {
+						if ($params['action'] == 'code') {
+							$action = "code";
+						} else if ($params['action'] == 'reset') {
+							$action = "restore";
+						}
+					} else {
+						throw new ApineException('Bad Request', 400);
+					}
+				} else {
+					if (count($params) == 1) {
+						$action = "reset";
+					} else {
+						$action = "index";
+					}
+				}
+			
+				return ApineRouter::execute('restore', $action, $params);
+			} catch (Exception $e) {
+				throw new ApineException($e->getMessage(), $e->getCode(), $e);
+			}
+		} else {
+			throw new ApineException('Forbidden', 403);
+		}
 		
 	}
 	
@@ -203,7 +228,7 @@ class SessionController extends Controller {
 		$this->_view->set_title('API Instructions');
 		$this->_view->set_view('session/api');
 		
-		$this->_view->draw();
+		$this->_view;
 	
 	}
 }

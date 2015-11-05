@@ -11,7 +11,7 @@ class ApineUserTokenFactory extends ApineEntityFactory {
 		
 		// $id_sql = (new Database())
 		$database = new ApineDatabase();
-		$id_sql = $database->select("SELECT `id` FROM `apine_api_users_tokens` WHERE `id`=$a_user_id");
+		$id_sql = $database->select("SELECT `id` FROM `apine_api_users_tokens` WHERE `id` = $a_user_id");
 		
 		if ($id_sql) {
 			return true;
@@ -25,7 +25,7 @@ class ApineUserTokenFactory extends ApineEntityFactory {
 	
 		// $id_sql = (new Database())
 		$database = new ApineDatabase();
-		$id_sql = $database->select("SELECT `id` FROM `apine_api_users_tokens` WHERE `token`=$a_token");
+		$id_sql = $database->select("SELECT `id` FROM `apine_api_users_tokens` WHERE `token` = '$a_token'");
 	
 		if ($id_sql) {
 			return true;
@@ -55,7 +55,7 @@ class ApineUserTokenFactory extends ApineEntityFactory {
 	public static function create_by_id ($a_id) {
 
 		$database = new ApineDatabase();
-		$user_sql_id = $database->prepare('SELECT `id` FROM `apine_api_users_tokens` WHERE `id`=?');
+		$user_sql_id = $database->prepare('SELECT `id` FROM `apine_api_users_tokens` WHERE `id` = ?');
 		$ar_user_sql = $database->execute(array(
 						$a_id
 		), $user_sql_id);
@@ -73,7 +73,7 @@ class ApineUserTokenFactory extends ApineEntityFactory {
 	public static function create_by_token ($a_token) {
 		
 		$database = new ApineDatabase();
-		$user_sql_id = $database->prepare('SELECT `id` FROM `apine_api_users_tokens` WHERE `token`=?');
+		$user_sql_id = $database->prepare('SELECT `id` FROM `apine_api_users_tokens` WHERE `token` = ?');
 		$ar_user_sql = $database->execute(array(
 						$a_token
 		), $user_sql_id);
