@@ -58,6 +58,7 @@
 	},
 	"restore": {
 		"title": "Réinitialiser un mot de passe",
+		"alt_title": "Demande de réinitialisation de mot de passe",
 		"username": "Nom d'utilisateur",
 		"email": "Courriel",
 		"password": "Nouveau mot de passe",

@@ -44,7 +44,12 @@ try {
 	//   - A RESTfull API
 	//   - A regular Web Application
 	if (!ApineRequest::is_api_call()) {
-		$request = (!empty(ApineRequest::get()['request'])) ? ApineRequest::get()['request'] : '/index';
+		if (!empty(ApineRequest::get()['request']) && ApineRequest::get()['request'] != '/') {
+			$request = ApineRequest::get()['request'];
+		} else {
+			$request = '/index';
+		}
+		//$request = (!empty(ApineRequest::get()['request'])) ? ApineRequest::get()['request'] : '/index';
 	} else {
 		$request = ApineRequest::get()['request'];
 	}

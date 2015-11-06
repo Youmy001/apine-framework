@@ -10,11 +10,11 @@
 			<?php 	if ($this->_params->get_item('error_code') == 200) :?>
 			<div class="alert alert-block alert-success" style="margin:0;border-radius:0;">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
-				<h4><strong><?= ApineAppTranslator::translate('form','success'); ?></strong></h4>
+				<h4><strong><span class="glyphicon glyphicon-ok"></span>&nbsp;<?= ApineAppTranslator::translate('form','success'); ?></strong></h4>
 			<?php else :?>
 			<div class="alert alert-block alert-warning" style="margin:0;border-radius:0;">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
-				<h4><strong><?= ApineAppTranslator::translate('form','warning'); ?></strong></h4>
+				<h4><strong><span class="glyphicon glyphicon-warning-sign"></span>&nbsp;<?= ApineAppTranslator::translate('form','warning'); ?></strong></h4>
 			<?php endif;?>
 				<span><?php echo $this->_params->get_item('error_message'); ?></span>
 			</div>
@@ -45,7 +45,7 @@
 					<div class="checkout">
 						<input type="hidden" name="action" value="reset" />
 						<input type="hidden" name="token" value="<?= $this->_params->get_item('token')->get_token(); ?>" />
-						<button type="submit" class="btn btn-primary pull-right"><?= ApineAppTranslator::translate('restore','submit'); ?></button>
+						<button type="submit" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-refresh"></span>&nbsp;<?= ApineAppTranslator::translate('restore','submit'); ?></button>
 					</div>
 				</form>
 			</div>

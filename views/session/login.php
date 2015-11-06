@@ -10,11 +10,11 @@
 			<?php 	if ($this->_params->get_item('error_code') == 200) :?>
 			<div class="alert alert-block alert-success" style="margin:0;border-radius:0;">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
-				<h4><strong><?= ApineAppTranslator::translate('form','success'); ?></strong></h4>
+				<h4><strong><span class="glyphicon glyphicon-ok"></span>&nbsp;<?= ApineAppTranslator::translate('form','success'); ?></strong></h4>
 			<?php else :?>
 			<div class="alert alert-block alert-warning" style="margin:0;border-radius:0;">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
-				<h4><strong><?= ApineAppTranslator::translate('form','warning'); ?></strong></h4>
+				<h4><strong><span class="glyphicon glyphicon-warning-sign"></span>&nbsp;<?= ApineAppTranslator::translate('form','warning'); ?></strong></h4>
 			<?php endif;?>
 				<span><?php echo $this->_params->get_item('error_message'); ?></span>
 			</div>
@@ -36,7 +36,7 @@
 						<label>
 							<input type="checkbox" name="perm" value="on"> <?= ApineAppTranslator::translate('login','remember'); ?>
 						</label>
-						<button type="submit" class="btn btn-primary pull-right"><?= ApineAppTranslator::translate('login','submit'); ?></button>
+						<button type="submit" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-log-in"></span> <?= ApineAppTranslator::translate('login','submit'); ?></button>
 					</div>
 					<a href="<?= ApineURLHelper::path("login/restore");?>"><?= ApineAppTranslator::translate('login','forgot'); ?></a>
 				</form>

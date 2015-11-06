@@ -58,6 +58,7 @@
 	},
 	"restore": {
 		"title": "Reset Password",
+		"alt_title": "Password Reset Request",
 		"username": "Username",
 		"email": "Email Address",
 		"password": "New Password",

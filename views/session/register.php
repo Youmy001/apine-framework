@@ -9,7 +9,7 @@
 			<?php if ($this->_params->get_item('error_code')) :?>
 			<div class="alert alert-block alert-warning" style="margin:0;border-radius:0;">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
-				<h4><strong><?= ApineAppTranslator::translate('form','warning'); ?></strong></h4>
+				<h4><strong><span class="glyphicon glyphicon-warning-sign"></span>&nbsp;<?= ApineAppTranslator::translate('form','warning'); ?></strong></h4>
 				<span><?php echo $this->_params->get_item('error_message'); ?></span>
 			</div>
 			<?php endif;?>
@@ -32,7 +32,7 @@
 						<label class="control-label"><?= ApineAppTranslator::translate('register','email'); ?></label>
 						<input class="form-control" type="email" name="email" placeholder="example@example.com"/>
 					</div>
-					<button type="submit" class="btn btn-primary pull-right"><?= ApineAppTranslator::translate('register','submit'); ?></button>
+					<button type="submit" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-check"></span> <?= ApineAppTranslator::translate('register','submit'); ?></button>
 				</form>
 			</div>
 		</div>

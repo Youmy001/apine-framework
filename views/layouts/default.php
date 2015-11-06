@@ -47,13 +47,13 @@
 				</ul>
 				<?php if(!ApineSession::is_logged_in()){?>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="<?= ApineURLHelper::path('login',true);?>"><?= ApineAppTranslator::translate('menu','login') ?></a></li>
-					<li><a href="<?= ApineURLHelper::path('register',true);?>"><?= ApineAppTranslator::translate('menu','register') ?></a></li>
+					<li><a href="<?= ApineURLHelper::path('login',true);?>"><span class="glyphicon glyphicon-log-in"></span> <?= ApineAppTranslator::translate('menu','login') ?></a></li>
+					<li><a href="<?= ApineURLHelper::path('register',true);?>"><span class="glyphicon glyphicon-check"></span> <?= ApineAppTranslator::translate('menu','register') ?></a></li>
 				</ul>
 				<?php }else{?>
 				<ul class="nav navbar-nav navbar-right">
 					<p class="navbar-text"><?= ApineAppTranslator::translate('menu','signed_in') ?> <?= ApineSession::get_user()->get_username() ?> (<i><?= ((int)ApineSession::get_session_type()===APINE_SESSION_ADMIN)?'Admin':'User' ?></i>)</p>
-					<li><a href="<?= ApineURLHelper::path('logout',true) ?>"><?= ApineAppTranslator::translate('menu','logout') ?></a></li>
+					<li><a href="<?= ApineURLHelper::path('logout',true) ?>"><span class="glyphicon glyphicon-log-out"></span> <?= ApineAppTranslator::translate('menu','logout') ?></a></li>
 				</ul>
 				<?php } ?>
 			</div>
