@@ -6,7 +6,6 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
-load_module('PHPMailer/PHPMailerAutoload.php');
 
 /**
  * Prepare and send an Email message
@@ -27,6 +26,10 @@ class ApineEmailMessage {
 	 * ApineEmailMessage class' constructor
 	 */
 	public function __construct() {
+		
+		if (!class_exists('PHPMailer')) {
+			throw new ApineException('PHPMailer not found. Please add "PHPMailer/PHPMailer" to your Commposer installation.', 500);
+		}
 
 		$this->mail = new PHPMailer();
 		$this->mail->CharSet = 'utf-8';
@@ -42,11 +45,22 @@ class ApineEmailMessage {
 		$this->mail->SMTPSecure = Config::get('mail', 'protocol');
 		$this->mail->Port = Config::get('mail', 'port');
 		
-		$this->mail->From = Config::get('mail', 'sender_address');
-		$this->mail->FromName = Config::get('mail', 'sender_name');
+		//$this->mail->From = Config::get('mail', 'sender_address');
+		//$this->mail->FromName = Config::get('mail', 'sender_name');
+		$this->mail->setFrom(Config::get('mail', 'sender_address'), Config::get('mail', 'sender_name'));
 		// $this->mail->WordWrap = 50; // Max word lenght
 		$this->mail->isHTML(true);
 	
+	}
+	
+	public function set_sender($a_address, $a_name = null) {
+		
+		if (filter_var($a_address, FILTER_VALIDATE_EMAIL)) {
+			$this->mail->setFrom($a_address, $a_name);
+		} else {
+			throw new ApineException('Invalid Email Format', 500);
+		}
+		
 	}
 
 	/**
@@ -86,10 +100,13 @@ class ApineEmailMessage {
 	 * Set a reply address
 	 * 
 	 * @param string $a_reply
+	 * @param string $a_name
 	 */
-	public function set_reply_address ($a_reply) {
+	public function add_reply_address ($a_reply, $a_name = null) {
 	
-		$this->mail->addReplyTo($a_reply, $a_reply);
+		if (filter_var($a_reply, FILTER_VALIDATE_EMAIL)) {
+			$this->mail->addReplyTo($a_reply, $a_name);
+		}
 	
 	}
 	
