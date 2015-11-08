@@ -40,20 +40,15 @@ class SessionController extends Controller {
 					}
 				}
 				
-				//$message = 'Either the the username/email or the password is not valid. Please try again later.';
 				$message = ApineAppTranslator::translate('errors', 'login_invalid_username');
 			} catch (Exception $e) {
-				//var_dump($e);
-				//$message = 'An unknown error occured when sending data to the server. Please try again later.';
 				$message = ApineAppTranslator::translate('errors', 'form_invalid');
 			}
-			
-			$this->_view->set_param('error_code',true);
+			$this->_view->set_param('error_code', 500);
 			$this->_view->set_param('error_message', $message);
 		}
 		
 		$this->_view->set_title(ApineAppTranslator::translate('login', 'title'));
-		//$this->_view->set_title('Login');
 		$this->_view->set_view('session/login');
 		$this->_view->set_response_code(200);
 		return $this->_view;
