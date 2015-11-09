@@ -47,7 +47,7 @@ final class ApineAPIRouter implements ApineRouterInterface {
 			if (!isset($route)) {
 				throw new ApineException("Route \"$controller\" not Found", 404);
 			}
-			
+			;
 			return $route;
 			
 		} catch (Exception $e) {
@@ -65,8 +65,8 @@ final class ApineAPIRouter implements ApineRouterInterface {
 		try {
 			$maj_controller = ucfirst($controller) . 'Controller';
 			$route = false;
-				
-			if (class_exists($maj_controller) && in_array('APIActions', class_implements($maj_controller))) {
+			
+			if (class_exists($maj_controller) && in_array('ApineAPIActions', class_implements($maj_controller))) {
 				$route = true;
 			}else if (file_exists('controllers/' . $controller . '_controller.php')) {
 				require_once('controllers/' . $controller . '_controller.php');
@@ -91,7 +91,7 @@ final class ApineAPIRouter implements ApineRouterInterface {
 	 */
 	public function execute ($controller, $method, $args = null) {
 		
-		if (self::check_route("/$controller")) {
+		if (self::check_route("/$controller/$method")) {
 			$maj_controller = ucfirst($controller) . 'Controller';
 			$controller = new $maj_controller();
 			return $controller->$method($args);

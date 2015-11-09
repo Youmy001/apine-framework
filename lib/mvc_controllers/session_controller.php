@@ -169,7 +169,6 @@ class SessionController extends Controller {
 		}
 		
 		$this->_view->set_title(ApineAppTranslator::translate('register', 'title'));
-		//$this->_view->set_title("Sign In");
 		$this->_view->set_view('session/register');
 		$this->_view->set_response_code(200);
 		return $this->_view;
@@ -215,7 +214,7 @@ class SessionController extends Controller {
 		$this->_view->set_title('API Instructions');
 		$this->_view->set_view('session/api');
 		
-		$this->_view;
+		return $this->_view;
 	
 	}
 }

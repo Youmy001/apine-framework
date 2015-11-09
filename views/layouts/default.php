@@ -37,23 +37,28 @@
 						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="<?= ApineURLHelper::path('home',true) ?>"><?= ApineConfig::get('application', 'title') ?></a>
+				<a class="navbar-brand" href="<?= ApineURLHelper::path('home', APINE_PROTOCOL_HTTP) ?>"><?= ApineConfig::get('application', 'title') ?></a>
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li><a href="<?= ApineURLHelper::path('home',true) ?>"><?= ApineAppTranslator::translate('menu','home') ?></a></li>
-					<li><a href="<?= ApineURLHelper::path('about',true) ?>"><?= ApineAppTranslator::translate('menu','about') ?></a></li>
-					<li><a href="<?= ApineURLHelper::path('contact',true) ?>"><?= ApineAppTranslator::translate('menu','contact') ?></a></li>
+					<li><a href="<?= ApineURLHelper::path('home', APINE_PROTOCOL_HTTP) ?>"><?= ApineAppTranslator::translate('menu','home') ?></a></li>
+					<li><a href="<?= ApineURLHelper::path('about', APINE_PROTOCOL_HTTP) ?>"><?= ApineAppTranslator::translate('menu','about') ?></a></li>
+					<li><a href="<?= ApineURLHelper::path('contact', APINE_PROTOCOL_HTTP) ?>"><?= ApineAppTranslator::translate('menu','contact') ?></a></li>
 				</ul>
 				<?php if(!ApineSession::is_logged_in()){?>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="<?= ApineURLHelper::path('login',true);?>"><span class="glyphicon glyphicon-log-in"></span> <?= ApineAppTranslator::translate('menu','login') ?></a></li>
-					<li><a href="<?= ApineURLHelper::path('register',true);?>"><span class="glyphicon glyphicon-check"></span> <?= ApineAppTranslator::translate('menu','register') ?></a></li>
+					<?php if (ApineConfig::get('runtime', 'secure_session') === 'yes') {?>
+					<li><a href="<?= ApineURLHelper::path('login', APINE_PROTOCOL_HTTPS);?>"><span class="glyphicon glyphicon-log-in"></span> <?= ApineAppTranslator::translate('menu','login') ?></a></li>
+					<li><a href="<?= ApineURLHelper::path('register', APINE_PROTOCOL_HTTPS);?>"><span class="glyphicon glyphicon-check"></span> <?= ApineAppTranslator::translate('menu','register') ?></a></li>
+					<?php } else {?>
+					<li><a href="<?= ApineURLHelper::path('login');?>"><span class="glyphicon glyphicon-log-in"></span> <?= ApineAppTranslator::translate('menu','login') ?></a></li>
+					<li><a href="<?= ApineURLHelper::path('register');?>"><span class="glyphicon glyphicon-check"></span> <?= ApineAppTranslator::translate('menu','register') ?></a></li>
+					<?php }?>
 				</ul>
 				<?php }else{?>
 				<ul class="nav navbar-nav navbar-right">
 					<p class="navbar-text"><?= ApineAppTranslator::translate('menu','signed_in') ?> <?= ApineSession::get_user()->get_username() ?> (<i><?= ((int)ApineSession::get_session_type()===APINE_SESSION_ADMIN)?'Admin':'User' ?></i>)</p>
-					<li><a href="<?= ApineURLHelper::path('logout',true) ?>"><span class="glyphicon glyphicon-log-out"></span> <?= ApineAppTranslator::translate('menu','logout') ?></a></li>
+					<li><a href="<?= ApineURLHelper::path('logout') ?>"><span class="glyphicon glyphicon-log-out"></span> <?= ApineAppTranslator::translate('menu','logout') ?></a></li>
 				</ul>
 				<?php } ?>
 			</div>

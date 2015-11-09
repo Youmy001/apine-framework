@@ -20,7 +20,7 @@
 			</div>
 			<?php endif;?>
 			<div class="panel-body">
-				<form id="content" action="<?= ApineURLHelper::path("login/restore",false);?>"
+				<form id="content" action="<?= ApineURLHelper::path("login/restore");?>"
 					method="post">
 					<div class="form-group">
 						<label class="control-label"><?= ApineAppTranslator::translate('restore','username'); ?></label>
