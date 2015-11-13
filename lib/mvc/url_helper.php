@@ -7,6 +7,10 @@
  * @copyright 2015 Tommy Teasdale
  */
 
+/**
+ * #@+
+ * Constants
+ */
 define('APINE_PROTOCOL_HTTP', 0);
 define('APINE_PROTOCOL_HTTPS', 1);
 define('APINE_PROTOCOL_DEFAULT', 2);
@@ -19,56 +23,64 @@ define('APINE_PROTOCOL_DEFAULT', 2);
  */
 final class ApineURLHelper {
 	
+	/**
+	 * Instance of the URL Writer
+	 * Singleton Implementation
+	 *
+	 * @var ApineURLHelper
+	 */
 	private static $_instance;
 	
 	/**
 	 * Server Domain Name
+	 * 
 	 * @var string
 	 */
 	private $session_server;
 	
 	/**
 	 * Path on the server
+	 * 
 	 * @var string
 	 */
 	private $session_server_path;
 	
 	/**
 	 * Script's path on the server
+	 * 
 	 * @var string
 	 */
 	private $session_current_path;
 	
 	/**
 	 * Script's name
+	 * 
 	 * @var string
 	 */
 	private $session_current;
 	
 	/**
 	 * Main Server's Domain Name
+	 * 
 	 * @var string
 	 */
 	private $main_session_server;
 	
 	/**
 	 * Construct the URL Writer helper
+	 * 
 	 * Extract string from server configuration
 	 */
 	private function __construct() {
 		
 		// Set server address
-		//$protocol = (ApineRequest::is_https())?'https://':'http://';
-		//$this->session_server = $protocol . ApineRequest::server()['SERVER_NAME'];
 		$this->session_server = ApineRequest::server()['SERVER_NAME'];
 		$ar_domain = explode('.', ApineRequest::server()['SERVER_NAME']);
 		
 		if (count($ar_domain) >= 3) {
 			$start = strlen($ar_domain[0]) + 1;
-			//$this->main_session_server = $protocol . substr(ApineRequest::server()['SERVER_NAME'], $start);
 			$this->main_session_server = substr(ApineRequest::server()['SERVER_NAME'], $start);
 		} else {
-			//$this->main_session_server = $protocol . ApineRequest::server()['SERVER_NAME'];
 			$this->main_session_server = ApineRequest::server()['SERVER_NAME'];
 		}
 		
@@ -78,10 +90,8 @@ final class ApineURLHelper {
 		}
 		
 		// Set script name
-		//$this->session_current = $protocol . ApineRequest::server()['SERVER_NAME'] . ApineRequest::server()['PHP_SELF'];
 		$this->session_current = ApineRequest::server()['SERVER_NAME'] . ApineRequest::server()['PHP_SELF'];
 		// Set script path
-		//$this->session_current_path = $protocol . ApineRequest::server()['SERVER_NAME'] . dirname(ApineRequest::server()['PHP_SELF']);
 		$this->session_current_path = ApineRequest::server()['SERVER_NAME'] . dirname(ApineRequest::server()['PHP_SELF']);
 		// Set server path
 		$this->session_server_path = realpath(dirname(dirname(__FILE__)) . '/..');
@@ -92,7 +102,7 @@ final class ApineURLHelper {
 	 * Singleton design pattern implementation
 	 *
 	 * @static
-	 * @return URL_Helper
+	 * @return ApineURLHelper
 	 */
 	public static function get_instance() {
 		
@@ -104,6 +114,12 @@ final class ApineURLHelper {
 		
 	}
 	
+	/**
+	 * Select protocol to use
+	 * 
+	 * @param integer $param
+	 * @return string
+	 */
 	private static function protocol ($param) {
 		
 		if (ApineConfig::get('runtime', 'secure_session') === 'yes' && ApineSession::is_logged_in()) {
@@ -130,8 +146,11 @@ final class ApineURLHelper {
 	 * Append a path to the current absolute path
 	 * 
 	 * @param string $base
+	 * 			Base url
 	 * @param string $path
 	 *        String to append
+	 * @param integer $protocol
+	 *        Protocol to append to the path
 	 * @return string
 	 */
 	private static function write_url ($base, $path, $protocol) {
@@ -160,8 +179,8 @@ final class ApineURLHelper {
 	 * 
 	 * @param string $path
 	 *        String to append
-	 * @param boolean $add_arg
-	 *        Whether to add language argument to path
+	 * @param integer $protocol
+	 *        Protocol to append to the path
 	 * @return string
 	 */
 	public static function path($path, $protocol = APINE_PROTOCOL_DEFAULT) {
@@ -176,8 +195,8 @@ final class ApineURLHelper {
 	 * 
 	 * @param string $path
 	 *        String to append
-	 * @param boolean $add_arg
-	 *        Whether to add language argument to path
+	 * @param integer $protocol
+	 *        Protocol to append to the path
 	 * @return string
 	 */
 	public static function main_path($path, $protocol = APINE_PROTOCOL_DEFAULT) {
@@ -192,8 +211,8 @@ final class ApineURLHelper {
 	 * 
 	 * @param string $path
 	 *        String to append
-	 * @param string $add_arg
-	 *        Whether to add language argument to path
+	 * @param integer $protocol
+	 *        Protocol to append to the path
 	 * @return string
 	 */
 	public static function relative_path($path, $protocol = APINE_PROTOCOL_DEFAULT) {

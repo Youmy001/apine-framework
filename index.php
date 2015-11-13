@@ -46,12 +46,16 @@ try {
 	if (!ApineRequest::is_api_call()) {
 		if (!empty(ApineRequest::get()['request']) && ApineRequest::get()['request'] != '/') {
 			$request = ApineRequest::get()['request'];
-		} else {
+		} else{
 			$request = '/index';
 		}
 		//$request = (!empty(ApineRequest::get()['request'])) ? ApineRequest::get()['request'] : '/index';
 	} else {
-		$request = ApineRequest::get()['request'];
+		if (ApineConfig::get('runtime', 'use_api') == 'yes') {
+			$request = ApineRequest::get()['request'];
+		} else {
+			throw new ApineException('RESTful API call is not implemented', 501);
+		}
 	}
 	
 	$route = ApineRouter::route($request);

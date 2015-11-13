@@ -12,16 +12,8 @@
  * Constants
  */
 define('APINE_SESSION_ADMIN', 77);
-// Website administrators.
-// Can access to everything. Can try new features before any one.
 define('APINE_SESSION_USER', 65);
-// Regular users. Can publish posts, videos, drawings and sound,
-// comment blog articles and other posts.
-// Can't access ACP.
-// Can access to a limited set of options in UCP.
 define('APINE_SESSION_GUEST', 40);
-// Can't access ACP or UCP at all. Can only view content.
-// Can also subscribe or register to newsletter.
 
 /**
  * Abstraction for session management using the strategy pattern

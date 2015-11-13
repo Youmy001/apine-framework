@@ -269,10 +269,10 @@ class ApineUserToken extends ApineEntityModel {
 			$this->load();
 		}
 		
-		if (get_class($a_user) == 'ApineUser' || class_parents('ApineUser')) {
-			$this->user = $a_user;
-		} else if (is_integer($a_user) && ApineUserFactory::is_id_exist($a_user)){
+		if (is_numeric($a_user) && ApineUserFactory::is_id_exist($a_user)) {
 			$this->user = ApineUserFactory::create_by_id($a_user);
+		} else if (get_class($a_user) == 'ApineUser' || class_parents('ApineUser')) {
+			$this->user = $a_user;
 		} else {
 			return false;
 		}
@@ -305,6 +305,7 @@ class ApineUserToken extends ApineEntityModel {
 		if (!is_null($this->id)) {
 			$this->user = ApineUserFactory::create_by_id($this->_get_field('user_id'));
 			$this->token = $this->_get_field('token');
+			$this->origin = $this->_get_field('origin');
 			$this->creation_date = $this->_get_field('creation_date');
 			$this->last_access_date = $this->_get_field('last_access_date');
 			$this->disabled = (bool) $this->_get_field('disabled');

@@ -51,11 +51,18 @@ final class ApineAPISession implements ApineSessionInterface{
 		}
 		
 		if (isset(ApineRequest::get_request_headers()['Authorization'])) {
+			
+			$autorization_string = ApineRequest::get_request_headers()['Authorization'];
+			$authorization_array = explode(':', $autorization_string);
+			$name = $authorization_array[0];
+			$token = $authorization_array[1];
+			$referer = isset(ApineRequest::server()['HTTP_REFERER']) ? ApineRequest::server()['HTTP_REFERER'] : '';
+			$agent = isset(ApineRequest::server()['HTTP_USER_AGENT']) ? ApineRequest::server()['HTTP_USER_AGENT'] : '';
 		
 			$token_id = ApineUserTokenFactory::authentication($name, $token, $this->token_lifespan);
 			$token = ApineUserTokenFactory::create_by_id($token_id);
 			
-			if ($token_id && $token->get_origin() == ApineRequest::server()['HTTP_REFERER'].ApineRequest::server()['HTTP_USER_AGENT']) {
+			if ($token_id && $token->get_origin() == $referer.$agent) {
 				$this->logged_in = true;
 				$this->token = $token;
 				$this->session_type = $this->token->get_user()->get_type();
@@ -176,7 +183,7 @@ final class ApineAPISession implements ApineSessionInterface{
 		
 		if (!$this->is_logged_in()) {
 			if ((ApineUserFactory::is_name_exist($a_user_name) || ApineUserFactory::is_email_exist($a_user_name))) {
-				$encode_pass = ApineEncryption::hash_password($password);
+				$encode_pass = ApineEncryption::hash_password($a_password);
 			} else {
 				return false;
 			}
@@ -184,11 +191,15 @@ final class ApineAPISession implements ApineSessionInterface{
 			$user_id = ApineUserFactory::authentication($a_user_name, $encode_pass);
 			
 			if ($user_id) {
+				$referer = isset(ApineRequest::server()['HTTP_REFERER']) ? ApineRequest::server()['HTTP_REFERER'] : '';
+				$agent = isset(ApineRequest::server()['HTTP_USER_AGENT']) ? ApineRequest::server()['HTTP_USER_AGENT'] : '';
 				$creation_time = time();
 				$new_user_token = new ApineUserToken();
 				$new_user_token->set_user($user_id);
 				$new_user_token->set_token(ApineEncryption::hash_api_user_token($a_user_name, $a_password, $creation_time));
+				$new_user_token->set_origin($referer.$agent);
 				$new_user_token->set_creation_date($creation_time);
+				$new_user_token->save();
 				
 				$this->token = $new_user_token;
 				$this->set_session_type($this->token->get_user()->get_type());
@@ -215,7 +226,7 @@ final class ApineAPISession implements ApineSessionInterface{
 	 */
 	public function logout () {
 		
-		if (!$this->is_logged_in()) {
+		if ($this->is_logged_in()) {
 			$this->token->disable();
 			$this->token->save();
 			$return = true;

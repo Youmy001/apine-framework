@@ -100,7 +100,6 @@ final class ApineWebSession implements ApineSessionInterface {
 			$this->logged_in = true;
 			$this->user_id = $_SESSION['ID'];
 			$this->session_type = ApineUserFactory::create_by_id($this->user_id)->get_type();
-			// die("test");
 		} else {
 			$this->logged_in = false;
 		}

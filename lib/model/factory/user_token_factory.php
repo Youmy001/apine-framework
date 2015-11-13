@@ -53,7 +53,7 @@ class ApineUserTokenFactory extends ApineEntityFactory {
 	}
 
 	public static function create_by_id ($a_id) {
-
+		
 		$database = new ApineDatabase();
 		$user_sql_id = $database->prepare('SELECT `id` FROM `apine_api_users_tokens` WHERE `id` = ?');
 		$ar_user_sql = $database->execute(array(
@@ -93,7 +93,7 @@ class ApineUserTokenFactory extends ApineEntityFactory {
 		$user = ApineUserFactory::create_by_name($a_name);
 
 		$database = new ApineDatabase();
-		$token_statement_id = $database->prepare('SELECT `id` FROM `apine_api_users_tokens` WHERE `id_user` = ? AND `token` = ? AND `last_access_date` > ? AND `disabled` = false');
+		$token_statement_id = $database->prepare('SELECT `id` FROM `apine_api_users_tokens` WHERE `user_id` = ? AND `token` = ? AND `last_access_date` > ? AND `disabled` = false');
 		$ar_token = $database->execute(array(
 						$user->get_id(),
 						$a_token,
@@ -107,7 +107,7 @@ class ApineUserTokenFactory extends ApineEntityFactory {
 			$return = false;
 		}
 		
-		return $connect;
+		return $return;
 	
 	}
 

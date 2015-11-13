@@ -88,9 +88,9 @@ final class ApineEncryption {
 	 */
 	public static function hash_api_user_token ($a_username, $a_clear_password, $a_date) {
 		
-		$encrypt_pass = self::encrypt($a_password);
+		$encrypt_pass = self::encrypt($a_clear_password);
 		$encrypt_user = self::encrypt($a_username.$encrypt_pass.$a_date);
-		$token = self::encrypt($encrypt_pass.$encrypt_user_date);
+		$token = self::encrypt($encrypt_pass.$encrypt_user);
 		$cipher_token = hash('sha256', base64_encode($token));
 		
 		return $cipher_token;
