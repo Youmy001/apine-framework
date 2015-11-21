@@ -7,8 +7,8 @@
 	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 	<meta name="description" content="<?= ApineConfig::get('application', 'description') ?>">
 	<meta name="author" content="<?= ApineConfig::get('application', 'author') ?>">
-	<link rel="icon" href="../../favicon.ico">
-
+	<link rel="icon" href="<?php echo URL_Helper::resource('resources/public/assets/favicon.ico');?>">
+	
 	<title><?= ApineConfig::get('application', 'title').' - '.$this->_title ?></title>
 
 	<!-- Bootstrap core CSS -->
@@ -43,7 +43,7 @@
 				<ul class="nav navbar-nav">
 					<li><a href="<?= ApineURLHelper::path('home', APINE_PROTOCOL_HTTP) ?>"><?= ApineAppTranslator::translate('menu','home') ?></a></li>
 					<li><a href="<?= ApineURLHelper::path('about', APINE_PROTOCOL_HTTP) ?>"><?= ApineAppTranslator::translate('menu','about') ?></a></li>
-					<li><a href="<?= ApineURLHelper::path('contact', APINE_PROTOCOL_HTTP) ?>"><?= ApineAppTranslator::translate('menu','contact') ?></a></li>
+					<li><a href="https://github.com/Youmy001/apine_framework/issues"><?= ApineAppTranslator::translate('menu','contact') ?></a></li>
 				</ul>
 				<?php if(!ApineSession::is_logged_in()){?>
 				<ul class="nav navbar-nav navbar-right">
