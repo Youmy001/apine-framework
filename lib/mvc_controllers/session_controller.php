@@ -1,5 +1,10 @@
 <?php
-load_module('email');
+/**
+ * Session Controller
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 
 class SessionController extends Controller {
 	

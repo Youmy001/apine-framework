@@ -2,10 +2,8 @@
 /**
  * Entity data mapper and basic entity class declaration
  * 
- * Exemple class for use of the entity data mapper
- * @author Tommy Teasdale <tteasdaleroads@gmail.com>
- * @package apine-framework
- * @subpackage entity
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
  */
 
 /**
@@ -19,6 +17,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 
 	/**
 	 * In-database entity identifier
+	 * 
 	 * @var string
 	 * @access private
 	 */
@@ -26,6 +25,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 
 	/**
 	 * Entity Table Name
+	 * 
 	 * @var string
 	 * @access private
 	 */
@@ -33,6 +33,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 
 	/**
 	 * Does Data mapper has loaded fields and values
+	 * 
 	 * @var boolean
 	 * @access private
 	 */
@@ -40,6 +41,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 
 	/**
 	 * Entity fields and values
+	 * 
 	 * @var array
 	 * @access private
 	 */
@@ -47,6 +49,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 
 	/**
 	 * Entity Modified fields and values
+	 * 
 	 * @var array
 	 * @access private
 	 */
@@ -54,6 +57,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 
 	/**
 	 * Has fields been modified
+	 * 
 	 * @var boolean
 	 */
 	private $modified;
@@ -61,10 +65,16 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 	/**
 	 * Does Entity has loaded loaded fields and
 	 * values
+	 * 
 	 * @var boolean
 	 */
 	protected $loaded = 0;
 	
+	/**
+	 * Name of the primary key field
+	 * 
+	 * @var string $load_field
+	 */
 	private $load_field;
 	
 	/**
@@ -102,6 +112,11 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 
 	}
 	
+	/**
+	 * Verify if the entity is loaded
+	 * 
+	 * @return boolean
+	 */
 	final protected function _is_loaded () {
 		
 		return (bool) $this->loaded;
@@ -110,6 +125,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 
 	/**
 	 * Fetch a field's value
+	 * 
 	 * @param string $a_field
 	 *        Field name
 	 * @return mixed
@@ -138,6 +154,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 
 	/**
 	 * Fetch all fields' names and values
+	 * 
 	 * @return array
 	 */
 	final protected function _get_all_fields () {
@@ -153,6 +170,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 
 	/**
 	 * Get entity identifier
+	 * 
 	 * @return string
 	 */
 	final protected function _get_id () {
@@ -163,6 +181,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 
 	/**
 	 * Set entity identifier
+	 * 
 	 * @param string $id
 	 *        Entity identifier
 	 */
@@ -174,6 +193,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 
 	/**
 	 * Get entity table name
+	 * 
 	 * @return string
 	 */
 	final protected function _get_table_name () {
@@ -184,6 +204,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 
 	/**
 	 * Set entity table name
+	 * 
 	 * @param string $table
 	 *        Entity table name
 	 */
@@ -195,6 +216,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 
 	/**
 	 * Prepare Data mapper for user
+	 * 
 	 * @param string $table_name
 	 *        Entity Table name
 	 * @param string $tuple_id
@@ -213,6 +235,7 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 
 	/**
 	 * Fetch all fields' names and values
+	 * 
 	 * @param string $field
 	 *        Field name
 	 * @param mixed $value
@@ -278,8 +301,6 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 				$this->id = $db->insert($this->table_name, $new_dbf);
 			}
 			
-			/*$this->field_loaded = 1;
-			 $this->loaded = 1;*/
 			$this->_load();
 		} else {
 			
@@ -312,6 +333,7 @@ class ApineEntity extends ApineEntityModel {
 
 	/**
 	 * Entity constructor
+	 * 
 	 * @param string $a_table
 	 *        The table name on which the entity
 	 *        is saved on
@@ -330,6 +352,7 @@ class ApineEntity extends ApineEntityModel {
 
 	/**
 	 * Initialize the entity
+	 * 
 	 * @param string $a_table        
 	 * @param string $a_id        
 	 */

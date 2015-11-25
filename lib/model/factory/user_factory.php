@@ -3,15 +3,16 @@
  * User Factory declaration.
  *
  * This file contains the user factory class.
- * @author Tommy Teasdale <tteasdaleroads@gmail.com>
- * @package apine-framework
- * @subpackage system
+ *  
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
  */
 
 class ApineUserFactory extends ApineEntityFactory {
 
 	/**
 	 * Verify if the identifier exists
+	 * 
 	 * @param integer $user_id        
 	 * @return boolean
 	 */
@@ -31,6 +32,7 @@ class ApineUserFactory extends ApineEntityFactory {
 
 	/**
 	 * Verify if a user uses the provided name
+	 * 
 	 * @param string $user_name
 	 *        User username
 	 * @return boolean
@@ -51,6 +53,7 @@ class ApineUserFactory extends ApineEntityFactory {
 
 	/**
 	 * Verify if a user uses the provided email address
+	 * 
 	 * @param string $user_mail
 	 *        User email address
 	 * @return boolean
@@ -69,8 +72,8 @@ class ApineUserFactory extends ApineEntityFactory {
 	
 	}
 	/**
-	 *
-	 * @return Liste
+	 * Fetch all users
+	 * @return ApineCollection
 	 */
 	public static function create_all () {
 
@@ -91,7 +94,8 @@ class ApineUserFactory extends ApineEntityFactory {
 	}
 
 	/**
-	 *
+	 * Fetch a user by id
+	 * 
 	 * @param integer $a_id
 	 *        User Identifier
 	 * @return ApineUser
@@ -117,6 +121,7 @@ class ApineUserFactory extends ApineEntityFactory {
 
 	/**
 	 * Fetch a user by username
+	 * 
 	 * @param string $name
 	 *        User username
 	 * @return ApineUser
@@ -142,10 +147,11 @@ class ApineUserFactory extends ApineEntityFactory {
 	}
 
 	/**
-	 * Fetch apine_users by permission level
+	 * Fetch users by permission level
+	 * 
 	 * @param integer $access
 	 *        User Permission level
-	 * @return Liste
+	 * @return ApineCollection
 	 */
 	public static function create_by_access_right ($access) {
 
@@ -166,10 +172,11 @@ class ApineUserFactory extends ApineEntityFactory {
 	}
 	
 	/**
-	 * Fetch apine_users by group
-	 * @param integer $access
-	 *        User Group
-	 * @return Liste
+	 * Fetch users by group id
+	 * 
+	 * @param integer $group
+	 *        User Group id
+	 * @return ApineCollection
 	 */
 	public static function create_by_group ($group) {
 	

@@ -34,8 +34,7 @@ class ApineEmailMessage {
 		$this->mail = new PHPMailer();
 		$this->mail->CharSet = 'utf-8';
 		$this->mail->Encoding = 'base64';
-		$this->mail->SMTPDebug = Config::get('runtime', 'mode') == "development" ? 3 : 0;
-		//$this->mail->SMTPDebug = 0;
+		$this->mail->SMTPDebug = Config::get('runtime', 'mode') == "development" ? NUMBER_THREE : 0;
 		
 		$this->mail->isSMTP();
 		$this->mail->Host = Config::get('mail', 'host');
@@ -45,8 +44,6 @@ class ApineEmailMessage {
 		$this->mail->SMTPSecure = Config::get('mail', 'protocol');
 		$this->mail->Port = Config::get('mail', 'port');
 		
-		//$this->mail->From = Config::get('mail', 'sender_address');
-		//$this->mail->FromName = Config::get('mail', 'sender_name');
 		$this->mail->setFrom(Config::get('mail', 'sender_address'), Config::get('mail', 'sender_name'));
 		// $this->mail->WordWrap = 50; // Max word lenght
 		$this->mail->isHTML(true);
@@ -119,6 +116,18 @@ class ApineEmailMessage {
 	public function add_recipient ($a_mail, $a_name = null) {
 		
 		$this->mail->addAddress($a_mail, $a_name);
+		
+	}
+	
+	public function add_cc ($a_mail, $a_name = null) {
+	
+		$this->mail->addCC($a_mail, $a_name);
+	
+	}
+	
+	public function add_bcc ($a_mail, $a_name = null) {
+		
+		$this->mail->addBCC($a_mail, $a_name);
 		
 	}
 

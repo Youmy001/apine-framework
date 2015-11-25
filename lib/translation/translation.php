@@ -39,7 +39,7 @@ final class ApineTranslation {
 	 * Extract string from the translation file
 	 * 
 	 * @param TranslationLanguage $a_language
-	 * @throws Exception If the file is inexistant or invalid
+	 * @throws ApineException If the file is inexistant or invalid
 	 */
 	public function __construct (ApineTranslationLanguage $a_language) {
 		
@@ -66,10 +66,10 @@ final class ApineTranslation {
 				
 				$this->entries = $array;
 			}else{
-				throw new Exception("Invalid File");
+				throw new ApineException("Invalid File");
 			}
 		}else{
-			throw new Exception("Inexistant File");
+			throw new ApineException("Inexistant File");
 		}
 		
 	}
@@ -124,6 +124,11 @@ final class ApineTranslation {
 		
 	}
 	
+	/**
+	 * Return the locale linked with the translation
+	 * 
+	 * @return ApineTranslationLocale
+	 */
 	public function get_locale () {
 		
 		return $this->locale;

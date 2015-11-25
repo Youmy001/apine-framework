@@ -170,6 +170,7 @@ final class ApineAPISession implements ApineSessionInterface{
 
 	/**
 	 * Log a user in
+	 * 
 	 * Look up in database for a matching row with a username and a
 	 * password
 	 *

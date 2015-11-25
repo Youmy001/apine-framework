@@ -66,6 +66,7 @@ class ApineUserToken extends ApineEntityModel {
 
 	/**
 	 * ApineUserToken class' constructor
+	 * 
 	 * @param integer $a_id
 	 *        Token identifier
 	 */
@@ -81,6 +82,7 @@ class ApineUserToken extends ApineEntityModel {
 
 	/**
 	 * Fetch token's identifier
+	 * 
 	 * @return integer
 	 */
 	public function get_id () {
@@ -94,6 +96,7 @@ class ApineUserToken extends ApineEntityModel {
 
 	/**
 	 * Set token's id
+	 * 
 	 * @param integer $a_id
 	 *        Token's identifier
 	 */
@@ -109,6 +112,7 @@ class ApineUserToken extends ApineEntityModel {
 
 	/**
 	 * Fetch token string
+	 * 
 	 * @return string
 	 */
 	public function get_token () {
@@ -123,8 +127,9 @@ class ApineUserToken extends ApineEntityModel {
 
 	/**
 	 * Set token string
+	 * 
 	 * @param string $a_token        
-	 * @return <string|bool>
+	 * @return string
 	 */
 	public function set_token ($a_token) {
 
@@ -145,6 +150,7 @@ class ApineUserToken extends ApineEntityModel {
 
 	/**
 	 * Fetch origin string
+	 * 
 	 * @return string
 	 */
 	public function get_origin () {
@@ -159,8 +165,9 @@ class ApineUserToken extends ApineEntityModel {
 
 	/**
 	 * Set origin string
+	 * 
 	 * @param string $a_origin
-	 * @return <string|bool>
+	 * @return string
 	 */
 	public function set_origin ($a_origin) {
 
@@ -177,6 +184,7 @@ class ApineUserToken extends ApineEntityModel {
 
 	/**
 	 * Fetch token's creation date
+	 * 
 	 * @return string
 	 */
 	public function get_creation_date () {
@@ -191,9 +199,10 @@ class ApineUserToken extends ApineEntityModel {
 
 	/**
 	 * Set token's creation date
+	 * 
 	 * @param string $a_timestamp
 	 *        Token's creation date
-	 * @return <string|bool>
+	 * @return string
 	 */
 	public function set_creation_date ($a_timestamp) {
 
@@ -216,6 +225,7 @@ class ApineUserToken extends ApineEntityModel {
 
 	/**
 	 * Fetch token's creation date
+	 * 
 	 * @return string
 	 */
 	public function get_last_access_date () {
@@ -230,9 +240,10 @@ class ApineUserToken extends ApineEntityModel {
 
 	/**
 	 * Set token's creation date
+	 * 
 	 * @param string $a_timestamp
 	 *        Token's creation date
-	 * @return <string|bool>
+	 * @return string
 	 */
 	public function set_last_access_date ($a_timestamp) {
 
@@ -253,6 +264,11 @@ class ApineUserToken extends ApineEntityModel {
 	
 	}
 	
+	/**
+	 * Fetch the token user
+	 * 
+	 * @return ApineUser
+	 */
 	public function get_user () {
 		
 		if ($this->loaded == 0) {
@@ -263,6 +279,12 @@ class ApineUserToken extends ApineEntityModel {
 		
 	}
 	
+	/**
+	 * Set the token user
+	 * 
+	 * @param <ApineUser|integer> $a_user
+	 * @return <ApineUser|integer>
+	 */
 	public function set_user ($a_user) {
 		
 		if ($this->loaded == 0) {

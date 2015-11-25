@@ -49,6 +49,12 @@ final class ApineTranslationLocale {
 	 */
 	private $language;
 	
+	/**
+	 * Instantiate the translation language
+	 *
+	 * @param ApineTranslationLanguage $a_language
+	 * @throws ApineException If the file is inexistant or invalid
+	 */
 	public function __construct(ApineTranslationLanguage $a_language) {
 		
 		$this->locale_string = array();
@@ -81,20 +87,30 @@ final class ApineTranslationLocale {
 		
 				$this->locale_entries = $array;
 			}else{
-				throw new Exception("Invalid File");
+				throw new ApineException("Invalid File");
 			}
 		}else{
-			throw new Exception("Inexistant File");
+			throw new ApineException("Inexistant File");
 		}
 		
 	}
 	
+	/**
+	 * Get locale timezone name
+	 * 
+	 * @return string
+	 */
 	public function timezone () {
 		
 		return $this->locale_entries['timezone'];
 		
 	}
 	
+	/**
+	 * Get locale timezone time offset with GMT
+	 * 
+	 * @return integer
+	 */
 	public function offset () {
 		
 		if(is_null($this->offset)) {
@@ -105,6 +121,11 @@ final class ApineTranslationLocale {
 		return $this->offset;
 	}
 	
+	/**
+	 * Get formatted locale timezone time offert with GMT
+	 * 
+	 * @return string
+	 */
 	public function iso_offset () {
 	
 		if(is_null($this->iso_offset)) {
@@ -124,18 +145,33 @@ final class ApineTranslationLocale {
 		return $this->iso_offset;
 	}
 	
+	/**
+	 * Returns date and time format string
+	 * 
+	 * @return string
+	 */
 	public function datehour () {
 		
 		return $this->locale_entries['datehour'];
 		
 	}
 	
+	/**
+	 * Returns time format string
+	 * 
+	 * @return string
+	 */
 	public function hour () {
 		
 		return $this->locale_entries['hour'];
 		
 	}
 	
+	/**
+	 * Returns date format string
+	 *
+	 * @return string
+	 */
 	public function date () {
 		
 		return $this->locale_entries['date'];

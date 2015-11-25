@@ -1,5 +1,17 @@
 <?php
+/**
+ * Application Router
+ * This script contains an abstraction of a routing helper
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 
+/**
+ * Abstraction of a request router
+ *
+ * @author Tommy Teasdale
+ */
 final class ApineRouter {
 	
 	/**

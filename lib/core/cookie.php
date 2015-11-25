@@ -9,6 +9,7 @@
 
 /**
  * Cookie writing and reading tool
+ * 
  * Tool to easily read and write cookies
  */
 final class ApineCookie {
@@ -43,7 +44,7 @@ final class ApineCookie {
 		
 		$ar_domain = explode('.', $_SERVER['SERVER_NAME']);
 		
-		if (count($ar_domain) >= 3) {
+		if (count($ar_domain) >= NUMBER_THREE) {
 			$start = strlen($ar_domain[0]) + 1;
 			$main_session_server = substr($_SERVER['SERVER_NAME'], $start);
 		} else {

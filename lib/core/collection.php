@@ -9,6 +9,7 @@
 
 /**
  * Liste Collection
+ * 
  * Traversable collection that mimics an array while providing easy to use features
  */
 final class ApineCollection implements IteratorAggregate {
@@ -114,8 +115,7 @@ final class ApineCollection implements IteratorAggregate {
 	/**
 	 * Fetch all items from the collection
 	 * 
-	 * @throws Exception If cannot fetch items from the collection
-	 * @return multitype:mixed |boolean
+	 * @return mixed
 	 */
 	public function get_all () {
 
@@ -135,8 +135,7 @@ final class ApineCollection implements IteratorAggregate {
 	/**
 	 * Retrieve the first item from the collection
 	 * 
-	 * @throws Exception If cannot fetch the item from the collection
-	 * @return mixed|boolean
+	 * @return mixed
 	 */
 	public function get_first () {
 
@@ -156,8 +155,7 @@ final class ApineCollection implements IteratorAggregate {
 	/**
 	 * Retrieve the last item from the collection
 	 * 
-	 * @throws Exception If cannot fetch the item from the collection
-	 * @return mixed|boolean
+	 * @return mixed
 	 */
 	public function get_last () {
 
@@ -177,7 +175,6 @@ final class ApineCollection implements IteratorAggregate {
 	/**
 	 * Sort item from the collection in reverse order
 	 * 
-	 * @throws Exception If cannot reverse the collection
 	 * @return boolean
 	 */
 	public function reverse () {
@@ -199,7 +196,6 @@ final class ApineCollection implements IteratorAggregate {
 	/**
 	 * Sort items from collection by key
 	 * 
-	 * @throws Exception If cannot sort the collection
 	 * @return boolean
 	 */
 	public function ksort () {
@@ -221,8 +217,7 @@ final class ApineCollection implements IteratorAggregate {
 	/**
 	 * Get an array of every item keys in the collection
 	 * 
-	 * @throws Exception If cannot fetch item keys
-	 * @return string[]|boolean
+	 * @return string[]
 	 */
 	public function keys () {
 
@@ -261,7 +256,6 @@ final class ApineCollection implements IteratorAggregate {
 	 * 
 	 * @param string $a_key
 	 *        Key to verify
-	 * @throws Exception If cannot verify the key with the collection
 	 * @return boolean
 	 */
 	public function key_exists ($a_key) {
@@ -284,7 +278,6 @@ final class ApineCollection implements IteratorAggregate {
 	 * 
 	 * @param mixed $a_value
 	 *        Value to verify
-	 * @throws Exception If the collection is empty
 	 * @return boolean
 	 */
 	public function value_exists ($a_value) {

@@ -9,6 +9,7 @@
 
 /**
  * Image File Resource Handler
+ * 
  * Manager wrapping PHP image method in an easy Object Oriented way
  */
 final class ApineFileImage extends ApineFile {
@@ -71,6 +72,11 @@ final class ApineFileImage extends ApineFile {
 
 	}
 	
+	/**
+	 * Load Image resource
+	 * 
+	 * @throws ApineException
+	 */
 	private function load () {
 		
 		if(!$this->is_valid_image()) {

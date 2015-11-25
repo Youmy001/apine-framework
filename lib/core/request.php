@@ -9,6 +9,7 @@
 
 /**
  * Request Management Tool
+ * 
  * Handle information from the request and user inputs
  */
 final class ApineRequest {
@@ -17,7 +18,7 @@ final class ApineRequest {
 	 * Instance of the Request
 	 * Singleton Implementation
 	 * 
-	 * @var Request
+	 * @var ApineRequest
 	 */
 	private static $_instance;
 	
@@ -100,6 +101,7 @@ final class ApineRequest {
 	
 	/**
 	 * Construct the Request Management handler
+	 * 
 	 * Extract information from the request and clean user inputs 
 	 */
 	private function __construct () {

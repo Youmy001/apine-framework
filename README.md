@@ -17,8 +17,8 @@ The project must be set in a virtual host that allows rewrites for routes to wor
 ## Installation
 
 1. Clone this project in your working directory : `$ git clone https://github.com/Youmy001/apine_framework.git`
-2. Setup a virtual host for the project directory that allow rewrite rules and has filter module enabled in apache for version 2.4 or greater.
-3. Import `resources/apine_sql_tables.sql` into your database. This file includes the instructions to create the tables needed by the framework.
+2. Setup a virtual host for the project directory that allow rewrite rules and optionaly has mod\_deflate and filter\_module enabled in apache for version 2.4 or greater.
+3. Import `apine_sql_tables.sql` into your database. This file includes the instructions to create the tables needed by the framework.
 4. Edit the `Database` section in `config.conf` to include connection to your database. Check the [wiki](https://github.com/Youmy001/apine_framework/wiki) for more informations on configuration.
 5. Install composer depandancies with the following command : `$ php composer.phar install`
 6. Open your browser and go to your virtual host address. APIne Framework is now ready to work.

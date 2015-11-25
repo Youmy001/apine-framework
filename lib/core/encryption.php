@@ -9,6 +9,7 @@
 
 /**
  * Encryption Tools
+ * 
  * Encrypt and decrypt string namely for security concerns
  */
 final class ApineEncryption {

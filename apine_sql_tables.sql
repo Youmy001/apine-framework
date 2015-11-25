@@ -19,24 +19,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `apine_images`
---
-
-CREATE TABLE IF NOT EXISTS `apine_images` (
-  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `user_id` int(11) DEFAULT NULL,
-  `access_id` varchar(60) NOT NULL,
-  `file` varchar(254) NOT NULL,
-  `folder` varchar(20) DEFAULT NULL,
-  `privacy` int(1) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-ALTER TABLE `apine_images`
- ADD KEY `user_id` (`user_id`);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `apine_users`
 --
 

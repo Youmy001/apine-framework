@@ -10,19 +10,21 @@
 /**
  * Abstraction of the View part of the MVC pattern implementation
  * 
- * @author Tommy Teasdale
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @abstract
  */
 abstract class ApineView {
 	
 	/**
 	 * Variables to be accessible by the view
+	 * 
 	 * @var ApineCollection
 	 */
 	protected $_params;
 	
 	/**
 	 * List of HTTP headers to apply
+	 * 
 	 * @var ApineCollection
 	 */
 	protected $_headers;
@@ -86,6 +88,7 @@ abstract class ApineView {
 	
 	/**
 	 * Set HTTP Response Code Header 
+	 * 
 	 * @param integer $code
 	 * @return integer
 	 */
@@ -175,24 +178,28 @@ final class ApineHTMLView extends ApineView {
 	
 	/**
 	 * Path to view file
+	 * 
 	 * @var string
 	 */
 	private $_view;
 	
 	/**
 	 * Page Title
+	 * 
 	 * @var string
 	 */
 	private $_title;
 	
 	/**
 	 * List of scripts to include
+	 * 
 	 * @var ApineCollection
 	 */
 	private $_scripts;
 	
 	/**
 	 * View's HTML Document
+	 * 
 	 * @var string $content
 	 */
 	private $content;
@@ -313,6 +320,8 @@ final class ApineHTMLView extends ApineView {
 	
 	/**
 	 * Return the content of the view
+	 * 
+	 * @return string
 	 */
 	public function content() {
 		
@@ -391,6 +400,8 @@ final class ApineFileView extends ApineView {
 	
 	/**
 	 * Return the content of the view
+	 * 
+	 * @return string
 	 */
 	public function content () {
 		
@@ -473,6 +484,8 @@ final class ApineJSONView extends ApineView {
 	
 	/**
 	 * Return the content of the view
+	 * 
+	 * @return string
 	 */
 	public function content () {
 		

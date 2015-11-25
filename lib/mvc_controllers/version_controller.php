@@ -1,4 +1,10 @@
 <?php
+/**
+ * Version Controller
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 
 class VersionController extends ApineAPIController {
 	

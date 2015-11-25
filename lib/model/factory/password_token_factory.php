@@ -1,9 +1,16 @@
 <?php
+/**
+ * Factory for password tokens
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 
 class ApinePasswordTokenFactory extends ApineEntityFactory {
 	
 	/**
 	 * Verify if the identifier exists
+	 * 
 	 * @param integer $user_id
 	 * @return boolean
 	 */
@@ -21,6 +28,12 @@ class ApinePasswordTokenFactory extends ApineEntityFactory {
 	
 	}
 	
+	/**
+	 * Verify if the token string exists
+	 * 
+	 * @param string $a_token
+	 * @return boolean
+	 */
 	public static function is_token_exist ($a_token) {
 	
 		// $id_sql = (new Database())
@@ -35,6 +48,12 @@ class ApinePasswordTokenFactory extends ApineEntityFactory {
 	
 	}
 	
+	/**
+	 * Verify if the token string is valid
+	 * 
+	 * @param string $a_token
+	 * @return boolean
+	 */
 	public static function is_token_valid ($a_token) {
 		
 		$expiration_gap = date("Y-m-d H:i:s", strtotime("24 hours ago"));
@@ -49,6 +68,11 @@ class ApinePasswordTokenFactory extends ApineEntityFactory {
 		
 	}
 	
+	/**
+	 * Fetch all password tokens
+	 * 
+	 * @return ApineCollection
+	 */
 	public static function create_all () {
 	
 		// $request = (new Database())
@@ -66,6 +90,12 @@ class ApinePasswordTokenFactory extends ApineEntityFactory {
 	
 	}
 	
+	/**
+	 * Fetch a password token by id
+	 * 
+	 * @param integer $a_id
+	 * @return ApinePasswordToken
+	 */
 	public static function create_by_id ($a_id) {
 	
 		$database = new ApineDatabase();
@@ -84,6 +114,12 @@ class ApinePasswordTokenFactory extends ApineEntityFactory {
 	
 	}
 	
+	/**
+	 * Fetch a password token by token string
+	 * 
+	 * @param string $a_token
+	 * @return ApinePasswordToken
+	 */
 	public static function create_by_token ($a_token) {
 	
 		$database = new ApineDatabase();

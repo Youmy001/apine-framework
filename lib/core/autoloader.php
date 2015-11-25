@@ -10,6 +10,7 @@ require_once ('lib/file/file.php');
 
 /**
  * Module Files Loading Tool
+ * 
  * Tools to load files in batches from various locations in the project's directory
  */
 final class ApineAutoload {
@@ -17,7 +18,9 @@ final class ApineAutoload {
 	/**
 	 * Loads all files recursively of a user defined module in the modules/ directory
 	 * 
-	 * @param string $module_name Name of the folder of the module
+	 * @param string $module_name 
+	 * 			Name of the folder of the module
+	 * @return boolean
 	 */
 	static function load_module ($module_name) {
 		
@@ -54,6 +57,8 @@ final class ApineAutoload {
 	
 	/**
 	 * Loads all files part of the frameworks kernel
+	 * 
+	 * @return boolean
 	 */
 	static function load_kernel() {
 		

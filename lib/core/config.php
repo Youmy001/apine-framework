@@ -18,7 +18,7 @@ final class ApineConfig {
 	 * Instance of the Config reader
 	 * Singleton Implementation
 	 * 
-	 * @var Config
+	 * @var ApineConfig
 	 */
 	private static $_instance;
 	
@@ -33,6 +33,7 @@ final class ApineConfig {
 	
 	/**
 	 * Construct the Conguration Reader handler
+	 * 
 	 * Extract string from the configuration file 
 	 */
 	private function __construct () {
@@ -49,7 +50,7 @@ final class ApineConfig {
 	 * Singleton design pattern implementation
 	 * 
 	 * @static
-	 * @return Config
+	 * @return ApineConfig
 	 */
 	public static function get_instance () {
 		
@@ -66,7 +67,7 @@ final class ApineConfig {
 	 * 
 	 * @param string $prefix
 	 * @param string $key
-	 * @return <NULL|array>
+	 * @return string
 	 */
 	public static function get ($prefix, $key) {
 		

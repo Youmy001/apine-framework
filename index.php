@@ -7,6 +7,10 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
+
+// Because number "3" is cursed. Avoid it
+define('NUMBER_THREE', floor(pi()));
+
 $before = microtime(true) * 1000;
 
 require_once('vendor/autoload.php');
@@ -14,10 +18,6 @@ require_once('lib/core/autoloader.php');
 ini_set('display_errors', 'On');
 ini_set('include_path', realpath(dirname(__FILE__)));
 ApineAutoload::load_kernel();
-//header("Content-Type: text/plain");
-//print_r(ApineAutoload::get_folder_files('lib'));
-//$after = microtime(true) * 1000;
-//die(number_format($after - $before, 1));
 
 if (ApineConfig::get('runtime', 'mode') == 'development') {
 	ini_set('display_errors', 'On');
@@ -46,10 +46,9 @@ try {
 	if (!ApineRequest::is_api_call()) {
 		if (!empty(ApineRequest::get()['request']) && ApineRequest::get()['request'] != '/') {
 			$request = ApineRequest::get()['request'];
-		} else{
+		} else {
 			$request = '/index';
 		}
-		//$request = (!empty(ApineRequest::get()['request'])) ? ApineRequest::get()['request'] : '/index';
 	} else {
 		if (ApineConfig::get('runtime', 'use_api') == 'yes') {
 			$request = ApineRequest::get()['request'];
@@ -58,9 +57,11 @@ try {
 		}
 	}
 	
+	// Fetch and execute the route
 	$route = ApineRouter::route($request);
 	$view = ApineRouter::execute($route->controller, $route->action, $route->args);
 	
+	// Draw the output is a view is returned
 	if(!is_null($view) && is_object($view) && get_parent_class($view) == 'ApineView') {
 		$view->draw();
 	}
@@ -81,6 +82,7 @@ try {
 	
 	$view->draw();
 } catch (Exception $e) {
+	// Handle PHP exceptions
 	$error = new ErrorController();
 	$view = $error->custom(500, $e->getMessage(), $e);
 	$view->draw();

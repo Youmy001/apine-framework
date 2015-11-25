@@ -111,9 +111,9 @@ final class ApineWebSession implements ApineSessionInterface {
 	 * 
 	 * @return string
 	 */
-	public static function get_session_identifier () {
+	public function get_session_identifier () {
 	
-		return self::get_instance()->php_session_id;
+		return $this->php_session_id;
 	
 	}
 

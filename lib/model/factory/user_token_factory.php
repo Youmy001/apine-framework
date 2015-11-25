@@ -1,9 +1,16 @@
 <?php
+/**
+ * Factory for api user tokens
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 
 class ApineUserTokenFactory extends ApineEntityFactory {
 
 	/**
 	 * Verify if the identifier exists
+	 * 
 	 * @param integer $user_id        
 	 * @return boolean
 	 */
@@ -21,6 +28,12 @@ class ApineUserTokenFactory extends ApineEntityFactory {
 	
 	}
 	
+	/**
+	 * Verify if the token string exists
+	 *
+	 * @param string $a_token
+	 * @return boolean
+	 */
 	public static function is_token_exist ($a_token) {
 	
 		// $id_sql = (new Database())
@@ -35,6 +48,11 @@ class ApineUserTokenFactory extends ApineEntityFactory {
 	
 	}
 
+	/**
+	 * Fetch all api user tokens
+	 * 
+	 * @return ApineCollection
+	 */
 	public static function create_all () {
 		
 		// $request = (new Database())
@@ -52,6 +70,12 @@ class ApineUserTokenFactory extends ApineEntityFactory {
 	
 	}
 
+	/**
+	 * Fetch a api user token by id
+	 * 
+	 * @param integer $a_id
+	 * @return ApineUserToken
+	 */
 	public static function create_by_id ($a_id) {
 		
 		$database = new ApineDatabase();
@@ -70,6 +94,12 @@ class ApineUserTokenFactory extends ApineEntityFactory {
 	
 	}
 	
+	/**
+	 * Fetch a api user token by token string
+	 *
+	 * @param string $a_token
+	 * @return ApineUserToken
+	 */
 	public static function create_by_token ($a_token) {
 		
 		$database = new ApineDatabase();
@@ -88,6 +118,16 @@ class ApineUserTokenFactory extends ApineEntityFactory {
 		
 	}
 
+	/**
+	 * Authentifiate a user with a combination of a user name and a
+	 * token string.
+	 *
+	 * @param string $name
+	 *        Username
+	 * @param string $a_token
+	 *        Token string
+	 * @return boolean
+	 */
 	public static function authentication ($a_name, $a_token, $a_delay) {
 		
 		$user = ApineUserFactory::create_by_name($a_name);

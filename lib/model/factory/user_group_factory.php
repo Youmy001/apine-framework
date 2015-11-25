@@ -1,7 +1,19 @@
 <?php
+/**
+ * User Group Factory Declaration
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 
 class ApineUserGroupFactory extends ApineEntityFactory {
 
+	/**
+	 * Verify if the identifier exists
+	 *
+	 * @param integer $user_id
+	 * @return boolean
+	 */
 	public static function is_id_exist ($a_id) {
 
 		//$request = (new Database())
@@ -16,6 +28,11 @@ class ApineUserGroupFactory extends ApineEntityFactory {
 
 	}
 
+	/**
+	 * Fetch all user groups
+	 * 
+	 * @return ApineCollection
+	 */
 	public static function create_all () {
 
 		//$request = (new Database())
@@ -33,6 +50,12 @@ class ApineUserGroupFactory extends ApineEntityFactory {
 
 	}
 
+	/**
+	 * Fetch a user group by id
+	 * 
+	 * @param integer $a_id
+	 * @return ApineUserGroup
+	 */
 	public static function create_by_id ($a_id) {
 
 		//$request = (new Database())
@@ -51,9 +74,10 @@ class ApineUserGroupFactory extends ApineEntityFactory {
 	
 	/**
 	 * Fetch apine_user_groups by user
+	 * 
 	 * @param integer $user
-	 *        ApineUser id
-	 * @return Liste
+	 *        User id
+	 * @return ApineCollection
 	 */
 	public static function create_by_user ($user) {
 	

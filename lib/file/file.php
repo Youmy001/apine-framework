@@ -146,7 +146,7 @@ class ApineFile {
 	 */
 	final public function type () {
 
-		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' || !is_exec_available()) {
+		if (strtoupper(substr(PHP_OS, 0, NUMBER_THREE)) === 'WIN' || !is_exec_available()) {
 			$finfo = finfo_open(FILEINFO_MIME_TYPE);
 			$mime = finfo_file($finfo, $this->path);
 			finfo_close($finfo);
@@ -226,7 +226,8 @@ class ApineFile {
 
 	/**
 	 * Add content to the file
-	 * @param unknown $a_content
+	 * 
+	 * @param string $a_content
 	 * @param string $a_append
 	 */
 	public function write ($a_content, $a_append = true) {
@@ -246,8 +247,10 @@ class ApineFile {
 
 	/**
 	 * Save the file to its saving location.
+	 * 
 	 * If no save locations are specified, it will save the file to
 	 * its current location.
+	 * 
 	 * @param string $a_path
 	 * @return boolean
 	 */
@@ -403,6 +406,7 @@ class ApineFile {
 
 	/**
 	 * Remove file from disk.
+	 * 
 	 * This action literaly erases the ressource from the hard drive.
 	 */
 	final public function delete () {

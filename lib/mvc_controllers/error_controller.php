@@ -1,4 +1,10 @@
 <?php
+/**
+ * Error Controller
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 
 class ErrorController extends Controller {
 	

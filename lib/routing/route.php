@@ -12,7 +12,7 @@
  * 
  * @author Tommy Teasdale
  */
-class ApineRoute {
+final class ApineRoute {
 	
 	/**
 	 * Name of a controller

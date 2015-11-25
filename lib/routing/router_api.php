@@ -56,6 +56,12 @@ final class ApineAPIRouter implements ApineRouterInterface {
 		
 	}
 	
+	/**
+	 * Verifies if the request string matches an existing controller
+	 *  
+	 * @param string $a_route
+	 * @return boolean
+	 */
 	private function check_route ($route) {
 		
 		$args = explode("/",$route);

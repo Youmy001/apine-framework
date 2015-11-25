@@ -1,4 +1,10 @@
 <?php
+/**
+ * Password Restoration Controller
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 
 class RestoreController extends Controller {
 	

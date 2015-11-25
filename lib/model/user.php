@@ -1,60 +1,70 @@
 <?php
 /**
  * This file contains the user class
- * @author Tommy Teasdale <tteasdaleroads@gmail.com>
- * @package apine-framework
- * @subpackage system
+ * 
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
  */
 
 /**
  * Implementation of the database representation of users
+ * 
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  */
 class ApineUser extends ApineEntityModel {
 
 	/**
 	 * User identifier in database
+	 * 
 	 * @var integer
 	 */
 	protected $id;
 
 	/**
 	 * Username
+	 * 
 	 * @var string
 	 */
 	protected $username;
 
 	/**
 	 * User encrypted password
+	 * 
 	 * @var string
 	 */
 	protected $password;
 
 	/**
 	 * User permissions
+	 * 
 	 * @var integer
 	 */
 	protected $type;
 	
 	/**
 	 * User Group
+	 * 
 	 * @var ApineCollection[ApineUserGroup]
 	 */
 	protected $group;
 
 	/**
 	 * User email address
+	 * 
 	 * @var string
 	 */
 	protected $email_address;
 
 	/**
 	 * Registration date's timestamp
+	 * 
 	 * @var string
 	 */
 	protected $register_date;
 
 	/**
 	 * User class' constructor
+	 * 
 	 * @param integer $a_id
 	 *        User identifier
 	 */
@@ -70,6 +80,7 @@ class ApineUser extends ApineEntityModel {
 
 	/**
 	 * Fetch user's identifier
+	 * 
 	 * @return integer
 	 */
 	public function get_id () {
@@ -84,6 +95,7 @@ class ApineUser extends ApineEntityModel {
 
 	/**
 	 * Set user's id
+	 * 
 	 * @param integer $a_id
 	 *        User's identifier
 	 */
@@ -97,6 +109,7 @@ class ApineUser extends ApineEntityModel {
 
 	/**
 	 * Fetch user's username
+	 * 
 	 * @return string
 	 */
 	public function get_username () {
@@ -111,6 +124,7 @@ class ApineUser extends ApineEntityModel {
 
 	/**
 	 * Set user's username
+	 * 
 	 * @param string $a_name
 	 *        User's username
 	 */
@@ -127,6 +141,7 @@ class ApineUser extends ApineEntityModel {
 
 	/**
 	 * Fetch user's encrypted password
+	 * 
 	 * @return string
 	 */
 	public function get_password () {
@@ -141,6 +156,7 @@ class ApineUser extends ApineEntityModel {
 
 	/**
 	 * Set user's encrypted password
+	 * 
 	 * @param string $a_pass
 	 *        User's password
 	 */
@@ -157,6 +173,7 @@ class ApineUser extends ApineEntityModel {
 
 	/**
 	 * Fetch user's permission level
+	 * 
 	 * @return integer
 	 */
 	public function get_type () {
@@ -171,6 +188,7 @@ class ApineUser extends ApineEntityModel {
 
 	/**
 	 * Set user's permission level
+	 * 
 	 * @param integer $a_type
 	 *        User's permissions
 	 */
@@ -187,7 +205,8 @@ class ApineUser extends ApineEntityModel {
 	
 	/**
 	 * Fetch user's group
-	 * @return ApineUserGroup
+	 * 
+	 * @return ApineCollection
 	 */
 	public function get_group () {
 	
@@ -201,7 +220,8 @@ class ApineUser extends ApineEntityModel {
 	
 	/**
 	 * Set user's group
-	 * @param <ApineCollection[ApineUserGroup]> $a_group_list
+	 * 
+	 * @param ApineCollection $a_group_list
 	 *        List of User's groups
 	 */
 	public function set_group ($a_group_list) {
@@ -230,7 +250,8 @@ class ApineUser extends ApineEntityModel {
 	
 	/**
 	 * Check if the user is member of a User Group
-	 * @param <ApineUserGroup, int> $a_group
+	 * 
+	 * @param ApineUserGroup $a_group
 	 * @return boolean
 	 */
 	public function has_group ($a_group) {
@@ -257,6 +278,7 @@ class ApineUser extends ApineEntityModel {
 
 	/**
 	 * Fetch user's email address
+	 * 
 	 * @return string
 	 */
 	public function get_email_address () {
@@ -271,6 +293,7 @@ class ApineUser extends ApineEntityModel {
 
 	/**
 	 * Set user's email address
+	 * 
 	 * @param string $a_email
 	 *        User's email address
 	 */
@@ -287,6 +310,7 @@ class ApineUser extends ApineEntityModel {
 
 	/**
 	 * Fetch user's registration date
+	 * 
 	 * @return string
 	 */
 	public function get_register_date () {
@@ -301,6 +325,7 @@ class ApineUser extends ApineEntityModel {
 
 	/**
 	 * Set user's registration date
+	 * 
 	 * @param string $a_timestamp
 	 *        User's registration date
 	 */
@@ -346,13 +371,14 @@ class ApineUser extends ApineEntityModel {
 
 		parent::_save();
 		$this->set_id($this->_get_id());
-		$this->get_group();
 		
-		$db = new ApineDatabase();
-		$db->delete('apine_users_user_groups', array("user_id" => $this->get_id()));
+		if ($this->get_group()->length() > 0) { 
+			$db = new ApineDatabase();
+			$db->delete('apine_users_user_groups', array("user_id" => $this->get_id()));
 		
-		foreach ($this->get_group() as $item) {
-			$db->insert('apine_users_user_groups', array("user_id" => $this->get_id(), "group_id" => $item->get_id()));
+			foreach ($this->get_group() as $item) {
+				$db->insert('apine_users_user_groups', array("user_id" => $this->get_id(), "group_id" => $item->get_id()));
+			}
 		}
 		
 	}

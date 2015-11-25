@@ -13,7 +13,7 @@ define('PAGINATION_TYPE_PAGER', 110);
  * @package bokaro
  * @subpackage view
  */
-class Pagination {
+class ApinePagination {
 
 	/**
 	 * Current active page
@@ -288,4 +288,5 @@ class Pagination {
 	}
 
 }
-?>
+
+class_alias('ApinePagination', 'Pagination');

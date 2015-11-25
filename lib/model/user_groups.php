@@ -4,29 +4,34 @@
  * This script contains a class to manage user groups
  *  
  * @license MIT
- * @author François Allard <allard.f@kitaiweb.ca>
  * @copyright 2015 François Allard
  */
 
 /**
  * Implementation of the database representation of users groups
+ * 
+ * @author François Allard <allard.f@kitaiweb.ca>
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  */
 class ApineUserGroup extends ApineEntityModel {
 
 	/**
 	 * User identifier in database
+	 * 
 	 * @var integer
 	 */
 	protected $id;
 	
 	/**
 	 * Group's name
+	 * 
 	 * @var string
 	 */
 	protected $name;
 	
 	/**
 	 * Group class' constructor
+	 * 
 	 * @param integer $a_id
 	 *        Group identifier
 	 */
@@ -42,6 +47,7 @@ class ApineUserGroup extends ApineEntityModel {
 	
 	/**
 	 * Fetch group's identifier
+	 * 
 	 * @return integer
 	 */
 	public function get_id () {
@@ -56,6 +62,7 @@ class ApineUserGroup extends ApineEntityModel {
 
 	/**
 	 * Set group's id
+	 * 
 	 * @param integer $a_id
 	 *        Group's identifier
 	 */
@@ -69,6 +76,7 @@ class ApineUserGroup extends ApineEntityModel {
 
 	/**
 	 * Fetch group's name
+	 * 
 	 * @return string
 	 */
 	public function get_name () {
@@ -83,6 +91,7 @@ class ApineUserGroup extends ApineEntityModel {
 	
 	/**
 	 * Set group's name
+	 * 
 	 * @param string $a_name
 	 *        Group's name
 	 */

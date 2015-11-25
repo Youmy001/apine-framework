@@ -1,4 +1,10 @@
 <?php
+/**
+ * Home Controller
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 
 class HomeController extends ApineController {
 	
@@ -9,8 +15,7 @@ class HomeController extends ApineController {
 		
 		$this->_view->set_response_code(200);
 		
-		//return $this->_view;
-		$this->_view->draw();
+		return $this->_view;
 		
 	}
 	
@@ -21,7 +26,7 @@ class HomeController extends ApineController {
 	
 		$this->_view->set_response_code(200);
 		
-		$this->_view->draw();
+		return $this->_view;
 		
 	}
 	

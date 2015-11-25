@@ -1,4 +1,10 @@
 <?php
+/**
+ * Authentication Controller
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 
 class AuthController extends APIController {
 	
@@ -35,6 +41,8 @@ class AuthController extends APIController {
 	}
 	
 	public function post ($params) {
+		
+		throw new ApineException('Not Implemented', 501);
 		
 	}
 	
