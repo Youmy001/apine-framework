@@ -34,7 +34,7 @@
 	<li><a href="https://github/Youmy001/apine_framework/wiki/Entity-Lazy-Loading">Lazy Loading on Entity Models</a></li>
 	<li><a href="https://github.com/Youmy001/apine_framework/wiki/Entity-Factories">Entity Factories</a></li>
 	<li><a href="https://github.com/Youmy001/apine_framework/wiki/Extended-Users">Extend Users</a></li>
-	<li><a href="https://github.com/Youmy001/apine_framework/wiki/Translations-and-locales">Translations & Locales</a></li>
+	<li><a href="https://github.com/Youmy001/apine_framework/wiki/Translations-and-locales">Translations &amp; Locales</a></li>
 </ul>
 
 <h2>Migration from RC1 (1.0.0-dev.8.6)</h2>
@@ -47,7 +47,7 @@
 	<li>Exception Handling;</li>
 	<li>Improved Session Handling;</li>
 	<li>Improved Routing;</li>
-	<li>Basic RESTful API;</li>
+	<li>Basic RESTful API (Login &amp; Logout);</li>
 	<li>Composer Integration;</li>
 </ul>
 

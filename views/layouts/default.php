@@ -57,7 +57,7 @@
 				</ul>
 				<?php }else{?>
 				<ul class="nav navbar-nav navbar-right">
-					<p class="navbar-text"><?= ApineAppTranslator::translate('menu','signed_in') ?> <?= ApineSession::get_user()->get_username() ?> (<i><?= ((int)ApineSession::get_session_type()===APINE_SESSION_ADMIN)?'Admin':'User' ?></i>)</p>
+					<li class="navbar-text"><?= ApineAppTranslator::translate('menu','signed_in') ?> <?= ApineSession::get_user()->get_username() ?> (<i><?= ((int)ApineSession::get_session_type()===APINE_SESSION_ADMIN)?'Admin':'User' ?></i>)</li>
 					<li><a href="<?= ApineURLHelper::path('logout') ?>"><span class="glyphicon glyphicon-log-out"></span> <?= ApineAppTranslator::translate('menu','logout') ?></a></li>
 				</ul>
 				<?php } ?>

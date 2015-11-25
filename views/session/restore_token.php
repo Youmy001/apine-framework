@@ -11,13 +11,15 @@
 			<div class="alert alert-block alert-success" style="margin:0;border-radius:0;">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
 				<h4><strong><span class="glyphicon glyphicon-ok"></span>&nbsp;<?= ApineAppTranslator::translate('form','success'); ?></strong></h4>
+				<span><?php echo $this->_params->get_item('error_message'); ?></span>
+			</div>
 			<?php else :?>
 			<div class="alert alert-block alert-warning" style="margin:0;border-radius:0;">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
 				<h4><strong><span class="glyphicon glyphicon-warning-sign"></span>&nbsp;<?= ApineAppTranslator::translate('form','warning'); ?></strong></h4>
-			<?php endif;?>
 				<span><?php echo $this->_params->get_item('error_message'); ?></span>
 			</div>
+			<?php endif;?>
 			<?php endif;?>
 			<div class="panel-body">
 				<form id="content" action="<?= ApineURLHelper::path("login/restore/".$this->_params->get_item('token')->get_token());?>"
