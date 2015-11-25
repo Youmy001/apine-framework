@@ -139,9 +139,9 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 		
 		if (isset($this->database_fields[$a_field])) {
 			if (is_timestamp($this->database_fields[$a_field]) && !is_numeric($this->database_fields[$a_field])) {
-				$locale = ApineAppTranslator::translation()->get_locale();
+				$datetime = new DateTime('now');
 				$time = strtotime($this->database_fields[$a_field]);
-				$time += $locale->offset();
+				$time += $datetime->getOffset();
 				return date("Y-m-d H:i:s", $time);
 			} else {
 				return $this->database_fields[$a_field];
@@ -248,9 +248,9 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 		}
 		
 		if (is_timestamp($value) && !is_numeric($value)) {
-			$locale = ApineAppTranslator::translation()->get_locale();
+			$datetime = new DateTime('now');
 			$time = strtotime($value);
-			$time -= $locale->offset();
+			$time -= $datetime->getOffset();
 			$value = date("Y-m-d H:i:s", $time);
 		}
 		

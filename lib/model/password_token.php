@@ -227,7 +227,7 @@ class ApinePasswordToken extends ApineEntityModel {
 	 * @see ApineEntityInterface::save()
 	 */
 	public function save () {
-	
+		
 		if (is_null($this->token) || is_null($this->user)) {
 			throw new ApineException('Missing values', 500);
 		}

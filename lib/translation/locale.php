@@ -78,7 +78,6 @@ final class ApineTranslationLocale {
 						$array[$key] = $value;
 					}
 				} else {
-					$array['timezone'] = Config::get('dateformat', "timezone");
 					$array['datehour'] = Config::get('dateformat', "datehour");
 					$array['date'] = Config::get('dateformat', "date");
 					$array['hour'] = Config::get('dateformat', "hour");
@@ -93,56 +92,6 @@ final class ApineTranslationLocale {
 			throw new ApineException("Inexistant File");
 		}
 		
-	}
-	
-	/**
-	 * Get locale timezone name
-	 * 
-	 * @return string
-	 */
-	public function timezone () {
-		
-		return $this->locale_entries['timezone'];
-		
-	}
-	
-	/**
-	 * Get locale timezone time offset with GMT
-	 * 
-	 * @return integer
-	 */
-	public function offset () {
-		
-		if(is_null($this->offset)) {
-			$datetime = new DateTime($this->locale_entries['timezone']);
-			$this->offset = $datetime->getOffset();
-		}
-		
-		return $this->offset;
-	}
-	
-	/**
-	 * Get formatted locale timezone time offert with GMT
-	 * 
-	 * @return string
-	 */
-	public function iso_offset () {
-	
-		if(is_null($this->iso_offset)) {
-			$datetime = new DateTime($this->locale_entries['timezone']);
-			$hours = intval($datetime->getOffset()/3600);
-			$minutes = sprintf("%02d", strstr($datetime->getOffset()/3600,".")*60);
-				
-			if ($hours > 0) {
-				$hours = "+".sprintf("%02d", $hours);
-			} else {
-				$hours = sprintf("%03d", $hours);
-			}
-				
-			$this->iso_offset = $hours . ":" . $minutes;
-		}
-		
-		return $this->iso_offset;
 	}
 	
 	/**

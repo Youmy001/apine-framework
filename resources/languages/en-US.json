@@ -6,7 +6,6 @@
 		"priority" : "1"
 	},
 	"locale": {
-		"timezone": "America/New_York",
 		"datehour": "m/d/Y h:i A",
 		"date" : "m/d/Y",
 		"hour" : "h:i A"

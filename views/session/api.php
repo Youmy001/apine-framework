@@ -7,11 +7,7 @@
 <ul>
 	<li>/auth
 		<ul>
-			<li>POST : User registration. Requires a POST arguments : <code>username</code>, <code>email</code>, <code>password</code> and <code>password_again</code>. For security, passwords should be encoded in base64. </li>
-		</ul>
-	</li>
-	<li>/auth/<code>username</code>
-		<ul>
+			<li>POST : User registration. Requires POST arguments : <code>username</code>, <code>email</code>, <code>password</code> and <code>password_again</code>. For security, passwords should be encoded in base64. </li>
 			<li>DELETE : User logout. Works only when a user is logged in.</li>
 		</ul>
 	</li>
@@ -21,5 +17,24 @@
 		</ul>
 	</li>
 </ul>
-<hr>
+<hr/>
 <p>There's currently no other resources available.</p>
+<hr/>
+<h3>How to perpetuate a login</h3>
+<p>Some operation may require to be logged in. In APIne Framework, this is done by providing authentication credentials within the request headers.</p>
+<ul>
+	<li>First, you need to login in order to fetch login credentials using the following request :
+	<br/>
+	<pre>GET /auth/&lt;username&gt;/&lt;base64_password&gt;</pre>
+	This should return on success a JSON array containing the username, the api token and the expiration delay of the token. The array should look that way :<br/>
+	<pre>{
+    "username": "&lt;username&gt;",
+    "token": "&lt;token&gt;",
+    "origin": "&lt;origin&gt;",
+    "expiration": "600"
+}</pre></li>
+	<li>Then, you need to add these credentials to any subsequent request until the delay since the previous request is higher than the expiration delay. If the time since the previous request is higher than the expiration delay, you'll need to fetch new credentials.<br/><br/>
+	To add the credentials, you need to add a "Authorization" header in the following fashion :<br/>
+	<pre>Authorization: &lt;username&gt;:&lt;token&gt;</pre>
+	</li>
+</ul>

@@ -68,6 +68,7 @@ final class ApineDatabase {
 			try {
 				self::$_instance = new PDO(ApineConfig::get('database', 'type').':host='.ApineConfig::get('databse', 'host').';dbname='.ApineConfig::get('database', 'dbname').';charset='.ApineConfig::get('database', 'charset'), ApineConfig::get('database', 'username'), ApineConfig::get('database', 'password'));
 				self::$_instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				self::$_instance->exec('SET time_zone = "+00:00";');
 			} catch (PDOException $e) {
 				throw new ApineDatabaseException($e->getMessage(), $e->getCode(), $e);
 			}

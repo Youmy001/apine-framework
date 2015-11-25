@@ -74,7 +74,7 @@
     <footer class="container">
     	<hr>
     	<p class="pull-left">&copy; 2015 <?= ApineConfig::get('application', 'author'); ?></p>
-    	<p class="pull-right"><?= ApineAppTranslator::translate('menu','generation').execution_time().ApineAppTranslator::translate('menu','milliseconds') ?></p>
+    	<p class="pull-right text-right"><?= ApineAppTranslator::translate('menu','generation').execution_time().ApineAppTranslator::translate('menu','milliseconds') ?></p>
     	<p class="text-center">APIne Framework&nbsp;<br class="visible-xs">ver. <?= ApineVersion::framework() ?></p>
     </footer>
 	<!-- /.container -->

@@ -219,7 +219,7 @@ final class ApineHTMLView extends ApineView {
 		$this->_title=$a_title;
 		$this->set_view($a_view);
 		
-		if ($a_layout == "default") {
+		if ($a_layout == "default" && !is_null(ApineConfig::get('application', 'default_layout'))) {
 			$a_layout = ApineConfig::get('application', 'default_layout');
 		}
 		$this->set_layout($a_layout);

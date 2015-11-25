@@ -176,6 +176,7 @@ final class ApineWebRouter implements ApineRouterInterface {
 		
 		try {
 			$maj_controller = ucfirst($controller) . 'Controller';
+			
 			if (class_exists($maj_controller) && method_exists($maj_controller, $action)) {
 				return true;
 			}else if (file_exists('controllers/' . $controller . '_controller.php')) {

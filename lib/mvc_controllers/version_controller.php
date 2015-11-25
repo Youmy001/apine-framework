@@ -6,9 +6,19 @@
  * @copyright 2015 Tommy Teasdale
  */
 
-class VersionController extends ApineAPIController {
+class VersionController extends ApineController implements ApineAPIActions {
+	
+	public function index () {
+		
+		$this->_view->set_view('version/version');
+		
+		return $this->_view;
+		
+	}
 	
 	public function get ($params) {
+		
+		$this->_view = new ApineJSONView();
 		
 		$array['application'] = array('version' => ApineVersion::application());
 		$array['apine_framework'] = array('version' => ApineVersion::framework());

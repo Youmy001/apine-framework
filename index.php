@@ -27,8 +27,20 @@ if (ApineConfig::get('runtime', 'mode') == 'development') {
 	error_reporting(E_ERROR);
 }
 
-date_default_timezone_set(ApineConfig::get('dateformat', 'timezone'));
 ini_set('session.gc_maxlifetime', 604800);
+
+if (function_exists('geoip_open')) {
+	$gi = geoip_open("lib/GeoLiteCity.dat", GEOIP_STANDARD);
+	$record = geoip_record_by_addr($gi, $_SERVER['REMOTE_ADDR']);
+	
+	if (isset($record)) {
+		date_default_timezone_set(get_time_zone($record->country_code, ($record->region!='') ? $record->region : 0));
+	} else if (!is_null(ApineConfig::get('dateformat', 'timezone'))) {
+		date_default_timezone_set(ApineConfig::get('dateformat', 'timezone'));
+	}
+} else if (!is_null(ApineConfig::get('dateformat', 'timezone'))) {
+	date_default_timezone_set(ApineConfig::get('dateformat', 'timezone'));	
+}
 
 /**
  * Main Execution

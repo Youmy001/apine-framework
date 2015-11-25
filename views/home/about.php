@@ -38,7 +38,7 @@
 </ul>
 
 <h2>Migration from RC1 (1.0.0-dev.8.6)</h2>
-<p>Since RC1, there was a lot of modifications uncompatible with older versions. We recommend to users of versions older than 1.0.0-dev.11.0 to simply reinstall APIne Framework. However, they can execute the migration script named `resources/migration-RC1.php` to automaticaly update the database and add missing entries in the configuration file. If they do so, user passwords are going to be reset to a value determined by the script. The support for the older encryption method was dropped with version 1.0.0-dev.11.0</p>
+<p>Since RC1, there was a lot of modifications uncompatible with older versions. We recommend to users of older than 1.0.0-dev.11.0 to simply reinstall APIne Framework. The support for the older encryption method was dropped with version 1.0.0-dev.11.0.</p>
 
 <h3>New features :</h3>
 <ul>

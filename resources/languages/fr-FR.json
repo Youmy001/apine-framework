@@ -9,7 +9,6 @@
 		"description": "Une application d'exemple construite avec APIne Framework et Bootstrap 3."
 	},
 	"locale": {
-		"timezone": "Europe/Paris",
 		"datehour": "d/m/Y H:i",
 		"date" : "d/m/Y",
 		"hour" : "H:i"

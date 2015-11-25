@@ -368,7 +368,7 @@ class ApineUser extends ApineEntityModel {
 	 * @see ApineEntityInterface::save()
 	 */
 	public function save () {
-
+		
 		parent::_save();
 		$this->set_id($this->_get_id());
 		
