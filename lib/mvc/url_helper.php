@@ -122,7 +122,9 @@ final class ApineURLHelper {
 	 */
 	private static function protocol ($param) {
 		
-		if (ApineConfig::get('runtime', 'secure_session') === 'yes' && ApineSession::is_logged_in()) {
+		if (ApineConfig::get('runtime', 'use_https') == 'no') {
+			$protocol = 'http://';
+		} else if (ApineConfig::get('runtime', 'secure_session') === 'yes' && ApineSession::is_logged_in()) {
 			$protocol = 'https://';
 		} else {
 			switch ($param) {
@@ -134,7 +136,7 @@ final class ApineURLHelper {
 					break;
 				case 2:
 				default:
-					$protocol = (ApineRequest::is_https())?'https://':'http://';
+					$protocol = (ApineRequest::is_https()) ? 'https://' : 'http://';
 					break;
 			}
 		}

@@ -51,6 +51,27 @@ try {
 		throw new ApineException('Invalid Execution Mode \"'.ApineConfig::get('runtime', 'mode').'"', 418);
 	}
 	
+	// Verify is the protocol is allowed
+	if (ApineRequest::is_https() && ApineConfig::get('runtime', 'use_https') == 'no') {
+		internal_redirect(ApineRequest::get()['request'], APINE_PROTOCOL_HTTP);
+	}
+	
+	// If a user is logged in; redirect to the allowed protocol
+	// Secure session only work when Use HTTPS is set to "yes"
+	if (ApineSession::is_logged_in()) {
+		if (ApineConfig::get('runtime', 'secure_session') == 'yes') {
+			if (!ApineRequest::is_https() && ApineConfig::get('runtime', 'use_https') == 'yes') {
+				internal_redirect(ApineRequest::get()['request'], APINE_PROTOCOL_HTTPS);
+			} else if (ApineRequest::is_https() && ApineConfig::get('runtime', 'use_https') == 'no') {
+				internal_redirect(ApineRequest::get()['request'], APINE_PROTOCOL_HTTP);
+			}
+		} else {
+			if (ApineRequest::is_https()) {
+				internal_redirect(ApineRequest::get()['request'], APINE_PROTOCOL_HTTP);
+			}
+		}
+	}
+	
 	// Analyse and execute user request
 	// This framework has to possible ways to handle user requests :
 	//   - A RESTfull API
@@ -77,7 +98,6 @@ try {
 	if(!is_null($view) && is_object($view) && get_parent_class($view) == 'ApineView') {
 		$view->draw();
 	}
-	
 } catch (ApineException $e) {
 	// Handle application errors
 	$error = new ErrorController();
