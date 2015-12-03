@@ -19,6 +19,7 @@ ini_set('display_errors', 'On');
 ini_set('include_path', realpath(dirname(__FILE__)));
 ApineAutoload::load_kernel();
 
+// Sets how the framework manages errors and execptions
 if (ApineConfig::get('runtime', 'mode') == 'development') {
 	ini_set('display_errors', 'On');
 	error_reporting(E_ALL | E_STRICT);
@@ -27,11 +28,15 @@ if (ApineConfig::get('runtime', 'mode') == 'development') {
 	error_reporting(E_ERROR);
 }
 
+// A session may last one week
 ini_set('session.gc_maxlifetime', 604800);
 
+// Find a timezone for the user
+// using geoip library and its local database
 if (function_exists('geoip_open')) {
 	$gi = geoip_open("lib/GeoLiteCity.dat", GEOIP_STANDARD);
 	$record = geoip_record_by_addr($gi, $_SERVER['REMOTE_ADDR']);
+	//$record = geoip_record_by_addr($gi, "24.230.215.89");
 	
 	if (isset($record)) {
 		date_default_timezone_set(get_time_zone($record->country_code, ($record->region!='') ? $record->region : 0));

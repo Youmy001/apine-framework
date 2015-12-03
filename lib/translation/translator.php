@@ -111,8 +111,36 @@ final class ApineTranslator {
 	public static function is_exist_language ($a_language_code) {
 		
 		// Verify if a language matches the parameter
-		//return self::get_instance()->languages->key_exists($a_language_code);
-		return isset(self::get_instance()->languages[$a_language_code]);
+		if (isset(self::get_instance()->languages[$a_language_code])) {
+			$return = $a_language_code;
+		} else {
+			if (strlen($a_language_code) > 2) {
+				$a_language_code = substr($a_language_code, 0, 2);
+			}
+			
+			$matches = array();
+			$translations = array();
+			
+			foreach (self::get_instance()->languages as $item) {
+				if($item->code_short == $a_language_code) {
+					$translation = new ApineTranslation($item);
+					$matches[$item->code] = $translation->get('language', 'priority');
+					$translations[$item->code] = $translation;
+				}
+			}
+			
+			if (count($matches) == 1) {
+				$found_language = reset($translations);
+				$return = $found_language->get_language()->code;
+			} else if (count($matches) > 1) {
+				arsort($matches);
+				$keys = array_keys($matches);
+				$found_language = $translations[reset($keys)];
+				$return = $found_language->get_language()->code;
+			}
+		}
+		
+		return (isset($return)) ? $return : false;
 		
 	}
 	

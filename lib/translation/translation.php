@@ -49,28 +49,22 @@ final class ApineTranslation {
 		if (file_exists($this->language->file_path)) {
 			$file = new ApineFile($this->language->file_path, true);
 			
-			if($file->extention() == "json"){
-				$content = $file->content();
-				$content = json_decode($content);
-				$array = array();
-				
-				foreach ($content as $part => $sub_content) {
-					if (is_string($sub_content)){
-						$array[$part] = $sub_content;
-					} else {
-						foreach ($sub_content as $key => $value) {
-							$array[$part][$key] = $value;
-						}
-					}
-				}
-				
-				$this->entries = $array;
-			}else{
+			if($file->extention() != "json"){
 				throw new ApineException("Invalid File");
 			}
 		}else{
 			throw new ApineException("Inexistant File");
 		}
+		
+	}
+	
+	private function load_file () {
+		
+		$file = new ApineFile($this->language->file_path, true);
+		$content = $file->content();
+		$content = json_decode($content);
+
+		$this->entries = $content;
 		
 	}
 	
@@ -83,13 +77,17 @@ final class ApineTranslation {
 	 */
 	public function get ($a_prefix, $a_key = null) {
 		
+		if (is_null($this->entries)) {
+			$this->load_file();
+		}
+		
 		$prefix = strtolower($a_prefix);
 		
 		if ($a_key != null) {
 			$key = strtolower($a_key);
-			return isset($this->entries[$prefix][$key]) ? $this->entries[$prefix][$key] : null;
+			return isset($this->entries->$prefix->$key) ? $this->entries->$prefix->$key : null;
 		} else {
-			return isset($this->entries[$prefix]) ? $this->entries[$prefix] : null;
+			return isset($this->entries->$prefix) ? $this->entries->$prefix : null;
 		}
 		
 	}
