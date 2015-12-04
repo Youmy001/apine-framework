@@ -78,7 +78,6 @@ final class ApineAPIRouter implements ApineRouterInterface {
 				require_once('controllers/' . $controller . '_controller.php');
 		
 				if (class_exists($maj_controller)) {
-					//print "Found";
 					$route = true;
 				}
 			}

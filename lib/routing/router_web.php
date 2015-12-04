@@ -40,18 +40,16 @@ final class ApineWebRouter implements ApineRouterInterface {
 		        		if ($attr->tagName == "request") {
 		        			if ($item->getAttribute('method') == $_SERVER['REQUEST_METHOD']) {
 		        				$match_route = $item->cloneNode(true);
-		        				//print "{$match_route->getElementsByTagName('request')->item(0)->nodeValue}\n";
 		        				
 		        				$controller = $match_route->getElementsByTagName('controller')->item(0)->nodeValue;
 		        				$action = $match_route->getElementsByTagName('action')->item(0)->nodeValue;
 		        				
 		        				$match = str_ireplace('/','\\/',$match_route->getElementsByTagName('request')->item(0)->nodeValue);
-		        				//$match.="(\\/(.*))?";
 		        				$match = '/^' . $match . '$/';
 		        				$replace = "/$controller/$action";
 		        				
 		        				if ($match_route->getAttribute('args') == true) {
-		        					$number_args = ($match_route->getAttribute('argsnum')!==null) ? $match_route->getAttribute('argsnum') : 1;
+		        					$number_args = (!empty($match_route->getAttribute('argsnum'))) ? $match_route->getAttribute('argsnum') : preg_match_all("/(\(.*?\))/", $match);
 		        					
 		        					for ($i = 1; $i <= $number_args; $i++) {
 		        						$replace .= "/$" . $i;
@@ -61,8 +59,6 @@ final class ApineWebRouter implements ApineRouterInterface {
 		        				if(preg_match($match, $request)){
 		        					$request = preg_replace($match, $replace, $request);
 		        					$found_route = $item->cloneNode(true);
-		        					
-		        					//print "Found\n";
 		        					break;
 		        				}
 		        			}
@@ -183,16 +179,12 @@ final class ApineWebRouter implements ApineRouterInterface {
 				require_once('controllers/' . $controller . '_controller.php');
 				
 				if (method_exists($maj_controller, $action)) {
-					//print "Found";
 					return true;
 				}
 			}
 			
 			return false;
 		} catch (Exception $e) {
-			//print "Error";
-			//self::execute('ErrorController', 'server');
-			//return false;
 			throw new ApineException($e->getMessage(), $e->getCode(), $e);
 		}
 		

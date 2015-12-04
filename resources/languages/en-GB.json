@@ -3,7 +3,7 @@
 		"code": "en-GB",
 		"shortcode": "en",
 		"name": "English",
-		"priority" : "0.8"
+		"priority" : "0.7"
 	},
 	"application": {
 		"description": "A small example application built with the APIne framework including Bootstrap 3."

@@ -75,7 +75,7 @@
 	RewriteEngine On
 	
 	RewriteCond %{REQUEST_FILENAME} -f
-	RewriteRule ^(lib/|controllers/|modules/|views/|config\.ini|\.xml|composer\.*|VERSION) - [F,L,NC]
+	RewriteRule ^(lib/|controllers/|modules/|views/|config\.ini|config_sample\.ini|\.xml|composer\.*|VERSION) - [F,L,NC]
 
 	# APIne Rules
 	RewriteCond %{REQUEST_FILENAME} !-f

@@ -50,7 +50,7 @@
        <controller>session</controller>
 		<action>restore</action>
 	</route>
-	<route args="true" argsnum="1" method="GET">
+	<route args="true" method="GET">
 		<request>/login/restore/([A-Za-z0-9]+)</request>
        <controller>session</controller>
 		<action>restore</action>
@@ -60,7 +60,7 @@
        <controller>session</controller>
 		<action>restore</action>
 	</route>
-	<route args="true" argsnum="1" method="POST">
+	<route args="true" method="POST">
 		<request>/login/restore/([A-Za-z0-9]+)</request>
        <controller>session</controller>
 		<action>restore</action>
