@@ -202,6 +202,24 @@ final class ApineWebSession implements ApineSessionInterface {
 		return $type;
 	
 	}
+	
+	public function is_session_admin () {
+	
+		return ($this->session_type == APINE_SESSION_ADMIN) ? true : false;
+	
+	}
+	
+	public function is_session_normal () {
+	
+		return ($this->session_type == APINE_SESSION_USER) ? true : false;
+	
+	}
+	
+	public function is_session_guest () {
+		
+		return ($this->session_type == APINE_SESSION_GUEST) ? true : false;
+		
+	}
 
 	/**
 	 * Log a user in

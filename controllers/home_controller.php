@@ -8,7 +8,7 @@
 
 class HomeController extends ApineController {
 	
-	public function index () {
+	public function index ($params) {
 		
 		$this->_view->set_title('Home');
 		$this->_view->set_view('home/index');

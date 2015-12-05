@@ -131,6 +131,39 @@ final class ApineSession {
 		return self::get_instance()->strategy->set_session_type($a_type);
 
 	}
+	
+	/**
+	 * Verify if the current session access level is admin
+	 * 
+	 * @return boolean
+	 */
+	public static function is_session_admin () {
+	
+		return self::get_instance()->strategy->is_session_admin();
+	
+	}
+	
+	/**
+	 * Verify if the current session access level is normal user
+	 *
+	 * @return boolean
+	 */
+	public static function is_session_normal () {
+	
+		return self::get_instance()->strategy->is_session_normal();
+	
+	}
+	
+	/**
+	 * Verify if the current session access level is guest
+	 *
+	 * @return boolean
+	 */
+	public static function is_session_guest () {
+		
+		return self::get_instance()->strategy->is_session_guest();
+		
+	}
 
 	/**
 	 * Log a user in
@@ -208,6 +241,21 @@ interface ApineSessionInterface {
 	 * @param integer $a_type
 	 */
 	public function set_session_type ($a_type);
+	
+	/**
+	 * @return boolean
+	 */
+	public function is_session_admin();
+	
+	/**
+	 * @return boolean
+	 */
+	public function is_session_normal();
+	
+	/**
+	 * @return boolean
+	 */
+	public function is_session_guest();
 	
 	/**
 	 * @param string $a_username

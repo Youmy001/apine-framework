@@ -93,6 +93,13 @@ final class ApineRequest {
 	private $api_call;
 	
 	/**
+	 * Session AJAX Call
+	 * 
+	 * @var boolean
+	 */
+	private $is_ajax;
+	
+	/**
 	 * Headers received
 	 * 
 	 * @var string[]
@@ -120,10 +127,10 @@ final class ApineRequest {
 		$this->server		= $_SERVER;
 		$this->session	= &$_SESSION;
 		
-		$_GET		= null;
-		$_POST		= null;
-		$_FILES	= null;
-		$_REQUEST	= null;
+		//$_GET		= null;
+		//$_POST		= null;
+		//$_FILES	= null;
+		//$_REQUEST	= null;
 		//$_SERVER=null;
 		
 		foreach ($this->post as $key=>$value) {
@@ -146,6 +153,8 @@ final class ApineRequest {
 		}
 		
 		$this->request_headers = apache_request_headers();
+		
+		$this->is_ajax = (isset($this->request_headers['X-Requested-With']) && $this->request_headers['X-Requested-With'] == 'XMLHttpRequest');
 		
 	}
 	
@@ -221,6 +230,17 @@ final class ApineRequest {
 		}
 		
 		return $return;
+		
+	}
+	
+	/**
+	 * Checks if the request is made from a Javascript script
+	 * 
+	 * @return boolean
+	 */
+	public static function is_ajax () {
+		
+		return self::get_instance()->is_ajax;
 		
 	}
 	
