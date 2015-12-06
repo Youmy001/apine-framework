@@ -41,7 +41,7 @@ final class ApineAPIRouter implements ApineRouterInterface {
 			$maj_controller = ucfirst($controller) . 'Controller';
 			
 			if (self::check_route($request)) {
-				$route = new ApineRoute($controller, strtolower(Request::get_request_type()), $args);
+				$route = new ApineRoute($controller, strtolower(ApineRequest::get_request_type()), $args);
 			}
 			
 			if (!isset($route)) {

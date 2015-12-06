@@ -383,6 +383,3 @@ final class ApineRequest {
 		
 	}
 }
-
-
-class_alias('ApineRequest','Request');

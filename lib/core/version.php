@@ -96,5 +96,3 @@ final class ApineVersion {
 	}
 	
 }
-
-class_alias('ApineVersion','Version');

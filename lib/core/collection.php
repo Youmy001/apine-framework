@@ -382,6 +382,3 @@ final class ApineCollection implements IteratorAggregate {
 	}
 
 }
-
-class_alias('ApineCollection', 'Liste');
-class_alias('ApineCollection', 'Collection');

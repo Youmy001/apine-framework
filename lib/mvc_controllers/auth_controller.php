@@ -6,7 +6,7 @@
  * @copyright 2015 Tommy Teasdale
  */
 
-class AuthController extends APIController {
+class AuthController extends ApineAPIController {
 	
 	public function get ($params) {
 		
@@ -75,7 +75,7 @@ class AuthController extends APIController {
 						$new_user->set_password($encoded_pwd);
 						$new_user->set_type(APINE_SESSION_USER);
 							
-						$list_group=new Liste();
+						$list_group=new ApineCollection();
 						$list_group->add_item(ApineUserGroupFactory::create_by_id(1));
 						$new_user->set_group($list_group);
 							

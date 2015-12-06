@@ -399,5 +399,3 @@ final class ApineDatabase {
 	}
 
 }
-
-class_alias('ApineDatabase','Database');

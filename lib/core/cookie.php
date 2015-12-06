@@ -55,5 +55,3 @@ final class ApineCookie {
 	
 	}
 }
-
-class_alias('ApineCookie','Cookie');

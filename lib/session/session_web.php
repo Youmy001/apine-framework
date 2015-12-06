@@ -276,7 +276,7 @@ final class ApineWebSession implements ApineSessionInterface {
 		try {
 			if ($this->is_logged_in()) {
 				$_SESSION = array();
-				Cookie::set('session', $this->php_session_id, time() - 604801);
+				ApineCookie::set('session', $this->php_session_id, time() - 604801);
 				session_destroy();
 				$this->logged_in = false;
 				$this->set_session_type(SESSION_GUEST);

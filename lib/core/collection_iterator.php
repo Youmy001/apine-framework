@@ -36,7 +36,7 @@ final class ApineCollectionIterator implements Iterator {
 	 * @param Liste $a_liste
 	 *        Instance of the collection
 	 */
-	public function __construct (Collection $a_collection) {
+	public function __construct (ApineCollection $a_collection) {
 
 		$this->_collection = $a_collection;
 		$this->_keys = $this->_collection->keys();
@@ -99,4 +99,3 @@ final class ApineCollectionIterator implements Iterator {
 	}
 
 }
-?>

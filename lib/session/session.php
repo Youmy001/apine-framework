@@ -42,7 +42,7 @@ final class ApineSession {
 	 */
 	private function __construct () {
 		
-		if (Request::is_api_call()) {
+		if (ApineRequest::is_api_call()) {
 			$this->strategy = new ApineAPISession();
 		} else {
 			$this->strategy = new ApineWebSession();

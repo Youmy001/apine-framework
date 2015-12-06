@@ -6,7 +6,7 @@
  * @copyright 2015 Tommy Teasdale
  */
 
-class ErrorController extends Controller {
+class ErrorController extends ApineController {
 	
 	public function __construct() {
 		
@@ -102,7 +102,7 @@ class ErrorController extends Controller {
 		$this->_view->set_param('message', $a_message);
 		
 		if (ApineRequest::is_api_call()) {
-			$this->_view->set_param('request', Request::get()['request']);
+			$this->_view->set_param('request', ApineRequest::get()['request']);
 		} else {
 			$this->_view->set_title($a_message);
 			$this->_view->set_view('error/error');

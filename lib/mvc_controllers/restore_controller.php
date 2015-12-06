@@ -6,7 +6,7 @@
  * @copyright 2015 Tommy Teasdale
  */
 
-class RestoreController extends Controller {
+class RestoreController extends ApineController {
 	
 	public function index () {
 		

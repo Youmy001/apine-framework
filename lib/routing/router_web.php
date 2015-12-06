@@ -112,7 +112,7 @@ final class ApineWebRouter implements ApineRouterInterface {
 		
 		// Add post arguments to args array
 		if (ApineRequest::get_request_type() != "GET") {
-			$args = array_merge($args, Request::post());
+			$args = array_merge($args, ApineRequest::post());
 		}
 		
 		if (!empty(ApineRequest::files())) {

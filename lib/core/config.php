@@ -94,5 +94,3 @@ final class ApineConfig {
 		
 	}
 }
-
-class_alias('ApineConfig','Config');

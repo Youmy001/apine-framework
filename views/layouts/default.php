@@ -7,7 +7,7 @@
 	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 	<meta name="description" content="<?= ApineConfig::get('application', 'description') ?>">
 	<meta name="author" content="<?= ApineConfig::get('application', 'author') ?>">
-	<link rel="icon" href="<?php echo URL_Helper::resource('resources/public/assets/favicon.ico');?>">
+	<link rel="icon" href="<?php echo ApineURLHelper::resource('resources/public/assets/favicon.ico');?>">
 	
 	<title><?= ApineConfig::get('application', 'title').' - '.$this->_title ?></title>
 

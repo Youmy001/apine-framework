@@ -7,7 +7,7 @@
 <ul>
 	<li>/auth
 		<ul>
-			<li>POST : User registration. Requires POST arguments : <code>username</code>, <code>email</code>, <code>password</code> and <code>password_again</code>. For security, passwords should be encoded in base64. </li>
+			<li>POST : User registration. Requires POST arguments : <code>username</code>, <code>email</code>, <code>password</code> and <code>password_confirm</code>. For security, passwords should be encoded in base64. </li>
 			<li>DELETE : User logout. Works only when a user is logged in.</li>
 		</ul>
 	</li>

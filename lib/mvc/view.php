@@ -498,8 +498,3 @@ final class ApineJSONView extends ApineView {
 	}
 	
 }
-
-class_alias('ApineView', 'View');
-class_alias('ApineHTMLView', 'HMTLView');
-class_alias('ApineFileView', 'FileView');
-class_alias('ApineJSONView', 'JSONView');

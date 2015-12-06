@@ -116,5 +116,3 @@ final class ApineEncryption {
 		
 	}
 }
-
-class_alias('ApineEncryption','Encryption');

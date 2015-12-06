@@ -6,7 +6,7 @@
  * @copyright 2015 Tommy Teasdale
  */
 
-class SessionController extends Controller {
+class SessionController extends ApineController {
 	
 	public function login ($params) {
 		
@@ -37,7 +37,7 @@ class SessionController extends Controller {
 						if (isset($redirect) && $redirect != "") {
 							header("Location: " . $redirect);
 						} else {
-							header("Location: " . URL_Helper::path(""));
+							header("Location: " . ApineURLHelper::path(""));
 							die();
 						}
 						
@@ -66,7 +66,7 @@ class SessionController extends Controller {
 			ApineSession::logout();
 		}
 		
-		header("Location: " . URL_Helper::path("login"));
+		header("Location: " . ApineURLHelper::path("login"));
 		
 	}
 	
@@ -126,7 +126,7 @@ class SessionController extends Controller {
 					$new_user->set_password($encoded_pwd);
 					$new_user->set_type(APINE_SESSION_USER);
 					
-					$list_group=new Liste();
+					$list_group=new ApineCollection();
 					$list_group->add_item(ApineUserGroupFactory::create_by_id(1));
 					$new_user->set_group($list_group);
 					
@@ -139,7 +139,7 @@ class SessionController extends Controller {
 					if (isset($redirect) && $redirect != "") {
 						header("Location: " . $redirect);
 					} else {
-						header("Location: " . URL_Helper::path("login"));
+						header("Location: " . ApineURLHelper::path("login"));
 						die();
 					}
 					

@@ -288,5 +288,3 @@ class ApinePagination {
 	}
 
 }
-
-class_alias('ApinePagination', 'Pagination');

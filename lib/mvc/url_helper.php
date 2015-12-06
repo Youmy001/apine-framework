@@ -245,5 +245,3 @@ final class ApineURLHelper {
 	
 	}
 }
-
-class_alias('ApineURLHelper','URL_Helper');

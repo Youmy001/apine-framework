@@ -152,6 +152,3 @@ final class ApineAutoload {
 	}
 	
 }
-
-
-class_alias('ApineAutoload','Autoload');
