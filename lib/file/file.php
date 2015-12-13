@@ -145,17 +145,23 @@ class ApineFile {
 	 * @return string
 	 */
 	final public function type () {
-
-		if (strtoupper(substr(PHP_OS, 0, NUMBER_THREE)) === 'WIN' || !is_exec_available()) {
-			$finfo = finfo_open(FILEINFO_MIME_TYPE);
-			$mime = finfo_file($finfo, $this->path);
-			finfo_close($finfo);
-		} else {
-			$mime = exec("file -b --mime-type '".$this->path."'");
+	
+		if (class_exists('finfo')) {
+			$finfo = new finfo(FILEINFO_MIME_TYPE);
+				
+			if (is_object($finfo)) {
+				$mime = $finfo->file($this->path);
+			}
+		} elseif (!strtoupper(substr(PHP_OS, 0, NUMBER_THREE)) === 'WIN') {
+			$filename = escapeshellcmd($filename);
+			$mime = shell_exec("file -b --mime-type '".$filename."'");
+		} elseif (is_exec_available()) {
+			$filename = escapeshellcmd($this->path);
+			$mime = exec("file -b --mime-type '".$filename."'");
 		}
-
+	
 		return $mime;
-
+	
 	}
 
 	/**
