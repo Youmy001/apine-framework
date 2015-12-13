@@ -121,7 +121,8 @@ class SessionController extends ApineController {
 					}
 					
 					// Create and populate new empty user
-					$new_user = new ApineUser();
+					$class_name = ApineUserFactory::get_user_class();
+					$new_user = new $class_name();
 					$new_user->set_username($user);
 					$new_user->set_password($encoded_pwd);
 					$new_user->set_type(APINE_SESSION_USER);

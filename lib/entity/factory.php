@@ -10,7 +10,7 @@
  * This is the implementation of the factory
  * design patern.
  */
-abstract class ApineEntityFactory {
+interface ApineEntityFactory {
 
 	/**
 	 * Procedure to fetch every rows in a factory's scope
@@ -18,7 +18,7 @@ abstract class ApineEntityFactory {
 	 * @abstract @static
 	 *
 	 */
-	abstract public static function create_all();
+	public static function create_all();
 	
 	/**
 	 * Procedure to fetch a row in a factory's scope matching provided
@@ -29,6 +29,6 @@ abstract class ApineEntityFactory {
 	 * @abstract @static
 	 *
 	*/
-	abstract public static function create_by_id($a_id);
+	public static function create_by_id($a_id);
 
 }

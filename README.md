@@ -1,9 +1,9 @@
 APIne Framework
 ================
 
-APIne is a simple to use modular MVC Framework ready for the IoT (Internet of Things). It intends to be a general purpose framework and API providing session management, authentication, routing, and DAL abstraction without including useless tools.
+APIne is a simple to use modular MVC Framework ready for the IoT (Internet of Things). It intends to be a general purpose framework and API providing session management, authentication, routing, and database abstraction without including useless tools.
 
-The most notable features include a conplete session manager (login, logout, registration and password restoration) with basic users and permissions and a database abstraction layer that prevents you to write every queries.
+The most notable features include a complete session manager (login, logout, registration and password restoration) with basic users and permissions and a database abstraction layer that prevents you to write every queries.
 
 ## Requirements
 * PHP 5.4.0 or greater
@@ -19,13 +19,14 @@ The project must be set in a virtual host that allows rewrites for routes to wor
 1. Clone this project in your working directory : `$ git clone https://github.com/Youmy001/apine_framework.git`
 2. Setup a virtual host for the project directory that allow rewrite rules and optionaly has mod\_deflate and filter\_module enabled in apache for version 2.4 or greater.
 3. Import `apine_sql_tables.sql` into your database. This file includes the instructions to create the tables needed by the framework.
-4. Edit the `Database` section in `config.conf` to include connection to your database. Check the [wiki](https://github.com/Youmy001/apine_framework/wiki) for more informations on configuration.
-5. Install composer depandancies with the following command : `$ php composer.phar install`
-6. Open your browser and go to your virtual host address. APIne Framework is now ready to work.
+4. Create a copy of `sample_config.ini` named `config.ini`.
+5. Edit the `Database` section in `config.ini` to include connection to your database. Check the [wiki](https://github.com/Youmy001/apine_framework/wiki) for more informations on configuration.
+6. Install composer depandancies with the following command : `$ php composer.phar install`
+7. Open your browser and go to your virtual host address. APIne Framework is now ready to work.
 
 ## Migration from RC1 (1.0.0-dev.8.6)
 
-Since RC1, there was a lot of modifications uncompatible with older versions. We recommend to users of older than 1.0.0-dev.11.0 to simply reinstall APIne Framework. The support for the older encryption method was dropped with version 1.0.0-dev.11.0.
+Since RC1, there was a lot of modifications uncompatible with older versions. We recommend to users of older than 1.0.0-dev.11.0 (RC2 release was 1.0.0-dev.11.8) to simply reinstall APIne Framework. The support for the older encryption method was dropped with version 1.0.0-dev.11.0.
 
 ### New Features
 * Extensible users;

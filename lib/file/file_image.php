@@ -115,7 +115,7 @@ final class ApineFileImage extends ApineFile {
 
 		$extension = $this->extension();
 
-		if (in_array($this->type(), $this::ALLOWED_MIME_TYPE) && in_array($extension, $this::ALLOWED_EXTENSIONS)) {
+		if (in_array($this->type(), $this::ALLOWED_MIME_TYPE)) {
 			return true;
 		} else {
 			return false;
@@ -335,7 +335,7 @@ final class ApineFileImage extends ApineFile {
 	 * 
 	 * @param Resource $a_image Modified Image Resource Stream
 	 */
-	public function write ($a_image = null) {
+	public function write ($a_image = null, $useless = null) {
 		
 		if(!$this->is_valid_image()) {
 			throw new ApineException("Invalid file format (" . $this->path . ")");

@@ -18,14 +18,14 @@ abstract class ApineView {
 	/**
 	 * Variables to be accessible by the view
 	 * 
-	 * @var ApineCollection
+	 * @var array
 	 */
 	protected $_params;
 	
 	/**
 	 * List of HTTP headers to apply
 	 * 
-	 * @var ApineCollection
+	 * @var array
 	 */
 	protected $_headers;
 	
@@ -34,8 +34,8 @@ abstract class ApineView {
 	 */
 	public function __construct() {
 		
-		$this->_params=new ApineCollection();
-		$this->_headers=new ApineCollection();
+		$this->_params = array();
+		$this->_headers = array();
 		
 	}
 	
@@ -53,7 +53,7 @@ abstract class ApineView {
 	 */
 	final public function set_param($a_name,$a_data) {
 		
-		$this->_params->add_item($a_data,$a_name);
+		$this->_params[$a_name] = $a_data;
 		
 	}
 	
@@ -63,9 +63,9 @@ abstract class ApineView {
 	 * @param string $a_rule
 	 * @param string $a_name
 	 */
-	final public function set_header_rule($a_rule,$a_name=null) {
+	final public function set_header_rule($a_rule,$a_value=null) {
 		
-		$this->_headers->add_item($a_name,$a_rule);
+		$this->_headers[$a_rule] = $a_value;
 		
 	}
 	
@@ -74,7 +74,7 @@ abstract class ApineView {
 	 */
 	final public function apply_headers() {
 		
-		if ($this->_headers->length()>0) {
+		if (count($this->_headers)>0) {
 			foreach ($this->_headers as $key=>$value) {
 				if ($value!=null) {
 					header("$key: $value");
@@ -193,7 +193,7 @@ final class ApineHTMLView extends ApineView {
 	/**
 	 * List of scripts to include
 	 * 
-	 * @var ApineCollection
+	 * @var array
 	 */
 	private $_scripts;
 	
@@ -214,7 +214,7 @@ final class ApineHTMLView extends ApineView {
 	public function __construct($a_title = "", $a_view = "default", $a_layout = "default") {
 		
 		parent::__construct();
-		$this->_scripts=new ApineCollection();
+		$this->_scripts = array();
 		
 		$this->_title=$a_title;
 		$this->set_view($a_view);
@@ -284,7 +284,7 @@ final class ApineHTMLView extends ApineView {
 		
 		if ($a_script!="") {
 			if (file_exists("resources/public/js/$a_script.js")) {
-				$this->_scripts->add_item(ApineURLHelper::resource("resources/public/js/$a_script.js"));
+				$this->_scripts[] = ApineURLHelper::resource("resources/public/js/$a_script.js");
 			}
 		}
 		

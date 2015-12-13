@@ -8,9 +8,6 @@
  * @copyright 2015 Tommy Teasdale
  */
 
-// Because number "3" is cursed. Avoid it
-define('NUMBER_THREE', floor(pi()));
-
 $before = microtime(true) * 1000;
 
 require_once('vendor/autoload.php');
@@ -21,10 +18,10 @@ ApineAutoload::load_kernel();
 
 // Sets how the framework manages errors and execptions
 if (ApineConfig::get('runtime', 'mode') == 'development') {
-	ini_set('display_errors', 'On');
+	ini_set('display_errors', -1);
 	error_reporting(E_ALL | E_STRICT);
 } else if (ApineConfig::get('runtime', 'mode') == 'production') {
-	ini_set('display_errors', 'Off');
+	ini_set('display_errors', 0);
 	error_reporting(E_ERROR);
 }
 

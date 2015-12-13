@@ -6,7 +6,7 @@
  * @copyright 2015 Tommy Teasdale
  */
 
-class ApinePasswordTokenFactory extends ApineEntityFactory {
+class ApinePasswordTokenFactory implements ApineEntityFactory {
 	
 	/**
 	 * Verify if the identifier exists

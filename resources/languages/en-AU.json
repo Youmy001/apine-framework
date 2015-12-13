@@ -104,7 +104,7 @@
 	},
 	"home": {
 		"title": "APIne Framework",
-		"description": "APIne is a simple to use modular MVC Framework ready for the IoT (Internet of Things). It intends to be a general purpose framework and API providing session management, authentication and DAL abstraction without including useless tools.",
+		"description": "APIne is a simple to use modular MVC Framework ready for the IoT (Internet of Things). It intends to be a general purpose framework and API providing session management, authentication and database abstraction without including useless tools.",
 		"small_one": "Use this example project as a way to quickly start any new project.",
 		"small_two": "This example shows simple views and session management."
 	}

@@ -8,7 +8,7 @@
  * @copyright 2015 Tommy Teasdale
  */
 
-class ApineUserFactory extends ApineEntityFactory {
+class ApineUserFactory implements ApineEntityFactory {
 
 	/**
 	 * Verify if the identifier exists
