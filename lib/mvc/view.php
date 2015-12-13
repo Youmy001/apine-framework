@@ -18,7 +18,7 @@ abstract class ApineView {
 	/**
 	 * Variables to be accessible by the view
 	 * 
-	 * @var array
+	 * @var ApineCollection
 	 */
 	protected $_params;
 	
@@ -34,7 +34,8 @@ abstract class ApineView {
 	 */
 	public function __construct() {
 		
-		$this->_params = array();
+		$this->_params = new ApineCollection();
+		//$this->_params = array();
 		$this->_headers = array();
 		
 	}
@@ -53,7 +54,8 @@ abstract class ApineView {
 	 */
 	final public function set_param($a_name,$a_data) {
 		
-		$this->_params[$a_name] = $a_data;
+		//$this->_params[$a_name] = $a_data;
+		$this->_params->add_item($a_data, $a_name);
 		
 	}
 	

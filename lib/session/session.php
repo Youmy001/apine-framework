@@ -176,7 +176,7 @@ final class ApineSession {
 	 */
 	public static function login ($username, $password) {
 		
-		if(func_num_args() === NUMBER_THREE) {
+		if(func_num_args() === 3) {
 			$options = func_get_arg(2);
 		} else {
 			$options = array();

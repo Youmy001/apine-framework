@@ -10,7 +10,7 @@
 
 $before = microtime(true) * 1000;
 
-require_once('vendor/autoload.php');
+//require_once('vendor/autoload.php');
 require_once('lib/core/autoloader.php');
 ini_set('display_errors', 'On');
 ini_set('include_path', realpath(dirname(__FILE__)));
@@ -27,6 +27,10 @@ if (ApineConfig::get('runtime', 'mode') == 'development') {
 
 // A session may last one week
 ini_set('session.gc_maxlifetime', 604800);
+
+if (ApineConfig::get('runtime', 'use_composer') === "yes") {
+	require_once('vendor/autoload.php');
+}
 
 // Find a timezone for the user
 // using geoip library and its local database

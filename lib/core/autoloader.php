@@ -6,7 +6,7 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
-require_once ('lib/file/file.php');
+require_once ('lib/core/utils.php');
 
 /**
  * Module Files Loading Tool
@@ -30,9 +30,7 @@ final class ApineAutoload {
 			
 			try {
 				foreach ($files as $file) {
-					$a_file = new ApineFile($file, true);
-				
-					if ($a_file->extention() === "php") {
+					if (file_extension($file) === "php") {
 						require_once $file;
 					}
 				}
@@ -42,9 +40,7 @@ final class ApineAutoload {
 				return false;
 			}
 		} else if (is_file('modules/'.$module_name)) {
-			$a_file = new ApineFile('modules/'.$module_name, true);
-				
-			if ($a_file->extention() === "php") {
+			if (file_extension('modules/' . $module_name) === "php") {
 				require_once 'modules/'.$module_name;
 			}
 			
@@ -66,10 +62,8 @@ final class ApineAutoload {
 		
 		try {
 			foreach ($files as $file) {
-				//print "$file\n";
-				$a_file = new ApineFile($file, true);
-				
-				if ($a_file->extention() === "php") {
+				//print "$file\r\n";
+				if (file_extension($file) === "php") {
 					require_once $file;
 				}
 			}

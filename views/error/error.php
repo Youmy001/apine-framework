@@ -1,9 +1,9 @@
-<h1><?= ApineAppTranslator::translate('errors', 'error') . ' ' . $this->_params['code'];?></h1>
+<h1><?= ApineAppTranslator::translate('errors', 'error') . ' ' . $this->_params->get_item('code');?></h1>
 <h2><?= $this->_params['message'];?></h2>
 
-<?php if (ApineConfig::get('runtime', 'mode') == 'development' && isset($this->_params['trace'])) { ?>
+<?php if (ApineConfig::get('runtime', 'mode') == 'development' && !is_null($this->_params->get_item('trace'))) { ?>
 <pre>
-<?= $this->_params['message'].' on '.$this->_params['file'].' ('.$this->_params['line'].")\n\n"; ?>
-<?= $this->_params['trace']; ?>
+<?= $this->_params->get_item('message').' on '.$this->_params->get_item('file').' ('.$this->_params->get_item('line').")\n\n"; ?>
+<?= $this->_params->get_item('trace'); ?>
 </pre>
 <?php }?>

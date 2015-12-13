@@ -195,4 +195,20 @@ function internal_redirect ($request, $protocol = APINE_PROTOCOL_DEFAULT) {
 	die();
 	
 }
+
+
+function file_extension ($a_file_path) {
+	
+	$name = basename($a_file_path);
+	$dot_pos = strpos($name, ".");
+	
+	if ($dot_pos > 0) {
+		$extension = substr($name, $dot_pos + 1);
+	} else {
+		$extension = $name;
+	}
+	
+	return $extension;
+	
+}
 	

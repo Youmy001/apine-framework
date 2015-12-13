@@ -77,7 +77,7 @@ final class ApineURLHelper {
 		$this->session_server = ApineRequest::server()['SERVER_NAME'];
 		$ar_domain = explode('.', ApineRequest::server()['SERVER_NAME']);
 		
-		if (count($ar_domain) >= NUMBER_THREE) {
+		if (count($ar_domain) >= 3) {
 			$start = strlen($ar_domain[0]) + 1;
 			$this->main_session_server = substr(ApineRequest::server()['SERVER_NAME'], $start);
 		} else {
