@@ -12,7 +12,7 @@ $before = microtime(true) * 1000;
 
 //require_once('vendor/autoload.php');
 require_once('lib/core/autoloader.php');
-ini_set('display_errors', 'On');
+ini_set('display_errors', -1);
 ini_set('include_path', realpath(dirname(__FILE__)));
 ApineAutoload::load_kernel();
 

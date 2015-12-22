@@ -41,8 +41,18 @@ class ApineFile {
 	 */
 	private $name;
 
+	/**
+	 * Content of the fine
+	 * 
+	 * @var string
+	 */
 	private $content;
 	
+	/**
+	 * Is the file readonly
+	 * 
+	 * @var boolean
+	 */
 	protected $readonly;
 
 	/**

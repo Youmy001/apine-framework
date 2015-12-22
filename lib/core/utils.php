@@ -196,7 +196,12 @@ function internal_redirect ($request, $protocol = APINE_PROTOCOL_DEFAULT) {
 	
 }
 
-
+/**
+ * Return the extension from a file name
+ * 
+ * @param string $a_file_path
+ * @return string
+ */
 function file_extension ($a_file_path) {
 	
 	$name = basename($a_file_path);

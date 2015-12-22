@@ -50,6 +50,13 @@ class ApineEmailMessage {
 	
 	}
 	
+	/**
+	 * Set sender information
+	 * 
+	 * @param string $a_address
+	 * @param string $a_name
+	 * @throws ApineException If invalid email address
+	 */
 	public function set_sender($a_address, $a_name = null) {
 		
 		if (filter_var($a_address, FILTER_VALIDATE_EMAIL)) {
@@ -119,12 +126,24 @@ class ApineEmailMessage {
 		
 	}
 	
+	/**
+	 * Add a CC recipient for the email
+	 * 
+	 * @param string $a_mail
+	 * @param string $a_name
+	 */
 	public function add_cc ($a_mail, $a_name = null) {
 	
 		$this->mail->addCC($a_mail, $a_name);
 	
 	}
 	
+	/**
+	 * Add a BCC recipient for the email
+	 * 
+	 * @param string $a_mail
+	 * @param string $a_name
+	 */
 	public function add_bcc ($a_mail, $a_name = null) {
 		
 		$this->mail->addBCC($a_mail, $a_name);

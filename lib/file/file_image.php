@@ -35,6 +35,11 @@ final class ApineFileImage extends ApineFile {
 	 */
 	private $image;
 	
+	/**
+	 * List of allowed extensions
+	 * 
+	 * @var array
+	 */
 	const ALLOWED_EXTENSIONS = array(
 					"jpeg",
 					"jpg",
@@ -46,6 +51,11 @@ final class ApineFileImage extends ApineFile {
 					"GIF"
 	);
 	
+	/**
+	 * List of allowed mime types
+	 * 
+	 * @var array
+	 */
 	const ALLOWED_MIME_TYPE = array(
 					"image/jpeg",
 					"image/jpg",
@@ -334,6 +344,7 @@ final class ApineFileImage extends ApineFile {
 	 * Write changes to the file
 	 * 
 	 * @param Resource $a_image Modified Image Resource Stream
+	 * @param null $useless Seriously, don't try to put anything here. It won't have any effect
 	 */
 	public function write ($a_image = null, $useless = null) {
 		

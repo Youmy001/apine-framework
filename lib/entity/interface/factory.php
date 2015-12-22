@@ -15,8 +15,7 @@ interface ApineEntityFactory {
 	/**
 	 * Procedure to fetch every rows in a factory's scope
 	 * 
-	 * @abstract @static
-	 *
+	 * @static
 	 */
 	public static function create_all();
 	
@@ -26,8 +25,7 @@ interface ApineEntityFactory {
 	 * 
 	 * @param string $a_id
 	 *        Identifier of the row to fetch
-	 * @abstract @static
-	 *
+	 * @static
 	*/
 	public static function create_by_id($a_id);
 

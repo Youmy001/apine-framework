@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS `apine_api_users_tokens` (
   `origin` varchar(256) NOT NULL,
   `creation_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_access_date` timestamp NULL,
-  `disabled` tinyint(1) NOT NULL DEFAULT 0,
+  `disabled` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `apine_api_users_tokens`

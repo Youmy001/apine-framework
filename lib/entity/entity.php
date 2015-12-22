@@ -329,6 +329,9 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 }
 
 
+/**
+ * Basic entity with no domain logic
+ */
 class ApineEntity extends ApineEntityModel {
 
 	/**
