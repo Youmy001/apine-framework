@@ -34,17 +34,17 @@ class ApineEmailMessage {
 		$this->mail = new PHPMailer();
 		$this->mail->CharSet = 'utf-8';
 		$this->mail->Encoding = 'base64';
-		$this->mail->SMTPDebug = Config::get('runtime', 'mode') == "development" ? NUMBER_THREE : 0;
+		$this->mail->SMTPDebug = ApineConfig::get('runtime', 'mode') == "development" ? 3 : 0;
 		
 		$this->mail->isSMTP();
-		$this->mail->Host = Config::get('mail', 'host');
-		$this->mail->SMTPAuth = (bool) Config::get('mail', 'smtp_auth');
-		$this->mail->Username = Config::get('mail', 'smtp_username');
-		$this->mail->Password = Config::get('mail', 'smtp_password');
-		$this->mail->SMTPSecure = Config::get('mail', 'protocol');
-		$this->mail->Port = Config::get('mail', 'port');
+		$this->mail->Host = ApineConfig::get('mail', 'host');
+		$this->mail->SMTPAuth = (bool) ApineConfig::get('mail', 'smtp_auth');
+		$this->mail->Username = ApineConfig::get('mail', 'smtp_username');
+		$this->mail->Password = ApineConfig::get('mail', 'smtp_password');
+		$this->mail->SMTPSecure = ApineConfig::get('mail', 'protocol');
+		$this->mail->Port = ApineConfig::get('mail', 'port');
 		
-		$this->mail->setFrom(Config::get('mail', 'sender_address'), Config::get('mail', 'sender_name'));
+		$this->mail->setFrom(ApineConfig::get('mail', 'sender_address'), ApineConfig::get('mail', 'sender_name'));
 		// $this->mail->WordWrap = 50; // Max word lenght
 		$this->mail->isHTML(true);
 	

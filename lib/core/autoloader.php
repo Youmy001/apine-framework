@@ -84,7 +84,7 @@ final class ApineAutoload {
 	 * 			Weither the directory is the base folder for the recursive parser.
 	 * @return mixed[] List of all files in a directory
 	 */
-	public static function get_folder_files ($directory, $root = true) {
+	private static function get_folder_files ($directory, $root = true) {
 		
 		$array = array();
 		

@@ -117,8 +117,7 @@ final class ApineRequest {
 		$this->request_port	= $_SERVER['SERVER_PORT'];
 		$this->request_ssl	= (isset($_SERVER['HTTPS'])&&!empty($_SERVER['HTTPS']));
 		$this->api_call		= (isset($_GET['api']) && $_GET['api']==='api');
-		
-		//print_r($_FILES);
+		$this->is_ajax 		= (isset($this->request_headers['X-Requested-With']) && $this->request_headers['X-Requested-With'] == 'XMLHttpRequest');
 		
 		$this->get 		= $_GET;
 		$this->post		= $_POST;
@@ -126,12 +125,6 @@ final class ApineRequest {
 		$this->request	= $_REQUEST;
 		$this->server		= $_SERVER;
 		$this->session	= &$_SESSION;
-		
-		//$_GET		= null;
-		//$_POST		= null;
-		//$_FILES	= null;
-		//$_REQUEST	= null;
-		//$_SERVER=null;
 		
 		foreach ($this->post as $key=>$value) {
 			$this->post[$key] = filter_var($value,FILTER_SANITIZE_SPECIAL_CHARS);
@@ -153,8 +146,6 @@ final class ApineRequest {
 		}
 		
 		$this->request_headers = apache_request_headers();
-		
-		$this->is_ajax = (isset($this->request_headers['X-Requested-With']) && $this->request_headers['X-Requested-With'] == 'XMLHttpRequest');
 		
 	}
 	

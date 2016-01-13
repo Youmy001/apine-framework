@@ -76,6 +76,40 @@ final class ApineWebRouter implements ApineRouterInterface {
 		
 	}
 	
+	private function json_route ($request) {
+		
+		$file = fopen('routes.json', 'r');
+		$content = fread($file, filesize('routes.json'));
+		$routes = json_decode($content);
+		
+		foreach ($routes as $item => $values) {
+			$method = $_SERVER['REQUEST_METHOD'];
+			
+			if ($values->$method) {
+				$route = $values->$method;
+				$match = str_ireplace('/','\\/', $item);
+				$match = '/^' . $match . '$/';
+				$replace = "/{$route->controller}/{$route->action}";
+				
+				if ($route->args === true) {
+					$number_args = (!empty($route->argsnum)) ? $route->argsnum : preg_match_all("/(\(.*?\))/", $match);
+				
+					for ($i = 1; $i <= $number_args; $i++) {
+						$replace .= "/$" . $i;
+					}
+				}
+				
+				if(preg_match($match, $request)){
+					$request = preg_replace($match, $replace, $request);
+					break;
+				}
+			}
+		}
+		
+		return $request;
+		
+	}
+	
 	/**
 	 * 
 	 * {@inheritDoc}
@@ -87,12 +121,25 @@ final class ApineWebRouter implements ApineRouterInterface {
 		
 		$vanilla_route_found = self::check_route($request);
 		
+		if(!ApineConfig::get('runtime', 'route_format')) {
+			throw new ApineException('I\'m a teapot', 418);
+		}
+		
 		if (!$vanilla_route_found) {
-			$xml_request = self::xml_route($request);
+			switch (ApineConfig::get('runtime', 'route_format')) {
+				case 'json':
+					$file_request = self::json_route($request);
+					break;
+				case 'xml':
+					$file_request = self::xml_route($request);
+					break;
+				default:
+					$file_request = null;
+			}
 			
-			if ($xml_request !== $request) {
+			if ($file_request !== $request) {
 				$route_found = true;
-				$request = $xml_request;
+				$request = $file_request;
 			}
 		}
 		
@@ -104,10 +151,12 @@ final class ApineWebRouter implements ApineRouterInterface {
 			array_shift($args);
 			$action = $args[0];
 			array_shift($args);
-		} else {
+		} else if (count($args) > 0) {
 			$controller = $args[0];
 			array_shift($args);
 			$action = "index";
+		} else {
+			$controller = null;
 		}
 		
 		// Add post arguments to args array

@@ -44,7 +44,7 @@ final class ApineCookie {
 		
 		$ar_domain = explode('.', $_SERVER['SERVER_NAME']);
 		
-		if (count($ar_domain) >= NUMBER_THREE) {
+		if (count($ar_domain) >= 3) {
 			$start = strlen($ar_domain[0]) + 1;
 			$main_session_server = substr($_SERVER['SERVER_NAME'], $start);
 		} else {

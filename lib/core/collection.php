@@ -180,11 +180,6 @@ final class ApineCollection implements IteratorAggregate {
 	public function reverse () {
 
 		try {
-			
-			if ($this->length() == 0) {
-				throw new Exception();
-			}
-			
 			$this->items = array_reverse($this->items);
 			return true;
 		} catch (Exception $e) {
@@ -200,17 +195,7 @@ final class ApineCollection implements IteratorAggregate {
 	 */
 	public function ksort () {
 
-		try {
-			
-			if ($this->length() == 0) {
-				throw new Exception();
-			}
-			
-			ksort($this->items);
-			return true;
-		} catch (Exception $e) {
-			return false;
-		}
+		return ksort($this->items);
 	
 	}
 
@@ -221,21 +206,10 @@ final class ApineCollection implements IteratorAggregate {
 	 */
 	public function keys () {
 
-		try {
-			
-			if($this->items != null) {
-				
-				if ($this->length() == 0) {
-					throw new Exception();
-				}
-				
-				return array_keys($this->items);
-			} else {
-				return array();
-			}
-			
-		} catch (Exception $e) {
-			return false;
+		if($this->items != null && $this->length() != 0) {
+			return array_keys($this->items);
+		} else {
+			return array();
 		}
 	
 	}
@@ -283,87 +257,24 @@ final class ApineCollection implements IteratorAggregate {
 	public function value_exists ($a_value) {
 		
 		try {
-			if ($this->length() == 0) {
-				throw new Exception();
+			if (is_object($a_value) && get_parent_class($a_value) === 'ApineEntityModel') {
+				$a_value->load();
 			}
 			
-			$match_index = null;
-			$match_item = false;
+			$serial_value = serialize($a_value);
 			
 			// Cycle through every items in the Liste
 			foreach ($this->items as $key => $item) {
-				// The value tested must be of a compatible type
-				// against the matching value in the Liste
-				
-				// Scalar types (string, integer, float and boolean) can be
-				// converted easily from one to another thus can be tested together
-				if ((is_string($a_value) || is_numeric($a_value)) &&
-					(is_string($item) || is_numeric($item))) {
-						
-					if ($a_value == $item) {
-						$match_index = $key;
-						$match_item = true;
-					}
-					
-				// If fact boolean are kind of fucked up and
-				// need a seperate condition
-				} else if (is_bool($a_value) && is_bool($item)) {
-					
-					if ($a_value === $item) {
-						$match_index = $key;
-						$match_item = true;
-					}
-					
-				// Arrays are kind of special and therefore need
-				// a different test method
-				} else if (is_array($a_value) && is_array($item)) {
-					$diff = array_diff($a_value,$item);
-					
-					if (count($diff) == 0) {
-						$match_index = $key;
-						$match_item = true;
-					}
-					
-				// Objects are aggregations of the two previous
-				} else if ((is_object($a_value) && is_object($item)) && (get_class($a_value) && get_class($item))) {
-					
-					// If objects are both ApineEntity we can easily
-					// check for their ids
-					if (get_parent_class($a_value) == "ApineEntityModel" &&
-						get_parent_class($item) == "ApineEntityModel") {
-						
-						if ($a_value->get_id() == $item->get_id()) {
-							$match_index = $key;
-							$match_item = true;
-						}
-						
-					} else {
-						$array_value = (array) $a_value;
-						$array_item = (array) $item;
-						
-						if (get_class($a_value) == get_class($item)) {
-							//$diff = array_diff_assoc($array_value, $array_item);
-							$diff = array_map('unserialize', array_diff(array_map('serialize', $array_value), array_map('serialize', $array_item)));
-							
-							if (count($diff) == 0) {
-								$match_index = $key;
-								$match_item = true;
-							}
-							
-						}
-						
-					}
-					
+				if (is_object($item) && get_parent_class($item) === 'ApineEntityModel') {
+					$item->load();
 				}
 				
-				// If a match is found get out of the loop 
-				if ($match_item===true) {
-					break;
+				if ($serial_value === serialize($item)) {
+					return true;
 				}
-				
 			}
 			
-			return $match_item;
+			return false;
 		} catch(Exception $e) {
 			return false;
 		}

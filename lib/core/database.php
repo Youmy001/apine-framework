@@ -97,7 +97,7 @@ final class ApineDatabase {
 			
 			if ($result) {
 				
-				while ($data = $result->fetch()) {
+				while ($data = $result->fetch(PDO::FETCH_ASSOC)) {
 					$arResult[] = $data;
 				}
 				
@@ -206,7 +206,12 @@ final class ApineDatabase {
 		
 		//print $query;
 		try {
-			self::$_instance->exec($query);
+			
+			if (count($arValues) > 0) {
+				self::$_instance->exec($query);
+			} else {
+				throw new ApineException('Missing Values', 500);
+			}
 		} catch (PDOException $e) {
 			throw new ApineDatabaseException($e->getMessage(), $e->getCode(), $e);
 		}

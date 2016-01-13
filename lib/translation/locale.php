@@ -78,10 +78,10 @@ final class ApineTranslationLocale {
 						$array[$key] = $value;
 					}
 				} else {
-					$array['datehour'] = Config::get('dateformat', "datehour");
-					$array['date'] = Config::get('dateformat', "date");
-					$array['hour'] = Config::get('dateformat', "hour");
-					$array['year'] = Config::get('dateformat', "year");
+					$array['datehour'] = ApineConfig::get('dateformat', "datehour");
+					$array['date'] = ApineConfig::get('dateformat', "date");
+					$array['hour'] = ApineConfig::get('dateformat', "hour");
+					$array['year'] = ApineConfig::get('dateformat', "year");
 				}
 		
 				$this->locale_entries = $array;

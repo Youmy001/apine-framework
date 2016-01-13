@@ -42,7 +42,7 @@ abstract class ApineController {
 	 */
 	public function __construct() {
 		
-		if (ApineRequest::is_api_call()) {
+		if (ApineRequest::is_api_call() || ApineRequest::is_ajax()) {
 			$this->_view=new ApineJSONView();
 		} else {
 			$this->_view=new ApineHTMLView();
@@ -62,7 +62,7 @@ abstract class ApineAPIController implements ApineAPIActions {
 	/**
 	 * Controller ApineView
 	 *
-	 * @var View
+	 * @var ApineJSONView
 	 */
 	protected $_view;
 	

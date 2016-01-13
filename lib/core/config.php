@@ -78,6 +78,17 @@ final class ApineConfig {
 	}
 	
 	/**
+	 * Fetch all configuration strings
+	 * 
+	 * @return array
+	 */
+	public static function get_config () {
+		
+		return self::get_instance()->settings;
+		
+	}
+	
+	/**
 	 * Write or update a configuration string
 	 * 
 	 * @param string $prefix

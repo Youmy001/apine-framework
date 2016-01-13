@@ -233,14 +233,14 @@ class ApinePagination {
 				}
 			}
 			
-			print '<div class="pagination pagination-large pagination-centered">
-						<ul>';
+			print '<nav class="text-center">
+						<ul class="pagination pagination-lg">';
 			
 			if ($this->cur_page == 1) {
-				print '<li id="page_prev" class="disabled"><a href="">' . PAGER_PREV . '</a></li>';
+				print '<li id="page_prev" class="disabled"><a href="">&laquo;</a></li>';
 			} else {
 				print '<li id="page_prev" ><a class="effect" href="' . $this->base . $prev_page;
-				print '">' . PAGER_PREV . '</a></li>';
+				print '">&laquo;</a></li>';
 			}
 			
 			for ($i = $begin;$i <= $end;$i++) {
@@ -255,14 +255,14 @@ class ApinePagination {
 			}
 			
 			if ($this->cur_page == $this->num_page) {
-				print '<li id="page_next" class="disabled"><a href="">' . PAGER_NEXT . '</a></li>';
+				print '<li id="page_next" class="disabled"><a href="">&raquo;</a></li>';
 			} else {
 				print '<li id="page_next" ><a class="effect" href="' . $this->base . $next_page;
-				print '">' . PAGER_NEXT . '</a></li>';
+				print '">&raquo;</a></li>';
 			}
 			
 			print '</ul>
-				</div>';
+				</nav>';
 		} else if($this->type == PAGINATION_TYPE_PAGER) {
 			$prev_page = $this->cur_page - 1;
 			$next_page = $this->cur_page + 1;
