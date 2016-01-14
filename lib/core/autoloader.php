@@ -58,11 +58,10 @@ final class ApineAutoload {
 	 */
 	static function load_kernel() {
 		
-		$files=self::get_folder_files('lib/');
-		
 		try {
+			$files=self::get_folder_files('lib/');
+			
 			foreach ($files as $file) {
-				//print "$file\r\n";
 				if (file_extension($file) === "php") {
 					require_once $file;
 				}
@@ -142,6 +141,30 @@ final class ApineAutoload {
 		}
 		
 		return $array;
+		
+	}
+	
+	/**
+	 * Load recursively all files in a directory and its sub-directories
+	 *
+	 * @param string $a_folder
+	 * 			Path to the directory from the include path
+	 */
+	private function load_folder_files ($a_folder) {
+		
+		$files = glob($a_folder . '*');
+		
+		foreach ($files as $item) {
+			if (is_dir($item)) {
+				self::load_folder_files($item . "/");
+			}
+		}
+		
+		foreach ($files as $item) {
+			if (!is_dir($item) && file_extension($item) == 'php') {
+				require_once $item;
+			}
+		}
 		
 	}
 	
