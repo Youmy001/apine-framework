@@ -257,6 +257,10 @@ final class ApineCollection implements IteratorAggregate {
 	public function value_exists ($a_value) {
 		
 		try {
+			if ($this->length() == 0) {
+				return false;
+			}
+			
 			if (is_object($a_value) && get_parent_class($a_value) === 'ApineEntityModel') {
 				$a_value->load();
 			}

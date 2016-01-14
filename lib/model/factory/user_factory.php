@@ -85,7 +85,7 @@ class ApineUserFactory implements ApineEntityFactory {
 		if ($request != null && count($request) > 0) {
 			foreach ($request as $item) {
 				$class = self::get_user_class();
-				$liste->add_item(new $class($item['id']));
+				$liste->add_item(new $class((int) $item['id']));
 			}
 		}
 		
@@ -110,7 +110,7 @@ class ApineUserFactory implements ApineEntityFactory {
 		
 		if ($ar_user_sql) {
 			$class = self::get_user_class();
-			$return = new $class($ar_user_sql[0]['id']);
+			$return = new $class((int) $ar_user_sql[0]['id']);
 		} else {
 			$return = null;
 		}
@@ -137,7 +137,7 @@ class ApineUserFactory implements ApineEntityFactory {
 		
 		if ($ar_user_sql) {
 			$class = self::get_user_class();
-			$return = new $class($ar_user_sql[0]['id']);
+			$return = new $class((int) $ar_user_sql[0]['id']);
 		} else {
 			$return = null;
 		}
@@ -163,7 +163,7 @@ class ApineUserFactory implements ApineEntityFactory {
 		if ($request != null && count($request) > 0) {
 			foreach ($request as $item) {
 				$class = self::get_user_class();
-				$liste->add_item(new $class($item['id']));
+				$liste->add_item(new $class((int) $item['id']));
 			}
 		}
 		
@@ -188,7 +188,7 @@ class ApineUserFactory implements ApineEntityFactory {
 		if ($request != null && count($request) > 0) {
 			foreach ($request as $item) {
 				$class = self::get_user_class();
-				$liste->add_item(new $class($item['user_id']));
+				$liste->add_item(new $class((int) $item['user_id']));
 			}
 		}
 		

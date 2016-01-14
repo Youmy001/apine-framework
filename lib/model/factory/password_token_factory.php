@@ -82,7 +82,7 @@ class ApinePasswordTokenFactory implements ApineEntityFactory {
 	
 		if ($request != null && count($request) > 0) {
 			foreach ($request as $item) {
-				$liste->add_item(new ApinePasswordToken($item['id']));
+				$liste->add_item(new ApinePasswordToken((int) $item['id']));
 			}
 		}
 	
@@ -105,7 +105,7 @@ class ApinePasswordTokenFactory implements ApineEntityFactory {
 		), $user_sql_id);
 	
 		if ($ar_user_sql) {
-			$return = new ApinePasswordToken($ar_user_sql[0]['id']);
+			$return = new ApinePasswordToken((int) $ar_user_sql[0]['id']);
 		} else {
 			$return = null;
 		}
@@ -129,7 +129,7 @@ class ApinePasswordTokenFactory implements ApineEntityFactory {
 		), $user_sql_id);
 	
 		if ($ar_user_sql) {
-			$return = new ApinePasswordToken($ar_user_sql[0]['id']);
+			$return = new ApinePasswordToken((int) $ar_user_sql[0]['id']);
 		} else {
 			$return = null;
 		}

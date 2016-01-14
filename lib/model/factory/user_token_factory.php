@@ -62,7 +62,7 @@ class ApineUserTokenFactory implements ApineEntityFactory {
 		
 		if ($request != null && count($request) > 0) {
 			foreach ($request as $item) {
-				$liste->add_item(new ApineUserToken($item['id']));
+				$liste->add_item(new ApineUserToken((int) $item['id']));
 			}
 		}
 		
@@ -85,7 +85,7 @@ class ApineUserTokenFactory implements ApineEntityFactory {
 		), $user_sql_id);
 		
 		if ($ar_user_sql) {
-			$return = new ApineUserToken($ar_user_sql[0]['id']);
+			$return = new ApineUserToken((int) $ar_user_sql[0]['id']);
 		} else {
 			$return = null;
 		}
@@ -109,7 +109,7 @@ class ApineUserTokenFactory implements ApineEntityFactory {
 		), $user_sql_id);
 		
 		if ($ar_user_sql) {
-			$return = new ApineUserToken($ar_user_sql[0]['id']);
+			$return = new ApineUserToken((int) $ar_user_sql[0]['id']);
 		} else {
 			$return = null;
 		}
@@ -142,7 +142,7 @@ class ApineUserTokenFactory implements ApineEntityFactory {
 		
 		if ($ar_token) {
 			$connect = end($ar_token);
-			$return = $connect['id'];
+			$return = (int) $connect['id'];
 		} else {
 			$return = false;
 		}

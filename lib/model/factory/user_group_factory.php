@@ -42,7 +42,7 @@ class ApineUserGroupFactory implements ApineEntityFactory {
 		
 		if ($request != null && count($request) > 0) {
 			foreach ($request as $item) {
-				$liste->add_item(new ApineUserGroup($item['id']));
+				$liste->add_item(new ApineUserGroup((int) $item['id']));
 			}
 		}
 		
@@ -63,7 +63,7 @@ class ApineUserGroupFactory implements ApineEntityFactory {
 		$request = $database->select("SELECT `id` FROM `apine_user_groups` WHERE `id`=$a_id");
 		
 		if ($request != null && count($request) > 0) {
-			$return = new ApineUserGroup($request[0]['id']);
+			$return = new ApineUserGroup((int) $request[0]['id']);
 		}else{
 			$return = null;
 		}
@@ -88,7 +88,7 @@ class ApineUserGroupFactory implements ApineEntityFactory {
 		
 		if ($request != null && count($request) > 0) {
 			foreach ($request as $item) {
-				$liste->add_item(new ApineUserGroup($item['group_id']));
+				$liste->add_item(new ApineUserGroup((int) $item['group_id']));
 			}
 		}
 		
