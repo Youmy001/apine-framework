@@ -47,9 +47,7 @@ final class ApineTranslation {
 		$this->locale = new ApineTranslationLocale($this->language);
 		
 		if (file_exists($this->language->file_path)) {
-			$file = new ApineFile($this->language->file_path, true);
-			
-			if($file->extention() != "json"){
+			if (file_extension($this->language->file_path) != "json") {
 				throw new ApineException("Invalid File");
 			}
 		}else{
@@ -60,8 +58,8 @@ final class ApineTranslation {
 	
 	private function load_file () {
 		
-		$file = new ApineFile($this->language->file_path, true);
-		$content = $file->content();
+		$file = fopen($this->language->file_path, 'r');
+		$content = fread($file, filesize($this->language->file_path));
 		$content = json_decode($content);
 
 		$this->entries = $content;

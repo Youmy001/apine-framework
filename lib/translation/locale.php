@@ -61,10 +61,9 @@ final class ApineTranslationLocale {
 		$this->language = $a_language;
 		
 		if (file_exists($this->language->file_path)) {
-			$file = new ApineFile($this->language->file_path, true);
-				
-			if($file->extention() == "json"){
-				$content = $file->content();
+			if(file_extension($this->language->file_path) == "json"){
+				$file = fopen($this->language->file_path, 'r');
+				$content = fread($file, filesize($this->language->file_path));
 				$content = json_decode($content);
 				$array = array();
 				$indexes = array();
