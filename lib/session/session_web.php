@@ -40,13 +40,13 @@ final class ApineWebSession implements ApineSessionInterface {
 	 * @var string
 	 */
 	private $user_class_name;
-
+	
 	/**
-	 * Session timeout
+	 * Instance of logged in user
 	 * 
-	 * @var integer
+	 * @var ApineUser
 	 */
-	private $session_timeout = 1000;
+	private $user;
 
 	/**
 	 * Session duration
@@ -54,6 +54,13 @@ final class ApineWebSession implements ApineSessionInterface {
 	 * @var integer
 	 */
 	private $session_lifespan = 7200;
+	
+	/**
+	 * Session duration with permanent option
+	 *
+	 * @var integer
+	 */
+	private $session_permanent_lifespan = 604800;
 
 	/**
 	 * Type of the current user
@@ -68,21 +75,22 @@ final class ApineWebSession implements ApineSessionInterface {
 	 */
 	public function __construct () {
 		
-		// Check the session cookie (if one)
-		if (ApineCookie::get('session') != null) {
-			session_id(ApineCookie::get('session'));
+		// Check the session cookie (if one) and set PHP session id
+		if (ApineCookie::get('apine_session') != null) {
+			session_id(ApineCookie::get('apine_session'));
 		}
 		
 		// Start PHP Session
+		session_name('apine_session');
+		session_set_cookie_params($this->session_lifespan);
 		session_start();
-		
-		// Set PHP session id
 		$this->php_session_id = session_id();
 		
 		if (ApineConfig::get('runtime', 'user_class')) {
-			$pos_slash = strpos(ApineConfig::get('runtime', 'user_class'), '/');
-			$module = substr(ApineConfig::get('runtime', 'user_class'), 0, $pos_slash);
-			$class = substr(ApineConfig::get('runtime', 'user_class'), $pos_slash + 1);
+			$user_class = ApineConfig::get('runtime', 'user_class');
+			$pos_slash = strpos($user_class, '/');
+			$module = substr($user_class, 0, $pos_slash);
+			$class = substr($user_class, $pos_slash + 1);
 			load_module($module);
 			
 			if (class_exists($class) && is_subclass_of($class, 'ApineUser')) {
@@ -96,10 +104,14 @@ final class ApineWebSession implements ApineSessionInterface {
 		}
 		
 		// Check if a user ID is in the PHP session
-		if (isset($_SESSION['ID'])) {
+		if (isset($_SESSION['id'])) {
 			$this->logged_in = true;
-			$this->user_id = $_SESSION['ID'];
-			$this->session_type = ApineUserFactory::create_by_id($this->user_id)->get_type();
+			$this->user_id = $_SESSION['id'];
+			$this->session_type = $_SESSION['type'];
+			
+			if (isset($_SESSION['permanent'])) {
+				ApineCookie::set('apine_session', $this->php_session_id, time() + $this->session_permanent_lifespan);
+			}
 		} else {
 			$this->logged_in = false;
 		}
@@ -136,11 +148,11 @@ final class ApineWebSession implements ApineSessionInterface {
 	public function get_user () {
 
 		if ($this->is_logged_in()) {
-			$class = $this->user_class_name;
+			if (is_null($this->user)) {
+				$this->user = ApineUserFactory::create_by_id($this->user_id);
+			}
 			
-			$instance = new $class($this->user_id);
-			
-			return $instance;
+			return $this->user;
 		}
 	
 	}
@@ -248,8 +260,8 @@ final class ApineWebSession implements ApineSessionInterface {
 			if ($user_id) {
 				$this->user_id = $user_id;
 				$this->logged_in = true;
-				$_SESSION['ID'] = $user_id;
 				$new_user = $this->get_user();
+				$_SESSION['id'] = $user_id;
 				$_SESSION['type'] = $new_user->get_type();
 				$this->set_session_type($new_user->get_type());
 				
@@ -276,7 +288,7 @@ final class ApineWebSession implements ApineSessionInterface {
 		try {
 			if ($this->is_logged_in()) {
 				$_SESSION = array();
-				ApineCookie::set('session', $this->php_session_id, time() - 604801);
+				//ApineCookie::set('apine_session', $this->php_session_id, time() - 604801);
 				session_destroy();
 				$this->logged_in = false;
 				$this->set_session_type(SESSION_GUEST);
@@ -297,7 +309,7 @@ final class ApineWebSession implements ApineSessionInterface {
 	private function make_permanent () {
 
 		if ($this->is_logged_in()) {
-			ApineCookie::set('session', $this->php_session_id, time() + 604800);
+			$_SESSION['permanent'] = true;
 		}
 	
 	}

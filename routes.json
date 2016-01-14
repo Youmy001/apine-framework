@@ -43,7 +43,7 @@
 		"GET": {
 			"args": false,
 			"controller": "session",
-			"action": "login"
+			"action": "logout"
 		}
 	},
 	"/register": {

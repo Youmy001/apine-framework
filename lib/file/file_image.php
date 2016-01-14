@@ -40,7 +40,7 @@ final class ApineFileImage extends ApineFile {
 	 * 
 	 * @var array
 	 */
-	const ALLOWED_EXTENSIONS = array(
+	private $allowed_extensions = array(
 					"jpeg",
 					"jpg",
 					"png",
@@ -56,7 +56,7 @@ final class ApineFileImage extends ApineFile {
 	 * 
 	 * @var array
 	 */
-	const ALLOWED_MIME_TYPE = array(
+	private $allowed_mime_type = array(
 					"image/jpeg",
 					"image/jpg",
 					"image/png",
@@ -125,7 +125,7 @@ final class ApineFileImage extends ApineFile {
 
 		$extension = $this->extension();
 
-		if (in_array($this->type(), $this::ALLOWED_MIME_TYPE)) {
+		if (in_array($this->type(), $this->allowed_mime_type)) {
 			return true;
 		} else {
 			return false;

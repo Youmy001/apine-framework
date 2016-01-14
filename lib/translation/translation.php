@@ -103,6 +103,7 @@ final class ApineTranslation {
 		if (!is_array($a_pattern)) {
 			$a_pattern = array($a_pattern);
 		}
+		
 		return call_user_func_array('sprintf', array_merge(array(
 						$this->get($a_key, $a_index)
 		), $a_pattern));

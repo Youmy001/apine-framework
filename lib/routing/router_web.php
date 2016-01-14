@@ -85,7 +85,7 @@ final class ApineWebRouter implements ApineRouterInterface {
 		foreach ($routes as $item => $values) {
 			$method = $_SERVER['REQUEST_METHOD'];
 			
-			if ($values->$method) {
+			if (isset($values->$method)) {
 				$route = $values->$method;
 				$match = str_ireplace('/','\\/', $item);
 				$match = '/^' . $match . '$/';
