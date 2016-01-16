@@ -216,4 +216,49 @@ function file_extension ($a_file_path) {
 	return $extension;
 	
 }
+
+/**
+ * Export XML routes in a JSON Format
+ * 
+ * @param string $file
+ * @return array
+ */
+function export_routes ($file) {
+	$xml_routes = new Parser();
+	$xml_routes->load_from_file($file);
+	$routes = array();
 	
+	foreach ($xml_routes->getElementByTagName('route') as $item) {
+		if ($item->nodeType == XML_ELEMENT_NODE) {
+			$nodes = array();
+			$method = "";
+			$request = "";
+				
+			foreach ($item->attributes as $attr) {
+				if ($attr->nodeType == XML_ATTRIBUTE_NODE) {
+					if ($attr->nodeName === 'method') {
+						$method = $attr->nodeValue;
+					} elseif ($attr->nodeName === 'args') {
+						$nodes['args'] = (bool)$attr->nodeValue;
+					} else {
+						$nodes[$attr->nodeName] = $attr->nodeValue;
+					}
+				}
+			}
+				
+			foreach ($item->getElementsByTagName('*') as $node) {
+				if ($node->nodeType == XML_ELEMENT_NODE) {
+					if ($node->nodeName === 'request') {
+						$request = $node->nodeValue;
+					} else {
+						$nodes[$node->nodeName] = $node->nodeValue;
+					}
+				}
+			}
+				
+			$routes[$request][$method] = $nodes;
+		}
+	}
+	
+	return $routes;
+}

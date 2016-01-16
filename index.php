@@ -62,6 +62,27 @@ try {
 		internal_redirect(ApineRequest::get()['request'], APINE_PROTOCOL_HTTP);
 	}
 	
+	if (ApineConfig::get('runtime', 'route_format') == 'json') {
+		if (file_exists('routes.xml')) {
+			if (!file_exists('routes.json')) {
+				file_put_contents('routes.json', json_encode(export_routes('routes.xml'), JSON_PRETTY_PRINT));
+			}
+		} else if (!file_exists('routes.xml') && !file_exists('routes.json')) {
+			throw new ApineException('Route File Not Found', 418);
+		}
+	} else if (is_null(ApineConfig::get('runtime', 'route_format'))) {
+		if (file_exists('routes.xml')) {
+			if (!file_exists('routes.json')) {
+				file_put_contents('routes.json', json_encode(export_routes('routes.xml'), JSON_PRETTY_PRINT));
+			}
+			ApineConfig::set('runtime', 'route_format', 'json');
+		} else if (!file_exists('routes.xml') && !file_exists('routes.json')) {
+			throw new ApineException('Route File Not Found', 418);
+		}
+	} else if (ApineConfig::get('runtime', 'route_format') != 'xml') {
+		throw new ApineException('Route Format Invalid', 418);
+	}
+	
 	// If a user is logged in; redirect to the allowed protocol
 	// Secure session only work when Use HTTPS is set to "yes"
 	if (ApineSession::is_logged_in()) {

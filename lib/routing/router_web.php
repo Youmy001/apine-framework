@@ -76,6 +76,12 @@ final class ApineWebRouter implements ApineRouterInterface {
 		
 	}
 	
+	/**
+	 * Find a matching route in JSON the route configuration and return a modified request string 
+	 * 
+	 * @param string $request
+	 * @return mixed
+	 */
 	private function json_route ($request) {
 		
 		$file = fopen('routes.json', 'r');
@@ -120,10 +126,6 @@ final class ApineWebRouter implements ApineRouterInterface {
 		$route_found = false;
 		
 		$vanilla_route_found = self::check_route($request);
-		
-		if(!ApineConfig::get('runtime', 'route_format')) {
-			throw new ApineException('I\'m a teapot', 418);
-		}
 		
 		if (!$vanilla_route_found) {
 			switch (ApineConfig::get('runtime', 'route_format')) {
