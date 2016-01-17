@@ -116,6 +116,7 @@ final class ApineRequest {
 		$this->request_type	= $_SERVER['REQUEST_METHOD'];
 		$this->request_port	= $_SERVER['SERVER_PORT'];
 		$this->request_ssl	= (isset($_SERVER['HTTPS'])&&!empty($_SERVER['HTTPS']));
+		$this->request_headers = apache_request_headers();
 		$this->api_call		= (isset($_GET['api']) && $_GET['api']==='api');
 		$this->is_ajax 		= (isset($this->request_headers['X-Requested-With']) && $this->request_headers['X-Requested-With'] == 'XMLHttpRequest');
 		
@@ -144,8 +145,6 @@ final class ApineRequest {
 			
 			$this->files = $file;
 		}
-		
-		$this->request_headers = apache_request_headers();
 		
 	}
 	
