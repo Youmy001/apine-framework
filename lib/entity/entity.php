@@ -303,25 +303,29 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 			
 			$this->_load();
 		} else {
-			
 			// This is an already existing entity
-			$arUpdate = array();
+				
+			// Update procedure only executed if at least
+			// one field was modified
+			if (count($this->modified_fields) > 0) {
+				$arUpdate = array();
 			
-			foreach ($this->database_fields as $key => $value) {
-				if (!is_numeric($key)) {
-					if (isset($this->modified_fields[$key]) && $this->modified_fields[$key] == true) {
-						if ($value == "") {
-							$arUpdate[$key] = NULL;
-						} else {
-							$arUpdate[$key] = $value;
+				foreach ($this->database_fields as $key => $value) {
+					if (!is_numeric($key)) {
+						if (isset($this->modified_fields[$key]) && $this->modified_fields[$key] == true) {
+							if ($value == "") {
+								$arUpdate[$key] = NULL;
+							} else {
+								$arUpdate[$key] = $value;
+							}
 						}
 					}
 				}
-			}
 			
-			$db->update($this->table_name, $arUpdate, array(
-							$this->load_field => $this->id
-			));
+				$db->update($this->table_name, $arUpdate, array(
+								$this->load_field => $this->id
+				));
+			}
 		}
 
 	}
