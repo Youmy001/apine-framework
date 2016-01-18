@@ -14,6 +14,7 @@
 define('APINE_SESSION_ADMIN', 77);
 define('APINE_SESSION_USER', 65);
 define('APINE_SESSION_GUEST', 40);
+define('APINE_SESSION_DELETED', 10);
 
 /**
  * Abstraction for session management using the strategy pattern

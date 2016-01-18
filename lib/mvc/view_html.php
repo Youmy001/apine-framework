@@ -27,6 +27,13 @@ final class ApineHTMLView extends ApineView {
 	 * @var string
 	 */
 	private $_title;
+	
+	/**
+	 * List of stylesheets to include
+	 * 
+	 * @var array
+	 */
+	private $_styles;
 
 	/**
 	 * List of scripts to include
@@ -112,17 +119,32 @@ final class ApineHTMLView extends ApineView {
 		}
 
 	}
-
+	
 	/**
 	 * Append javascript script to view
 	 *
 	 * @param string $a_script URL to script
 	 */
 	public function add_script($a_script) {
-
+	
 		if ($a_script!="") {
 			if (file_exists("resources/public/scripts/$a_script.js")) {
 				$this->_scripts[] = ApineURLHelper::resource("resources/public/scripts/$a_script.js");
+			}
+		}
+	
+	}
+
+	/**
+	 * Append stylesheet to view
+	 *
+	 * @param string $a_sheet URL to script
+	 */
+	public function add_stylesheet($a_sheet) {
+
+		if ($a_script!="") {
+			if (file_exists("resources/public/css/$a_script.css")) {
+				$this->_styles[] = ApineURLHelper::resource("resources/public/css/$a_script.css");
 			}
 		}
 
@@ -139,6 +161,19 @@ final class ApineHTMLView extends ApineView {
 			}
 		}
 
+	}
+	
+	/**
+	 * Insert stylesheets into the view
+	 */
+	public function apply_stylesheet() {
+	
+		if (count($this->_styles)>0) {
+			foreach ($this->_styles as $value) {
+				print("<link href=\"$value\" rel=\"stylesheet\" />");
+			}
+		}
+	
 	}
 
 	/**

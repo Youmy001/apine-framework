@@ -20,7 +20,7 @@ class ApineUserFactory implements ApineEntityFactory {
 
 		//$id_sql = (new Database())
 		$database = new ApineDatabase();
-		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `id`=$user_id");
+		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `id`=$user_id  AND `type`<>10");
 		
 		if ($id_sql) {
 			return true;
@@ -41,7 +41,7 @@ class ApineUserFactory implements ApineEntityFactory {
 
 		//$id_sql = (new Database())
 		$database = new ApineDatabase();
-		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `username`='$user_name' OR `email`='$user_name'");
+		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `username`='$user_name' OR `email`='$user_name'  AND `type`<>10");
 		
 		if ($id_sql) {
 			return true;
@@ -62,7 +62,7 @@ class ApineUserFactory implements ApineEntityFactory {
 
 		//$id_sql = (new Database())
 		$database = new ApineDatabase();
-		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `email`='$user_mail'");
+		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `email`='$user_mail'  AND `type`<>10");
 		
 		if ($id_sql) {
 			return true;
@@ -79,7 +79,7 @@ class ApineUserFactory implements ApineEntityFactory {
 
 		//$request = (new Database())
 		$database = new ApineDatabase();
-		$request = $database->select('SELECT `id` from `apine_users` ORDER BY `username`');
+		$request = $database->select('SELECT `id` from `apine_users` ORDER BY `username` AND `type`<>10');
 		$liste = new ApineCollection();
 		
 		if ($request != null && count($request) > 0) {
@@ -103,7 +103,7 @@ class ApineUserFactory implements ApineEntityFactory {
 	public static function create_by_id ($a_id) {
 		
 		$database=new ApineDatabase();
-		$user_sql_id = $database->prepare('SELECT `id` FROM `apine_users` WHERE `id`=?');
+		$user_sql_id = $database->prepare('SELECT `id` FROM `apine_users` WHERE `id`=? AND `type`<>10');
 		$ar_user_sql = $database->execute(array(
 						$a_id
 		), $user_sql_id);
@@ -129,7 +129,7 @@ class ApineUserFactory implements ApineEntityFactory {
 	public static function create_by_name ($name) {
 
 		$database = new ApineDatabase();
-		$user_sql_id = $database->prepare('SELECT `id` FROM `apine_users` WHERE `username`=? OR `email`=?');
+		$user_sql_id = $database->prepare('SELECT `id` FROM `apine_users` WHERE `username`=? OR `email`=?  AND `type`<>10');
 		$ar_user_sql = $database->execute(array(
 						$name,
 						$name
@@ -209,7 +209,7 @@ class ApineUserFactory implements ApineEntityFactory {
 	public static function authentication ($name, $pass) {
 		
 		$database = new ApineDatabase();
-		$connect_sql_id = $database->prepare('SELECT `id` FROM `apine_users` WHERE ( `username`=? OR `email`=? ) AND `password`=?');
+		$connect_sql_id = $database->prepare('SELECT `id` FROM `apine_users` WHERE ( `username`=? OR `email`=? ) AND `password`=? AND `type`<>10');
 		$ar_connect_sql = $database->execute(array(
 						$name,
 						$name,
