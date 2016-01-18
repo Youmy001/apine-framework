@@ -278,13 +278,13 @@ class ApineFile {
 			if ($a_path == null) {
 				$directory = substr($this->path, 0, strripos($this->path, '/') + 1);
 				$path = $directory . $this->name;
-					
+				
+				//fclose($this->file);
 				$success = copy($this->path, $path);
 					
 				$this->path = $path;
 				$this->location = $directory;
-				fclose($this->file);
-				$this->file = fopen($path, "c+");
+				//$this->file = fopen($path, "c+");
 			} else {
 				// Verify is there's a filename in the path
 				$file_name = substr($a_path, strripos($a_path, '/') + 1);
@@ -298,11 +298,11 @@ class ApineFile {
 				}
 					
 				// If there's a filename, configure the class's name
+				//fclose($this->file);
 				$success = rename($this->path, $path);
 				$this->path = $path;
 				$this->location = $directory;
-				fclose($this->file);
-				$this->file = fopen($path, "c+");
+				//$this->file = fopen($path, "c+");
 			}
 			
 			return $success;
