@@ -115,4 +115,16 @@ final class ApineEncryption {
 		return $cipher_string;
 		
 	}
+	
+	/**
+	 * Generate a md5 hash for string
+	 *
+	 * @param string $string
+	 */
+	public static function md5 ($string) {
+	
+		return hash('md5', $string);
+	
+	}
+	
 }

@@ -90,6 +90,16 @@ final class ApineTranslation {
 		
 	}
 	
+	public function get_all () {
+		
+		if (is_null($this->entries)) {
+			$this->load_file();
+		}
+		
+		return $this->entries;
+		
+	}
+	
 	/**
 	 * Fetch a translation string with a format
 	 * 

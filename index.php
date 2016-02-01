@@ -25,9 +25,6 @@ if (ApineConfig::get('runtime', 'mode') == 'development') {
 	error_reporting(E_ERROR);
 }
 
-// A session may last one week
-ini_set('session.gc_maxlifetime', 604800);
-
 if (ApineConfig::get('runtime', 'use_composer') === "yes") {
 	require_once('vendor/autoload.php');
 }

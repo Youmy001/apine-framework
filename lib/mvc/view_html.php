@@ -130,6 +130,8 @@ final class ApineHTMLView extends ApineView {
 		if ($a_script!="") {
 			if (file_exists("resources/public/scripts/$a_script.js")) {
 				$this->_scripts[] = ApineURLHelper::resource("resources/public/scripts/$a_script.js");
+			} else if (file_exists("$a_script.js")) {
+				$this->_scripts[] = ApineURLHelper::resource("$a_script.js");
 			}
 		}
 	
@@ -142,9 +144,11 @@ final class ApineHTMLView extends ApineView {
 	 */
 	public function add_stylesheet($a_sheet) {
 
-		if ($a_script!="") {
-			if (file_exists("resources/public/css/$a_script.css")) {
-				$this->_styles[] = ApineURLHelper::resource("resources/public/css/$a_script.css");
+		if ($a_sheet!="") {
+			if (file_exists("resources/public/css/$a_sheet.css")) {
+				$this->_styles[] = ApineURLHelper::resource("resources/public/css/$a_sheet.css");
+			} else if (file_exists("$a_sheet.css")) {
+				$this->_styles[] = ApineURLHelper::resource("$a_sheet.css");
 			}
 		}
 

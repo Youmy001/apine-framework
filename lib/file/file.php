@@ -188,7 +188,7 @@ class ApineFile {
 		if ($dot_pos > 0) {
 			$extension = substr($this->name, $dot_pos + 1);
 		} else {
-			$extension = $this->name;
+			$extension = '';
 		}
 
 		return $extension;
@@ -347,7 +347,12 @@ class ApineFile {
 			
 			if (stripos($a_copy_path, '/') !== false) {
 				$directory = substr($a_copy_path, 0, strripos($a_copy_path, '/') + 1);
-				$name = substr($a_copy_path, strripos($a_copy_path, '/'));
+				$name = substr($a_copy_path, strripos($a_copy_path, '/') + 1);
+				
+				if ($name == '') {
+					$name = $this->name;
+				}
+				
 				$path = $directory . $name;
 			} else {
 				$name = $a_copy_path;

@@ -101,7 +101,7 @@ class ErrorController extends ApineController {
 		$this->_view->set_param('code', $a_code);
 		$this->_view->set_param('message', $a_message);
 		
-		if (ApineRequest::is_api_call()) {
+		if (ApineRequest::is_api_call() || ApineRequest::is_ajax()) {
 			$this->_view->set_param('request', ApineRequest::get()['request']);
 		} else {
 			$this->_view->set_title($a_message);
