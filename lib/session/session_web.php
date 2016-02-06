@@ -53,16 +53,14 @@ final class ApineWebSession implements ApineSessionInterface {
 	 * 
 	 * @var integer
 	 */
-	//private $session_lifespan = 7200;
-	private $session_lifespan = 3600;
+	private $session_lifespan = 7200;
 	
 	/**
 	 * Session duration with permanent option
 	 *
 	 * @var integer
 	 */
-	//private $session_permanent_lifespan = 604800;
-	private $session_permanent_lifespan = 7200;
+	private $session_permanent_lifespan = 604800;
 
 	/**
 	 * Type of the current user
@@ -74,7 +72,7 @@ final class ApineWebSession implements ApineSessionInterface {
 	/**
 	 * Session Entity
 	 * 
-	 * @var ApineSessionHandler
+	 * @var ApineSessionData
 	 */
 	private $session;
 
@@ -113,7 +111,7 @@ final class ApineWebSession implements ApineSessionInterface {
 			//$database->insert('apine_sessions', array('id' => $token));
 		}
 		
-		$this->session = new ApineSessionHandler($token);
+		$this->session = new ApineSessionData($token);
 		$this->php_session_id = $token;
 		$delay = $this->session_lifespan;
 		
@@ -155,6 +153,12 @@ final class ApineWebSession implements ApineSessionInterface {
 	
 		return $this->php_session_id;
 	
+	}
+	
+	public function &data () {
+		
+		return $this->session;
+		
 	}
 
 	/**
@@ -301,10 +305,6 @@ final class ApineWebSession implements ApineSessionInterface {
 					//$session_data['permanent'] = true;
 					$this->session->set_var('permanent', true);
 				}
-				
-				//var_dump($this->session->get_id());
-				
-				//$this->session->set_var('data', $session_data);
 				
 				return true;
 			} else {

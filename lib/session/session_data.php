@@ -6,7 +6,7 @@
  * @author youmy
  *
  */
-final class ApineSessionHandler extends ApineEntityModel {
+final class ApineSessionData extends ApineEntityModel {
 	
 	/**
 	 * Identifier of the session
@@ -29,7 +29,7 @@ final class ApineSessionHandler extends ApineEntityModel {
 	private $last_access;
 	
 	/**
-	 * ApineSessionHandler class' constructor
+	 * ApineSessionData class' constructor
 	 *
 	 * @param string $a_id
 	 *        Session Identifier
@@ -161,7 +161,7 @@ final class ApineSessionHandler extends ApineEntityModel {
 	}
 	
 	/**
-	 * ApineSessionHandler class' destructor
+	 * ApineSessionData class' destructor
 	 */
 	public function __destruct() {
 		
