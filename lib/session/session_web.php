@@ -53,14 +53,16 @@ final class ApineWebSession implements ApineSessionInterface {
 	 * 
 	 * @var integer
 	 */
-	private $session_lifespan = 7200;
+	//private $session_lifespan = 7200;
+	private $session_lifespan = 3600;
 	
 	/**
 	 * Session duration with permanent option
 	 *
 	 * @var integer
 	 */
-	private $session_permanent_lifespan = 604800;
+	//private $session_permanent_lifespan = 604800;
+	private $session_permanent_lifespan = 7200;
 
 	/**
 	 * Type of the current user
@@ -68,23 +70,19 @@ final class ApineWebSession implements ApineSessionInterface {
 	 * @var integer
 	 */
 	private $session_type = APINE_SESSION_GUEST;
+	
+	/**
+	 * Session Entity
+	 * 
+	 * @var ApineSessionHandler
+	 */
+	private $session;
 
 	/**
 	 * Construct the session handler
 	 * Fetch data from PHP structures and start the PHP session
 	 */
 	public function __construct () {
-		
-		// Check the session cookie (if one) and set PHP session id
-		if (ApineCookie::get('apine_session') != null) {
-			session_id(ApineCookie::get('apine_session'));
-		}
-		
-		// Start PHP Session
-		session_name('apine_session');
-		session_set_cookie_params($this->session_lifespan);
-		session_start();
-		$this->php_session_id = session_id();
 		
 		if (ApineConfig::get('runtime', 'user_class')) {
 			$user_class = ApineConfig::get('runtime', 'user_class');
@@ -103,18 +101,48 @@ final class ApineWebSession implements ApineSessionInterface {
 			$this->user_class_name = "ApineUser";
 		}
 		
-		// Check if a user ID is in the PHP session
-		if (isset($_SESSION['id'])) {
-			$this->logged_in = true;
-			$this->user_id = $_SESSION['id'];
-			$this->session_type = $_SESSION['type'];
+		if (!is_null(ApineConfig::get('runtime', 'session_lifespan'))) {
+			$this->session_lifespan = ApineConfig::get('runtime', 'session_lifespan');
+		}
+		
+		if (isset($_COOKIE['apine_session'])) {
+			$token = $_COOKIE['apine_session'];
+		} else {
+			$token = ApineEncryption::token();
+			//$database = new ApineDatabase();
+			//$database->insert('apine_sessions', array('id' => $token));
+		}
+		
+		$this->session = new ApineSessionHandler($token);
+		$this->php_session_id = $token;
+		$delay = $this->session_lifespan;
+		
+		if ($this->session->get_var('id') != null) {
+			$this->logged_in = false;
 			
-			if (isset($_SESSION['permanent'])) {
-				ApineCookie::set('apine_session', $this->php_session_id, time() + $this->session_permanent_lifespan);
+			if ($this->session->get_var('permanent') != null) {
+				if ($this->session->is_valid($this->session_permanent_lifespan)) {
+					$this->logged_in = true;
+					$this->user_id  = $this->session->get_var('id');
+					$this->session_type = $this->session->get_var('type');
+					$delay = $this->session_permanent_lifespan;
+				} else {
+					$this->session->reset();
+				}
+			} else {
+				if ($this->session->is_valid($this->session_lifespan)) {
+					$this->logged_in = true;
+					$this->user_id  = $this->session->get_var('id');
+					$this->session_type = $this->session->get_var('type');
+				} else {
+					$this->session->reset();
+				}
 			}
 		} else {
 			$this->logged_in = false;
 		}
+		
+		setcookie('apine_session', $this->php_session_id, time() + $delay);
 	
 	}
 	
@@ -258,16 +286,25 @@ final class ApineWebSession implements ApineSessionInterface {
 			$user_id = ApineUserFactory::authentication($user_name, $encode_pass);
 			
 			if ($user_id) {
+				$session_data = array();
 				$this->user_id = $user_id;
 				$this->logged_in = true;
 				$new_user = $this->get_user();
-				$_SESSION['id'] = $user_id;
-				$_SESSION['type'] = $new_user->get_type();
 				$this->set_session_type($new_user->get_type());
 				
+				//$session_data['id'] = $user_id;
+				//$session_data['type'] = $new_user->get_type();
+				$this->session->set_var('id', $user_id);
+				$this->session->set_var('type', $new_user->get_type());
+				
 				if (isset($options["remember"]) && $options["remember"] === true) {
-					$this->make_permanent();
+					//$session_data['permanent'] = true;
+					$this->session->set_var('permanent', true);
 				}
+				
+				//var_dump($this->session->get_id());
+				
+				//$this->session->set_var('data', $session_data);
 				
 				return true;
 			} else {
@@ -287,9 +324,9 @@ final class ApineWebSession implements ApineSessionInterface {
 
 		try {
 			if ($this->is_logged_in()) {
-				$_SESSION = array();
+				//$_SESSION = array();
 				//ApineCookie::set('apine_session', $this->php_session_id, time() - 604801);
-				session_destroy();
+				$this->session->reset();
 				$this->logged_in = false;
 				$this->set_session_type(APINE_SESSION_GUEST);
 				return true;
@@ -302,16 +339,11 @@ final class ApineWebSession implements ApineSessionInterface {
 		}
 	
 	}
-
-	/**
-	 * Make a logged un user's session permanent
-	 */
-	private function make_permanent () {
-
-		if ($this->is_logged_in()) {
-			$_SESSION['permanent'] = true;
-		}
 	
-	}
+	/*public function __destruct() {
+		
+		$this->session->save();
+		
+	}*/
 
 }

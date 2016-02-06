@@ -85,7 +85,13 @@ abstract class ApineEntityModel implements ApineEntityInterface {
 		$db = new ApineDatabase();
 		
 		if ($this->id !== null) {
-			$database_fields = $db->select("SELECT * from $this->table_name where $this->load_field = $this->id");
+			if (!is_numeric($this->id)) {
+				$field_id = $db->quote($this->id);
+			} else {
+				$field_id = $this->id;
+			}
+			
+			$database_fields = $db->select("SELECT * from $this->table_name where $this->load_field = $field_id");
 			
 			if ($database_fields) {
 				$this->database_fields = $database_fields[0];

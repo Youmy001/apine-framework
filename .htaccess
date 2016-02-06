@@ -71,9 +71,6 @@
 
 #Options +FollowSymlinks
 #Options +SymLinksIfOwnerMatch
-
-php_value session.gc_maxlifetime 604800
-php_value session.cookie_lifetime 604800
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 	

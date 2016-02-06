@@ -20,6 +20,18 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `apine_sessions`
+--
+
+CREATE TABLE IF NOT EXISTS `apine_sessions` (
+  `id` varchar(64) NOT NULL PRIMARY KEY,
+  `last_access` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `data` longtext NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `apine_users`
 --
 
