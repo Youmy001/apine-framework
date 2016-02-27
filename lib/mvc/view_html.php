@@ -29,6 +29,12 @@ final class ApineHTMLView extends ApineView {
 	private $_title;
 	
 	/**
+	 * List of custom meta tags
+	 * @var array $_metatags
+	 */
+	private $_metatags;
+	
+	/**
 	 * List of stylesheets to include
 	 * 
 	 * @var array
@@ -82,6 +88,39 @@ final class ApineHTMLView extends ApineView {
 			$this->_title=$a_title;
 		}
 
+	}
+	
+	/**
+	 * Append a meta tag to <head>
+	 *  
+	 * @param array $a_properties
+	 */
+	public function add_meta ($a_properties) {
+		
+		if (is_array($a_properties) && count($a_properties) >= 1) {
+			$tag = "<meta ";
+			
+			foreach ($a_properties as $name=>$value) {
+				$tag .= "$name=\"$value\"";
+			}
+			
+			$tag .= " />";
+			array_push($this->_metatags, $tag);
+		}
+		
+	}
+	
+	/**
+	 * Insert meta tag into the view
+	 */
+	public function apply_meta () {
+		
+		if (count($this->_metatags) > 0) {
+			foreach ($this->_metatags as $value) {
+				print($value . "\r\n");
+			}
+		}
+		
 	}
 
 	/**
