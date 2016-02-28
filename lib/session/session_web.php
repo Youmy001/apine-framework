@@ -103,7 +103,6 @@ final class ApineWebSession implements ApineSessionInterface {
 			$this->session_lifespan = ApineConfig::get('runtime', 'session_lifespan');
 		}
 		
-		//$before = microtime(true) * 1000;
 		if (isset($_COOKIE['apine_session'])) {
 			$token = $_COOKIE['apine_session'];
 		} else {
@@ -112,13 +111,10 @@ final class ApineWebSession implements ApineSessionInterface {
 			//$database->insert('apine_sessions', array('id' => $token));
 		}
 		
-		//$before_load = microtime(true) * 1000;
 		$this->session = new ApineSessionData($token);
 		$this->php_session_id = $token;
 		$delay = $this->session_lifespan;
-		//$this->session->get_var('id');
-		//print ('Session Data Load Time: ' . number_format((microtime(true) * 1000) - $before_load, 1) . "ms\r\n");
-		//$before_login = microtime(true) * 1000;
+		
 		if ($this->session->get_var('id') != null) {
 			$this->logged_in = false;
 			
@@ -143,10 +139,8 @@ final class ApineWebSession implements ApineSessionInterface {
 		} else {
 			$this->logged_in = false;
 		}
-		//print ('Session Login Time: ' . number_format((microtime(true) * 1000) - $before_login, 1) . "ms\r\n");
 		
 		setcookie('apine_session', $this->php_session_id, time() + $delay, '/');
-		//print ('Session Time: ' . number_format((microtime(true) * 1000) - $before, 1) . 'ms');
 	
 	}
 	

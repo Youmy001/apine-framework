@@ -188,11 +188,7 @@ function execution_time () {
  */
 function internal_redirect ($request, $protocol = APINE_PROTOCOL_DEFAULT) {
 	
-	$request = explode("/", $request);
-	array_shift($request);
-	$request = join('/', $request);
 	header('Location: ' . ApineURLHelper::path($request, $protocol));
-	die();
 	
 }
 

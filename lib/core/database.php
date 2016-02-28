@@ -96,7 +96,11 @@ final class ApineDatabase {
 			$result = self::$_instance->query($query);
 			
 			if ($result) {
-				$arResult = $result->fetchAll(PDO::FETCH_ASSOC);
+				
+				while ($data = $result->fetch(PDO::FETCH_ASSOC)) {
+					$arResult[] = $data;
+				}
+				
 				$result->closeCursor();
 			}
 			
@@ -127,8 +131,8 @@ final class ApineDatabase {
 		// Quote string values
 		foreach ($values as $val) {
 			
-			if (is_string($val) && !is_numeric($val)) {
-				$val = self::$_instance->quote($val, PDO::PARAM_STR);
+			if (is_string($val)) {
+				$val = $this->quote($val);
 			}
 			
 			$new_values[] = $val;
@@ -136,9 +140,9 @@ final class ApineDatabase {
 		
 		// Create query
 		$query = "INSERT into $tableName (";
-		$query .= implode(', ', $fields);
+		$query .= join(',', $fields);
 		$query .= ') values (';
-		$query .= implode(', ', $new_values) . ')';
+		$query .= join(',', $new_values) . ')';
 		
 		//print $query;
 		try {
@@ -148,7 +152,7 @@ final class ApineDatabase {
 				throw new PDOException('Cannot insert row');
 			}
 			
-			return self::$_instance->lastInsertID();
+			return $this->last_insert_id();
 		} catch (PDOException $e) {
 			throw new ApineDatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
@@ -169,16 +173,16 @@ final class ApineDatabase {
 	 * @throws ApineDatabaseException If cannot execute update query
 	 */
 	public function update ($tableName, $arValues, $arConditions) {
-		//$before_update = microtime(true) * 1000;
+		
 		$new_values = array();
 		$arWhere = array();
 		
 		// Quote string values
 		foreach ($arValues as $field=>$val) {
 			
-			if ((is_string($val) && !is_numeric($val)) && $val != 'null') {
-				$val = self::$_instance->quote($val, PDO::PARAM_STR);
-			} else if ($val == null && $val == 'null') {
+			if (is_string($val)) {
+				$val = $this->quote($val);
+			} else if ($val == null) {
 				$val = 'NULL';
 			}
 			
@@ -197,19 +201,17 @@ final class ApineDatabase {
 		
 		// Create query
 		$query = "UPDATE $tableName SET ";
-		$query .= implode(', ', $new_values);
-		$query .= ' WHERE ' . implode(' AND ', $arWhere);
+		$query .= join(' , ', $new_values);
+		$query .= ' WHERE ' . join(' AND ', $arWhere);
 		
-		//print ('Building UPDATE query: ' . number_format((microtime(true) * 1000) - $before_update, 1) . "ms\r\n");
 		//print $query;
 		try {
-			//$before_exec = microtime(true) * 1000;
+			
 			if (count($arValues) > 0) {
 				self::$_instance->exec($query);
 			} else {
 				throw new ApineException('Missing Values', 500);
 			}
-			//print ('Execute UPDATE query: ' . number_format((microtime(true) * 1000) - $before_exec, 1) . "ms\r\n");
 		} catch (PDOException $e) {
 			throw new ApineDatabaseException($e->getMessage(), $e->getCode(), $e);
 		}

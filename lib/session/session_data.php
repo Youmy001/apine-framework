@@ -74,8 +74,8 @@ final class ApineSessionData extends ApineEntityModel {
 			$this->load();
 		}
 		
-		if (isset($this->data->$a_name)) {
-			return $this->data->$a_name;
+		if (isset($this->data[$a_name])) {
+			return $this->data[$a_name];
 		}
 		
 	}
@@ -92,7 +92,7 @@ final class ApineSessionData extends ApineEntityModel {
 			$this->load();
 		}
 		
-		$this->data->$a_name = $a_value;
+		$this->data[$a_name] = $a_value;
 		
 	}
 	
@@ -107,7 +107,7 @@ final class ApineSessionData extends ApineEntityModel {
 			$this->load();
 		}
 		
-		unset($this->data->$a_name);
+		unset($this->data[$a_name]);
 		
 	}
 	
@@ -129,11 +129,8 @@ final class ApineSessionData extends ApineEntityModel {
 	 * @see ApineEntityInterface::load()
 	 */
 	public function load () {
-		$before_json = microtime(true) * 1000;
-		if ($this->_get_field('data') !== 'null') {
-			$this->data = json_decode($this->_get_field('data'));
-		}
-		print ('Session JSON decoding: ' . number_format((microtime(true) * 1000) - $before_json, 1) . 'ms');
+		
+		$this->data = json_decode($this->_get_field('data'), true);
 		$this->last_access = $this->_get_field('last_access');
 		$this->loaded = 1;
 		
@@ -146,13 +143,11 @@ final class ApineSessionData extends ApineEntityModel {
 	public function save () {
 		
 		$this->_set_field('id', $this->session_id);
-		$before_json = microtime(true) * 1000;
 		$this->_set_field('data', json_encode($this->data));
-		print ('Session JSON encoding: ' . number_format((microtime(true) * 1000) - $before_json, 1) . 'ms');
 		$this->_set_field('last_access', date('Y-m-d H:i:s', time()));
-		$before_save = microtime(true) * 1000;
+		
 		$this->_save();
-		print ('Session Saving Time: ' . number_format((microtime(true) * 1000) - $before_save, 1) . 'ms');
+		
 	}
 	
 	/**
