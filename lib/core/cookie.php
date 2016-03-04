@@ -38,10 +38,6 @@ final class ApineCookie {
 	 */
 	public static function set ($cookie_name, $value, $expiration_time = 0) {
 	
-		if ($expiration_time == 0) {
-			$expiration_time = time() + 72000;
-		}
-		
 		$ar_domain = explode('.', $_SERVER['SERVER_NAME']);
 		
 		if (count($ar_domain) >= 3) {
@@ -51,7 +47,11 @@ final class ApineCookie {
 			$main_session_server = $_SERVER['SERVER_NAME'];
 		}
 		
-		return setcookie($cookie_name, $value, $expiration_time, '/');
+		if ($expiration_time == 0) {
+			return setcookie($cookie_name, $value, null, '/');
+		}else {
+			return setcookie($cookie_name, $value, $expiration_time, '/');
+		}
 	
 	}
 }

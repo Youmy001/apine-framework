@@ -36,35 +36,21 @@ final class ApineURLHelper {
 	 * 
 	 * @var string
 	 */
-	private $session_server;
-	
-	/**
-	 * Path on the server
-	 * 
-	 * @var string
-	 */
-	private $session_server_path;
-	
-	/**
-	 * Script's path on the server
-	 * 
-	 * @var string
-	 */
-	private $session_current_path;
-	
-	/**
-	 * Script's name
-	 * 
-	 * @var string
-	 */
-	private $session_current;
+	private $server_app_root;
 	
 	/**
 	 * Main Server's Domain Name
 	 * 
 	 * @var string
 	 */
-	private $main_session_server;
+	private $server_main_root;
+	
+	/**
+	 * Path of the current session
+	 * 
+	 * @var string
+	 */
+	private $session_path;
 	
 	/**
 	 * Construct the URL Writer helper
@@ -74,27 +60,33 @@ final class ApineURLHelper {
 	private function __construct() {
 		
 		// Set server address
-		$this->session_server = ApineRequest::server()['SERVER_NAME'];
+		$this->server_app_root = ApineRequest::server()['SERVER_NAME'];
 		$ar_domain = explode('.', ApineRequest::server()['SERVER_NAME']);
 		
 		if (count($ar_domain) >= 3) {
 			$start = strlen($ar_domain[0]) + 1;
-			$this->main_session_server = substr(ApineRequest::server()['SERVER_NAME'], $start);
+			$this->server_main_root = substr(ApineRequest::server()['SERVER_NAME'], $start);
 		} else {
-			$this->main_session_server = ApineRequest::server()['SERVER_NAME'];
+			$this->server_main_root = ApineRequest::server()['SERVER_NAME'];
 		}
 		
 		if ((!ApineRequest::is_https() && ApineRequest::get_request_port() != 80) || (ApineRequest::is_https() && ApineRequest::get_request_port() != 443)) {
-			$this->session_server .= ":" . ApineRequest::get_request_port();
-			$this->main_session_server .= ":" . ApineRequest::get_request_port();
+			$this->server_app_root .= ":" . ApineRequest::get_request_port();
+			$this->server_main_root .= ":" . ApineRequest::get_request_port();
 		}
 		
-		// Set script name
-		$this->session_current = ApineRequest::server()['SERVER_NAME'] . ApineRequest::server()['PHP_SELF'];
-		// Set script path
-		$this->session_current_path = ApineRequest::server()['SERVER_NAME'] . dirname(ApineRequest::server()['PHP_SELF']);
-		// Set server path
-		$this->session_server_path = realpath(dirname(dirname(__FILE__)) . '/..');
+		if (isset(ApineRequest::request()['request'])) {
+			$ar_path = explode('/', ApineRequest::request()['request']);
+			array_shift($ar_path);
+			$this->session_path = implode('/', $ar_path);
+		} else {
+			$this->session_path = '';
+		}
+		
+		if (!is_null(ApineConfig::get('runtime', 'webroot')) && !empty(ApineConfig::get('runtime', 'webroot'))) {
+			$this->server_app_root .= "/" . ApineConfig::get('runtime', 'webroot');
+			$this->server_main_root .= "/" . ApineConfig::get('runtime', 'webroot');
+		}
 		
 	}
 	
@@ -172,7 +164,7 @@ final class ApineURLHelper {
 	
 	public static function resource ($path) {
 		
-		return self::protocol(APINE_PROTOCOL_DEFAULT) . self::get_instance()->session_server . '/' . $path;
+		return self::protocol(APINE_PROTOCOL_DEFAULT) . self::get_instance()->server_app_root . '/' . $path;
 		
 	}
 	
@@ -187,7 +179,7 @@ final class ApineURLHelper {
 	 */
 	public static function path($path, $protocol = APINE_PROTOCOL_DEFAULT) {
 		
-		return self::write_url(self::get_instance()->session_server, $path, $protocol);
+		return self::write_url(self::get_instance()->server_app_root, $path, $protocol);
 		
 	}
 	
@@ -203,7 +195,7 @@ final class ApineURLHelper {
 	 */
 	public static function main_path($path, $protocol = APINE_PROTOCOL_DEFAULT) {
 		
-		return self::write_url(self::get_instance()->main_session_server, $path, $protocol);
+		return self::write_url(self::get_instance()->server_main_root, $path, $protocol);
 	
 	}
 	
@@ -219,29 +211,18 @@ final class ApineURLHelper {
 	 */
 	public static function relative_path($path, $protocol = APINE_PROTOCOL_DEFAULT) {
 	
-		return self::write_url(self::get_instance()->session_current_path, $path, $protocol);
+		return self::write_url(self::get_instance()->server_app_root, self::get_instance()->session_path . '/' . $path, $protocol);
 	
 	}
 	
 	/**
-	 * Get current absolute path
+	 * Get current current http path
 	 * 
 	 * @return string
 	 */
-	public static function get_current_path() {
+	public static function get_current_path($protocol = APINE_PROTOCOL_DEFAULT) {
 	
-		return self::get_instance()->session_current;
-	
-	}
-	
-	/**
-	 * Get current absolute server path
-	 * 
-	 * @return string
-	 */
-	public static function get_server_path() {
-	
-		return self::get_instance()->session_server_path;
+		return self::write_url(self::get_instance()->server_app_root, self::get_instance()->session_path, $protocol);
 	
 	}
 }

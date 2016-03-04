@@ -1,6 +1,6 @@
 <?php
 /**
- * Translator Tool
+ * Translation Tool
  * This script contains a facade for the Translator core module
  *
  * @license MIT
@@ -8,74 +8,65 @@
  */
 
 /**
- * Language Translator Tool
+ * Language Finder Tool
  * Manage multi-language configuration
  * 
- * @deprecated
  */
-final class ApineTranslator {
+final class ApineTranslationDirectory {
 	
 	/**
 	 * Availables languages for translations
 	 * 
 	 * @var ApineTranslationLanguage[]
 	 */
-	private $languages;
+	private static $languages;
 	
 	/**
 	 * Translations for available languages
 	 * 
 	 * @var ApineTranslation[]
 	 */
-	private $translations;
+	private static $translations;
 	
 	/**
-	 * Instance of the Translator
-	 * Singleton Implementation
-	 *
-	 * @var ApineTranslator
+	 * Language Directory
+	 * 
+	 * @var string $directory
 	 */
-	private static $_instance;
+	private $directory;
 	
 	/**
 	 * Construct the Translator handler
 	 * Finding available language from language files
+	 * 
+	 * @param string $a_directory
 	 */
-	private function __construct (){
+	public function __construct ($a_directory = 'resources/languages'){
 		
-		$this->languages = array();
-		$this->translations = array();
+		$this->directory = $a_directory . '/';
 		
-		//$array= [];
-		$array = array();
+		if (is_null(self::$languages) && is_null(self::$translations)) {
+			self::$languages = array();
+			self::$translations = array();
+		}
 		
-		// Find and instantiate every languages
-		foreach (scandir('resources/languages/') as $file) {
-			if ($file != "." && $file != "..") {
-				$file_name = explode(".", $file);
-				$file_name = $file_name[0];
-				
-				if (is_file('resources/languages/' . $file)) {
-					$this->languages[$file_name] = new ApineTranslationLanguage($file_name, 'resources/languages/' . $file);
+		if(!isset(self::$languages[$this->directory])) {
+			
+			//$array= [];
+			$array = array();
+			
+			// Find and instantiate every languages
+			foreach (scandir($this->directory) as $file) {
+				if ($file != "." && $file != "..") {
+					$file_name = explode(".", $file);
+					$file_name = $file_name[0];
+					
+					if (is_file($this->directory . $file)) {
+						self::$languages[$this->directory][$file_name] = new ApineTranslationLanguage($file_name, $this->directory . $file);
+					}
 				}
 			}
 		}
-		
-	}
-	
-	/**
-	 * Singleton design pattern implementation
-	 *
-	 * @static
-	 * @return ApineTranslator
-	 */
-	public static function get_instance () {
-		
-		if (!isset(self::$_instance)) {
-			self::$_instance = new static();
-		}
-		
-		return self::$_instance;
 		
 	}
 	
@@ -84,10 +75,10 @@ final class ApineTranslator {
 	 * 
 	 * @return ApineTranslationLanguage[]
 	 */
-	public static function get_all_languages () {
+	public function get_all_languages () {
 		
 		// Return a liste of every language
-		return self::get_instance()->languages;
+		return self::$languages;
 		
 	}
 	
@@ -97,10 +88,10 @@ final class ApineTranslator {
 	 * @param string $a_language_code
 	 * @return ApineTranslationLanguage
 	 */
-	public static function get_language ($a_language_code) {
+	public function get_language ($a_language_code) {
 		
 		// Return a language whose code maches the parameter
-		return isset(self::get_instance()->languages[$a_language_code]) ? self::get_instance()->languages[$a_language_code] : null;
+		return isset(self::$languages[$this->directory][$a_language_code]) ? self::$languages[$this->directory][$a_language_code] : null;
 		
 	}
 	
@@ -110,10 +101,10 @@ final class ApineTranslator {
 	 * @param string $a_language_code
 	 * @return boolean
 	 */
-	public static function is_exist_language ($a_language_code) {
+	public function is_exist_language ($a_language_code) {
 		
 		// Verify if a language matches the parameter
-		if (isset(self::get_instance()->languages[$a_language_code])) {
+		if (isset(self::$languages[$this->directory][$a_language_code])) {
 			$return = $a_language_code;
 		} else {
 			if (strlen($a_language_code) > 2) {
@@ -123,7 +114,7 @@ final class ApineTranslator {
 			$matches = array();
 			$translations = array();
 			
-			foreach (self::get_instance()->languages as $item) {
+			foreach (self::$languages[$this->directory] as $item) {
 				if($item->code_short == $a_language_code) {
 					$translation = new ApineTranslation($item);
 					$matches[$item->code] = $translation->get('language', 'priority');
@@ -152,15 +143,15 @@ final class ApineTranslator {
 	 * @param string $a_language_code
 	 * @return ApineTranslation
 	 */
-	public static function get_translation ($a_language_code) {
+	public function get_translation ($a_language_code) {
 		
 		// Load and return translation string of a language whose code matches the parameter
-		if (isset(self::get_instance()->languages[$a_language_code])) {
-			if(!isset(self::get_instance()->translations[$a_language_code])) {
-				self::get_instance()->translations[$a_language_code] = new ApineTranslation(self::get_instance()->languages[$a_language_code]);
+		if (isset(self::$languages[$this->directory][$a_language_code])) {
+			if(!isset(self::$translations[$this->directory][$a_language_code])) {
+				self::$translations[$this->directory][$a_language_code] = new ApineTranslation(self::$languages[$this->directory][$a_language_code]);
 			}
 			
-			return self::get_instance()->translations[$a_language_code];
+			return self::$translations[$this->directory][$a_language_code];
 		} else {
 			return null;
 		}
@@ -176,11 +167,11 @@ final class ApineTranslator {
 	 * @param string $a_pattern
 	 * @return string
 	 */
-	public static function translate ($a_language_code, $a_key, $a_index = null, $a_pattern = null) {
+	public function translate ($a_language_code, $a_key, $a_index = null, $a_pattern = null) {
 		
 		// Fetch a translation string of a matching language whose key and index matches parameters
 		// and return a formatted version from a pattern is provided
-		$translation = self::get_instance()->get_translation($a_language_code);
+		$translation = $this->get_translation($a_language_code);
 		
 		if ($translation != null) {
 			return $translation->parse($a_key, $a_index, $a_pattern);

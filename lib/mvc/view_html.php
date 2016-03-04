@@ -99,13 +99,13 @@ final class ApineHTMLView extends ApineView {
 		
 		if (is_array($a_properties) && count($a_properties) >= 1) {
 			
-			$tag = "<meta ";
+			$tag = "<meta";
 			
 			foreach ($a_properties as $name=>$value) {
-				$tag .= "$name=\"$value\"";
+				$tag .= " $name=\"$value\"";
 			}
 			
-			$tag .= " />";
+			$tag .= ">";
 			$this->_metatags[] = $tag;
 		}
 		
