@@ -128,7 +128,7 @@ final class ApineWebRouter implements ApineRouterInterface {
 		$vanilla_route_found = self::check_route($request);
 		
 		if (!$vanilla_route_found) {
-			switch (ApineConfig::get('runtime', 'route_format')) {
+			switch (ApineAppConfig::get('runtime', 'route_format')) {
 				case 'json':
 					$file_request = self::json_route($request);
 					break;

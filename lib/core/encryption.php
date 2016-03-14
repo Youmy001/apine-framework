@@ -22,13 +22,13 @@ final class ApineEncryption {
 	 */
 	public static function encrypt ($origin_string) {
 		
-		if (!ApineConfig::get('runtime', 'encryption_key')) {
+		if (!ApineAppConfig::get('runtime', 'encryption_key')) {
 			self::generate_key();
 		}
 		
 		$iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-		$encrypted_string = mcrypt_encrypt(MCRYPT_BLOWFISH, ApineConfig::get('runtime', 'encryption_key'), utf8_encode($origin_string), MCRYPT_MODE_ECB, $iv);
+		$encrypted_string = mcrypt_encrypt(MCRYPT_BLOWFISH, ApineAppConfig::get('runtime', 'encryption_key'), utf8_encode($origin_string), MCRYPT_MODE_ECB, $iv);
 		
 		return $encrypted_string;
 		
@@ -42,13 +42,13 @@ final class ApineEncryption {
 	 */
 	public static function decrypt ($encrypted_string) {
 		
-		if (!ApineConfig::get('runtime', 'encryption_key')) {
+		if (!ApineAppConfig::get('runtime', 'encryption_key')) {
 			self::generate_key();
 		}
 		
 		$iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-		$decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, ApineConfig::get('runtime', 'encryption_key'), $encrypted_string, MCRYPT_MODE_ECB, $iv);
+		$decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, ApineAppConfig::get('runtime', 'encryption_key'), $encrypted_string, MCRYPT_MODE_ECB, $iv);
 		
 		return $decrypted_string;
 		

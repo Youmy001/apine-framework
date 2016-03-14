@@ -46,8 +46,8 @@ final class ApineAPISession implements ApineSessionInterface{
 	 */
 	public function __construct() {
 		
-		if (is_null(ApineConfig::get('runtime', 'token_lifespan'))) {
-			$this->token_lifespan = ApineConfig::get('runtime', 'token_lifespan');
+		if (is_null(ApineAppConfig::get('runtime', 'token_lifespan'))) {
+			$this->token_lifespan = ApineAppConfig::get('runtime', 'token_lifespan');
 		}
 		
 		if (isset(ApineRequest::get_request_headers()['Authorization'])) {

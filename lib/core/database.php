@@ -17,12 +17,19 @@
 final class ApineDatabase {
 
 	/**
-	 * PDO connection instance
+	 * Default PDO connection instance
 	 * 
 	 * @static
 	 * @var PDO
 	 */
-	private static $_instance;
+	private static $apine_instance;
+	
+	/**
+	 * Custom PDO connection instane
+	 * 
+	 * @var PDO
+	 */
+	private $instance;
 
 	/**
 	 * PDO Statement to execute
@@ -43,39 +50,33 @@ final class ApineDatabase {
 	 * 
 	 * @throws ApineDatabaseException If cannot connect to database server
 	 */
-	public function __construct () {
+	public function __construct ($db_type = null, $db_host = null, $db_name = null, $db_user = 'root', $db_password = '', $db_charset = 'utf8') {
 
 		try {
-			self::$_instance = $this->get_instance();
+			if (!is_null($db_type) && !is_null($db_host) && !is_null($db_name)) {
+				$this->instance = new PDO($db_type . ':host=' . $db_host . ';dbname=' . $db_name . ';charset=' . $db_charset, $db_user, $db_password);
+				$this->instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$this->instance->exec('SET time_zone = "+00:00";');
+			} else { 
+				//self::$apine_instance = $this->get_instance();
+				if (!isset(self::$apine_instance)) {
+					try {
+						//$config = new ApineConfig();
+						self::$apine_instance = new PDO(ApineAppConfig::get('database', 'type').':host='.ApineAppConfig::get('databse', 'host').';dbname='.ApineAppConfig::get('database', 'dbname').';charset='.ApineAppConfig::get('database', 'charset'), ApineAppConfig::get('database', 'username'), ApineAppConfig::get('database', 'password'));
+						self::$apine_instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+						self::$apine_instance->exec('SET time_zone = "+00:00";');
+					} catch (PDOException $e) {
+						throw new ApineDatabaseException($e->getMessage(), $e->getCode(), $e);
+					}
+				}
+			}
+			
+			if (is_null($this->instance)) {
+				$this->instance = &self::$apine_instance;
+			}
 		} catch (PDOException $e) {
 			throw new ApineDatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
-	
-	}
-
-	/**
-	 * Fetch a PDO handler using the singleton pattern
-	 * 
-	 * @return PDO
-	 * @throws ApineDatabaseException If cannot connect to database server
-	 * @static
-	 *
-	 */
-	public static function get_instance () {
-
-		if (!isset(self::$_instance)) {
-			
-			try {
-				self::$_instance = new PDO(ApineConfig::get('database', 'type').':host='.ApineConfig::get('databse', 'host').';dbname='.ApineConfig::get('database', 'dbname').';charset='.ApineConfig::get('database', 'charset'), ApineConfig::get('database', 'username'), ApineConfig::get('database', 'password'));
-				self::$_instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-				self::$_instance->exec('SET time_zone = "+00:00";');
-			} catch (PDOException $e) {
-				throw new ApineDatabaseException($e->getMessage(), $e->getCode(), $e);
-			}
-			
-		}
-		
-		return self::$_instance;
 	
 	}
 
@@ -93,13 +94,16 @@ final class ApineDatabase {
 		$arResult = array();
 		
 		try {
-			$result = self::$_instance->query($query);
+			$result = $this->instance->query($query);
 			
 			if ($result) {
 				
-				while ($data = $result->fetch(PDO::FETCH_ASSOC)) {
+				/*while ($data = $result->fetch(PDO::FETCH_ASSOC)) {
 					$arResult[] = $data;
 				}
+				
+				var_dump($result->fetchAll(PDO::FETCH_ASSOC));*/
+				$arResult = $result->fetchAll(PDO::FETCH_ASSOC);
 				
 				$result->closeCursor();
 			}
@@ -146,7 +150,7 @@ final class ApineDatabase {
 		
 		//print $query;
 		try {
-			$success = self::$_instance->exec($query);
+			$success = $this->instance->exec($query);
 			
 			if ($success == 0) {
 				throw new PDOException('Cannot insert row');
@@ -208,7 +212,7 @@ final class ApineDatabase {
 		try {
 			
 			if (count($arValues) > 0) {
-				self::$_instance->exec($query);
+				$this->instance->exec($query);
 			} else {
 				throw new ApineException('Missing Values', 500);
 			}
@@ -248,7 +252,7 @@ final class ApineDatabase {
 		$query = "DELETE FROM $tableName WHERE " . join(' AND ', $arWhere);
 		
 		try {
-			$success = self::$_instance->exec($query);
+			$success = $this->instance->exec($query);
 			
 			if ($success == 0) {
 				return false;
@@ -273,7 +277,7 @@ final class ApineDatabase {
 	public function exec ($query) {
 
 		try {
-			$result = self::$_instance->exec($query);
+			$result = $this->instance->exec($query);
 			return $result;
 		} catch (PDOException $e) {
 			throw new ApineDatabaseException($e->getMessage(), $e->getCode(), $e);
@@ -295,7 +299,7 @@ final class ApineDatabase {
 		
 		// Returns statement's index for later access
 		$this->_isExecute = true;
-		$this->Execute[] = self::$_instance->prepare($statement, $driver_options);
+		$this->Execute[] = $this->instance->prepare($statement, $driver_options);
 		end($this->Execute);
 		return key($this->Execute);
 	
@@ -383,7 +387,7 @@ final class ApineDatabase {
 	 */
 	public function last_insert_id ($name = null) {
 
-		return self::$_instance->lastInsertID($name);
+		return $this->instance->lastInsertID($name);
 	
 	}
 
@@ -399,7 +403,7 @@ final class ApineDatabase {
 	 */
 	public function quote ($string, $parameter_type = PDO::PARAM_STR) {
 
-		return self::$_instance->quote($string, $parameter_type);
+		return $this->instance->quote($string, $parameter_type);
 	
 	}
 

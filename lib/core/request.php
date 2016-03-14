@@ -65,6 +65,13 @@ final class ApineRequest {
 	private $files;
 	
 	/**
+	 * Raw Request Body
+	 * 
+	 *  @var string
+	 */
+	private $request_body;
+	
+	/**
 	 * Request information
 	 * 
 	 * @var array
@@ -117,6 +124,7 @@ final class ApineRequest {
 		$this->request_port	= $_SERVER['SERVER_PORT'];
 		$this->request_ssl	= (isset($_SERVER['HTTPS'])&&!empty($_SERVER['HTTPS']));
 		$this->request_headers = apache_request_headers();
+		$this->request_body	= file_get_contents('php://input');
 		$this->api_call		= (isset($_GET['api']) && $_GET['api']==='api');
 		$this->is_ajax 		= (isset($this->request_headers['X-Requested-With']) && $this->request_headers['X-Requested-With'] == 'XMLHttpRequest');
 		
@@ -193,6 +201,17 @@ final class ApineRequest {
 	
 		return self::get_instance()->request_headers;
 	
+	}
+	
+	/**
+	 * Return raw request body
+	 * 
+	 * @return string
+	 */
+	public static function get_request_body () {
+		
+		return self::get_instance()->request_body;
+		
 	}
 	
 	/**

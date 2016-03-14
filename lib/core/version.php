@@ -54,8 +54,8 @@ final class ApineVersion {
 		if (is_file('VERSION')) {
 			$file = new ApineFile('VERSION', true);
 			$version = $file->content();
-		} else if (ApineConfig::get('application', 'version')) {
-			$version = ApineConfig::get('application', 'version');
+		} else if (ApineAppConfig::get('application', 'version')) {
+			$version = ApineAppConfig::get('application', 'version');
 		}
 		
 		if (isset($version) && self::validate($version)) {
@@ -76,8 +76,8 @@ final class ApineVersion {
 		if (is_file('lib/VERSION')) {
 			$file = new ApineFile('lib/VERSION', true);
 			$version = $file->content();
-		} else if (ApineConfig::get('apine-framework', 'version')) {
-			$version = ApineConfig::get('apine-framework', 'version');
+		} else if (ApineAppConfig::get('apine-framework', 'version')) {
+			$version = ApineAppConfig::get('apine-framework', 'version');
 		}
 		
 		return (isset($version) && self::validate($version)) ? $version : null;

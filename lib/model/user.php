@@ -230,11 +230,11 @@ class ApineUser extends ApineEntityModel {
 			$this->load();
 		}
 	
-		if (get_class($a_group_list) == 'ApineCollection') {
+		if (is_a($a_group_list, 'ApineCollection')) {
 			$valid=true;
 			
 			foreach ($a_group_list as $item) {
-				if (!get_class($item)=='ApineUserGroup') {
+				if (!is_a($item, 'ApineUserGroup')) {
 					$valid=false;
 				}
 			}
@@ -266,7 +266,7 @@ class ApineUser extends ApineEntityModel {
 			} else {
 				$is_group=false;
 			}
-		} else if (get_class($a_group) == 'ApineUserGroup') {
+		} else if (is_a($a_group, 'ApineUserGroup')) {
 			$is_group=$this->group->value_exists($a_group);
 		} else {
 			$is_group=false;

@@ -293,7 +293,7 @@ class ApineUserToken extends ApineEntityModel {
 		
 		if (is_numeric($a_user) && ApineUserFactory::is_id_exist($a_user)) {
 			$this->user = ApineUserFactory::create_by_id($a_user);
-		} else if (get_class($a_user) == 'ApineUser' || class_parents('ApineUser')) {
+		} else if (is_a($a_user, 'ApineUser')) {
 			$this->user = $a_user;
 		} else {
 			return false;

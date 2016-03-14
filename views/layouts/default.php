@@ -5,11 +5,11 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-	<meta name="description" content="<?= ApineConfig::get('application', 'description') ?>">
-	<meta name="author" content="<?= ApineConfig::get('application', 'author') ?>">
+	<meta name="description" content="<?= ApineAppConfig::get('application', 'description') ?>">
+	<meta name="author" content="<?= ApineAppConfig::get('application', 'author') ?>">
 	<link rel="icon" href="<?php echo ApineURLHelper::resource('resources/public/assets/favicon.ico');?>">
 	
-	<title><?= ApineConfig::get('application', 'title').' - '.$this->_title ?></title>
+	<title><?= ApineAppConfig::get('application', 'title').' - '.$this->_title ?></title>
 
 	<!-- Bootstrap core CSS -->
 	<link href="<?= ApineURLHelper::resource('vendor/twbs/bootstrap/dist/css/bootstrap.min.css'); ?>" rel="stylesheet" />
@@ -37,7 +37,7 @@
 						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="<?= ApineURLHelper::path('home', APINE_PROTOCOL_HTTP) ?>"><?= ApineConfig::get('application', 'title') ?></a>
+				<a class="navbar-brand" href="<?= ApineURLHelper::path('home', APINE_PROTOCOL_HTTP) ?>"><?= ApineAppConfig::get('application', 'title') ?></a>
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
@@ -47,7 +47,7 @@
 				</ul>
 				<?php if(!ApineSession::is_logged_in()){?>
 				<ul class="nav navbar-nav navbar-right">
-					<?php if (ApineConfig::get('runtime', 'secure_session') === 'yes') {?>
+					<?php if (ApineAppConfig::get('runtime', 'secure_session') === 'yes') {?>
 					<li><a href="<?= ApineURLHelper::path('login', APINE_PROTOCOL_HTTPS);?>"><span class="glyphicon glyphicon-log-in"></span> <?= ApineAppTranslator::translate('menu','login') ?></a></li>
 					<li><a href="<?= ApineURLHelper::path('register', APINE_PROTOCOL_HTTPS);?>"><span class="glyphicon glyphicon-check"></span> <?= ApineAppTranslator::translate('menu','register') ?></a></li>
 					<?php } else {?>
@@ -73,7 +73,7 @@
     </div>
     <footer class="container">
     	<hr>
-    	<p class="pull-left">&copy; 2015 <?= ApineConfig::get('application', 'author'); ?></p>
+    	<p class="pull-left">&copy; 2015 <?= ApineAppConfig::get('application', 'author'); ?></p>
     	<p class="pull-right text-right"><?= ApineAppTranslator::translate('menu','generation').execution_time().ApineAppTranslator::translate('menu','milliseconds') ?></p>
     	<p class="text-center">APIne Framework&nbsp;<br class="visible-xs">ver. <?= ApineVersion::framework() ?></p>
     </footer>

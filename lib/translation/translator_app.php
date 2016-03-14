@@ -51,9 +51,10 @@ final class ApineAppTranslator {
 	public static function set_language ($a_lang_code = null) {
 		
 		$directory = new ApineTranslationDirectory();
+		//$config = new ApineConfig('config.ini');
 		
 		if (is_null($a_lang_code)) {
-			if (ApineConfig::get('languages', 'detection') == "yes") {
+			if (ApineAppConfig::get('languages', 'detection') == "yes") {
 				if (!isset(ApineRequest::get()['language'])) {
 					$language = self::cookie_best();
 					
@@ -65,7 +66,7 @@ final class ApineAppTranslator {
 				}
 				
 				if (!$language) {
-					$language = ApineConfig::get('languages', 'default');
+					$language = ApineAppConfig::get('languages', 'default');
 				}
 	
 				self::get_instance()->language = $directory->get_translation($language);
@@ -73,7 +74,7 @@ final class ApineAppTranslator {
 				if (isset(ApineRequest::get()['language'])) {
 					$language = self::request_best();
 				} else {
-					$language = ApineConfig::get('languages', 'default');
+					$language = ApineAppConfig::get('languages', 'default');
 				}
 				
 				self::get_instance()->language = $directory->get_translation($language);
@@ -82,7 +83,7 @@ final class ApineAppTranslator {
 			if (ApineTranslator::is_exist_language($a_lang_code)) {
 				self::get_instance()->language = $directory->get_translation($a_lang_code);
 			} else {
-				self::get_instance()->language = $directory->get_translation(ApineConfig::get('languages', 'default'));
+				self::get_instance()->language = $directory->get_translation(ApineAppConfig::get('languages', 'default'));
 			}
 		}
 		
@@ -97,7 +98,7 @@ final class ApineAppTranslator {
 	 */
 	private static function cookie_best () {
 		
-		if (ApineConfig::get('languages', 'use_cookie') === "yes" && ApineCookie::get('apine_language')) {
+		if (ApineAppConfig::get('languages', 'use_cookie') === "yes" && ApineCookie::get('apine_language')) {
 			$directory = new ApineTranslationDirectory();
 			return $directory->is_exist_language(ApineCookie::get('apine_language'));
 		} else {
@@ -132,7 +133,7 @@ final class ApineAppTranslator {
 		$directory = new ApineTranslationDirectory();
 		
 		if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-			return $directory->get_translation(ApineConfig::get('languages', 'default'))->get_language()->code;
+			return $directory->get_translation(ApineAppConfig::get('languages', 'default'))->get_language()->code;
 		}
 	
 		$user_languages = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);

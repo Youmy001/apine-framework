@@ -38,6 +38,22 @@ function is_timestamp ($timestamp) {
 
 }
 
+
+/**
+ * Check if a string is a valid JSON string
+ * 
+ * @param string $string
+ * @return boolean
+ */
+function is_json($string) {
+	
+	json_decode($string);
+	return (json_last_error() == JSON_ERROR_NONE);
+	
+}
+
+
+
 /**
  * Loads all files recursively a user defined module in the model/
  * directory

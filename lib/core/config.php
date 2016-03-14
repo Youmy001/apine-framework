@@ -15,12 +15,11 @@
 final class ApineConfig {
 	
 	/**
-	 * Instance of the Config reader
-	 * Singleton Implementation
+	 * Path to the config file
 	 * 
-	 * @var ApineConfig
+	 * @var string
 	 */
-	private static $_instance;
+	private $path;
 	
 	
 	/**
@@ -36,29 +35,14 @@ final class ApineConfig {
 	 * 
 	 * Extract string from the configuration file 
 	 */
-	private function __construct () {
+	public function __construct ($a_path = 'config.ini') {
 		
-		if (file_exists('config.ini')) {
-			$this->settings = parse_ini_file('config.ini', true);
+		if (file_exists($a_path)) {
+			$this->path = $a_path;
+			$this->settings = parse_ini_file($a_path, true);
 		} else {
-			die("No config file found.");
+			throw new Exception("Config file not found.");
 		}
-		
-	}
-	
-	/**
-	 * Singleton design pattern implementation
-	 * 
-	 * @static
-	 * @return ApineConfig
-	 */
-	public static function get_instance () {
-		
-		if (!isset(self::$_instance)) {
-			self::$_instance = new static();
-		}
-		
-		return self::$_instance;
 		
 	}
 	
@@ -69,11 +53,11 @@ final class ApineConfig {
 	 * @param string $key
 	 * @return string
 	 */
-	public static function get ($prefix, $key) {
+	public function get ($prefix, $key) {
 		
 		$prefix = strtolower($prefix);
 		$key = strtolower($key);
-		return isset(self::get_instance()->settings[$prefix][$key]) ? self::get_instance()->settings[$prefix][$key] : null;
+		return isset($this->settings[$prefix][$key]) ? $this->settings[$prefix][$key] : null;
 		
 	}
 	
@@ -82,9 +66,9 @@ final class ApineConfig {
 	 * 
 	 * @return array
 	 */
-	public static function get_config () {
+	public function get_config () {
 		
-		return self::get_instance()->settings;
+		return $this->settings;
 		
 	}
 	
@@ -95,13 +79,13 @@ final class ApineConfig {
 	 * @param string $key
 	 * @param string $value
 	 */
-	public static function set ($prefix, $key, $value) {
+	public function set ($prefix, $key, $value) {
 		
 		$prefix = strtolower($prefix);
 		$key = strtolower($key);
 		
-		self::get_instance()->settings[$prefix][$key] = $value;
-		write_ini_file(self::get_instance()->settings, 'config.ini', true);
+		$this->settings[$prefix][$key] = $value;
+		write_ini_file($this->settings, $this->path, true);
 		
 	}
 }

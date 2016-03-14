@@ -82,14 +82,16 @@ final class ApineWebSession implements ApineSessionInterface {
 	 */
 	public function __construct () {
 		
-		if (ApineConfig::get('runtime', 'user_class')) {
-			$user_class = ApineConfig::get('runtime', 'user_class');
+		//$config = new ApineConfig();
+		
+		if (ApineAppConfig::get('runtime', 'user_class')) {
+			$user_class = ApineAppConfig::get('runtime', 'user_class');
 			$pos_slash = strpos($user_class, '/');
 			$module = substr($user_class, 0, $pos_slash);
 			$class = substr($user_class, $pos_slash + 1);
 			load_module($module);
 			
-			if (class_exists($class) && is_subclass_of($class, 'ApineUser')) {
+			if (is_a($class, 'ApineUser')) {
 				$this->user_class_name = $class;
 			} else {
 				$this->user_class_name = 'ApineUser';
@@ -99,8 +101,8 @@ final class ApineWebSession implements ApineSessionInterface {
 			$this->user_class_name = "ApineUser";
 		}
 		
-		if (!is_null(ApineConfig::get('runtime', 'session_lifespan'))) {
-			$this->session_lifespan = ApineConfig::get('runtime', 'session_lifespan');
+		if (!is_null(ApineAppConfig::get('runtime', 'session_lifespan'))) {
+			$this->session_lifespan = ApineAppConfig::get('runtime', 'session_lifespan');
 		}
 		
 		if (isset($_COOKIE['apine_session'])) {

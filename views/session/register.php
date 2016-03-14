@@ -14,7 +14,7 @@
 			</div>
 			<?php endif;?>
 			<div class="panel-body">
-				<form id="content" action="<?php echo ApineURLHelper::path("register",false);?>"
+				<form id="content" action="<?php echo ApineURLHelper::path("register");?>"
 					method="post">
 					<div class="form-group">
 						<label class="control-label"><?= ApineAppTranslator::translate('register','username'); ?></label>
