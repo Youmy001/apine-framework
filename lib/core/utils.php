@@ -189,9 +189,15 @@ function is_exec_available () {
  */
 function execution_time () {
 
-	global $before;
-	$after = microtime(true) * 1000;
-	return number_format($after - $before, 1);
+	$time = ApineApplication::execution_time();
+	
+	if ($time === false) {
+		global $before;
+		$after = microtime(true) * 1000;
+		$time = number_format($after - $before, 1);
+	}
+	
+	return $time;
 
 }
 

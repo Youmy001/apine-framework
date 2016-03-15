@@ -27,8 +27,8 @@ final class ApineConfig {
 	 * 
 	 * @var array
 	 */
-	private $settings;
-	//private $settings = [];
+	//private $settings;
+	private $settings = [];
 	
 	/**
 	 * Construct the Conguration Reader handler
@@ -41,7 +41,7 @@ final class ApineConfig {
 			$this->path = $a_path;
 			$this->settings = parse_ini_file($a_path, true);
 		} else {
-			throw new Exception("Config file not found.");
+			throw new ApineException("Config file not found.", 500);
 		}
 		
 	}

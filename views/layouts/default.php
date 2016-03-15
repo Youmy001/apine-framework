@@ -47,7 +47,7 @@
 				</ul>
 				<?php if(!ApineSession::is_logged_in()){?>
 				<ul class="nav navbar-nav navbar-right">
-					<?php if (ApineAppConfig::get('runtime', 'secure_session') === 'yes') {?>
+					<?php if (ApineApplication::secure_session()) {?>
 					<li><a href="<?= ApineURLHelper::path('login', APINE_PROTOCOL_HTTPS);?>"><span class="glyphicon glyphicon-log-in"></span> <?= ApineAppTranslator::translate('menu','login') ?></a></li>
 					<li><a href="<?= ApineURLHelper::path('register', APINE_PROTOCOL_HTTPS);?>"><span class="glyphicon glyphicon-check"></span> <?= ApineAppTranslator::translate('menu','register') ?></a></li>
 					<?php } else {?>
@@ -73,7 +73,7 @@
     </div>
     <footer class="container">
     	<hr>
-    	<p class="pull-left">&copy; 2015 <?= ApineAppConfig::get('application', 'author'); ?></p>
+    	<p class="pull-left">&copy; 2016 <?= ApineAppConfig::get('application', 'author'); ?></p>
     	<p class="pull-right text-right"><?= ApineAppTranslator::translate('menu','generation').execution_time().ApineAppTranslator::translate('menu','milliseconds') ?></p>
     	<p class="text-center">APIne Framework&nbsp;<br class="visible-xs">ver. <?= ApineVersion::framework() ?></p>
     </footer>

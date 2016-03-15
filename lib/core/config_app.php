@@ -38,10 +38,10 @@ final class ApineAppConfig {
 	 */
 	private function __construct () {
 		
-		if (file_exists('config.ini')) {
-			$this->settings = parse_ini_file('config.ini', true);
+		if (file_exists(ApineApplication::config_path())) {
+			$this->settings = parse_ini_file(ApineApplication::config_path(), true);
 		} else {
-			die("No config file found.");
+			throw new ApineException("No config file found.", 500);
 		}
 		
 	}
@@ -101,7 +101,7 @@ final class ApineAppConfig {
 		$key = strtolower($key);
 		
 		self::get_instance()->settings[$prefix][$key] = $value;
-		write_ini_file(self::get_instance()->settings, 'config.ini', true);
+		write_ini_file(self::get_instance()->settings, ApineApplication::config_path(), true);
 		
 	}
 }

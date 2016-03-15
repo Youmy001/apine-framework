@@ -73,8 +73,10 @@ final class ApineVersion {
 	 */
 	public static function framework () {
 		
-		if (is_file('lib/VERSION')) {
-			$file = new ApineFile('lib/VERSION', true);
+		$folder = realpath(dirname(__FILE__) . '/..');
+		
+		if (is_file($folder . '/VERSION')) {
+			$file = new ApineFile($folder . '/VERSION', true);
 			$version = $file->content();
 		} else if (ApineAppConfig::get('apine-framework', 'version')) {
 			$version = ApineAppConfig::get('apine-framework', 'version');

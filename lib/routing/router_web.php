@@ -22,8 +22,10 @@ final class ApineWebRouter implements ApineRouterInterface {
 	 */
 	private function xml_route ($request) {
 		
+		$path = ApineApplication::routes_path();
 		$xml_routes = new Parser();
-		$xml_routes->load_from_file('routes.xml');
+		//$xml_routes->load_from_file('routes.xml');
+		$xml_routes->load_from_file($path);
 		//$request = (isset(ApineRequest::get()['request'])) ? ApineRequest::get()['request'] : '/index';
 		$route_found = false;
 		
@@ -84,8 +86,11 @@ final class ApineWebRouter implements ApineRouterInterface {
 	 */
 	private function json_route ($request) {
 		
-		$file = fopen('routes.json', 'r');
-		$content = fread($file, filesize('routes.json'));
+		/*$file = fopen('routes.json', 'r');
+		$content = fread($file, filesize('routes.json'));*/
+		$path = ApineApplication::routes_path();
+		$file = fopen($path, 'r');
+		$content = fread($file, filesize($path));
 		$routes = json_decode($content);
 		
 		foreach ($routes as $item => $values) {
@@ -128,11 +133,12 @@ final class ApineWebRouter implements ApineRouterInterface {
 		$vanilla_route_found = self::check_route($request);
 		
 		if (!$vanilla_route_found) {
-			switch (ApineAppConfig::get('runtime', 'route_format')) {
-				case 'json':
+			//switch (ApineAppConfig::get('runtime', 'route_format')) {
+			switch (ApineApplication::route_type()) {
+				case APINE_ROUTES_JSON:
 					$file_request = self::json_route($request);
 					break;
-				case 'xml':
+				case APINE_ROUTES_XML:
 					$file_request = self::xml_route($request);
 					break;
 				default:

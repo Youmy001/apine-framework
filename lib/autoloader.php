@@ -6,7 +6,7 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
-require_once ('lib/core/utils.php');
+require_once (__DIR__ . '/core/utils.php');
 
 /**
  * Module Files Loading Tool
@@ -59,7 +59,7 @@ final class ApineAutoload {
 	static function load_kernel() {
 		
 		try {
-			$files=self::get_folder_files('lib/');
+			$files=self::get_folder_files(__DIR__ . '/');
 			
 			foreach ($files as $file) {
 				if (file_extension($file) === "php") {
