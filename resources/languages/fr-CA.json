@@ -6,9 +6,9 @@
 		"priority" : "0.5"
 	},
 	"locale": {
-		"datehour": "d/m/Y H:i",
-		"date" : "d/m/Y",
-		"hour" : "H:i"
+		"datehour": "dd MMMM Y hh:mm a",
+		"date" : "dd/MM/Y",
+		"hour" : "hh:mm a"
 	},
 	"application": {
 		"description": "Une application d'exemple construite avec APIne Framework et Bootstrap 3."

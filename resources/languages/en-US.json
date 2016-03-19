@@ -6,9 +6,9 @@
 		"priority" : "1"
 	},
 	"locale": {
-		"datehour": "m/d/Y h:i A",
-		"date" : "m/d/Y",
-		"hour" : "h:i A"
+		"datehour": "MMMM dd, Y hh:mm a",
+		"date" : "MM/dd/Y",
+		"hour" : "hh:mm a"
 	},
 	"application": {
 		"description": "A small example application built with the APIne framework including Bootstrap 3."

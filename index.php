@@ -18,4 +18,4 @@ $apine = new ApineApplication();
 $apine->set_mode(APINE_MODE_DEVELOPMENT);
 $apine->set_use_https(true);
 
-$apine->run(APINE_RUNTIME_API);
+$apine->run(APINE_RUNTIME_HYBRID);

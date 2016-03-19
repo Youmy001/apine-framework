@@ -45,7 +45,7 @@ final class ApineTranslationLocale {
 	/**
 	 * Locales related Language
 	 * 
-	 * @var TranslationLanguage
+	 * @var ApineTranslationLanguage
 	 */
 	private $language;
 	
@@ -126,7 +126,22 @@ final class ApineTranslationLocale {
 		
 	}
 	
-	/*public function format ($locale_str, $string) {
+	/**
+	 * 
+	 * @param unknown $a_timestamp
+	 * @param string $pattern According to http://userguide.icu-project.org/formatparse/datetime
+	 * @throws ApineException
+	 */
+	public function format ($a_timestamp, $pattern = null) {
 		
-	}*/
+		if (is_timestamp($a_timestamp)) {
+			$formatter = new IntlDateFormatter($this->language->code, IntlDateFormatter::FULL, IntlDateFormatter::FULL, null, null, $pattern);
+			$format = $formatter->format(strtotime($a_timestamp));
+				
+			return $format;
+		} else {
+			throw new ApineException('Invalid Timestamp', 500);
+		}
+		
+	}
 }

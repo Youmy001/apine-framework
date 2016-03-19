@@ -65,10 +65,10 @@ class ApineFile {
 	public function __construct ($a_path, $a_readonly = false, $a_new = false) {
 
 		try {
-			if (!is_file($a_path) && $a_new == false) {
+			if (!is_file($a_path) && !$a_new) {
 				throw new ApineException('File not found');
 			} else if ($a_new == true) {
-				$this->file = fopen($a_path, "w+");
+				$this->file = fopen($a_path, "c+");
 				
 				if (!$this->file) {
 					throw new ApineException('Could not create file');
@@ -88,7 +88,7 @@ class ApineFile {
 				if ($a_readonly) {
 					$this->file = fopen($a_path, "r");
 				} else {
-					$this->file = fopen($a_path, "c+");
+					$this->file = fopen($a_path, "x+");
 				}
 				
 				$this->readonly = $a_readonly;

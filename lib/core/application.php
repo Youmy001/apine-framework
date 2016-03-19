@@ -23,7 +23,7 @@ final class ApineApplication {
 	
 	private static $_instance;
 	
-	private $version = '1.0.0-dev.15.01';
+	private $version = '1.0.0-dev.15.02';
 	
 	private $apine_folder;
 	
