@@ -83,9 +83,10 @@ final class ApineURLHelper {
 			$this->session_path = '';
 		}
 		
-		if (!is_null(ApineAppConfig::get('runtime', 'webroot')) && !empty(ApineAppConfig::get('runtime', 'webroot'))) {
-			$this->server_app_root .= "/" . ApineAppConfig::get('runtime', 'webroot');
-			$this->server_main_root .= "/" . ApineAppConfig::get('runtime', 'webroot');
+		$webroot = ApineApplication::get_instance()->get_webroot();
+		if (!is_null($webroot) && !empty($webroot)) {
+			$this->server_app_root .= "/" . $webroot;
+			$this->server_main_root .= "/" . $webroot;
 		}
 		
 	}
@@ -114,9 +115,9 @@ final class ApineURLHelper {
 	 */
 	private static function protocol ($param) {
 		
-		if (!ApineApplication::use_https()) {
+		if (!ApineApplication::get_instance()->get_use_https()) {
 			$protocol = 'http://';
-		} else if (ApineApplication::secure_session() && ApineSession::is_logged_in()) {
+		} else if (ApineApplication::get_instance()->get_secure_session() && ApineSession::is_logged_in()) {
 			$protocol = 'https://';
 		} else {
 			switch ($param) {

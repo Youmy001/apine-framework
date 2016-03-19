@@ -28,8 +28,8 @@ final class ApineAppConfig {
 	 * 
 	 * @var array
 	 */
-	//private $settings;
-	private $settings = [];
+	private $settings;
+	//private $settings = [];
 	
 	/**
 	 * Construct the Conguration Reader handler
@@ -38,11 +38,7 @@ final class ApineAppConfig {
 	 */
 	private function __construct () {
 		
-		if (file_exists(ApineApplication::config_path())) {
-			$this->settings = parse_ini_file(ApineApplication::config_path(), true);
-		} else {
-			throw new ApineException("No config file found.", 500);
-		}
+		$this->settings = apine_application()->get_config()->get_config();
 		
 	}
 	

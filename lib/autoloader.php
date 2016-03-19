@@ -8,6 +8,8 @@
  */
 require_once (__DIR__ . '/core/utils.php');
 
+$before = microtime(true) * 1000;
+
 /**
  * Module Files Loading Tool
  * 

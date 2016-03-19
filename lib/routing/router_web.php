@@ -15,6 +15,25 @@
  */
 final class ApineWebRouter implements ApineRouterInterface {
 	
+	private $routes_file;
+	
+	private $routes_type;
+	
+	public function __construct () {
+		
+		try {
+			$this->routes_file = apine_application()->get_routes_path();
+			$this->routes_type = apine_application()->get_routes_type();
+			
+			if (!file_exists($this->routes_file)) {
+				throw new ApineException('Route File Not Found', 418);
+			}
+		} catch (Exception $e) {
+			throw new ApineException($e->getMessage(), $e->getCode(), $e);
+		}
+		
+	}
+	
 	/**
 	 * Find matching route in XML route configuration and return modified request string 
 	 * 
@@ -22,11 +41,8 @@ final class ApineWebRouter implements ApineRouterInterface {
 	 */
 	private function xml_route ($request) {
 		
-		$path = ApineApplication::routes_path();
 		$xml_routes = new Parser();
-		//$xml_routes->load_from_file('routes.xml');
-		$xml_routes->load_from_file($path);
-		//$request = (isset(ApineRequest::get()['request'])) ? ApineRequest::get()['request'] : '/index';
+		$xml_routes->load_from_file($this->routes_file);
 		$route_found = false;
 		
 		$routes = $xml_routes->getElementsByAttributeValue('method', ApineRequest::get_request_type());
@@ -86,12 +102,15 @@ final class ApineWebRouter implements ApineRouterInterface {
 	 */
 	private function json_route ($request) {
 		
-		/*$file = fopen('routes.json', 'r');
-		$content = fread($file, filesize('routes.json'));*/
-		$path = ApineApplication::routes_path();
+		$path = $this->routes_file;
 		$file = fopen($path, 'r');
 		$content = fread($file, filesize($path));
 		$routes = json_decode($content);
+		
+		$json_error = json_last_error();
+		if ($routes === null && $json_error !== JSON_ERROR_NONE) {
+			throw new ApineException('Error Loading JSON file', $json_error);
+		}
 		
 		foreach ($routes as $item => $values) {
 			$method = $_SERVER['REQUEST_METHOD'];
@@ -133,13 +152,12 @@ final class ApineWebRouter implements ApineRouterInterface {
 		$vanilla_route_found = self::check_route($request);
 		
 		if (!$vanilla_route_found) {
-			//switch (ApineAppConfig::get('runtime', 'route_format')) {
-			switch (ApineApplication::route_type()) {
+			switch ($this->routes_type) {
 				case APINE_ROUTES_JSON:
-					$file_request = self::json_route($request);
+					$file_request = $this->json_route($request);
 					break;
 				case APINE_ROUTES_XML:
-					$file_request = self::xml_route($request);
+					$file_request = $this->xml_route($request);
 					break;
 				default:
 					$file_request = null;

@@ -1,7 +1,7 @@
 <div class="col-md-4 col-md-offset-4">
 	<div class="panel panel-primary">
 		<div class="panel-heading">
-			<h3 class="panel-title"><?= ApineConfig::get('application', 'title'); ?> Versions</h3>
+			<h3 class="panel-title"><?= ApineAppConfig::get('application', 'title'); ?> Versions</h3>
 		</div>
 		<div class="panel-body">
 			<dl>

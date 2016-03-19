@@ -73,16 +73,22 @@ final class ApineVersion {
 	 */
 	public static function framework () {
 		
-		$folder = realpath(dirname(__FILE__) . '/..');
+		$version = apine_application()->get_version();
 		
-		if (is_file($folder . '/VERSION')) {
-			$file = new ApineFile($folder . '/VERSION', true);
-			$version = $file->content();
-		} else if (ApineAppConfig::get('apine-framework', 'version')) {
-			$version = ApineAppConfig::get('apine-framework', 'version');
-		}
+		/*if (!$version) {
+			$folder = realpath(dirname(__FILE__) . '/..');
+			
+			if (is_file($folder . '/VERSION')) {
+				$file = new ApineFile($folder . '/VERSION', true);
+				$file_version = $file->content();
+			} else if (ApineAppConfig::get('apine-framework', 'version')) {
+				$file_version = ApineAppConfig::get('apine-framework', 'version');
+			}
+			
+			$version = (isset($file_version) && self::validate($file_version)) ? $file_version : null;
+		}*/
 		
-		return (isset($version) && self::validate($version)) ? $version : null;
+		return $version;
 	}
 	
 	/**

@@ -109,8 +109,6 @@ final class ApineWebSession implements ApineSessionInterface {
 			$token = $_COOKIE['apine_session'];
 		} else {
 			$token = ApineEncryption::token();
-			//$database = new ApineDatabase();
-			//$database->insert('apine_sessions', array('id' => $token));
 		}
 		
 		$this->session = new ApineSessionData($token);

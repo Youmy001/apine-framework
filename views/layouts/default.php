@@ -47,7 +47,7 @@
 				</ul>
 				<?php if(!ApineSession::is_logged_in()){?>
 				<ul class="nav navbar-nav navbar-right">
-					<?php if (ApineApplication::secure_session()) {?>
+					<?php if (ApineApplication::get_instance()->get_secure_session()) {?>
 					<li><a href="<?= ApineURLHelper::path('login', APINE_PROTOCOL_HTTPS);?>"><span class="glyphicon glyphicon-log-in"></span> <?= ApineAppTranslator::translate('menu','login') ?></a></li>
 					<li><a href="<?= ApineURLHelper::path('register', APINE_PROTOCOL_HTTPS);?>"><span class="glyphicon glyphicon-check"></span> <?= ApineAppTranslator::translate('menu','register') ?></a></li>
 					<?php } else {?>

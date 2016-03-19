@@ -189,13 +189,9 @@ function is_exec_available () {
  */
 function execution_time () {
 
-	$time = ApineApplication::execution_time();
-	
-	if ($time === false) {
-		global $before;
-		$after = microtime(true) * 1000;
-		$time = number_format($after - $before, 1);
-	}
+	global $before;
+	$after = microtime(true) * 1000;
+	$time = number_format($after - $before, 1);
 	
 	return $time;
 
@@ -211,6 +207,17 @@ function execution_time () {
 function internal_redirect ($request, $protocol = APINE_PROTOCOL_DEFAULT) {
 	
 	header('Location: ' . ApineURLHelper::path($request, $protocol));
+	
+}
+
+/**
+ * Return the instance of the Apine Application
+ * 
+ * @return ApineApplication
+ */
+function apine_application () {
+	
+	return ApineApplication::get_instance();
 	
 }
 

@@ -22,17 +22,9 @@ final class ApineRouter {
 	private $strategy;
 	
 	/**
-	 * Instance of the Route Manager
-	 * Singleton Implementation
-	 *
-	 * @var ApineRouter
-	 */
-	private static $_instance;
-	
-	/**
 	 * Instantiation of the strategy
 	 */
-	private function __construct () {
+	public function __construct () {
 	
 		if (ApineRequest::is_api_call()) {
 			$this->strategy = new ApineAPIRouter();
@@ -43,29 +35,14 @@ final class ApineRouter {
 	}
 	
 	/**
-	 * Singleton design pattern implementation
-	 *
-	 * @return ApineSession
-	 */
-	public static function get_instance () {
-	
-		if (!isset(self::$_instance)) {
-			self::$_instance = new static();
-		}
-	
-		return self::$_instance;
-	
-	}
-	
-	/**
 	 * Route the request to the best matching controller and action
 	 *
 	 * @param string $request
 	 * @return ApineRoute
 	 */
-	public static function route ($request) {
+	public function route ($request) {
 	
-		return self::get_instance()->strategy->route($request);
+		return $this->strategy->route($request);
 	
 	}
 	
@@ -76,9 +53,9 @@ final class ApineRouter {
 	 * @param string $action
 	 * @param array $args
 	 */
-	public static function execute ($controller, $action, $args = null) {
+	public function execute ($controller, $action, $args = null) {
 	
-		return self::get_instance()->strategy->execute($controller, $action, $args);
+		return $this->strategy->execute($controller, $action, $args);
 	
 	}
 	
@@ -87,9 +64,9 @@ final class ApineRouter {
 	 *
 	 * @return ApineRouterInterface
 	 */
-	public static function get_handler () {
+	public function get_handler () {
 	
-		return self::get_instance()->strategy;
+		return $this->strategy;
 	
 	}
 	
