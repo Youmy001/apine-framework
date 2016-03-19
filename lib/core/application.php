@@ -23,7 +23,7 @@ final class ApineApplication {
 	
 	private static $_instance;
 	
-	private $version = '1.0.0-dev.15.02';
+	private $version = '1.0.0-dev.15.03';
 	
 	private $apine_folder;
 	
@@ -185,6 +185,7 @@ final class ApineApplication {
 				$gi = geoip_open($this->apine_folder . "/GeoLiteCity.dat", GEOIP_STANDARD);
 				$record = geoip_record_by_addr($gi, $_SERVER['REMOTE_ADDR']);
 				//$record = geoip_record_by_addr($gi, "24.230.215.89");
+				//var_dump($record);
 			
 				if (isset($record)) {
 					$timezone = get_time_zone($record->country_code, ($record->region!='') ? $record->region : 0);

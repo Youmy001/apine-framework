@@ -128,20 +128,17 @@ final class ApineTranslationLocale {
 	
 	/**
 	 * 
-	 * @param unknown $a_timestamp
-	 * @param string $pattern According to http://userguide.icu-project.org/formatparse/datetime
+	 * @param int|string $a_timestamp
+	 * @param string $pattern According to http://php.net/manual/en/function.strftime.php
 	 * @throws ApineException
 	 */
-	public function format ($a_timestamp, $pattern = null) {
+	public function format_date ($a_timestamp, $pattern = null) {
 		
-		if (is_timestamp($a_timestamp)) {
-			$formatter = new IntlDateFormatter($this->language->code, IntlDateFormatter::FULL, IntlDateFormatter::FULL, null, null, $pattern);
-			$format = $formatter->format(strtotime($a_timestamp));
-				
-			return $format;
-		} else {
+		if (!is_timestamp($a_timestamp)) {
 			throw new ApineException('Invalid Timestamp', 500);
 		}
+		
+		return strftime($pattern, strtotime($a_timestamp));
 		
 	}
 }

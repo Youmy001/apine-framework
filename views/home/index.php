@@ -3,6 +3,7 @@
 <p><?= ApineAppTranslator::translate('home','small_one') ?><br><?= ApineAppTranslator::translate('home','small_two') ?></p>
 
 <?php if(ApineSession::is_logged_in()){
-	$date = ApineAppTranslator::translation()->get_locale()->format(ApineSession::get_user()->get_register_date(), ApineAppTranslator::translation()->get_locale()->datehour());
+	$locale = ApineAppTranslator::translation()->get_locale();
+	$date = $locale->format_date(ApineSession::get_user()->get_register_date(), $locale->datehour());
 	print "<p class=\"text-right\">".ucfirst(ApineSession::get_user()->get_username())." subscribed on : ". $date ."</p>";
 }?>

@@ -9,9 +9,9 @@
 		"description": "Une application d'exemple construite avec APIne Framework et Bootstrap 3."
 	},
 	"locale": {
-		"datehour": "d/M/Y H:m",
-		"date" : "d/M/Y",
-		"hour" : "H:m"
+		"datehour": "%x %H:%M",
+		"date" : "%x",
+		"hour" : "%H:%M"
 	},
 	"menu": {
 		"home": "Accueil",
