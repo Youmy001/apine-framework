@@ -126,7 +126,19 @@ final class ApineTranslationLocale {
 		
 	}
 	
-	/*public function format ($locale_str, $string) {
+	/**
+	 * 
+	 * @param int|string $a_timestamp
+	 * @param string $pattern According to http://php.net/manual/en/function.strftime.php
+	 * @throws ApineException
+	 */
+	public function format_date ($a_timestamp, $pattern = null) {
 		
-	}*/
+		if (!is_timestamp($a_timestamp)) {
+			throw new ApineException('Invalid Timestamp', 500);
+		}
+		
+		return strftime($pattern, strtotime($a_timestamp));
+		
+	}
 }
