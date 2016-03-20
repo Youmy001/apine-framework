@@ -89,7 +89,6 @@ final class ApineAppTranslator {
 		
 		$code = str_replace('-', '_', self::get_instance()->language->get_language()->code);
 		setlocale(LC_ALL, $code . '.UTF8', $code, self::get_instance()->language->get_language()->code_short);
-		setlocale(LC_ALL, 'zh_CN.UTF8');
 	
 	}
 	
