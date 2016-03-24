@@ -4,43 +4,43 @@
 
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title"><?= ApineAppTranslator::translate('login','title'); ?></h3>
+				<h3 class="panel-title"><?= apine_app_translator()->translate('login','title'); ?></h3>
 			</div>
 			<?php if ($this->_params->get_item('error_code')) :?>
 			<?php 	if ($this->_params->get_item('error_code') == 200) :?>
 			<div class="alert alert-block alert-success" style="margin:0;border-radius:0;">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
-				<h4><strong><span class="glyphicon glyphicon-ok"></span>&nbsp;<?= ApineAppTranslator::translate('form','success'); ?></strong></h4>
+				<h4><strong><span class="glyphicon glyphicon-ok"></span>&nbsp;<?= apine_app_translator()->translate('form','success'); ?></strong></h4>
 				<span><?php echo $this->_params->get_item('error_message'); ?></span>
 			</div>
 			<?php else :?>
 			<div class="alert alert-block alert-warning" style="margin:0;border-radius:0;">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
-				<h4><strong><span class="glyphicon glyphicon-warning-sign"></span>&nbsp;<?= ApineAppTranslator::translate('form','warning'); ?></strong></h4>
+				<h4><strong><span class="glyphicon glyphicon-warning-sign"></span>&nbsp;<?= apine_app_translator()->translate('form','warning'); ?></strong></h4>
 				<span><?php echo $this->_params->get_item('error_message'); ?></span>
 			</div>
 			<?php endif;?>
 			<?php endif;?>
 			<div class="panel-body">
-				<form id="content" action="<?= ApineURLHelper::path("login");?>"
+				<form id="content" action="<?= apine_url_helper()->path("login");?>"
 					method="post">
 					<div class="form-group">
-						<label class="control-label"><?= ApineAppTranslator::translate('login','username_email'); ?></label>
+						<label class="control-label"><?= apine_app_translator()->translate('login','username_email'); ?></label>
 						<input class="form-control" type="text" name="user"
-								placeholder="<?= ApineAppTranslator::translate('login','username'); ?>" required />
+								placeholder="<?= apine_app_translator()->translate('login','username'); ?>" required />
 					</div>
 					<div class="form-group">
-						<label class="control-label"><?= ApineAppTranslator::translate('login','password'); ?></label>
+						<label class="control-label"><?= apine_app_translator()->translate('login','password'); ?></label>
 						<input class="form-control" type="password" name="pwd"
-								placeholder="<?= ApineAppTranslator::translate('login','password'); ?>" required />
+								placeholder="<?= apine_app_translator()->translate('login','password'); ?>" required />
 					</div>
 					<div class="checkout">
 						<label>
-							<input type="checkbox" name="perm" value="on"> <?= ApineAppTranslator::translate('login','remember'); ?>
+							<input type="checkbox" name="perm" value="on"> <?= apine_app_translator()->translate('login','remember'); ?>
 						</label>
-						<button type="submit" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-log-in"></span> <?= ApineAppTranslator::translate('login','submit'); ?></button>
+						<button type="submit" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-log-in"></span> <?= apine_app_translator()->translate('login','submit'); ?></button>
 					</div>
-					<a href="<?= ApineURLHelper::path("login/restore");?>"><?= ApineAppTranslator::translate('login','forgot'); ?></a>
+					<a href="<?= apine_url_helper()->path("login/restore");?>"><?= apine_app_translator()->translate('login','forgot'); ?></a>
 				</form>
 			</div>
 		</div>

@@ -10,10 +10,11 @@
 
 ini_set('display_errors', -1);
 
-require_once('lib/autoloader.php');
-ApineAutoload::load_kernel();
+require_once 'lib/Autoloader.php';
+$loader = new Apine\Autoloader();
+$loader->register();
 
-$apine = new ApineApplication();
+$apine = new Apine\Application\Application();
 
 $apine->set_mode(APINE_MODE_DEVELOPMENT);
 $apine->set_use_https(true);

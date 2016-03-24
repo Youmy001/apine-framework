@@ -1,4 +1,4 @@
-<h1><?= ApineAppTranslator::translate('errors', 'error') . ' ' . $this->_params->get_item('code');?></h1>
+<h1><?= apine_app_translator()->translate('errors', 'error') . ' ' . $this->_params->get_item('code');?></h1>
 <h2><?= $this->_params->get_item('message');?></h2>
 
 <?php 

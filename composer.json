@@ -4,5 +4,8 @@
         "twbs/bootstrap": "^3.3",
         "components/jquery": "^2.1",
         "geoip/geoip": "~1.14"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^2.5"
     }
 }
