@@ -68,7 +68,7 @@ class ApineFile {
 			if (!is_file($a_path) && $a_new == false) {
 				throw new ApineException('File not found');
 			} else if ($a_new == true) {
-				$this->file = fopen($a_path, "w+");
+				$this->file = fopen($a_path, "c+");
 				
 				if (!$this->file) {
 					throw new ApineException('Could not create file');
@@ -234,7 +234,7 @@ class ApineFile {
 	 */
 	public function content () {
 		
-		if ($this->size() > 0 && $this->content === null) {
+		if ($this->size() > 0 && empty($this->content)) {
 			$this->content = fread($this->file, filesize($this->path));
 		}
 
@@ -252,6 +252,7 @@ class ApineFile {
 
 		if (!$this->readonly) {
 			if ($a_append) {
+				$this->content();
 				$this->content .= $a_content;
 			} else {
 				$this->content = $a_content;
