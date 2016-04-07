@@ -204,6 +204,27 @@ function is_exec_available () {
 
 }
 
+function recurse_copy ($src, $dst) {
+
+	$dir = opendir($src);
+	@mkdir($dst, 0777);
+	@chmod($dst, 0777);
+	
+	while (false !== ($file = readdir($dir))) {
+		if (($file != '.') && ($file != '..')) {
+			if (is_dir($src . '/' . $file)) {
+				recurse_copy($src . '/' . $file, $dst . '/' . $file);
+			} else {
+				copy($src . '/' . $file, $dst . '/' . $file);
+				chmod($dst . '/' . $file, 0777);
+			}
+		}
+	}
+	
+	closedir($dir);
+
+} 
+
 /**
  * Calculate the total execution time
  * of the request up to now
@@ -229,7 +250,7 @@ function apine_execution_time () {
  */
 function apine_internal_redirect ($a_request, $a_protocol = APINE_PROTOCOL_DEFAULT) {
 	
-	$protocol = (isset(Request::server()['SERVER_PROTOCOL']) ? Request::server()['SERVER_PROTOCOL'] : 'HTTP/1.0');
+	$protocol = (isset(Apine\Core\Request::server()['SERVER_PROTOCOL']) ? Apine\Core\Request::server()['SERVER_PROTOCOL'] : 'HTTP/1.0');
 	
 	if ($a_request == Apine\Core\Request::get()['request']) {
 		header($protocol . ' 302 Moved Temporarily');

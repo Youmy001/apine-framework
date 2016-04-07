@@ -1,0 +1,8 @@
+{
+    "require": {
+        "phpmailer/phpmailer": "^5.2",
+        "twbs/bootstrap": "^3.3",
+        "components/jquery": "^2.1",
+        "geoip/geoip": "~1.14"
+    }
+}

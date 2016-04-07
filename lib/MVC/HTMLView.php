@@ -74,8 +74,11 @@ final class HTMLView extends View {
 		$this->set_view($a_view);
 
 		$config = Application\Application::get_instance()->get_config();
-		if ($a_layout == "default" && !is_null($config->get('runtime', 'default_layout'))) {
-			$a_layout = $config->get('runtime', 'default_layout');
+		
+		if (!is_null($config)) {
+			if ($a_layout == "default" && !is_null($config->get('runtime', 'default_layout'))) {
+				$a_layout = $config->get('runtime', 'default_layout');
+			}
 		}
 		
 		$this->set_layout($a_layout);
@@ -139,9 +142,11 @@ final class HTMLView extends View {
 		if ($a_layout!="") {
 			// Verify if the layout file exists
 			if (file_exists("views/layouts/$a_layout.php")) {
+				$this->_layout="views/layouts/$a_layout";
+			} else if (file_exists("$a_layout.php")) {
 				$this->_layout=$a_layout;
 			} else {
-				$this->_layout='default';
+				$this->_layout='views/layouts/default';
 			}
 		}
 
@@ -157,9 +162,11 @@ final class HTMLView extends View {
 		if ($a_view!="") {
 			// Verify if the view file exists
 			if (file_exists("views/$a_view.php")) {
+				$this->_view="views/$a_view";
+			} else if (file_exists("$a_view.php")) {
 				$this->_view=$a_view;
 			} else {
-				$this->_view='default';
+				$this->_view='views/default';
 			}
 		}
 
@@ -248,7 +255,7 @@ final class HTMLView extends View {
 	public function content() {
 
 		ob_start();
-		include_once("views/layouts/$this->_layout.php");
+		include_once("$this->_layout.php");
 		$content = ob_get_contents();
 		ob_end_clean();
 		//die($content);

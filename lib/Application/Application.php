@@ -16,6 +16,7 @@ use Apine\Session\SessionManager as SessionManager;
 use Apine\Routing\WebRouter as WebRouter;
 use Apine\Routing\APIRouter as APIRouter;
 use Apine\Controllers\System as Controllers;
+use Apine\Core\Version as Version;
 
 /**
  * Apine Application
@@ -25,31 +26,106 @@ use Apine\Controllers\System as Controllers;
  */
 final class Application {
 	
+	/**
+	 * Instance of the Application
+	 * 
+	 * @var Apine\Application\Application
+	 */
 	private static $_instance;
 	
-	private $version = '1.0.0-dev.16.00';
+	/**
+	 * Version number of the framework
+	 * 
+	 * @var string
+	 */
+	private $apine_version = '1.0.0-dev.16.00';
 	
+	/**
+	 * Version number of the user application
+	 * 
+	 * @var string
+	 */
+	private $application_version; 
+	
+	/**
+	 * Name of the folder where the framework is located
+	 * 
+	 * @var string
+	 */
 	private $apine_folder;
 	
+	/**
+	 * Can the framework use Composer and offer advanced features
+	 * 
+	 * @var bool $use_composer
+	 */
 	private $use_composer = true;
 	
+	/**
+	 * Execution mode
+	 * 
+	 * @var integer
+	 */
 	private $mode = APINE_MODE_PRODUCTION;
 	
+	/**
+	 * Is the application allowed to use HTTPS connection
+	 * 
+	 * @var bool
+	 */
 	private $use_https = false;
 	
+	/**
+	 * Path to route file
+	 * 
+	 * @var string
+	 */
 	private $routes_path = 'routes.json';
 	
+	/**
+	 * Type of routes
+	 * 
+	 * @var integer
+	 */
 	private $routes_type = APINE_ROUTES_JSON;
 	
+	/**
+	 * Should Session transactions be secured through HTTPS connection
+	 * 
+	 * @var bool
+	 */
 	private $secure_session = true;
 	
+	/**
+	 * Path to the APIne Application from the webroot
+	 * 
+	 * @var string $webroot
+	 */
 	private $webroot = '';
 	
+	/**
+	 * APIne Application Config
+	 * 
+	 * @var Apine\Core\Config
+	 */
 	private $config;
+	
+	/**
+	 * APIne versions
+	 * 
+	 * @var Apine\Core\Version
+	 */
+	private $version;
 	
 	public function __construct() {
 		
 		$this->apine_folder = realpath(dirname(__FILE__) . '/..');
+        
+       // Compute if in a sub directory
+		if (strlen($_SERVER['SCRIPT_NAME']) < 10) {
+			// Remove "/index.php" from the script name
+			$this->webroot = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
+		}
 			
 		ini_set('display_errors', 0);
 		error_reporting(E_ERROR);
@@ -102,7 +178,17 @@ final class Application {
 		
 	}
 	
-	public function load_config ($a_path) {
+	public function set_application_version ($a_version_number) {
+		
+		if (Version::validate($a_version_number)) {
+			$this->application_version = $a_version_number;
+		} else {
+			throw new Exception('Invalid Version number');
+		}
+		
+	}
+	
+	/*public function load_config ($a_path) {
 		
 		try {
 			if (file_exists($a_path)) {
@@ -122,7 +208,20 @@ final class Application {
 			$this->routes_path = $a_path;
 		}
 		
-	}
+	}*/
+    
+    /**
+     * Set the path to the application from the root for the virtual server
+     * 
+     * The application tries by default to guess it.
+     *
+     * @params string $a_webroot
+     */
+    public function set_webroot ($a_webroot = '') {
+        
+        $this->webroot = $a_webroot;
+        
+    }
 	
 	public function set_routes_type ($a_type = APINE_ROUTES_JSON) {
 		
@@ -166,6 +265,12 @@ final class Application {
 			// Make sure application runs with a valid execution mode
 			if ($this->mode !== APINE_MODE_DEVELOPMENT && $this->mode !== APINE_MODE_PRODUCTION) {
 				throw new GenericException('Invalid Execution Mode \"' . $this->mode . '"', 418);
+			}
+			
+			if (!file_exists('.htaccess') || !file_exists('config.ini') || (!file_exists('routes.json') && !file_exists('routes.xml'))) {
+				$protocol = (isset(Request::server()['SERVER_PROTOCOL']) ? Request::server()['SERVER_PROTOCOL'] : 'HTTP/1.0');
+				header($protocol . ' 503 Service Unavailable');
+				die("Critical Error : Framework Installation Not Completed");
 			}
 			
 			// Verify is the protocol is allowed
@@ -322,6 +427,10 @@ final class Application {
 	}
 	
 	public function get_version () {
+		
+		if (is_null($this->version)) {
+			$this->version = new Version($this->apine_version, $this->application_version);
+		}
 		
 		return $this->version;
 		

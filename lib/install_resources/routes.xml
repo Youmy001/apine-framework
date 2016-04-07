@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes>
+    <route args="false" method="GET">
+		<request>/api</request>
+       <controller>session</controller>
+		<action>api</action>
+	</route>
+	<route args="false" method="GET">
+		<request>/index</request>
+       <controller>home</controller>
+		<action>index</action>
+	</route>
+	<route args="false" method="GET">
+		<request>/home</request>
+       <controller>home</controller>
+		<action>index</action>
+	</route>
+	<route args="false" method="GET">
+		<request>/about</request>
+       <controller>home</controller>
+		<action>about</action>
+	</route>
+	<route args="false" method="GET">
+		<request>/login</request>
+       <controller>session</controller>
+		<action>login</action>
+	</route>
+	<route args="false" method="GET">
+		<request>/logout</request>
+       <controller>session</controller>
+		<action>logout</action>
+	</route>
+	<route args="false" method="GET">
+		<request>/register</request>
+       <controller>session</controller>
+		<action>register</action>
+	</route>
+	<route args="true" method="POST">
+		<request>/login</request>
+       <controller>session</controller>
+		<action>login</action>
+	</route>
+	<route args="true" method="POST">
+		<request>/register</request>
+       <controller>session</controller>
+		<action>register</action>
+	</route>
+	<route args="false" method="GET">
+		<request>/login/restore</request>
+       <controller>session</controller>
+		<action>restore</action>
+	</route>
+	<route args="true" method="GET">
+		<request>/login/restore/([A-Za-z0-9]+)</request>
+       <controller>session</controller>
+		<action>restore</action>
+	</route>
+	<route args="true" method="POST">
+		<request>/login/restore</request>
+       <controller>session</controller>
+		<action>restore</action>
+	</route>
+	<route args="true" method="POST">
+		<request>/login/restore/([A-Za-z0-9]+)</request>
+       <controller>session</controller>
+		<action>restore</action>
+	</route>
+</routes>

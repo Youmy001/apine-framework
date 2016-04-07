@@ -23,7 +23,11 @@ class RestoreController extends MVC\Controller {
 			throw new GenericException('Method Not Allowed', 405);
 		}
 		
-		$this->_view->set_title(Application\ApplicationTranslator::translate('restore', 'title'));
+		if (null == ($title = Application\ApplicationTranslator::translate('restore', 'title'))) {
+			$title = 'Reset Password';
+		}
+		
+		$this->_view->set_title($title);
 		$this->_view->set_view('session/restore');
 		$this->_view->set_response_code(200);
 		
@@ -38,13 +42,21 @@ class RestoreController extends MVC\Controller {
 		}
 		
 		try{
-			$this->_view->set_title(Application\ApplicationTranslator::translate('restore', 'title'));
+			if (null == ($title = Application\ApplicationTranslator::translate('restore', 'title'))) {
+				$title = 'Reset Password';
+			}
+			
+			$this->_view->set_title($title);
 			$this->_view->set_view('session/restore');
 				
 			// Validate Entries
 			if (!User\Factory\UserFactory::is_name_exist($params['user']) && !User\Factory\UserFactory::is_email_exist($params['email'])) {
 				// error to the reset request view
-				throw new GenericException(Application\ApplicationTranslator::translate('restore', 'send_bad'), 500);
+				if (null == ($message = Application\ApplicationTranslator::translate('restore', 'send_bad'))) {
+					$message = 'Bad username or email';
+				}
+				
+				throw new GenericException($message, 500);
 			}
 				
 			// Instanciate User
@@ -54,7 +66,11 @@ class RestoreController extends MVC\Controller {
 			// Validate User
 			if ((is_null($user_by_name) || is_null($user_by_email)) || ($user_by_email->get_id() != $user_by_name->get_id())) {
 				// error to the reset request view
-				throw new GenericException(Application\ApplicationTranslator::translate('restore', 'send_bad'), 500);
+				if (null == ($message = Application\ApplicationTranslator::translate('restore', 'send_bad'))) {
+					$message = 'Bad username or email';
+				}
+				
+				throw new GenericException($message, 500);
 			}
 				
 			// Generate a token for user
@@ -74,20 +90,20 @@ class RestoreController extends MVC\Controller {
 			$mail_view->set_param('link', $restore_url);
 				
 			// Alternate Plain Text Content
-			$mail_alt_content = '-- ' . Application\ApplicationTranslator::translate('restore_mail','donotreply') . ' --
+			$mail_alt_content = '-- DO NOT REPLY --
 				
-	' . Application\ApplicationTranslator::translate('restore_mail','description') . '
+	A request to reset the password of the following user has been recieved lately :
 				
 	 - ' . $user_by_name->get_username() . '
 				
-	 ' . Application\ApplicationTranslator::translate('restore_mail','warning') . '
+	 A restoration link has been created for this user. The link is valid for the next 24 hours following the restoration request. Unless you issued the request yourself, please ignore this message.
 				
-	 ' . Application\ApplicationTranslator::translate('restore_mail','follow') . $restore_url;
-				
+	 Use the following link to reset your password:' . $restore_url;
+			
 			// Create the Mail message to send
 			$mail = new Email\EmailMessage();
 			$mail->add_recipient($params['email']);
-			$mail->set_subject(Application\ApplicationTranslator::translate('restore_mail', 'subject'));
+			$mail->set_subject("APIne Password Reset Confirmation");
 			$mail->set_content($mail_view->content());
 			$mail->set_alt_content($mail_alt_content);
 				
@@ -95,11 +111,19 @@ class RestoreController extends MVC\Controller {
 			// Try to send message to recipient
 			if (!$mail->send()) {
 				// Attempt Failed
-				throw new GenericException(Application\ApplicationTranslator::translate('restore', 'send_fail'), 500);
+				if (null == ($message = Application\ApplicationTranslator::translate('restore', 'send_fail'))) {
+					$message = 'Failed to connect to mail server';
+				}
+				
+				throw new GenericException($message, 500);
 			} else {
 				// Attempt Successful
 				$password_token->save();	// Save token
-				throw new GenericException(Application\ApplicationTranslator::translate('restore', 'send_success'), 200);
+				if (null == ($message = Application\ApplicationTranslator::translate('restore', 'send_success'))) {
+					$message = 'A confirmation message has been sent to your inbox. Follow the link inside to reset your password. It may arrive within few minutes.';
+				}
+				
+				throw new GenericException($message, 200);
 			}
 		} catch (GenericException $e) {
 			// Catch Message to display in the form
@@ -128,15 +152,27 @@ class RestoreController extends MVC\Controller {
 			throw new GenericException('Bad Request', 400);
 		}
 		
-		$this->_view->set_title(Application\ApplicationTranslator::translate('restore', 'title'));
+		if (null == ($title = Application\ApplicationTranslator::translate('restore', 'title'))) {
+			$title = 'Reset Password';
+		}
+		
+		$this->_view->set_title($title);
 		$this->_view->set_view('session/restore');
 		
 		try {
 			
 			if (!User\Factory\PasswordTokenFactory::is_token_exist($params[0])) {
-				throw new GenericException(Application\ApplicationTranslator::translate('restore', 'token_notfound'), 404);
+				if (null == ($title = Application\ApplicationTranslator::translate('restore', 'token_notfound'))) {
+					$message = 'Token not found';
+				}
+				
+				throw new GenericException($message, 404);
 			} else if (!User\Factory\PasswordTokenFactory::is_token_valid($params[0])) {
-				throw new GenericException(Application\ApplicationTranslator::translate('restore', 'token_expired'), 410);
+				if (null == ($title = Application\ApplicationTranslator::translate('restore', 'token_expired'))) {
+					$message = 'Token is expired';
+				}
+				
+				throw new GenericException($message, 410);
 			}
 			
 			$this->_view->set_view('session/restore_token');
@@ -175,14 +211,26 @@ class RestoreController extends MVC\Controller {
 			throw new GenericException('Bad Request', 400);
 		}
 		
-		$this->_view->set_title(Application\ApplicationTranslator::translate('restore', 'title'));
+		if (null == ($title = Application\ApplicationTranslator::translate('restore', 'title'))) {
+			$title = 'Reset Password';
+		}
+		
+		$this->_view->set_title($title);
 		$this->_view->set_view('session/restore');
 		
 		try{
-			if (!User\Factory\PasswordTokenFactory::is_token_exist($params[0])) {
-				throw new GenericException(Application\ApplicationTranslator::translate('restore', 'token_notfound'), 404);
+		if (!User\Factory\PasswordTokenFactory::is_token_exist($params[0])) {
+				if (null == ($title = Application\ApplicationTranslator::translate('restore', 'token_notfound'))) {
+					$message = 'Token not found';
+				}
+				
+				throw new GenericException($message, 404);
 			} else if (!User\Factory\PasswordTokenFactory::is_token_valid($params[0])) {
-				throw new GenericException(Application\ApplicationTranslator::translate('restore', 'token_expired'), 410);
+				if (null == ($title = Application\ApplicationTranslator::translate('restore', 'token_expired'))) {
+					$message = 'Token is expired';
+				}
+				
+				throw new GenericException($message, 410);
 			}
 			
 			$this->_view->set_view('session/restore_token');
@@ -195,7 +243,11 @@ class RestoreController extends MVC\Controller {
 			if (($params['password'] === $params['password_confirm'])) {
 				$encoded_pwd = Core\Encryption::hash_password($params['password']);
 			} else {
-				throw new GenericException(Application\ApplicationTranslator::translate('restore', 'password_wrong'), 500); // Wrong password
+				if (null == ($title = Application\ApplicationTranslator::translate('restore', 'password_wrong'))) {
+					$message = 'The password does not match the confirmation.';
+				}
+				
+				throw new GenericException($message, 500); // Wrong password
 			}
 			
 			// Replace user's password
@@ -206,6 +258,10 @@ class RestoreController extends MVC\Controller {
 			$token->delete();
 			
 			$this->_view->set_view('session/login');
+			if (null == ($title = Application\ApplicationTranslator::translate('restore', 'restore_success'))) {
+				$message = 'Password restoration successful. You can now sign in with your new password.';
+			}
+			
 			throw new GenericException(Application\ApplicationTranslator::translate('restore', 'restore_success'), 200);
 		} catch (GenericException $e) {
 			// Catch Message to display in the form

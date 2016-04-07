@@ -6,11 +6,11 @@
 		<div class="panel-body">
 			<dl>
 				<dt>APIne Framework</dt>
-				<dd><?= apine_application()->get_version()->framework(); ?></dd>
+				<dd><?= apine_application()->get_version(); ?></dd>
 			</dl>
 			<dl>
 				<dt>Web Application</dt>
-				<dd><?= apine_application()->get_version()->application(); ?></dd>
+				<dd><?= Apine\Core\Version::application(); ?></dd>
 			</dl>
 		</div>
 	</div>

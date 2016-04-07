@@ -55,15 +55,23 @@ class SessionController extends MVC\Controller {
 					}
 				}
 				
-				$message = Application\ApplicationTranslator::translate('errors', 'login_invalid_username');
+				if (null == ($message = Application\ApplicationTranslator::translate('errors', 'login_invalid_username'))) {
+					$message = 'Either the the username/email or the password is not valid. Please try again later.';
+				}
 			} catch (Exception $e) {
-				$message = Application\ApplicationTranslator::translate('errors', 'form_invalid');
+				if (null == ($message = Application\ApplicationTranslator::translate('errors', 'form_invalid'))) {
+					$message = 'An unknown error occured when sending data to the server. Please try again later.';
+				}
 			}
 			$this->_view->set_param('error_code', 500);
 			$this->_view->set_param('error_message', $message);
 		}
 		
-		$this->_view->set_title(Application\ApplicationTranslator::translate('login', 'title'));
+		if (null == ($title = Application\ApplicationTranslator::translate('login', 'title'))) {
+			$title = 'Sign In';
+		}
+		
+		$this->_view->set_title($title);
 		$this->_view->set_view('session/login');
 		$this->_view->set_response_code(200);
 		return $this->_view;
@@ -162,20 +170,30 @@ class SessionController extends MVC\Controller {
 				
 				switch ($e->getMessage()) {
 					case 7:
-						$message = Application\ApplicationTranslator::translate('errors', 'register_taken_email');
+						if (null == ($message = Application\ApplicationTranslator::translate('errors', 'register_taken_email'))) {
+							$message = 'The email address is not valid.';
+						}
 						break;
 					case 4:
-						$message = Application\ApplicationTranslator::translate('errors', 'register_taken_username');
+						if (null == ($message = Application\ApplicationTranslator::translate('errors', 'register_taken_username'))) {
+							$message= 'The username is already taken by an user.';
+						}
 						break;
 					case 3:
-						$message = Application\ApplicationTranslator::translate('errors', 'register_invalid_password');
+						if (null == ($message = Application\ApplicationTranslator::translate('errors', 'register_invalid_password'))) {
+							$message= 'The password does not match the confirmation.';
+						}
 						break;
 					case 2:
-						$message = Application\ApplicationTranslator::translate('errors', 'register_invalid_email');
+						if (null == ($message = Application\ApplicationTranslator::translate('errors', 'register_invalid_email'))) {
+							$message= 'The email address is not valid.';
+						}
 						break;
 					case 0:
 					default:
-						$message = Application\ApplicationTranslator::translate('errors', 'form_invalid');
+						if (null == ($message = Application\ApplicationTranslator::translate('errors', 'form_invalid'))) {
+							$message= 'An unknown error occured when sending data to the server. Please try again later.';
+						}
 				}
 				
 			}
@@ -184,7 +202,11 @@ class SessionController extends MVC\Controller {
 			$this->_view->set_param('error_message', $message);
 		}
 		
-		$this->_view->set_title(Application\ApplicationTranslator::translate('register', 'title'));
+		if (null == ($title = Application\ApplicationTranslator::translate('register', 'title'))) {
+			$title = 'Sign Up';
+		}
+		
+		$this->_view->set_title($title);
 		$this->_view->set_view('session/register');
 		$this->_view->set_response_code(200);
 		return $this->_view;

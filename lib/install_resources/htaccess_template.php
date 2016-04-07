@@ -74,32 +74,20 @@
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 	
-	#RewriteCond %{REQUEST_FILENAME} -f
-	RewriteRule ^(lib/|controllers/|modules/|views/|config\.ini|config_sample\.ini|\.xml|composer\.*|VERSION) - [F,L,NC]
+	RewriteCond %{REQUEST_FILENAME} -f
+	RewriteRule ^(<?= $parent_name ?>/|controllers/|modules/|views/|config\.ini|config_sample\.ini|\.xml|composer\.*|VERSION) - [F,L,NC]
 
 	# APIne Rules
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteRule ^api/((.+))?$ /?request=/$1&api=api [QSA,L]
+	RewriteRule ^<?= $webroot ?>api/((.+))?$ /?request=/$1&api=api [QSA,L]
 	
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteRule ^([a-zA-Z]{2}(-[a-zA-Z]{2})?)(/(.+)?)?$ /?request=$3&language=$1 [QSA,L]
+	RewriteRule ^<?= $webroot ?>([a-zA-Z]{2}(-[a-zA-Z]{2})?)(/(.+)?)?$ /?request=$3&language=$1 [QSA,L]
 	
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteRule ^(.*)$ /?request=/$1 [QSA,L]
+	RewriteRule ^<?= $webroot ?>(.*)$ /?request=/$1 [QSA,L]
 
 </IfModule>
-ErrorDocument 400 /index.php?request=/error/badrequest
-ErrorDocument 401 /index.php?request=/error/unauthorized
-ErrorDocument 403 /index.php?request=/error/forbidden
-ErrorDocument 404 /index.php?request=/error/notfound
-ErrorDocument 405 /index.php?request=/error/methodnotallowed
-ErrorDocument 406 /index.php?request=/error/notacceptable
-ErrorDocument 410 /index.php?request=/error/gone
-ErrorDocument 500 /index.php?request=/error/server
-ErrorDocument 501 /index.php?request=/error/notimplemented
-ErrorDocument 502 /index.php?request=/error/badgateway
-ErrorDocument 503 /index.php?request=/error/unavailable
-ErrorDocument 504 /index.php?request=/error/gatewaytimeout

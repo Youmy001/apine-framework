@@ -1,7 +1,7 @@
 <?php
 /**
  * APIne Framework Main Execution
- * This script runs basic environment setup and launches userside code
+ * This script runs basic environment setup and launches the application
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @license MIT
@@ -10,13 +10,10 @@
 
 ini_set('display_errors', -1);
 
-require_once 'lib/Autoloader.php';
+require_once '{apine}/Autoloader.php';
 $loader = new Apine\Autoloader();
 $loader->register();
 
 $apine = new Apine\Application\Application();
-
-$apine->set_mode(APINE_MODE_PRODUCTION);
-$apine->set_use_https(true);
-
+$apine->set_mode(APINE_MODE_DEVELOPMENT);
 $apine->run(APINE_RUNTIME_HYBRID);

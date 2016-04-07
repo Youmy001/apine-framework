@@ -60,7 +60,7 @@ final class Encryption {
 	}
 	
 	private static function generate_key() {
-		
+        
 		$hash = \PseudoCrypt::hash(intval(rand(1, 1000)), 10);
 		ApplicationConfig::set('runtime', 'encryption_key', $hash);
 		

@@ -77,20 +77,10 @@ final class APIRouter implements RouterInterface {
 			$maj_controller = ucfirst($controller) . 'Controller';
 			$return = false;
 			
-			/*if (class_exists($maj_controller) && in_array('ApineAPIActions', class_implements($maj_controller))) {
-				$route = true;
-			}else if (file_exists('controllers/' . $controller . '_controller.php')) {
-				require_once('controllers/' . $controller . '_controller.php');
-		
-				if (class_exists($maj_controller)) {
-					$route = true;
-				}
-			}*/
-			
-			if (class_exists('Apine\\Controllers\\System\\' . $maj_controller) && in_array('Apine\\MVC\\APIActionsInterface', class_implements('Apine\\Controllers\\System\\' . $maj_controller))) {
+			if (class_exists('Apine\\Controllers\\User\\' . $maj_controller) && in_array('Apine\\MVC\\APIActionsInterface', class_implements('Apine\\Controllers\\' . $maj_controller))) {
+				$return = 'Apine\\Controllers\\User\\' . $maj_controller;
+			} else if (class_exists('Apine\\Controllers\\System\\' . $maj_controller) && in_array('Apine\\MVC\\APIActionsInterface', class_implements('Apine\\Controllers\\System\\' . $maj_controller))) {
 				$return = 'Apine\\Controllers\\System\\' . $maj_controller;
-			} else if (class_exists('Apine\\Controllers\\' . $maj_controller) && in_array('Apine\\MVC\\APIActionsInterface', class_implements('Apine\\Controllers\\' . $maj_controller))) {
-				$return = 'Apine\\Controllers\\' . $maj_controller;
 			} else {
 				
 				if (class_exists($maj_controller)) {
@@ -118,13 +108,6 @@ final class APIRouter implements RouterInterface {
 	 */
 	public function execute ($controller, $method, $args = null) {
 		
-		/*if (self::check_route("/$controller/$method")) {
-			$maj_controller = ucfirst($controller) . 'Controller';
-			$controller = new $maj_controller();
-			return $controller->$method($args);
-		} else {
-			throw new GenericException("Route \"$controller\" Not found", 404);
-		}*/
 		$controller_name = self::check_route("/$controller/$method");
 		
 		if ($controller_name !== false) {

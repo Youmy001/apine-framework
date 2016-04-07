@@ -5,6 +5,7 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
+namespace Apine\Controllers\User;
 
 use Apine\MVC;
 

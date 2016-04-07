@@ -13,6 +13,22 @@ use Apine\Core as Core;
 
 class ErrorController extends MVC\Controller {
 	
+	private $errors = array(
+			400 => ['title' => 'Bad Request', 'method' => 'badrequest'],
+			401 => ['title' => 'Unauthorized', 'method' => 'unauthorized'],
+			403 => ['title' => 'Forbidden', 'method' => 'forbidden'],
+			404 => ['title' => 'Not Found', 'method' => 'notfound'],
+			405 => ['title' => 'Method Not Allowed', 'method' => 'methodnotallowed'],
+			406 => ['title' => 'Not Acceptable', 'method' => 'notacceptable'],
+			410 => ['title' => 'Gone', 'method' => 'gone'],
+			418 => ['title' => 'I\'m a Teapot', 'method' => 'teapot'],
+			500 => ['title' => 'Internal Server Error', 'method' => 'server'],
+			501 => ['title' => 'Not Implemented', 'method' => 'notimplemented'],
+			502 => ['title' => 'Bad Gateway', 'method' => 'badgateway'],
+			503 => ['title' => 'Service Unavailable', 'method' => 'unavailable'],
+			504 => ['title' => 'Gateway Time-out', 'method' => 'gatewaytimeout']
+	);
+	
 	public function __construct() {
 		
 		parent::__construct();
@@ -24,80 +40,132 @@ class ErrorController extends MVC\Controller {
 	}
 	
 	public function badrequest ($a_exception = null) {
-	
-		return $this->custom(400, Application\ApplicationTranslator::translate('errors', '400'), $a_exception);
+		
+		if (null == ($title = Application\ApplicationTranslator::translate('errors', '400'))) {
+			$title = $this->errors[400]['title'];
+		}
+		
+		return $this->custom(400, $title, $a_exception);
 	
 	}
 	
 	public function unauthorized ($a_exception = null) {
 	
-		return $this->custom(401, Application\ApplicationTranslator::translate('errors', '401'), $a_exception);
+		if (null == ($title = Application\ApplicationTranslator::translate('errors', '401'))) {
+			$title = $this->errors[401]['title'];
+		}
+		
+		return $this->custom(401, $title, $a_exception);
 	
 	}
 	
 	public function forbidden ($a_exception = null) {
 	
-		return $this->custom(403, Application\ApplicationTranslator::translate('errors', '403'), $a_exception);
+		if (null == ($title = Application\ApplicationTranslator::translate('errors', '403'))) {
+			$title = $this->errors[403]['title'];
+		}
+		
+		return $this->custom(403, $title, $a_exception);
 	
 	}
 	
 	public function notfound ($a_exception = null) {
 		
-		return $this->custom(404, Application\ApplicationTranslator::translate('errors', '404'), $a_exception);
+		if (null == ($title = Application\ApplicationTranslator::translate('errors', '404'))) {
+			$title = $this->errors[404]['title'];
+		}
+		
+		return $this->custom(404, $title, $a_exception);
 		
 	}
 	
 	public function methodnotallowed ($a_exception = null) {
 	
-		return $this->custom(405, Application\ApplicationTranslator::translate('errors', '405'), $a_exception);
+		if (null == ($title = Application\ApplicationTranslator::translate('errors', '405'))) {
+			$title = $this->errors[405]['title'];
+		}
+		
+		return $this->custom(405, $title, $a_exception);
 	
 	}
 	
 	public function notacceptable ($a_exception = null) {
 	
-		return $this->custom(406, Application\ApplicationTranslator::translate('errors', '406'), $a_exception);
+		if (null == ($title = Application\ApplicationTranslator::translate('errors', '406'))) {
+			$title = $this->errors[406]['title'];
+		}
+		
+		return $this->custom(406, $title, $a_exception);
 	
 	}
 	
 	public function gone ($a_exception = null) {
 		
-		return $this->custom(410, Application\ApplicationTranslator::translate('errors', '410'), $a_exception);
+		if (null == ($title = Application\ApplicationTranslator::translate('errors', '410'))) {
+			$title = $this->errors[410]['title'];
+		}
+		
+		return $this->custom(410, $title, $a_exception);
 		
 	}
 	
 	public function teapot ($a_exception = null) {
 	
-		return $this->custom(418, Application\ApplicationTranslator::translate('errors', '418'), $a_exception);
+		if (null == ($title = Application\ApplicationTranslator::translate('errors', '418'))) {
+			$title = $this->errors[418]['title'];
+		}
+		
+		return $this->custom(418, $title, $a_exception);
 	
 	}
 	
 	public function server ($a_exception = null) {
 		
-		return $this->custom(500, Application\ApplicationTranslator::translate('errors', '500'), $a_exception);
+		if (null == ($title = Application\ApplicationTranslator::translate('errors', '500'))) {
+			$title = $this->errors[500]['title'];
+		}
+		
+		return $this->custom(500, $title, $a_exception);
 		
 	}
 	
 	public function notimplemented ($a_exception = null) {
 	
-		return $this->custom(501, Application\ApplicationTranslator::translate('errors', '501'), $a_exception);
+		if (null == ($title = Application\ApplicationTranslator::translate('errors', '501'))) {
+			$title = $this->errors[501]['title'];
+		}
+		
+		return $this->custom(501, $title, $a_exception);
 	
 	}
 	
 	public function badgateway ($a_exception = null) {
 	
-		return $this->custom(502, Application\ApplicationTranslator::translate('errors', '502'), $a_exception);
+		if (null == ($title = Application\ApplicationTranslator::translate('errors', '502'))) {
+			$title = $this->errors[502]['title'];
+		}
+		
+		return $this->custom(502, $title, $a_exception);
 	
 	}
 	
 	public function unavailable ($a_exception = null) {
 	
-		return $this->custom(503, Application\ApplicationTranslator::translate('errors', '503'), $a_exception);
+		if (null == ($title = Application\ApplicationTranslator::translate('errors', '503'))) {
+			$title = $this->errors[503]['title'];
+		}
+		
+		return $this->custom(503, $title, $a_exception);
 	
 	}
 	
 	public function gatewaytimeout ($a_exception = null) {
 	
-		return $this->custom(504, Application\ApplicationTranslator::translate('errors', '504'), $a_exception);
+		if (null == ($title = Application\ApplicationTranslator::translate('errors', '504'))) {
+			$title = $this->errors[504]['title'];
+		}
+		
+		return $this->custom(504, $title, $a_exception);
 	
 	}
 	
@@ -124,81 +192,19 @@ class ErrorController extends MVC\Controller {
 		} else {
 			$this->_view->set_response_code(500);
 		}
-		
 		return $this->_view;
 		
 	}
 	
 	public function method_for_code ($a_code) {
 		
-		switch ($a_code) {
-			case '400':
-				$return = 'badrequest';
-				break;
-			case '401':
-				$return = 'unauthorized';
-				break;
-			case '403':
-				$return = 'forbidden';
-				break;
-			case '404':
-				$return = 'notfound';
-				break;
-			case '405':
-				$return = 'methodnotallowed';
-				break;
-			case '406':
-				$return = 'notacceptable';
-				break;
-			case '410':
-				$return = 'gone';
-				break;
-			case '418':
-				$return = 'teapot';
-				break;
-			case '500':
-				$return = 'server';
-				break;
-			case '501':
-				$return = 'notimplemented';
-				break;
-			case '502':
-				$return = 'badgateway';
-				break;
-			case '503':
-				$return = 'unavailable';
-				break;
-			case '504':
-				$return = 'gatewaytimeout';
-				break;
-			default:
-				$return = false;
-		}
-		
-		return $return;
+		return (isset($this->errors[$a_code])) ? $this->errors[$a_code]['method'] : false;
 		
 	}
 	
 	private function is_http_code ($a_code) {
 		
-		switch ($a_code) {
-			case '400':
-			case '401':
-			case '403':
-			case '404':
-			case '405':
-			case '406':
-			case '410':
-			case '418':
-			case '500':
-			case '501':
-			case '502':
-			case '503':
-			case '504':
-				return true;
-			default:
-				return false;
-		}
+		return (isset($this->errors[$a_code]));
 		
 	}
 }

@@ -1,0 +1,71 @@
+{
+	"/api": {
+		"GET": {
+			"args": false,
+			"controller": "session",
+			"action": "api"
+		}
+	},
+	"/index": {
+		"GET": {
+			"args": false,
+			"controller": "home",
+			"action": "index"
+		}
+	},
+	"/login": {
+		"GET": {
+			"args": false,
+			"controller": "session",
+			"action": "login"
+		},
+		"POST": {
+			"args": true,
+			"controller": "session",
+			"action": "login"
+		}
+	},
+	"/logout": {
+		"GET": {
+			"args": false,
+			"controller": "session",
+			"action": "logout"
+		}
+	},
+	"/register": {
+		"GET": {
+			"args": false,
+			"controller": "session",
+			"action": "register"
+		},
+		"POST": {
+			"args": false,
+			"controller": "session",
+			"action": "register"
+		}
+	},
+	"/login/restore": {
+		"GET": {
+			"args": false,
+			"controller": "session",
+			"action": "restore"
+		},
+		"POST": {
+			"args": true,
+			"controller": "session",
+			"action": "restore"
+		}
+	},
+	"/login/restore/([A-Za-z0-9]+)": {
+		"GET": {
+			"args": true,
+			"controller": "session",
+			"action": "restore"
+		},
+		"POST": {
+			"args": true,
+			"controller": "session",
+			"action": "restore"
+		}
+	}
+}

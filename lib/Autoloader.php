@@ -31,10 +31,12 @@ final class Autoloader {
 	
 	public function __construct() {
 		
-		$this->add_module('Apine', 'lib');
+		$apine_folder = basename(dirname(__FILE__));
+		
+		$this->add_module('Apine', $apine_folder);
 		$this->add_module('Apine\Modules', 'modules');
-		$this->add_module('Apine\Controllers', 'controllers');
-		$this->add_module('Apine\Controllers\System', 'lib/Controllers');
+		$this->add_module('Apine\Controllers\User', 'controllers');
+		$this->add_module('Apine\Controllers\System', $apine_folder . '/Controllers');
 		//spl_autoload_register(array($this, 'load_kernel'));
 		
 	}
@@ -255,7 +257,7 @@ final class Autoloader {
 	protected function require_file ($file) {
 		
 		if (file_exists($file)) {
-			require $file;
+			require_once $file;
 			return true;
 		}
 		

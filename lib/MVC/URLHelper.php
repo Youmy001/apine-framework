@@ -11,6 +11,7 @@ namespace Apine\MVC;
 use Apine\Core\Request as Request;
 use Apine\Session\SessionManager as SessionManager;
 use Apine\Application\ApplicationTranslator as ApplicationTranslator;
+use Apine\Application\Application as Application;
 
 /**
  * Internal URL Writer
@@ -80,7 +81,7 @@ final class URLHelper {
 			$this->session_path = '';
 		}
 		
-		$webroot = apine_application()->get_webroot();
+		$webroot = Application::get_instance()->get_webroot();
 		if (!is_null($webroot) && !empty($webroot)) {
 			$this->server_app_root .= "/" . $webroot;
 			$this->server_main_root .= "/" . $webroot;

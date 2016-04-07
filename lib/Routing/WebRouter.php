@@ -13,6 +13,7 @@ use Apine\Application\Application as Application;
 use Apine\Core\Request as Request;
 use Apine\XML as XML;
 use Apine\Exception\GenericException as GenericException;
+use Apine\MVC\View;
 
 /**
  * Web App Request Router
@@ -203,20 +204,6 @@ final class WebRouter implements RouterInterface {
 		}
 		
 		try {
-			/*$maj_controller = ucfirst($controller) . 'Controller';
-			
-			//var_dump(class_exists('Apine\\Controllers\\System\\' . $maj_controller));
-			
-			if (class_exists('Apine\\Controllers\\System\\' . $maj_controller) && method_exists('Apine\\Controllers\\System\\' . $maj_controller, $action)) {
-				$route = new Route($controller, $action, $args);
-			}else if (file_exists('controllers/' . $controller . '_controller.php')) {
-				require_once('controllers/' . $controller . '_controller.php');
-
-				if (method_exists($maj_controller, $action)) {
-					$route = new Route($controller, $action, $args);
-				}
-			}*/
-			
 			if ($this->check_route($request)) {
 				$route = new Route($controller, $action, $args);
 			}
@@ -262,22 +249,12 @@ final class WebRouter implements RouterInterface {
 		try {
 			$maj_controller = ucfirst($controller) . 'Controller';
 			
-			/*if (class_exists('Apine\\Controllers\\System\\' . $maj_controller) && method_exists('Apine\\Controllers\\System\\' . $maj_controller, $action)) {
-				return true;
-			}else if (file_exists('controllers/' . $controller . '_controller.php')) {
-				require_once('controllers/' . $controller . '_controller.php');
-				
-				if (method_exists($maj_controller, $action)) {
-					return true;
-				}
-			}*/
-			
 			$return = false;
 			
-			if (class_exists('Apine\\Controllers\\System\\' . $maj_controller) && method_exists('Apine\\Controllers\\System\\' . $maj_controller, $action)) {
+			if (class_exists('Apine\\Controllers\\User\\' . $maj_controller) && method_exists('Apine\\Controllers\\User\\' . $maj_controller, $action)) {
+				$return = 'Apine\\Controllers\\User\\' . $maj_controller;
+			} else if (class_exists('Apine\\Controllers\\System\\' . $maj_controller) && method_exists('Apine\\Controllers\\System\\' . $maj_controller, $action)) {
 				$return = 'Apine\\Controllers\\System\\' . $maj_controller;
-			} else if (class_exists('Apine\\Controllers\\' . $maj_controller) && method_exists('Apine\\Controllers\\' . $maj_controller, $action)) {
-				$return = 'Apine\\Controllers\\' . $maj_controller;
 			} else {
 				if (class_exists($maj_controller) && method_exists($maj_controller, $action)) {
 					$return = $maj_controller;
@@ -299,18 +276,12 @@ final class WebRouter implements RouterInterface {
 	
 	/**
 	 * 
+	 * @return View
 	 * {@inheritDoc}
 	 * @see ApineRouterInterface::execute()
 	 */
 	public function execute ($controller, $action, $args = null) {
 		
-		/*if (self::check_route("/$controller/$action")) {
-			$maj_controller = ucfirst($controller) . 'Controller';
-			$controller = new $maj_controller();
-			return $controller->$action($args);
-		} else {
-			throw new GenericException("Route \"$controller\" Not found", 404);
-		}*/
 		$controller_name = self::check_route("/$controller/$action");
 		
 		if ($controller_name !== false) {

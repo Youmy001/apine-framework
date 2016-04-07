@@ -3,19 +3,19 @@
  * Versioning validator
  *  
  * @license MIT
- * @copyright 2016 Tommy Teasdale
+ * @copyright 2015 Tommy Teasdale
  */
 namespace Apine\Core;
 
+use Apine\Core\ApplicationConfig;
 use Apine\File\File;
-use Apine\Exception\GenericException;
 
 /**
  * Verifies version numbers for modules
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  */
-final class Version {
+final class OldVersion {
 	
 	/**
 	 * Regular expression for a valid semantic version number
@@ -23,30 +23,6 @@ final class Version {
 	 * @var string
 	 */
 	const VERSION_REGEX = '/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/';
-	
-	private $framework;
-	
-	private $application;
-	
-	public function __construct($framework_version, $application_version = null) {
-		
-		if (empty($application_version)) {
-			if (is_file('VERSION')) {
-				$file = new File('VERSION', true);
-				$application_version = $file->content();
-			} else {
-				$application_version = $framework_version;
-			}
-		}
-		
-		if (self::validate($framework_version) && self::validate($application_version)) {
-			$this->application = $application_version;
-			$this->framework = $framework_version;
-		} else {
-			throw new GenericException('Invalid Version Numbers', 500);
-		}
-		
-	}
 	
 	/**
 	 * Check a module version number
@@ -77,9 +53,20 @@ final class Version {
 	 * 
 	 * @return string
 	 */
-	public function application () {
+	public static function application () {
 		
-		return $this->application;
+		if (is_file('VERSION')) {
+			$file = new File('VERSION', true);
+			$version = $file->content();
+		} else if (ApplicationConfig::get('application', 'version')) {
+			$version = ApplicationConfig::get('application', 'version');
+		}
+		
+		if (isset($version) && self::validate($version)) {
+			return $version;
+		} else {
+			return self::framework();
+		}
 		
 	}
 	
@@ -88,10 +75,24 @@ final class Version {
 	 * 
 	 * @return string
 	 */
-	public function framework () {
+	public static function framework () {
 		
-		return $this->framework;
+		$version = apine_application()->get_version();
 		
+		/*if (!$version) {
+			$folder = realpath(dirname(__FILE__) . '/..');
+			
+			if (is_file($folder . '/VERSION')) {
+				$file = new ApineFile($folder . '/VERSION', true);
+				$file_version = $file->content();
+			} else if (ApineAppConfig::get('apine-framework', 'version')) {
+				$file_version = ApineAppConfig::get('apine-framework', 'version');
+			}
+			
+			$version = (isset($file_version) && self::validate($file_version)) ? $file_version : null;
+		}*/
+		
+		return $version;
 	}
 	
 	/**

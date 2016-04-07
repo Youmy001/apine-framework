@@ -81,10 +81,9 @@ final class TranslationLocale {
 						$array[$key] = $value;
 					}
 				} else {
-					$array['datehour'] = ApplicationConfig::get('dateformat', "datehour");
-					$array['date'] = ApplicationConfig::get('dateformat', "date");
-					$array['hour'] = ApplicationConfig::get('dateformat', "hour");
-					$array['year'] = ApplicationConfig::get('dateformat', "year");
+					$array['datehour'] = "%x %H:%M";
+					$array['date'] = "%x";
+					$array['hour'] = "%H:%M";
 				}
 		
 				$this->locale_entries = $array;
