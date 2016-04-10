@@ -93,7 +93,7 @@ final class WebSession implements SessionInterface {
 			$pos_slash = strpos($user_class, '/');
 			$module = substr($user_class, 0, $pos_slash);
 			$class = substr($user_class, $pos_slash + 1);
-			load_module($module);
+			apine_load_module($module);
 			
 			if (is_a($class, 'Apine\User\User')) {
 				$this->user_class_name = $class;

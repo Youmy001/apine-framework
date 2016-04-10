@@ -31,7 +31,8 @@ final class Autoloader {
 	
 	public function __construct() {
 		
-		$apine_folder = basename(dirname(__FILE__));
+		//$apine_folder = basename(dirname(__FILE__));
+		$apine_folder = __DIR__;
 		
 		$this->add_module('Apine', $apine_folder);
 		$this->add_module('Apine\Modules', 'modules');
