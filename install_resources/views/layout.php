@@ -58,6 +58,8 @@
 		self.step_three_visible = ko.observable(false);
 		self.step_four_visible = ko.observable(false);
 		self.step_five_visible = ko.observable(false);
+		self.step_finish_visible = ko.observable(false);
+		self.step_error_visible = ko.observable(false);
 		
 		self.app_name = ko.observable("");
 		self.app_auth = ko.observable("");
@@ -219,14 +221,16 @@
 				data: JSON.stringify(json_object),
 				type: "post", contentType: "application/json",
 				success: function (result) {
-					self.step_two_visible(false);
-					self.step_three_visible(true);
+					self.step_five_visible(false);
+					self.step_finish_visible(true);
 				 },
 				error: function () {
-					self.invalid_step_two(true);
+					self.step_five_visible(false);
+					self.step_error_visible(true);
 				},
 				fail: function () {
-					self.invalid_step_two(true);
+					self.step_five_visible(false);
+					self.step_error_visible(true);
 				}
 			});
 		};

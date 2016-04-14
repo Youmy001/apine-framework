@@ -23,7 +23,7 @@ class RestoreController extends MVC\Controller {
 			throw new GenericException('Method Not Allowed', 405);
 		}
 		
-		if (null == ($title = Application\ApplicationTranslator::translate('restore', 'title'))) {
+		if (null == ($title = Application\Translator::translate('restore', 'title'))) {
 			$title = 'Reset Password';
 		}
 		
@@ -42,7 +42,7 @@ class RestoreController extends MVC\Controller {
 		}
 		
 		try{
-			if (null == ($title = Application\ApplicationTranslator::translate('restore', 'title'))) {
+			if (null == ($title = Application\Translator::translate('restore', 'title'))) {
 				$title = 'Reset Password';
 			}
 			
@@ -52,7 +52,7 @@ class RestoreController extends MVC\Controller {
 			// Validate Entries
 			if (!User\Factory\UserFactory::is_name_exist($params['user']) && !User\Factory\UserFactory::is_email_exist($params['email'])) {
 				// error to the reset request view
-				if (null == ($message = Application\ApplicationTranslator::translate('restore', 'send_bad'))) {
+				if (null == ($message = Application\Translator::translate('restore', 'send_bad'))) {
 					$message = 'Bad username or email';
 				}
 				
@@ -66,7 +66,7 @@ class RestoreController extends MVC\Controller {
 			// Validate User
 			if ((is_null($user_by_name) || is_null($user_by_email)) || ($user_by_email->get_id() != $user_by_name->get_id())) {
 				// error to the reset request view
-				if (null == ($message = Application\ApplicationTranslator::translate('restore', 'send_bad'))) {
+				if (null == ($message = Application\Translator::translate('restore', 'send_bad'))) {
 					$message = 'Bad username or email';
 				}
 				
@@ -111,7 +111,7 @@ class RestoreController extends MVC\Controller {
 			// Try to send message to recipient
 			if (!$mail->send()) {
 				// Attempt Failed
-				if (null == ($message = Application\ApplicationTranslator::translate('restore', 'send_fail'))) {
+				if (null == ($message = Application\Translator::translate('restore', 'send_fail'))) {
 					$message = 'Failed to connect to mail server';
 				}
 				
@@ -119,7 +119,7 @@ class RestoreController extends MVC\Controller {
 			} else {
 				// Attempt Successful
 				$password_token->save();	// Save token
-				if (null == ($message = Application\ApplicationTranslator::translate('restore', 'send_success'))) {
+				if (null == ($message = Application\Translator::translate('restore', 'send_success'))) {
 					$message = 'A confirmation message has been sent to your inbox. Follow the link inside to reset your password. It may arrive within few minutes.';
 				}
 				
@@ -152,7 +152,7 @@ class RestoreController extends MVC\Controller {
 			throw new GenericException('Bad Request', 400);
 		}
 		
-		if (null == ($title = Application\ApplicationTranslator::translate('restore', 'title'))) {
+		if (null == ($title = Application\Translator::translate('restore', 'title'))) {
 			$title = 'Reset Password';
 		}
 		
@@ -162,13 +162,13 @@ class RestoreController extends MVC\Controller {
 		try {
 			
 			if (!User\Factory\PasswordTokenFactory::is_token_exist($params[0])) {
-				if (null == ($title = Application\ApplicationTranslator::translate('restore', 'token_notfound'))) {
+				if (null == ($title = Application\Translator::translate('restore', 'token_notfound'))) {
 					$message = 'Token not found';
 				}
 				
 				throw new GenericException($message, 404);
 			} else if (!User\Factory\PasswordTokenFactory::is_token_valid($params[0])) {
-				if (null == ($title = Application\ApplicationTranslator::translate('restore', 'token_expired'))) {
+				if (null == ($title = Application\Translator::translate('restore', 'token_expired'))) {
 					$message = 'Token is expired';
 				}
 				
@@ -211,7 +211,7 @@ class RestoreController extends MVC\Controller {
 			throw new GenericException('Bad Request', 400);
 		}
 		
-		if (null == ($title = Application\ApplicationTranslator::translate('restore', 'title'))) {
+		if (null == ($title = Application\Translator::translate('restore', 'title'))) {
 			$title = 'Reset Password';
 		}
 		
@@ -220,13 +220,13 @@ class RestoreController extends MVC\Controller {
 		
 		try{
 		if (!User\Factory\PasswordTokenFactory::is_token_exist($params[0])) {
-				if (null == ($title = Application\ApplicationTranslator::translate('restore', 'token_notfound'))) {
+				if (null == ($title = Application\Translator::translate('restore', 'token_notfound'))) {
 					$message = 'Token not found';
 				}
 				
 				throw new GenericException($message, 404);
 			} else if (!User\Factory\PasswordTokenFactory::is_token_valid($params[0])) {
-				if (null == ($title = Application\ApplicationTranslator::translate('restore', 'token_expired'))) {
+				if (null == ($title = Application\Translator::translate('restore', 'token_expired'))) {
 					$message = 'Token is expired';
 				}
 				
@@ -243,7 +243,7 @@ class RestoreController extends MVC\Controller {
 			if (($params['password'] === $params['password_confirm'])) {
 				$encoded_pwd = Core\Encryption::hash_password($params['password']);
 			} else {
-				if (null == ($title = Application\ApplicationTranslator::translate('restore', 'password_wrong'))) {
+				if (null == ($title = Application\Translator::translate('restore', 'password_wrong'))) {
 					$message = 'The password does not match the confirmation.';
 				}
 				
@@ -258,11 +258,11 @@ class RestoreController extends MVC\Controller {
 			$token->delete();
 			
 			$this->_view->set_view('session/login');
-			if (null == ($title = Application\ApplicationTranslator::translate('restore', 'restore_success'))) {
+			if (null == ($title = Application\Translator::translate('restore', 'restore_success'))) {
 				$message = 'Password restoration successful. You can now sign in with your new password.';
 			}
 			
-			throw new GenericException(Application\ApplicationTranslator::translate('restore', 'restore_success'), 200);
+			throw new GenericException(Application\Translator::translate('restore', 'restore_success'), 200);
 		} catch (GenericException $e) {
 			// Catch Message to display in the form
 			$this->_view->set_param('error_code', $e->getCode());

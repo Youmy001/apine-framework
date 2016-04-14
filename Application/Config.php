@@ -13,7 +13,7 @@ namespace Apine\Application;
  * 
  * Read and write project's configuration file
  */
-final class ApplicationConfig {
+final class Config {
 	
 	/**
 	 * Instance of the Config reader

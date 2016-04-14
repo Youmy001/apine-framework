@@ -21,18 +21,20 @@ use Apine\MVC\View;
  * 
  * @author Tommy Teasdale
  */
-final class WebRouter implements RouterInterface {
+class WebRouter implements RouterInterface {
 	
 	private $routes_file;
 	
 	private $routes_type;
 	
-	public function __construct () {
+	final public function __construct ($a_path= 'routes.json', $a_type = APINE_ROUTES_JSON) {
 		
 		try {
-			$application = Application::get_instance();
-			$this->routes_file = $application->get_routes_path();
-			$this->routes_type = $application->get_routes_type();
+			//$application = Application::get_instance();
+			//$this->routes_file = $application->get_routes_path();
+			//$this->routes_type = $application->get_routes_type();
+			$this->routes_file = $a_path;
+			$this->routes_type = $a_type;
 			
 			if (!file_exists($this->routes_file)) {
 				throw new GenericException('Route File Not Found', 418);
@@ -48,7 +50,7 @@ final class WebRouter implements RouterInterface {
 	 * 
 	 * @return mixed
 	 */
-	private function xml_route ($request) {
+	final private function xml_route ($request) {
 		
 		$xml_routes = new XML\Parser();
 		$xml_routes->load_from_file($this->routes_file);
@@ -109,7 +111,7 @@ final class WebRouter implements RouterInterface {
 	 * @param string $request
 	 * @return mixed
 	 */
-	private function json_route ($request) {
+	final private function json_route ($request) {
 		
 		$path = $this->routes_file;
 		$file = fopen($path, 'r');
@@ -154,7 +156,7 @@ final class WebRouter implements RouterInterface {
 	 * {@inheritDoc}
 	 * @see ApineRouterInterface::route()
 	 */
-	public function route ($request) {
+	final public function route ($request) {
 		
 		$route_found = false;
 		
@@ -280,7 +282,7 @@ final class WebRouter implements RouterInterface {
 	 * {@inheritDoc}
 	 * @see ApineRouterInterface::execute()
 	 */
-	public function execute ($controller, $action, $args = null) {
+	final public function execute ($controller, $action, $args = null) {
 		
 		$controller_name = self::check_route("/$controller/$action");
 		

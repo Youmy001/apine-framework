@@ -41,7 +41,7 @@ class ErrorController extends MVC\Controller {
 	
 	public function badrequest ($a_exception = null) {
 		
-		if (null == ($title = Application\ApplicationTranslator::translate('errors', '400'))) {
+		if (null == ($title = Application\Translator::translate('errors', '400'))) {
 			$title = $this->errors[400]['title'];
 		}
 		
@@ -51,7 +51,7 @@ class ErrorController extends MVC\Controller {
 	
 	public function unauthorized ($a_exception = null) {
 	
-		if (null == ($title = Application\ApplicationTranslator::translate('errors', '401'))) {
+		if (null == ($title = Application\Translator::translate('errors', '401'))) {
 			$title = $this->errors[401]['title'];
 		}
 		
@@ -61,7 +61,7 @@ class ErrorController extends MVC\Controller {
 	
 	public function forbidden ($a_exception = null) {
 	
-		if (null == ($title = Application\ApplicationTranslator::translate('errors', '403'))) {
+		if (null == ($title = Application\Translator::translate('errors', '403'))) {
 			$title = $this->errors[403]['title'];
 		}
 		
@@ -71,7 +71,7 @@ class ErrorController extends MVC\Controller {
 	
 	public function notfound ($a_exception = null) {
 		
-		if (null == ($title = Application\ApplicationTranslator::translate('errors', '404'))) {
+		if (null == ($title = Application\Translator::translate('errors', '404'))) {
 			$title = $this->errors[404]['title'];
 		}
 		
@@ -81,7 +81,7 @@ class ErrorController extends MVC\Controller {
 	
 	public function methodnotallowed ($a_exception = null) {
 	
-		if (null == ($title = Application\ApplicationTranslator::translate('errors', '405'))) {
+		if (null == ($title = Application\Translator::translate('errors', '405'))) {
 			$title = $this->errors[405]['title'];
 		}
 		
@@ -91,7 +91,7 @@ class ErrorController extends MVC\Controller {
 	
 	public function notacceptable ($a_exception = null) {
 	
-		if (null == ($title = Application\ApplicationTranslator::translate('errors', '406'))) {
+		if (null == ($title = Application\Translator::translate('errors', '406'))) {
 			$title = $this->errors[406]['title'];
 		}
 		
@@ -101,7 +101,7 @@ class ErrorController extends MVC\Controller {
 	
 	public function gone ($a_exception = null) {
 		
-		if (null == ($title = Application\ApplicationTranslator::translate('errors', '410'))) {
+		if (null == ($title = Application\Translator::translate('errors', '410'))) {
 			$title = $this->errors[410]['title'];
 		}
 		
@@ -111,7 +111,7 @@ class ErrorController extends MVC\Controller {
 	
 	public function teapot ($a_exception = null) {
 	
-		if (null == ($title = Application\ApplicationTranslator::translate('errors', '418'))) {
+		if (null == ($title = Application\Translator::translate('errors', '418'))) {
 			$title = $this->errors[418]['title'];
 		}
 		
@@ -121,7 +121,7 @@ class ErrorController extends MVC\Controller {
 	
 	public function server ($a_exception = null) {
 		
-		if (null == ($title = Application\ApplicationTranslator::translate('errors', '500'))) {
+		if (null == ($title = Application\Translator::translate('errors', '500'))) {
 			$title = $this->errors[500]['title'];
 		}
 		
@@ -131,7 +131,7 @@ class ErrorController extends MVC\Controller {
 	
 	public function notimplemented ($a_exception = null) {
 	
-		if (null == ($title = Application\ApplicationTranslator::translate('errors', '501'))) {
+		if (null == ($title = Application\Translator::translate('errors', '501'))) {
 			$title = $this->errors[501]['title'];
 		}
 		
@@ -141,7 +141,7 @@ class ErrorController extends MVC\Controller {
 	
 	public function badgateway ($a_exception = null) {
 	
-		if (null == ($title = Application\ApplicationTranslator::translate('errors', '502'))) {
+		if (null == ($title = Application\Translator::translate('errors', '502'))) {
 			$title = $this->errors[502]['title'];
 		}
 		
@@ -151,7 +151,7 @@ class ErrorController extends MVC\Controller {
 	
 	public function unavailable ($a_exception = null) {
 	
-		if (null == ($title = Application\ApplicationTranslator::translate('errors', '503'))) {
+		if (null == ($title = Application\Translator::translate('errors', '503'))) {
 			$title = $this->errors[503]['title'];
 		}
 		
@@ -161,7 +161,7 @@ class ErrorController extends MVC\Controller {
 	
 	public function gatewaytimeout ($a_exception = null) {
 	
-		if (null == ($title = Application\ApplicationTranslator::translate('errors', '504'))) {
+		if (null == ($title = Application\Translator::translate('errors', '504'))) {
 			$title = $this->errors[504]['title'];
 		}
 		

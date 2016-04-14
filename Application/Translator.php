@@ -12,12 +12,13 @@ namespace Apine\Application;
 use Apine\Core\Cookie;
 use Apine\Core\Request;*/
 use Apine;
+use Apine\Application as Application;
 
 /**
  * Execution Translator
  * Manage Multi-Languages setups
  */
-final class ApplicationTranslator {
+final class Translator {
 	
 	/**
 	 * Instance of the Translation Manager
@@ -62,7 +63,7 @@ final class ApplicationTranslator {
 		//$config = new ApineConfig('config.ini');
 		
 		if (is_null($a_lang_code)) {
-			if (ApplicationConfig::get('localization', 'locale_detection') == "yes") {
+			if (Application\Config::get('localization', 'locale_detection') == "yes") {
 				if (!isset($request_get['language'])) {
 					$language = self::cookie_best();
 					
@@ -74,7 +75,7 @@ final class ApplicationTranslator {
 				}
 				
 				if (!$language) {
-					$language = ApplicationConfig::get('localization', 'locale_default');
+					$language = Application\Config::get('localization', 'locale_default');
 				}
 	
 				self::get_instance()->language = $directory->get_translation($language);
@@ -82,7 +83,7 @@ final class ApplicationTranslator {
 				if (isset($request_get['language'])) {
 					$language = self::request_best();
 				} else {
-					$language = ApplicationConfig::get('localization', 'locale_default');
+					$language = Application\Config::get('localization', 'locale_default');
 				}
 				
 				self::get_instance()->language = $directory->get_translation($language);
@@ -91,7 +92,7 @@ final class ApplicationTranslator {
 			if ($directory->is_exist_language($a_lang_code)) {
 				self::get_instance()->language = $directory->get_translation($a_lang_code);
 			} else {
-				self::get_instance()->language = $directory->get_translation(ApplicationConfig::get('localization', 'locale_default'));
+				self::get_instance()->language = $directory->get_translation(Application\Config::get('localization', 'locale_default'));
 			}
 		}
 		
@@ -109,7 +110,7 @@ final class ApplicationTranslator {
 		
 		$cookie = Apine\Core\Cookie::get('apine_language');
 		
-		if (ApplicationConfig::get('localization', 'locale_use_cookie') === "yes" && $cookie) {
+		if (Application\Config::get('localization', 'locale_use_cookie') === "yes" && $cookie) {
 			$directory = new Apine\Translation\TranslationDirectory();
 			return $directory->is_exist_language($cookie);
 		} else {

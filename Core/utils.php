@@ -277,7 +277,7 @@ function apine_application () {
  */
 function apine_app_config () {
 
-	return Apine\Application\ApplicationConfig::get_instance();
+	return Apine\Application\Config::get_instance();
 
 }
 
@@ -299,7 +299,7 @@ function apine_session () {
  */
 function apine_app_translator () {
 
-	return Apine\Application\ApplicationTranslator::get_instance();
+	return Apine\Application\Translator::get_instance();
 
 }
 
