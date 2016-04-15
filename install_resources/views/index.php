@@ -61,7 +61,7 @@
 				</div>
 				<div class="form-group">
 					<label class="control-label">Host</label>
-					<input class="form-control" type="text" placeholder="localhost" required data-bind="value: $root.db_host"/>
+					<input class="form-control" type="text" required data-bind="value: $root.db_host"/>
 				</div>
 				<div class="form-group">
 					<label class="control-label">Database Name</label>
@@ -69,11 +69,11 @@
 				</div>
 				<div class="form-group">
 					<label class="control-label">Database Username</label>
-					<input class="form-control" type="text" required placeholder="root" data-bind="value: $root.db_user" />
+					<input class="form-control" type="text" required data-bind="value: $root.db_user" />
 				</div>
 				<div class="form-group">
 					<label class="control-label">Database Password</label>
-					<input class="form-control" type="password" placeholder="*****" data-bind="value: $root.db_pass" />
+					<input class="form-control" type="password" data-bind="value: $root.db_pass" />
 				</div>
 			</div>
 			<div data-bind="if: $root.invalid_step_two">
