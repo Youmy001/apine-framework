@@ -139,7 +139,7 @@ class SessionController extends MVC\Controller {
 					}
 					
 					// Create and populate new empty user
-					$class_name = Session\SessionManager::get_user_class();
+					$class_name = Session\SessionManager::get_handler()->get_user_class();
 					$new_user = new $class_name();
 					$new_user->set_username($user);
 					$new_user->set_password($encoded_pwd);
