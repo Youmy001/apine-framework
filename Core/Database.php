@@ -63,7 +63,7 @@ final class Database {
 				if (!isset(self::$apine_instance)) {
 					try {
 						$config = \Apine\Application\Application::get_instance()->get_config();
-						self::$apine_instance = new \PDO($config->get('database', 'type').':host='.$config->get('databse', 'host').';dbname='.$config->get('database', 'dbname').';charset='.$config->get('database', 'charset'), $config->get('database', 'username'), $config->get('database', 'password'));
+						self::$apine_instance = new \PDO($config->get('database', 'type').':host='.$config->get('database', 'host').';dbname='.$config->get('database', 'dbname').';charset='.$config->get('database', 'charset'), $config->get('database', 'username'), $config->get('database', 'password'));
 						self::$apine_instance->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 						self::$apine_instance->exec('SET time_zone = "+00:00";');
 					} catch (\PDOException $e) {
