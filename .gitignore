@@ -6,4 +6,4 @@ vendor/*
 /vendor/
 /test/
 /test-old/
-/test_old/
+test/*
