@@ -8,6 +8,7 @@
 namespace Apine\Session;
 
 use Apine;
+use Apine\User\User;
 
 /**
  * Gestion and configuration of the a user session on a RESTful service
@@ -116,7 +117,7 @@ final class APISession implements SessionInterface{
 	/**
 	 * Get logged in user
 	 *
-	 * @return ApineUser
+	 * @return Apine\User\User
 	 */
 	public function get_user () {
 		

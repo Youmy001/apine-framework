@@ -296,8 +296,7 @@ abstract class EntityModel implements EntityInterface {
 			$this->field_loaded = 0;
 		}
 		
-		if($this->field_loaded == 0) {
-			
+		if(is_null($this->id)) {
 			// This is a new entity
 			$new_dbf = array();
 			

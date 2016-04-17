@@ -21,8 +21,6 @@ class UserFactory implements Apine\Entity\EntityFactoryInterface {
 	 */
 	public static function is_id_exist ($user_id) {
 
-		/*$database = new ApineDatabase();
-		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `id`=$user_id  AND `type`<>10");*/
 		$id_sql = (new Apine\Core\Database())->select("SELECT `id` FROM `apine_users` WHERE `id` = $user_id  AND `type` <> 10");
 		
 		if ($id_sql) {
@@ -42,9 +40,8 @@ class UserFactory implements Apine\Entity\EntityFactoryInterface {
 	 */
 	public static function is_name_exist ($user_name){
 
-		/*$database = new ApineDatabase();
-		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `username`='$user_name' OR `email`='$user_name'  AND `type`<>10");*/
 		$id_sql = (new Apine\Core\Database())->select("SELECT `id` FROM `apine_users` WHERE `username` = '$user_name' OR `email` = '$user_name'  AND `type` <> 10");
+		
 		if ($id_sql) {
 			return true;
 		}
@@ -62,8 +59,6 @@ class UserFactory implements Apine\Entity\EntityFactoryInterface {
 	 */
 	public static function is_email_exist ($user_mail) {
 
-		/*$database = new ApineDatabase();
-		$id_sql = $database->select("SELECT `id` FROM `apine_users` WHERE `email`='$user_mail'  AND `type`<>10");*/
 		$id_sql = (new Apine\Core\Database())->select("SELECT `id` FROM `apine_users` WHERE `email` = '$user_mail'  AND `type` <> 10");
 		
 		if ($id_sql) {
@@ -79,8 +74,6 @@ class UserFactory implements Apine\Entity\EntityFactoryInterface {
 	 */
 	public static function create_all () {
 
-		/*$database = new ApineDatabase();
-		$request = $database->select('SELECT `id` from `apine_users` ORDER BY `username` AND `type`<>10');*/
 		$request = (new Apine\Core\Database())->select('SELECT `id` from `apine_users` ORDER BY `username` AND `type` <> 10');
 		$liste = new Apine\Core\Collection();
 		
@@ -157,7 +150,6 @@ class UserFactory implements Apine\Entity\EntityFactoryInterface {
 	 */
 	public static function create_by_access_right ($access) {
 
-		//$request = (new Database())
 		$database = new Apine\Core\Database();
 		$request = $database->select("SELECT `id` FROM `apine_users` WHERE `type`=$access");
 		$liste = new Apine\Core\Collection();
@@ -182,7 +174,6 @@ class UserFactory implements Apine\Entity\EntityFactoryInterface {
 	 */
 	public static function create_by_group ($group) {
 	
-		//$request = (new Database())
 		$database = new Apine\Core\Database();
 		$request = $database->select("SELECT `user_id` FROM `apine_users_user_groups` WHERE `group_id`=$group");
 		$liste = new Apine\Core\Collection();
@@ -239,13 +230,10 @@ class UserFactory implements Apine\Entity\EntityFactoryInterface {
 		static $class;
 	
 		if (is_null($class)) {
-			if (Apine\Application\ApplicationConfig::get('runtime', 'user_class')) {
-				$pos_slash = strpos(Apine\Application\ApplicationConfig::get('runtime', 'user_class'), '/');
-				$class = substr(Apine\Application\ApplicationConfig::get('runtime', 'user_class'), $pos_slash+1);
+			if (Apine\Application\Config::get('runtime', 'user_class')) {
+				$pos_slash = strpos(Apine\Application\Config::get('runtime', 'user_class'), '/');
+				$class = substr(Apine\Application\Config::get('runtime', 'user_class'), $pos_slash+1);
 				
-				/*if (!class_exists($class) || !is_subclass_of($class, 'ApineUser')) {
-					$class = 'ApineUser';
-				}*/
 				if (!is_a($class, 'Apine\User\User', true)) {
 					$class = 'Apine\User\User';
 				}

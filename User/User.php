@@ -64,6 +64,13 @@ class User extends Apine\Entity\EntityModel {
 	 * @var string
 	 */
 	protected $register_date;
+	
+	/**
+	 * Custom User Properties
+	 * 
+	 * @var array[Property]
+	 */
+	protected $properties;
 
 	/**
 	 * User class' constructor
@@ -254,7 +261,7 @@ class User extends Apine\Entity\EntityModel {
 	/**
 	 * Check if the user is member of a User Group
 	 * 
-	 * @param ApineUserGroup $a_group
+	 * @param UserGroup $a_group
 	 * @return boolean
 	 */
 	final public function has_group ($a_group) {
@@ -306,8 +313,12 @@ class User extends Apine\Entity\EntityModel {
 			$this->load();
 		}
 		
-		$this->email_address = $a_email;
-		$this->_set_field('email', $a_email);
+		if (filter_var($a_email, FILTER_VALIDATE_EMAIL)) {
+			$this->email_address = $a_email;
+			$this->_set_field('email', $a_email);
+		} else {
+			return false;
+		}
 	
 	}
 
@@ -351,6 +362,61 @@ class User extends Apine\Entity\EntityModel {
 	
 	}
 	
+	public function get_property ($a_name) {
+		
+		if (is_null($this->properties)) {
+			$this->load_properties();
+		}
+		
+		return ($this->properties[$a_name]) ? $this->properties[$a_name]->get_value(): null;
+		
+	}
+	
+	public function set_property ($a_name, $a_value) {
+		
+		if (is_null($this->properties)) {
+			$this->load_properties();
+		}
+		
+		if (isset($this->properties[$a_name])) {
+			$this->properties[$a_name]->set_value($a_value);
+		} else {
+			$property = new Property();
+			$property->set_user($this->id);
+			$property->set_name($a_name);
+			$property->set_value($a_value);
+			$this->properties[$a_name] = $property;
+		}
+		
+	}
+	
+	public function unset_property ($a_name) {
+		
+		if (is_null($this->properties)) {
+			$this->load_properties();
+		}
+		
+		if (null !== $this->properties[$a_name]) {
+			$this->properties[$a_name]->delete();
+			unset($this->properties[$a_name]);
+		}
+		
+	}
+	
+	private function load_properties () {
+		
+		$database = new Apine\Core\Database();
+		$request = $database->prepare('SELECT `id`, `name` FROM `apine_user_properties` WHERE `user_id` = ? ORDER BY `name` ASC');
+		$data = $database->execute(array($this->id), $request);
+		
+		if ($data != null && count($data) > 0) {
+			foreach ($data as $item) {
+				$this->properties[$item['name']] = new Property($this->id);
+			}
+		}
+		
+	}
+	
 	/**
 	 * @see ApineEntityInterface::load()
 	 */
@@ -381,6 +447,12 @@ class User extends Apine\Entity\EntityModel {
 		
 			foreach ($this->get_group() as $item) {
 				$db->insert('apine_users_user_groups', array("user_id" => $this->get_id(), "group_id" => $item->get_id()));
+			}
+		}
+		
+		if (count($this->properties) > 0) {
+			foreach ($this->properties as $item) {
+				$item->save();
 			}
 		}
 		

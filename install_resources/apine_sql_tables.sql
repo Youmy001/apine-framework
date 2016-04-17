@@ -50,6 +50,22 @@ ALTER TABLE `apine_users`
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `apine_user_properties`
+--
+
+CREATE TABLE IF NOT EXISTS `apine_user_properties` (
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(254) NOT NULL,
+  `value` BLOB
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `apine_user_properties`
+  ADD UNIQUE KEY `property` (`user_id`, `name`);
+ 
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `apine_user_groups`
 --
 

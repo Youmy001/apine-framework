@@ -10,6 +10,7 @@ namespace Apine\Session;
 
 //use Apine\Core\Request;
 use Apine;
+use Apine\User\User;
 
 /**
  * Abstraction for session management using the strategy pattern
@@ -86,7 +87,7 @@ final class SessionManager {
 	/**
 	 * Get logged in user
 	 * 
-	 * @return ApineUser
+	 * @return Apine\User\User
 	 */
 	public static function get_user () {
 		

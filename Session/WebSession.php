@@ -179,7 +179,7 @@ final class WebSession implements SessionInterface {
 	/**
 	 * Get logged in user
 	 * 
-	 * @return ApineUser
+	 * @return Apine\User\User
 	 */
 	public function get_user () {
 
