@@ -5,3 +5,4 @@ vendor/*
 /config.ini
 /vendor/
 /test-old/
+test/
