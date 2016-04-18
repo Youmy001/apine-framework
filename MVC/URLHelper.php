@@ -10,7 +10,7 @@ namespace Apine\MVC;
 
 use Apine\Core\Request as Request;
 use Apine\Session\SessionManager as SessionManager;
-use Apine\Application\ApplicationTranslator as ApplicationTranslator;
+use Apine\Application\Translator as Translator;
 use Apine\Application\Application as Application;
 
 /**
@@ -149,10 +149,10 @@ final class URLHelper {
 	private static function write_url ($base, $path, $protocol) {
 	
 		if (isset(Request::get()['language'])) {
-			if (Request::get()['language'] == ApplicationTranslator::language()->code || Request::get()['language'] == ApplicationTranslator::language()->code_short) {
+			if (Request::get()['language'] == Translator::language()->code || Request::get()['language'] == Translator::language()->code_short) {
 				$language = Request::get()['language'];
 			} else {
-				$language = ApplicationTranslator::language()->code_short;
+				$language = Translator::language()->code_short;
 			}
 			return self::protocol($protocol) . $base . '/' . $language . '/' . $path;
 		} else {

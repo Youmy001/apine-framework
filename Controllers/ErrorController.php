@@ -178,7 +178,7 @@ class ErrorController extends MVC\Controller {
 			$this->_view->set_param('request', Core\Request::get()['request']);
 		} else {
 			$this->_view->set_title($a_message);
-			$this->_view->set_view('error/error');
+			$this->_view->set_view('error');
 		}
 		
 		if ($a_exception !== null && !is_array($a_exception)) {

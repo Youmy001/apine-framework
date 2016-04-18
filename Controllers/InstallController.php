@@ -33,7 +33,7 @@ class InstallController extends MVC\Controller {
 		if (!file_exists($project . '/.htaccess')) {
 			// Load .htaccess templace
 			ob_start();
-			include_once $parent . '/install_resources/htaccess_install.php';
+			include_once $parent . '/Installation/htaccess_install.php';
 			$content = ob_get_contents();
 			ob_end_clean();
 			
@@ -57,14 +57,14 @@ class InstallController extends MVC\Controller {
 				}
 			}
 			
-			include $parent . '/install_resources/locales.php';
+			include $parent . '/Installation/locales.php';
 			
 			$this->_view->set_title("Install APIne Framework");
-			$this->_view->set_layout($parent . '/install_resources/views/layout');
-			$this->_view->set_view($parent . '/install_resources/views/index');
+			$this->_view->set_layout($parent . '/Installation/views/layout');
+			$this->_view->set_view($parent . '/Installation/views/index');
 			$this->_view->set_param('timezones', $locations);
 			$this->_view->set_param('locales', $locales);
-			// $this->_view->add_script('lib/install_resources/install');
+			// $this->_view->add_script('lib/Installation/install');
 		}
 		
 		return $this->_view;
@@ -78,8 +78,12 @@ class InstallController extends MVC\Controller {
 		$project = dirname($parent);
 		
 		try {
+			/*if (!is_dir($project . '/views')) {
+				recurse_copy("$parent/Installation/app_views", $project . '/views');
+			}*/
 			if (!is_dir($project . '/views')) {
-				recurse_copy("$parent/install_resources/app_views", $project . '/views');
+				mkdir("../views");
+				chmod("../views", 0777);
 			}
 			
 			if (!is_dir($project . '/controllers')) {
@@ -109,7 +113,7 @@ class InstallController extends MVC\Controller {
 			
 			if (!file_exists($project . '/composer.phar')) {
 				$composer = fopen($project . '/composer.phar', 'x+');
-				$content = file_get_contents($parent . '/install_resources/composer.phar');
+				$content = file_get_contents($parent . '/Installation/composer.phar');
 				$result = fwrite($composer, $content);
 				fclose($composer);
 					
@@ -122,7 +126,7 @@ class InstallController extends MVC\Controller {
 			
 			if (!file_exists($project . '/composer.json')) {
 				$composer = fopen($project . '/composer.json', 'x+');
-				$content = file_get_contents($parent . '/install_resources/composer.json');
+				$content = file_get_contents($parent . '/Installation/composer.json');
 				$result = fwrite($composer, $content);
 				fclose($composer);
 					
@@ -134,8 +138,8 @@ class InstallController extends MVC\Controller {
 			}
 			
 			if (!file_exists($project . '/index.php')) {
-				//$result = copy($parent . '/install_resources/empty_index.php', $project . '/index.php');
-				$file_content = file_get_contents($parent . '/install_resources/empty_index.php');
+				//$result = copy($parent . '/Installation/empty_index.php', $project . '/index.php');
+				$file_content = file_get_contents($parent . '/Installation/empty_index.php');
 				$content = str_replace('{apine}', $parent_name, $file_content);
 				$index = fopen($project . '/index.php', 'x+');
 				$resutl = fwrite($index, $content);
@@ -158,7 +162,7 @@ class InstallController extends MVC\Controller {
 			
 			// Load .htaccess templace
 			ob_start();
-			include_once $parent . '/install_resources/htaccess_template.php';
+			include_once $parent . '/Installation/htaccess_template.php';
 			$content = ob_get_contents();
 			ob_end_clean();
 					
@@ -249,7 +253,7 @@ class InstallController extends MVC\Controller {
 			$parent_name = basename($parent);
 			$project = dirname($parent);
 			
-			include $parent . '/install_resources/locales.php';
+			include $parent . '/Installation/locales.php';
 			
 			$locale_name = $locales [$locale_code];
 			$locale_code_short = substr($locale_code, 0, 2);
@@ -295,7 +299,7 @@ class InstallController extends MVC\Controller {
 		try {
 			$parent = dirname(dirname(__FILE__));
 			$database = new Database($entries ['type'], $entries ['host'], $entries ['dbname'], $entries ['username'], $entries ['password'], $entries ['charset']);
-			$sql_file = file_get_contents($parent . '/install_resources/apine_sql_tables.sql');
+			$sql_file = file_get_contents($parent . '/Installation/apine_sql_tables.sql');
 			$result = $database->exec($sql_file);
 			
 			if ($result === false) {
@@ -321,7 +325,7 @@ class InstallController extends MVC\Controller {
 				
 				$routes = fopen($project . '/routes.xml', 'x+');
 				$path = $project . '/routes.xml';
-				$content = file_get_contents($parent . '/install_resources/routes.xml');
+				$content = file_get_contents($parent . '/Installation/routes.xml');
 			} else {
 				if (file_exists($project . '/routes.json')) {
 					return;
@@ -329,7 +333,7 @@ class InstallController extends MVC\Controller {
 				
 				$routes = fopen($project . '/routes.json', 'x+');
 				$path = $project . '/routes.json';
-				$content = file_get_contents($parent . '/install_resources/routes.json');
+				$content = file_get_contents($parent . '/Installation/routes.json');
 			}
 			
 			$result = fwrite($routes, $content);

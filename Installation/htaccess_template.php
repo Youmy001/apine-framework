@@ -71,6 +71,7 @@
 
 #Options +FollowSymlinks
 #Options +SymLinksIfOwnerMatch
+Options -Indexes
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 	

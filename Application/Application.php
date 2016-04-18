@@ -38,7 +38,7 @@ final class Application {
 	 * 
 	 * @var string
 	 */
-	private $apine_version = '1.0.0-dev.16.04';
+	private $apine_version = '1.0.0-dev.16.05';
 	
 	/**
 	 * Version number of the user application
@@ -139,6 +139,9 @@ final class Application {
 		
 	}
 	
+	/**
+	 * @return Application
+	 */
 	public static function get_instance () {
 		
 		if (!isset(self::$_instance)) {
@@ -433,6 +436,12 @@ final class Application {
 		}
 		
 		return $this->version;
+		
+	}
+	
+	public function framework_location () {
+		
+		return $this->apine_folder;
 		
 	}
 	

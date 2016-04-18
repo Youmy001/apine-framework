@@ -248,7 +248,6 @@
 					</dl>
 				</div>
 				<p class="lead">The following folders and files will be created if they do not exist already :</p>
-				<blockquote>The <code>views/</code> folder will be populated with basic views for session managements.</blockquote>
 				<blockquote>Make sure www-data user has writting permissions on the project's directory.</blockquote>
 				<ul>
 					<li>controllers/</li>

@@ -139,14 +139,15 @@ final class HTMLView extends View {
 	 */
 	public function set_layout($a_layout) {
 
-		if ($a_layout!="") {
+		if ($a_layout != "") {
 			// Verify if the layout file exists
 			if (file_exists("views/layouts/$a_layout.php")) {
-				$this->_layout="views/layouts/$a_layout";
+				$this->_layout = "views/layouts/$a_layout";
 			} else if (file_exists("$a_layout.php")) {
-				$this->_layout=$a_layout;
+				$this->_layout = $a_layout;
 			} else {
-				$this->_layout='views/layouts/default';
+				$location = Application\Application::get_instance()->framework_location();
+				$this->_layout = $location . '/Views/default_layout';
 			}
 		}
 
@@ -160,13 +161,16 @@ final class HTMLView extends View {
 	public function set_view($a_view) {
 
 		if ($a_view!="") {
+			$location = Application\Application::get_instance()->framework_location();
 			// Verify if the view file exists
 			if (file_exists("views/$a_view.php")) {
-				$this->_view="views/$a_view";
+				$this->_view = "views/$a_view";
+			} else if (file_exists($location . "/Views/$a_view.php")) {
+				$this->_view = "$location/Views/$a_view";
 			} else if (file_exists("$a_view.php")) {
-				$this->_view=$a_view;
+				$this->_view = $a_view;
 			} else {
-				$this->_view='views/default';
+				$this->_view = $location . '/Views/default_view';
 			}
 		}
 

@@ -15,7 +15,8 @@ class VersionController extends MVC\Controller implements MVC\APIActionsInterfac
 	
 	public function index () {
 		
-		$this->_view->set_view('version/version');
+		$this->_view->set_view('version');
+		$this->_view->set_title('Version');
 		
 		return $this->_view;
 		
