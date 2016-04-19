@@ -99,11 +99,6 @@ final class Database {
 			
 			if ($result) {
 				
-				/*while ($data = $result->fetch(PDO::FETCH_ASSOC)) {
-					$arResult[] = $data;
-				}
-				
-				var_dump($result->fetchAll(PDO::FETCH_ASSOC));*/
 				$arResult = $result->fetchAll(\PDO::FETCH_ASSOC);
 				
 				$result->closeCursor();
@@ -187,7 +182,7 @@ final class Database {
 			
 			if (is_string($val)) {
 				$val = $this->quote($val);
-			} else if ($val == null) {
+			} else if (is_null($val)) {
 				$val = 'NULL';
 			}
 			
