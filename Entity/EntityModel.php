@@ -296,13 +296,15 @@ abstract class EntityModel implements EntityInterface {
 			$this->field_loaded = 0;
 		}
 		
-		if(is_null($this->id)) {
-			// This is a new entity
+		if($this->field_loaded == 0) {
+			// This is a new or unloaded entity
 			$new_dbf = array();
 			
-			foreach ($this->database_fields as $field => $val) {
-				if (!is_numeric($field)) {
-					$new_dbf[$field] = $val;
+			if (!empty($this->database_fields)) {
+				foreach ($this->database_fields as $field => $val) {
+					if (!is_numeric($field)) {
+						$new_dbf[$field] = $val;
+					}
 				}
 			}
 			
