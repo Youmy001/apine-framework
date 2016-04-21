@@ -258,7 +258,7 @@ final class Application {
 		}
 		
 		if ($this->use_composer) {
-			require_once('vendor/autoload.php');
+			require_once 'vendor/autoload.php';
 		}
 		
 		/**
