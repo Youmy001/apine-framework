@@ -71,57 +71,65 @@ class InstallController extends MVC\Controller {
 	
 	}
 
-	private function move_files () {
+	private function move_files ($structure = true) {
 
 		$parent = dirname(dirname(__FILE__));
 		$parent_name = basename($parent);
 		$project = dirname($parent);
 		
 		try {
-			/*if (!is_dir($project . '/views')) {
-				recurse_copy("$parent/Installation/app_views", $project . '/views');
-			}*/
-			if (!is_dir($project . '/views')) {
-				mkdir("../views");
-				chmod("../views", 0777);
-			}
-			
-			if (!is_dir($project . '/controllers')) {
-				mkdir("../controllers");
-				chmod("../controllers", 0777);
-			}
-			
-			if (!is_dir($project . '/modules')) {
-				mkdir("../modules");
-				chmod("../modules", 0777);
-			}
-			
-			if (!is_dir($project . '/resources')) {
-				mkdir($project . '/resources');
-				mkdir($project . '/resources/languages');
-				mkdir($project . '/resources/public');
-				mkdir($project . '/resources/public/assets');
-				mkdir($project . '/resources/public/css');
-				mkdir($project . '/resources/public/scripts');
-				chmod($project . '/resources', 0777);
-				chmod($project . '/resources/languages', 0777);
-				chmod($project . '/resources/public', 0777);
-				chmod($project . '/resources/public/assets', 0777);
-				chmod($project . '/resources/public/css', 0777);
-				chmod($project . '/resources/public/scripts', 0777);
-			}
-			
-			if (!file_exists($project . '/composer.phar')) {
-				$composer = fopen($project . '/composer.phar', 'x+');
-				$content = file_get_contents($parent . '/Installation/composer.phar');
-				$result = fwrite($composer, $content);
-				fclose($composer);
-					
-				if ($result === false) {
-					throw new Exception('Cannot install composer');
+			if ($structure) {
+				if (!is_dir($project . '/views')) {
+					mkdir("../views");
+					chmod("../views", 0777);
 				}
 				
-				chmod($project . '/composer.phar', 0777);
+				if (!is_dir($project . '/controllers')) {
+					mkdir("../controllers");
+					chmod("../controllers", 0777);
+				}
+				
+				if (!is_dir($project . '/modules')) {
+					mkdir("../modules");
+					chmod("../modules", 0777);
+				}
+				
+				if (!is_dir($project . '/resources')) {
+					mkdir($project . '/resources');
+					chmod($project . '/resources', 0777);
+				}
+				
+				if (!is_dir($project . '/resources/languages')) {
+					mkdir($project . '/resources/languages');
+					chmod($project . '/resources/languages', 0777);
+				}
+				
+				if (!is_dir($project . '/resources/public')) {
+					mkdir($project . '/resources/public');
+					mkdir($project . '/resources/public/assets');
+					mkdir($project . '/resources/public/css');
+					mkdir($project . '/resources/public/scripts');
+					chmod($project . '/resources/public', 0777);
+					chmod($project . '/resources/public/assets', 0777);
+					chmod($project . '/resources/public/css', 0777);
+					chmod($project . '/resources/public/scripts', 0777);
+				}
+				
+				if (!file_exists($project . '/composer.phar')) {
+					$composer_versions = json_decode(file_get_contents("http://getcomposer.org/versions"), true);
+					$composer_stable_url = $composer_versions['stable'][0]['path'];
+					$composer_phar = file_get_contents("http://getcomposer.org$composer_stable_url");
+					
+					$composer = fopen($project . '/composer.phar', 'x+');
+					$result = fwrite($composer, $composer_phar);
+					fclose($composer);
+					
+					if ($result === false) {
+						throw new Exception('Cannot install composer');
+					}
+				
+					chmod($project . '/composer.phar', 0777);
+				}
 			}
 			
 			if (!file_exists($project . '/composer.json')) {
@@ -138,7 +146,6 @@ class InstallController extends MVC\Controller {
 			}
 			
 			if (!file_exists($project . '/index.php')) {
-				//$result = copy($parent . '/Installation/empty_index.php', $project . '/index.php');
 				$file_content = file_get_contents($parent . '/Installation/empty_index.php');
 				$content = str_replace('{apine}', $parent_name, $file_content);
 				$index = fopen($project . '/index.php', 'x+');
@@ -182,12 +189,19 @@ class InstallController extends MVC\Controller {
 		try {
 			if (Request::is_ajax()) {
 				$entries = json_decode(Request::get_request_body(), true);
+				
+				$generate = $entries['generate'];
+				array_pop($entries);	// Remove the generate command from the end of the array
+				
 				$this->generate_config($entries);
 				
 				$this->import_database($entries['database']);
 				$this->import_routes();
-				$this->move_files();
-				$this->generate_locale($entries ['localization'] ['locale_default'], $entries ['application'] ['title'], $entries ['application'] ['author'], $entries ['application'] ['description']);
+				$this->move_files($generate);
+				
+				if ($generate) {
+					$this->generate_locale($entries ['localization'] ['locale_default'], $entries ['application'] ['title'], $entries ['application'] ['author'], $entries ['application'] ['description']);
+				}
 			} else {
 				throw new GenericException('Invalid Request', 400);
 			}

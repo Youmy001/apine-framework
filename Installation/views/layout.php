@@ -58,6 +58,7 @@
 		self.step_three_visible = ko.observable(false);
 		self.step_four_visible = ko.observable(false);
 		self.step_five_visible = ko.observable(false);
+		self.step_six_visible = ko.observable(false);
 		self.step_finish_visible = ko.observable(false);
 		self.step_error_visible = ko.observable(false);
 		
@@ -85,6 +86,8 @@
 		self.email_pass = ko.observable("");
 		self.email_name = ko.observable("");
 		self.email_addr = ko.observable("");
+
+		self.generate = ko.observable();
 		
 		self.email_auth_text = ko.computed(function() {
 			return (self.email_auth() == 1) ? 'Yes' : 'No';
@@ -92,6 +95,14 @@
 		
 		self.email_auth_bool = ko.computed(function() {
 			return (self.email_auth() == 1) ? true : false;
+		}, this);
+
+		self.generate_text = ko.computed(function () {
+			return (self.generate() == 1) ? 'Yes' : 'No';
+		}, this);
+
+		self.generate_bool = ko.computed(function () {
+			return (self.generate() == 1) ? true : false;
 		}, this);
 		
 		self.show_step = function (step_number) {
@@ -101,6 +112,7 @@
 			self.step_three_visible(false);
 			self.step_four_visible(false);
 			self.step_five_visible(false);
+			self.step_six_visible(false);
 			
 			switch (step_number) {
 				case 1:
@@ -117,6 +129,9 @@
 					break;
 				case 5:
 					self.step_five_visible(true);
+					break;
+				case 6:
+					self.step_six_visible(true);
 					break;
 				case 0:
 				default:
@@ -140,6 +155,9 @@
 			} else if (self.step_four_visible()) {
 				self.step_four_visible(false);
 				self.step_five_visible(true);
+			} else if (self.step_five_visible()) {
+				self.step_five_visible(false);
+				self.step_six_visible(true);
 			}
 		};
 		
@@ -215,21 +233,23 @@
 				email_object.sender_address = self.email_addr();
 				json_object.mail = email_object();
 			}
+
+			json_object.generate = self.generate_bool();
 			
 			//console.log(JSON.stringify(json_object));
 			$.ajax("/install/apply_new_config", {
 				data: JSON.stringify(json_object),
 				type: "post", contentType: "application/json",
 				success: function (result) {
-					self.step_five_visible(false);
+					self.step_six_visible(false);
 					self.step_finish_visible(true);
 				 },
 				error: function () {
-					self.step_five_visible(false);
+					self.step_six_visible(false);
 					self.step_error_visible(true);
 				},
 				fail: function () {
-					self.step_five_visible(false);
+					self.step_six_visible(false);
 					self.step_error_visible(true);
 				}
 			});

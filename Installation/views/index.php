@@ -4,6 +4,8 @@
 <br/>
 <p class="lead">This utility will help you install basic resources and configure your new APIne Application.</p>
 <br/>
+<div class="alert alert-info">Make sure www-data user has writting permissions on the project's directory before starting.</div>
+<br/>
 <button class="btn btn-lg btn-success" data-bind="click: $root.show_next_step">Get Started</button>
 <p style="margin: 20px;margin-bottom:10px;padding:0px;">or</p>
 <button class="btn btn-link" role="button">Import an existing config</button>
@@ -186,13 +188,56 @@
 		</div>
 	</form>
 	
-	<div data-bind="with: step_five_visible">
+	<form data-bind="with: step_five_visible, submit: $root.show_next_step">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">Step 5 - Confirmation</h3>
+				<h3 class="panel-title">Step 5 - Assets</h3>
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<label class="control-label">Would you like the installer generate assets for your project?</label>
+					<select class="form-control" data-bind="value: $root.generate" required>
+						<option value="1" selected>Yes</option>
+						<option value="0">No</option>
+					</select>
+				</div>
+				<p class="lead">If selected, the following folders and files will be created if they do not exist already :</p>
+				<ul>
+					<li>controllers/</li>
+					<li>resources/
+						<ul>
+							<li>languages/
+								<ul>
+									<li>&lt;locale_name&gt;.json</li>
+								</ul>
+							</li>
+							<li>public/
+								<ul>
+									<li>assets/</li>
+									<li>css/</li>
+									<li>scripts</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li>views/</li>
+					<li>composer.phar</li>
+				</ul>
+			</div>
+			<div class="panel-footer text-right">
+				<button class="btn btn-default" role="submit">Go To Step 6</button>
+			</div>
+		</div>
+	</form>
+	
+	<div data-bind="with: step_six_visible">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Step 6 - Confirmation</h3>
 			</div>
 			<div class="panel-body">
 				<p class="lead">The following settings will be applied to your new application.</p>
+				<div class="alert alert-info">Make sure www-data user has writting permissions on the project's directory.</div>
 				<h4>Application :</h4>
 				<dl class="dl-horizontal">
 					<dt>Name</dt>
@@ -247,27 +292,11 @@
 						<dd data-bind="text: $root.email_addr"></dd>
 					</dl>
 				</div>
-				<p class="lead">The following folders and files will be created if they do not exist already :</p>
-				<blockquote>Make sure www-data user has writting permissions on the project's directory.</blockquote>
-				<ul>
-					<li>controllers/</li>
-					<li>resources/
-						<ul>
-							<li>languages/</li>
-							<li>public/
-								<ul>
-									<li>assets/</li>
-									<li>css/</li>
-									<li>scripts</li>
-								</ul>
-							</li>
-						</ul>
-					</li>
-					<li>views/</li>
-					<li>.htaccess</li>
-					<li>config.ini</li>
-					<li>routes.json</li>
-				</ul>
+				<h4>Assets :</h4>
+				<dl class="dl-horizontal">
+					<dt>Generate Basic Assets<br>and File Structure ?</dt>
+					<dd data-bind="text: $root.generate_text"></dd>
+				</dl>
 			</div>
 			<div class="panel-footer text-right">
 				<button class="btn btn-default" role="button" data-bind="click: $root.apply_settings">Apply configuration &amp; Install</button>
