@@ -12,6 +12,7 @@ namespace Apine\Application;
 use Apine\Core\Cookie;
 use Apine\Core\Request;*/
 use Apine;
+use Apine\Translation\Translation;
 
 /**
  * Execution Translator
@@ -23,14 +24,14 @@ final class Translator {
 	 * Instance of the Translation Manager
 	 * Singleton Implementation
 	 * 
-	 * @var ApplicationTranslator
+	 * @var Translator
 	 */
 	private static $_instance;
 	
 	/**
 	 * Current Language
 	 * 
-	 * @var Translation
+	 * @var Translation\Translation
 	 */
 	private $language;
 	

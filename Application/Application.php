@@ -17,6 +17,8 @@ use Apine\Routing\WebRouter as WebRouter;
 use Apine\Routing\APIRouter as APIRouter;
 use Apine\Controllers\System as Controllers;
 use Apine\Core\Version as Version;
+use TinyTemplate\Engine;
+use TinyTemplate\Rule;
 
 /**
  * Apine Application
@@ -38,7 +40,7 @@ final class Application {
 	 * 
 	 * @var string
 	 */
-	private $apine_version = '1.0.0-dev.16.05';
+	private $apine_version = '1.0.0-dev.17.00';
 	
 	/**
 	 * Version number of the user application
@@ -53,6 +55,8 @@ final class Application {
 	 * @var string
 	 */
 	private $apine_folder;
+	
+	private $include_path;
 	
 	/**
 	 * Can the framework use Composer and offer advanced features
@@ -119,17 +123,28 @@ final class Application {
 	
 	public function __construct() {
 		
-		$this->apine_folder = realpath(dirname(__FILE__) . '/..');
-        
-       // Compute if in a sub directory
-		if (strlen($_SERVER['SCRIPT_NAME']) < 10) {
-			// Remove "/index.php" from the script name
-			$this->webroot = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
-		}
-			
 		ini_set('display_errors', 0);
 		error_reporting(E_ERROR);
-		ini_set('include_path', realpath($this->apine_folder . '/..'));
+		
+		$server_root = $_SERVER['DOCUMENT_ROOT'];
+		$this->apine_folder = realpath(dirname(__FILE__) . '/..'); // The path to the framework itself
+        
+       // Compute if in a sub directory
+		if (strlen($_SERVER['SCRIPT_NAME']) > 10) {
+			// Remove "/index.php" from the script name
+			$this->webroot = str_replace('/index.php', '', $_SERVER['SCRIPT_NAME']);
+		}
+		
+		// The include path should the the server root plus the webrout path
+		$include_path = realpath(implode('/', array($server_root, $this->webroot)));
+		
+		if (!is_dir($include_path)) {
+			$include_path = realpath(dirname($include_path));
+		}
+		
+		$this->include_path = $include_path;
+		
+		ini_set('include_path', $include_path);
 		
 		if (!isset(self::$_instance)) {
 			self::$_instance = &$this;
@@ -241,9 +256,11 @@ final class Application {
 		if ($a_mode !== $this->mode) {
 			$this->mode = $a_mode;
 			if ($a_mode === APINE_MODE_DEVELOPMENT) {
-				ini_set('display_errors', -1);
-				error_reporting(E_ALL | E_STRICT);
+				//ini_set('display_errors', -1);
+				ini_set('display_errors', 1);
+				error_reporting(E_ALL | E_STRICT | E_DEPRECATED | E_WARNING);
 			} else {
+				//ini_set('display_errors', 0);
 				ini_set('display_errors', 0);
 				error_reporting(E_ERROR);
 			}
@@ -257,7 +274,7 @@ final class Application {
 			$a_runtime = APINE_RUNTIME_HYBRID;
 		}
 		
-		if ($this->use_composer) {
+		if ($this->use_composer && !strstr($this->apine_folder, 'vendor/youmy001')) {
 			require_once 'vendor/autoload.php';
 		}
 		
@@ -327,6 +344,122 @@ final class Application {
 					throw new GenericException('Web Application calls are not implemented', 501);
 				}
 				
+				Engine::instance()->add_rule(new Rule(
+						'apine_data_loop',
+						'~\{loopdata}~',
+						'<?php foreach ($this->data as $element): $this->wrap($element); ?>'
+				));
+				
+				Engine::instance()->add_rule(new Rule(
+						'apine_config',
+						'~\{apine_config:(\w+),(\w+)\}~',
+						'<?php echo \\Apine\\Application\\Application::get_instance()->get_config()->get(\'$1\',\'$2\');?>'
+				));
+				
+				Engine::instance()->add_rule(new Rule(
+						'apine_translate',
+						'~\{apine_translate:(\w+),(\w+)\}~',
+						'<?php echo \\Apine\\Application\\Translator::get_instance()->translate(\'$1\',\'$2\');?>'
+				));
+				
+				Engine::instance()->add_rule(new Rule(
+						'apine_format_date',
+						'~\{apine_format_date:(\w+),(\w+)\}~',
+						'<?php echo \\Apine\\Application\\Translator::get_instance()->translation()->get_locale()->format_date("$1", Apine\\Application\\Translator::get_instance()->translation()->get_locale()->$2());?>'
+				));
+				
+				Engine::instance()->add_rule(new Rule(
+						'apine_format_date_array',
+						'~\{apine_format_date:(\w+)\[(\w+)\],(\w+)\}~',
+						'<?php echo \\Apine\\Application\\Translator::get_instance()->translation()->get_locale()->format_date($this->data[\'$1\'][\'$2\'], Apine\\Application\\Translator::get_instance()->translation()->get_locale()->$3());?>'
+				));
+				
+				Engine::instance()->add_rule(new Rule(
+						'apine_language',
+						'~\{apine_language:(code|short|name)\}~',
+						'<?php switch("$1"){case "code": echo Apine\\Application\\Translator::get_instance()->translation()->get("language","code");break;case "short": echo Apine\Application\Translator::get_instance()->translation()->get("language","shortcode");break;case "name": echo Apine\Application\Translator::get_instance()->translation()->get("language","name");break;}?>'
+				));
+				
+				Engine::instance()->add_rule(new Rule(
+						'apine_execution',
+						'~\{apine_execution_time\}~',
+						'<?php echo apine_execution_time();?>'
+				));
+				
+				Engine::instance()->add_rule(new Rule(
+						'apine_version',
+						'~\{apine_version:(framework|application)\}~',
+						'<?php echo \\Apine\\Application\\Application::get_instance()->get_version()->$1();?>'
+				));
+				
+				Engine::instance()->add_rule(new Rule(
+						'apine_url',
+						'~\{apine_url_(path|resource):(([^\/\s]+\/)?(.*))\}~',
+						'<?php echo \\Apine\\MVC\URLHelper::get_instance()->$1("$2");?>'
+						));
+				
+				/*Engine::instance()->add_rule(new Rule(
+						'apine_url_path',
+						'~\{apine_url_path:(([^\/\s]+\/)?(.*))\}~',
+						'<?php echo Apine\\MVC\URLHelper::get_instance()->path("$1");?>'
+				));
+				
+				Engine::instance()->add_rule(new Rule(
+						'apine_url_resource',
+						'~\{apine_url_resource:(([^\/\s]+\/)(.*))\}~',
+						'<?php echo Apine\\MVC\URLHelper::get_instance()->resource("$1");?>'
+				));*/
+				
+				Engine::instance()->add_rule(new Rule(
+						'apine_url_secure',
+						'~\{apine_url_(path|resource)_secure:(([^\/\s]+\/)?(.*))\}~',
+						'<?php echo Apine\\MVC\\URLHelper::get_instance()->$1("$2", APINE_PROTOCOL_HTTPS);?>'
+				));
+				
+				Engine::instance()->add_rule(new Rule(
+						'apine_view_apply_scripts',
+						'~\{apine_apply_scripts\}~',
+						'<?php echo Apine\\MVC\\HTMLView::apply_scripts($data["apine_view_scripts"]);?>'
+				));
+				
+				Engine::instance()->add_rule(new Rule(
+						'apine_view_apply_stylesheets',
+						'~\{apine_apply_stylesheets\}~',
+						'<?php echo Apine\\MVC\\HTMLView::apply_stylesheets($data["apine_view_stylesheets"]);?>'
+				));
+				
+				Engine::instance()->add_rule(new Rule(
+						'apine_user_has_group',
+						'~\{if:apine_user\[groups\]==([0-9]+)\}~',
+						'<?php if (\Apine\Session\SessionManager::get_user()->has_group($1)) : ?>'
+				));
+				
+				Engine::instance()->add_rule(new Rule(
+						'apine_user_group',
+						'~\{apine_user\[groups\]\[([0-9]+)\]\}~',
+						'<?php echo (\Apine\Session\SessionManager::get_user()->has_group($1)) : \Apine\Session\SessionManager::get_user()->get_group()->get_item($1)->get_name() : ""; ?>'
+				));
+				
+				// Importing
+				Engine::instance()->add_rule(new Rule(
+						'apine_import_view',
+						'~\{apine_import:(([^\/\s]+\/)?(.*))\}~',
+						'<?php echo $this->importFile(apine_application()->include_path() . \'/$1\'); ?>'
+				));
+				
+				// Arrays
+				/*Engine::instance()->add_rule(new Rule(
+						'variable_array',
+						'~\{(\w+)\[(\w+)\]\}~',
+						'<?php echo $this->showVariable(\'$1\')[\'$2\']; ?>'
+				));
+				
+				Engine::instance()->add_rule(new Rule(
+						'variable_array_escape',
+						'~\{escape:(\w+)\[(\w+)\]\}~',
+						'<?php echo htmlentities($this->showVariable(\'$1\')[\'$2\']); ?>'
+				));*/
+				
 				if (!empty(Request::get()['request']) && Request::get()['request'] != '/') {
 					$request = Request::get()['request'];
 				} else {
@@ -369,6 +502,7 @@ final class Application {
 				
 				$view->draw();
 			} catch (Exception $e2) {
+				var_dump($e2->getTraceAsString());
 				$protocol = (isset(Request::server()['SERVER_PROTOCOL']) ? Request::server()['SERVER_PROTOCOL'] : 'HTTP/1.0');
 				header($protocol . ' 500 Internal Server Error');
 				die("Critical Error : " . $e->getMessage());
@@ -443,6 +577,12 @@ final class Application {
 		
 		return $this->apine_folder;
 		
+	}
+	
+	public function include_path () {
+	
+		return $this->include_path;
+	
 	}
 	
 }

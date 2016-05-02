@@ -76,19 +76,19 @@ Options -Indexes
 	RewriteEngine On
 	
 	RewriteCond %{REQUEST_FILENAME} -f
-	RewriteRule ^(<?= $parent_name ?>/|controllers/|modules/|views/|config\.ini|config_sample\.ini|\.xml|composer\.*|VERSION) - [F,L,NC]
+	RewriteRule ^(<?= $htaccess_parent ?>/|controllers/|modules/|views/|config\.ini|config_sample\.ini|\.xml|composer\.*|VERSION) - [F,L,NC]
 
 	# APIne Rules
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteRule ^<?= $webroot ?>api/((.+))?$ /?request=/$1&api=api [QSA,L]
+	RewriteRule ^api/((.+))?$ /?request=/$1&api=api [QSA,L]
 	
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteRule ^<?= $webroot ?>([a-zA-Z]{2}(-[a-zA-Z]{2})?)(/(.+)?)?$ /?request=$3&language=$1 [QSA,L]
+	RewriteRule ^([a-zA-Z]{2}(-[a-zA-Z]{2})?)(/(.+)?)?$ /?request=$3&language=$1 [QSA,L]
 	
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteRule ^<?= $webroot ?>(.*)$ /?request=/$1 [QSA,L]
+	RewriteRule ^(.*)$ /?request=/$1 [QSA,L]
 
 </IfModule>

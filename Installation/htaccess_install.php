@@ -8,6 +8,6 @@ Options -Indexes
 	
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteRule ^(.*)$ <?= $parent_name ?>/install.php?request=/$1 [QSA,L]
+	RewriteRule ^(.*)$ <?= $htaccess_parent ?>/install.php?request=/$1 [QSA,L]
 
 </IfModule>

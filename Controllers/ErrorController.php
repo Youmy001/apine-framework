@@ -184,7 +184,10 @@ class ErrorController extends MVC\Controller {
 		if ($a_exception !== null && !is_array($a_exception)) {
 			$this->_view->set_param('file', $a_exception->getFile());
 			$this->_view->set_param('line', $a_exception->getLine());
-			$this->_view->set_param('trace', $a_exception->getTraceAsString());
+			
+			if (Application\Application::get_instance()->get_mode() === APINE_MODE_DEVELOPMENT) {
+				$this->_view->set_param('trace', $a_exception->getTraceAsString());
+			}
 		}
 		
 		if ($this->is_http_code($a_code)) {

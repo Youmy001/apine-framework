@@ -128,7 +128,7 @@ final class Collection implements \IteratorAggregate {
 			
 			return $this->items;
 		} catch (\Exception $e) {
-			return false;
+			return array();
 		}
 	
 	}
@@ -262,7 +262,7 @@ final class Collection implements \IteratorAggregate {
 				return false;
 			}
 			
-			if (is_object($a_value) && get_parent_class($a_value) === '\Apine\Entity\EntityModel') {
+			if (is_object($a_value) && is_a($a_value, '\Apine\Entity\EntityModel')) {
 				$a_value->load();
 			}
 			
@@ -270,7 +270,7 @@ final class Collection implements \IteratorAggregate {
 			
 			// Cycle through every items in the Liste
 			foreach ($this->items as $key => $item) {
-				if (is_object($item) && get_parent_class($item) === '\Apine\Entity\EntityModel') {
+				if (is_object($item) && is_a($item, '\Apine\Entity\EntityModel')) {
 					$item->load();
 				}
 				

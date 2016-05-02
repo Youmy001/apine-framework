@@ -233,11 +233,16 @@ function recurse_copy ($src, $dst) {
  */
 function apine_execution_time () {
 
-	global $before;
-	$after = microtime(true) * 1000;
-	$time = number_format($after - $before, 1);
+	static $before;
 	
-	return $time;
+	if (is_null($before)) {
+		$before = microtime(true) * 1000;
+	} else {
+		$after = microtime(true) * 1000;
+		$time = number_format($after - $before, 1);
+		
+		return $time;
+	}
 
 }
 

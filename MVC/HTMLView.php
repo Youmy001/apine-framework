@@ -2,6 +2,10 @@
 namespace Apine\MVC;
 
 use Apine\Application as Application;
+use Apine\Exception\GenericException;
+use TinyTemplate\Template;
+use TinyTemplate\Layout;
+use TinyTemplate\Engine;
 
 /**
  * HTML View
@@ -65,18 +69,19 @@ final class HTMLView extends View {
 	 * @param string $a_view
 	 * @param string $a_layout
 	 */
-	public function __construct($a_title = "", $a_view = "default", $a_layout = "default") {
+	public function __construct($a_title = "", $a_view = "view", $a_layout = "layout") {
 
 		parent::__construct();
 		$this->_scripts = array();
 
 		$this->_title=$a_title;
+		
 		$this->set_view($a_view);
-
+		
 		$config = Application\Application::get_instance()->get_config();
 		
 		if (!is_null($config)) {
-			if ($a_layout == "default" && !is_null($config->get('runtime', 'default_layout'))) {
+			if ($a_layout == "layout" && !is_null($config->get('runtime', 'default_layout'))) {
 				$a_layout = $config->get('runtime', 'default_layout');
 			}
 		}
@@ -138,16 +143,19 @@ final class HTMLView extends View {
 	 * @param string $a_layout
 	 */
 	public function set_layout($a_layout) {
-
+		
 		if ($a_layout != "") {
+			$location = Application\Application::get_instance()->framework_location();
 			// Verify if the layout file exists
-			if (file_exists("views/layouts/$a_layout.php")) {
-				$this->_layout = "views/layouts/$a_layout";
-			} else if (file_exists("$a_layout.php")) {
-				$this->_layout = $a_layout;
+			if (file_exists("views/layouts/$a_layout.html")) {
+				$this->_layout = new Layout("views/layouts/$a_layout.html");
+			} else if (file_exists($location . "/Views/$a_layout.html")) {
+				$this->_layout = new Layout($location . "/Views/$a_layout.html");
+			} else if (file_exists("$a_layout.html")) {
+				$this->_layout = new Layout("$a_layout.html");
 			} else {
-				$location = Application\Application::get_instance()->framework_location();
-				$this->_layout = $location . '/Views/default_layout';
+				//$this->_layout = new Layout($location . '/Views/layout.html');
+				throw new GenericException('Layout Not Found', 500);
 			}
 		}
 
@@ -162,16 +170,19 @@ final class HTMLView extends View {
 
 		if ($a_view!="") {
 			$location = Application\Application::get_instance()->framework_location();
+			$path = Application\Application::get_instance()->include_path();
 			// Verify if the view file exists
-			if (file_exists("views/$a_view.php")) {
-				$this->_view = "views/$a_view";
-			} else if (file_exists($location . "/Views/$a_view.php")) {
-				$this->_view = "$location/Views/$a_view";
-			} else if (file_exists("$a_view.php")) {
-				$this->_view = $a_view;
+			if (file_exists("views/$a_view.html")) {
+				$view = "$path/views/$a_view.html";
+			} else if (file_exists($location . "/Views/$a_view.html")) {
+				$view = "$location/Views/$a_view.html";
+			} else if (file_exists("$a_view.html")) {
+				$view = $a_view;
 			} else {
-				$this->_view = $location . '/Views/default_view';
+				throw new GenericException('View Not Found', 500);
 			}
+			
+			$this->_view = new Template($view);
 		}
 
 	}
@@ -213,26 +224,34 @@ final class HTMLView extends View {
 	/**
 	 * Insert script into the view
 	 */
-	public function apply_script() {
+	public static function apply_scripts() {
+		
+		$output = "";
 
 		if (count($this->_scripts)>0) {
 			foreach ($this->_scripts as $value) {
-				print("<script src=\"$value\"></script>");
+				$output .= "<script src=\"$value\"></script>";
 			}
 		}
+		
+		return $output;
 
 	}
 	
 	/**
 	 * Insert stylesheets into the view
 	 */
-	public function apply_stylesheet() {
-	
+	public static function apply_stylesheets() {
+		
+		$output = "";
+		
 		if (count($this->_styles)>0) {
 			foreach ($this->_styles as $value) {
-				print("<link href=\"$value\" rel=\"stylesheet\" />");
+				$output .= "<link href=\"$value\" rel=\"stylesheet\" />";
 			}
 		}
+		
+		return $output;
 	
 	}
 
@@ -258,14 +277,46 @@ final class HTMLView extends View {
 	 */
 	public function content() {
 
-		ob_start();
+		/*ob_start();
 		include_once("$this->_layout.php");
 		$content = ob_get_contents();
 		ob_end_clean();
 		//die($content);
-		$this->content = $content;
+		$this->content = $content;*/
+		
+		if (\Apine\Session\SessionManager::is_logged_in()) {
+			$user_array = array();
+			$apine_user = \Apine\Session\SessionManager::get_user();
+			$user_array['id'] = $apine_user->get_id();
+			$user_array['username'] = $apine_user->get_username();
+			$user_array['password'] = $apine_user->get_password();
+			$user_array['type'] = $apine_user->get_type();
+			$user_array['email'] = $apine_user->get_email_address();
+			$user_array['register_date'] = $apine_user->get_register_date();
+			$user_array['groups'] = array();
+			
+			/*foreach ($apine_user->get_group() as $group) {
+				$user_array['groups'][] = $group->get_name();
+			}*/
+			
+			foreach ($apine_user->get_property_all() as $name => $value) {
+				$user_array["property_" . $name] = $value;
+			}
+		} else {
+			$user_array = false;
+		}
+		
+		Engine::instance()->add_data(array(
+				'apine_user' => $user_array,
+				'apine_application_https' => Application\Application::get_instance()->get_use_https(),
+				'apine_application_mode' => Application\Application::get_instance()->get_mode(),
+				'apine_application_secure' => Application\Application::get_instance()->get_secure_session()
+		));
+		Engine::instance()->add_data($this->_params->get_all());
+		Engine::instance()->add_data(array("apine_view_title" => $this->_title));
+		$this->content = Engine::instance()->process($this->_view, $this->_layout);
 
-		return $content;
+		return $this->content;
 
 	}
 }

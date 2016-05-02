@@ -22,7 +22,7 @@ abstract class View {
 	/**
 	 * Variables to be accessible by the view
 	 * 
-	 * @var ApineCollection
+	 * @var Apine\Core\Collection
 	 */
 	protected $_params;
 	

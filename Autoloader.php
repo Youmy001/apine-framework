@@ -12,7 +12,8 @@ namespace Apine;
 
 require_once __DIR__ . '/Core/utils.php';
 
-$before = microtime(true) * 1000;
+//$before = microtime(true) * 1000;
+apine_execution_time();
 
 /**
  * Module Files Loading Tool
@@ -38,7 +39,6 @@ final class Autoloader {
 		$this->add_module('Apine\Modules', 'modules');
 		$this->add_module('Apine\Controllers\User', 'controllers');
 		$this->add_module('Apine\Controllers\System', $apine_folder . '/Controllers');
-		//spl_autoload_register(array($this, 'load_kernel'));
 		
 	}
 	
@@ -126,42 +126,6 @@ final class Autoloader {
 			
 			return true;
 		} else {
-			return false;
-		}
-		
-	}
-	
-	/**
-	 * Loads all files part of the frameworks kernel
-	 * 
-	 * @return boolean
-	 * @deprecated
-	 */
-	public static function load_kernel() {
-		
-		try {
-			/*$files=self::get_folder_files(__DIR__ . '/');
-			
-			foreach ($files as $file) {
-				if (file_extension($file) === "php") {
-					require_once $file;
-				}
-			}*/
-			
-			spl_autoload_register(function ($class_name) {
-				$array = explode("\\", $class_name);
-				
-				if ($array[0] === 'Apine') {
-					$array[0] = basename(__DIR__);
-					$path = implode('/', $array) . '.php';
-					require $path;
-				} else {
-					return;
-				}
-			});
-			
-			return true;
-		} catch(\Exception $e) {
 			return false;
 		}
 		

@@ -14,7 +14,7 @@ class HomeController extends MVC\Controller {
 	public function index () {
 		
 		$this->_view->set_title('Home');
-		$this->_view->set_view('index');
+		$this->_view->set_view('home');
 		
 		return $this->_view;
 		

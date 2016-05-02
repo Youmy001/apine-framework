@@ -270,7 +270,7 @@ class User extends Apine\Entity\EntityModel {
 			$this->group=Factory\UserGroupFactory::create_by_user($this->id);
 		}
 		
-	if (is_numeric($a_group)) {
+		if (is_numeric($a_group)) {
 			if (Factory\UserGroupFactory::is_id_exist($a_group)) {
 				$is_group=$this->group->value_exists(new UserGroup($a_group));
 			} else {
@@ -369,6 +369,16 @@ class User extends Apine\Entity\EntityModel {
 		}
 		
 		return ($this->properties[$a_name]) ? $this->properties[$a_name]->get_value(): null;
+		
+	}
+	
+	public function get_property_all () {
+		
+		if (is_null($this->properties)) {
+			$this->load_properties();
+		}
+		
+		return $this->properties;
 		
 	}
 	
