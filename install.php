@@ -11,6 +11,13 @@ ini_set('display_errors', -1);
 ini_set('include_path', realpath('..'));
 
 $apine_folder = realpath(dirname(__FILE__));
+
+if (strstr($apine_folder, 'vendor/youmy001')) {
+	require_once '../../autoload.php';
+} else {
+	require_once '../vendor/autoload.php';
+}
+
 require_once $apine_folder . '/Autoloader.php';
 $loader = new Apine\Autoloader();
 $loader->add_module('Apine', $apine_folder);
@@ -58,6 +65,8 @@ try {
 		// print $controller."/".$action;
 		$maj_controller = ucfirst($controller) . 'Controller';
 		
+		print $maj_controller;
+		
 		if (class_exists('Apine\\Controllers\\System\\' . $maj_controller) && method_exists('Apine\\Controllers\\System\\' . $maj_controller, $action)) {
 			$return = 'Apine\\Controllers\\System\\' . $maj_controller;
 			$controller = new $return();
@@ -75,5 +84,5 @@ try {
 		$view->draw();
 	}
 } catch (Exception $e) {
-	
+	print $e->getTraceAsString();
 }

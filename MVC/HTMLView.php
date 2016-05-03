@@ -177,7 +177,7 @@ final class HTMLView extends View {
 			} else if (file_exists($location . "/Views/$a_view.html")) {
 				$view = "$location/Views/$a_view.html";
 			} else if (file_exists("$a_view.html")) {
-				$view = $a_view;
+				$view = "$a_view.html";
 			} else {
 				throw new GenericException('View Not Found', 500);
 			}
@@ -283,24 +283,29 @@ final class HTMLView extends View {
 		ob_end_clean();
 		//die($content);
 		$this->content = $content;*/
+		$config = \Apine\Application\Application::get_instance()->get_config();
 		
-		if (\Apine\Session\SessionManager::is_logged_in()) {
-			$user_array = array();
-			$apine_user = \Apine\Session\SessionManager::get_user();
-			$user_array['id'] = $apine_user->get_id();
-			$user_array['username'] = $apine_user->get_username();
-			$user_array['password'] = $apine_user->get_password();
-			$user_array['type'] = $apine_user->get_type();
-			$user_array['email'] = $apine_user->get_email_address();
-			$user_array['register_date'] = $apine_user->get_register_date();
-			$user_array['groups'] = array();
-			
-			/*foreach ($apine_user->get_group() as $group) {
-				$user_array['groups'][] = $group->get_name();
-			}*/
-			
-			foreach ($apine_user->get_property_all() as $name => $value) {
-				$user_array["property_" . $name] = $value;
+		if (!is_null($config)) {
+			if (\Apine\Session\SessionManager::is_logged_in()) {
+				$user_array = array();
+				$apine_user = \Apine\Session\SessionManager::get_user();
+				$user_array['id'] = $apine_user->get_id();
+				$user_array['username'] = $apine_user->get_username();
+				$user_array['password'] = $apine_user->get_password();
+				$user_array['type'] = $apine_user->get_type();
+				$user_array['email'] = $apine_user->get_email_address();
+				$user_array['register_date'] = $apine_user->get_register_date();
+				$user_array['groups'] = array();
+				
+				/*foreach ($apine_user->get_group() as $group) {
+					$user_array['groups'][] = $group->get_name();
+				}*/
+				
+				foreach ($apine_user->get_property_all() as $name => $value) {
+					$user_array["property_" . $name] = $value;
+				}
+			} else {
+				$user_array = false;
 			}
 		} else {
 			$user_array = false;

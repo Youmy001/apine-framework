@@ -42,7 +42,7 @@ class InstallController extends MVC\Controller {
 	 */
 	public function index () {
 
-		if (file_exists($this->project . '/.htaccess') && file_exists($this->project . '/config.ini') && (file_exists($this->project . '/routes.json') || file_exists($this->project . '/routes.xml'))) {
+		if (file_exists($this->project . '/.htaccess') && file_exists($this->project . '/config.ini')) {
 			apine_internal_redirect('/home');
 		}
 		
@@ -82,8 +82,8 @@ class InstallController extends MVC\Controller {
 			include $this->parent . '/Installation/locales.php';
 			
 			$this->_view->set_title("Install APIne Framework");
-			$this->_view->set_layout('install_layout');
-			$this->_view->set_view('install_view');
+			$this->_view->set_layout($this->parent . '/Views/install_layout');
+			$this->_view->set_view($this->parent . '/Views/install_view');
 			$this->_view->set_param('timezones', $locations);
 			$this->_view->set_param('locales', $locales);
 			// $this->_view->add_script('lib/Installation/install');
@@ -291,7 +291,7 @@ class InstallController extends MVC\Controller {
 			
 			// Add runtime section
 			$entries['runtime']['token_lifespan'] = 600;
-			$entries['runtime']['default_layout'] = 'default';
+			$entries['runtime']['default_layout'] = 'layout';
 			
 			// Write as ini config
 			$result = write_ini_file($entries, $this->project . '/config.ini', true);
