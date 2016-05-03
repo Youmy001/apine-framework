@@ -15,7 +15,9 @@ $apine_folder = realpath(dirname(__FILE__));
 if (strstr($apine_folder, 'vendor/youmy001')) {
 	require_once '../../autoload.php';
 } else {
-	require_once '../vendor/autoload.php';
+	if (file_exists('../vendor/autoload.php')) {
+		require_once '../vendor/autoload.php';
+	}
 }
 
 require_once $apine_folder . '/Autoloader.php';

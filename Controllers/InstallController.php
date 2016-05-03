@@ -10,6 +10,8 @@ use Apine\Exception\GenericException;
 use Apine\Exception\DatabaseException;
 use Apine\Application\Application;
 use Apine\MVC\Controller;
+use Apine\MVC\InstallView;
+use Apine\MVC\HTMLView;
 
 class InstallController extends MVC\Controller {
 	
@@ -22,8 +24,6 @@ class InstallController extends MVC\Controller {
 	private $project;
 	
 	public function __construct() {
-		
-		parent::__construct();
 		
 		$this->parent = dirname(dirname(__FILE__));
 		$this->parent_name = basename($this->parent);
@@ -81,9 +81,14 @@ class InstallController extends MVC\Controller {
 			
 			include $this->parent . '/Installation/locales.php';
 			
-			$this->_view->set_title("Install APIne Framework");
-			$this->_view->set_layout($this->parent . '/Views/install_layout');
-			$this->_view->set_view($this->parent . '/Views/install_view');
+			if (!class_exists('\TinyTemplate\Engine')) {
+				$this->_view = new InstallView("Install APIne Framework", $this->parent . '/Views/install_view.html', $this->parent . '/Views/install_layout.html');
+			} else {
+				$this->_view = new HTMLView();
+				$this->_view->set_title("Install APIne Framework");
+				$this->_view->set_layout($this->parent . '/Views/install_layout');
+				$this->_view->set_view($this->parent . '/Views/install_view');
+			}
 			$this->_view->set_param('timezones', $locations);
 			$this->_view->set_param('locales', $locales);
 			// $this->_view->add_script('lib/Installation/install');
