@@ -10,8 +10,6 @@ namespace Apine\Core;
 
 use Apine\Application as Application;
 
-require_once __DIR__ . '/pseudo_crypt.php';
-
 /**
  * Encryption Tools
  * 
@@ -61,7 +59,7 @@ final class Encryption {
 	
 	private static function generate_key() {
         
-		$hash = \PseudoCrypt::hash(intval(rand(1, 1000)), 10);
+		$hash = hash('md5', rand(1,100000) . '_' . rand(100001,200000));
 		Application\Config::set('runtime', 'encryption_key', $hash);
 		
 	}
