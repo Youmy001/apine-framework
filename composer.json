@@ -26,6 +26,6 @@
     	"files" : [
     		"Autoloader.php"
     	]
-    }
+    },
 	"license": "MIT"
 }
