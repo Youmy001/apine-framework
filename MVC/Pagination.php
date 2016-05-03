@@ -1,10 +1,6 @@
 <?php
-/**
- * #@+
- * Constants
- */
-define('PAGINATION_TYPE_PAGINATION', 111);
-define('PAGINATION_TYPE_PAGER', 110);
+
+namespace Apine\MVC;
 
 /**
  * A class that draws a pagination navigation for a list of various
@@ -13,7 +9,7 @@ define('PAGINATION_TYPE_PAGER', 110);
  * @package bokaro
  * @subpackage view
  */
-class ApinePagination {
+class Pagination {
 
 	/**
 	 * Current active page
@@ -43,7 +39,7 @@ class ApinePagination {
 	 * Type of pagination navigation
 	 * @var integer
 	 */
-	private $type = PAGINATION_TYPE_PAGINATION;
+	private $type = APINE_PAGINATION_TYPE_PAGINATION;
 
 	/**
 	 * Pagination class' construction
@@ -137,7 +133,7 @@ class ApinePagination {
 	 */
 	public function pager() {
 
-		$this->type = PAGINATION_TYPE_PAGER;
+		$this->type = APINE_PAGINATION_TYPE_PAGER;
 	
 	}
 
@@ -146,13 +142,13 @@ class ApinePagination {
 	 */
 	public function pagination() {
 
-		$this->type = PAGINATION_TYPE_PAGINATION;
+		$this->type = APINE_PAGINATION_TYPE_PAGINATION;
 	
 	}
 
 	public function get_first_display_page() {
 
-		if ($this->type == PAGINATION_TYPE_PAGINATION) {
+		if ($this->type == APINE_PAGINATION_TYPE_PAGINATION) {
 			$split = ceil($this->page_display / 2);
 			$prev_page = $this->cur_page - 1;
 			$next_page = $this->cur_page + 1;
@@ -182,7 +178,7 @@ class ApinePagination {
 
 	public function get_last_display_page() {
 
-		if ($this->type == PAGINATION_TYPE_PAGINATION) {
+		if ($this->type == APINE_PAGINATION_TYPE_PAGINATION) {
 			$split = ceil($this->page_display / 2);
 			$prev_page = $this->cur_page - 1;
 			$next_page = $this->cur_page + 1;
@@ -212,7 +208,7 @@ class ApinePagination {
 
 	public function draw() {
 
-		if ($this->type == PAGINATION_TYPE_PAGINATION) {
+		if ($this->type == APINE_PAGINATION_TYPE_PAGINATION) {
 			$split = ceil($this->page_display / 2);
 			$prev_page = $this->cur_page - 1;
 			$next_page = $this->cur_page + 1;
@@ -263,7 +259,7 @@ class ApinePagination {
 			
 			print '</ul>
 				</nav>';
-		} else if($this->type == PAGINATION_TYPE_PAGER) {
+		} else if($this->type == APINE_PAGINATION_TYPE_PAGER) {
 			$prev_page = $this->cur_page - 1;
 			$next_page = $this->cur_page + 1;
 			print '<ul class="pager">';

@@ -22,6 +22,8 @@ define('APINE_SESSION_ADMIN', 77);
 define('APINE_SESSION_USER', 65);
 define('APINE_SESSION_GUEST', 40);
 define('APINE_SESSION_DELETED', 10);
+define('APINE_PAGINATION_TYPE_PAGINATION', 111);
+define('APINE_PAGINATION_TYPE_PAGER', 110);
 
 /**
  * A split method that supports unicode characters

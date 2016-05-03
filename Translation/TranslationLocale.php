@@ -8,7 +8,6 @@
  */
 namespace Apine\Translation;
 
-use Apine\Core\ApplicationConfig;
 use Apine\Exception\GenericException;
 
 /**
