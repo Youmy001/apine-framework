@@ -3,3 +3,7 @@
 .settings
 vendor/*
 /config.ini
+/vendor/
+test-old/
+/test_old/
+/test/
