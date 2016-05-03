@@ -36,9 +36,9 @@ class WebRouter implements RouterInterface {
 			$this->routes_file = $a_path;
 			$this->routes_type = $a_type;
 			
-			if (!file_exists($this->routes_file)) {
+			/*if (!file_exists($this->routes_file)) {
 				throw new GenericException('Route File Not Found', 418);
-			}
+			}*/
 		} catch (Exception $e) {
 			throw new GenericException($e->getMessage(), $e->getCode(), $e);
 		}
@@ -162,7 +162,7 @@ class WebRouter implements RouterInterface {
 		
 		$vanilla_route_found = self::check_route($request);
 		
-		if (!$vanilla_route_found) {
+		if (!$vanilla_route_found && file_exists($this->routes_file)) {
 			switch ($this->routes_type) {
 				case APINE_ROUTES_JSON:
 					$file_request = $this->json_route($request);

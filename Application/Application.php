@@ -287,7 +287,7 @@ final class Application {
 				throw new GenericException('Invalid Execution Mode \"' . $this->mode . '"', 418);
 			}
 			
-			if (!file_exists('.htaccess') || !file_exists('config.ini') || (!file_exists('routes.json') && !file_exists('routes.xml'))) {
+			if (!file_exists('.htaccess') || !file_exists('config.ini')) {
 				$protocol = (isset(Request::server()['SERVER_PROTOCOL']) ? Request::server()['SERVER_PROTOCOL'] : 'HTTP/1.0');
 				header($protocol . ' 503 Service Unavailable');
 				die("Critical Error : Framework Installation Not Completed");
