@@ -20,18 +20,12 @@
        "twbs/bootstrap": "^3.3",
        "components/jquery": "^2.1",
        "geoip/geoip": "~1.14",
-       "binarmorker/tinytemplate": "dev-master"
+       "binarmorker/tinytemplate": ">=1.1"
     },
     "autoload": {
     	"files" : [
     		"Autoloader.php"
     	]
-    },
-    "extra" : {
-    	"branch-alias" : {
-    		"dev-master": "1.x",
-    		"dev-dev": "1.x-dev"
-    	}
-	},
+    }
 	"license": "MIT"
 }
