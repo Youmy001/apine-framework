@@ -123,19 +123,6 @@ final class HTMLView extends View {
 		}
 		
 	}
-	
-	/**
-	 * Insert meta tag into the view
-	 */
-	public function apply_meta () {
-		
-		if (count($this->_metatags) > 0) {
-			foreach ($this->_metatags as $value) {
-				print($value . "\r\n");
-			}
-		}
-		
-	}
 
 	/**
 	 * Set path to layout file
@@ -220,16 +207,33 @@ final class HTMLView extends View {
 		}
 
 	}
+	
+	/**
+	 * Insert meta tag into the view
+	 */
+	public static function apply_meta ($metatags) {
+	
+		$output = "";
+		
+		if (count($metatags) > 0) {
+			foreach ($metatags as $value) {
+				$output .= $value . "\r\n";
+			}
+		}
+		
+		return $output;
+	
+	}
 
 	/**
 	 * Insert script into the view
 	 */
-	public static function apply_scripts() {
+	public static function apply_scripts($scripts) {
 		
 		$output = "";
 
-		if (count($this->_scripts)>0) {
-			foreach ($this->_scripts as $value) {
+		if (count($scripts)>0) {
+			foreach ($scripts as $value) {
 				$output .= "<script src=\"$value\"></script>";
 			}
 		}
@@ -241,12 +245,12 @@ final class HTMLView extends View {
 	/**
 	 * Insert stylesheets into the view
 	 */
-	public static function apply_stylesheets() {
+	public static function apply_stylesheets($styles) {
 		
 		$output = "";
 		
-		if (count($this->_styles)>0) {
-			foreach ($this->_styles as $value) {
+		if (count($styles)>0) {
+			foreach ($styles as $value) {
 				$output .= "<link href=\"$value\" rel=\"stylesheet\" />";
 			}
 		}
@@ -277,12 +281,6 @@ final class HTMLView extends View {
 	 */
 	public function content() {
 
-		/*ob_start();
-		include_once("$this->_layout.php");
-		$content = ob_get_contents();
-		ob_end_clean();
-		//die($content);
-		$this->content = $content;*/
 		$config = \Apine\Application\Application::get_instance()->get_config();
 		
 		if (!is_null($config)) {
@@ -296,10 +294,6 @@ final class HTMLView extends View {
 				$user_array['email'] = $apine_user->get_email_address();
 				$user_array['register_date'] = $apine_user->get_register_date();
 				$user_array['groups'] = array();
-				
-				/*foreach ($apine_user->get_group() as $group) {
-					$user_array['groups'][] = $group->get_name();
-				}*/
 				
 				foreach ($apine_user->get_property_all() as $name => $value) {
 					$user_array["property_" . $name] = $value;
@@ -315,10 +309,13 @@ final class HTMLView extends View {
 				'apine_user' => $user_array,
 				'apine_application_https' => Application\Application::get_instance()->get_use_https(),
 				'apine_application_mode' => Application\Application::get_instance()->get_mode(),
-				'apine_application_secure' => Application\Application::get_instance()->get_secure_session()
+				'apine_application_secure' => Application\Application::get_instance()->get_secure_session(),
+				'apine_view_metatags' => $this->_metatags,
+				'apine_view_scripts' => $this->_scripts,
+				'apine_view_stylesheets' => $this->_styles,
+				"apine_view_title" => $this->_title
 		));
 		Engine::instance()->add_data($this->_params->get_all());
-		Engine::instance()->add_data(array("apine_view_title" => $this->_title));
 		$this->content = Engine::instance()->process($this->_view, $this->_layout);
 
 		return $this->content;

@@ -40,7 +40,7 @@ final class Application {
 	 * 
 	 * @var string
 	 */
-	private $apine_version = '1.0.0';
+	private $apine_version = '1.0.1-dev';
 	
 	/**
 	 * Version number of the user application
@@ -206,29 +206,7 @@ final class Application {
 		
 	}
 	
-	/*public function load_config ($a_path) {
-		
-		try {
-			if (file_exists($a_path)) {
-				$this->config = new Config($a_path);
-			}
-		} catch (Exception $e) {
-			//throw new GenericException($e->getMessage(), $e->getCode(), $e);
-			print $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine() . "\r\n";
-			print $e->getTraceAsString();
-		}
-		
-	}
-	
-	public function load_routes ($a_path) {
-		
-		if (file_exists($a_path)) {
-			$this->routes_path = $a_path;
-		}
-		
-	}*/
-    
-    /**
+	/**
      * Set the path to the application from the root for the virtual server
      * 
      * The application tries by default to guess it.
@@ -398,23 +376,17 @@ final class Application {
 						'<?php echo \\Apine\\MVC\URLHelper::get_instance()->$1("$2");?>'
 						));
 				
-				/*Engine::instance()->add_rule(new Rule(
-						'apine_url_path',
-						'~\{apine_url_path:(([^\/\s]+\/)?(.*))\}~',
-						'<?php echo Apine\\MVC\URLHelper::get_instance()->path("$1");?>'
-				));
-				
-				Engine::instance()->add_rule(new Rule(
-						'apine_url_resource',
-						'~\{apine_url_resource:(([^\/\s]+\/)(.*))\}~',
-						'<?php echo Apine\\MVC\URLHelper::get_instance()->resource("$1");?>'
-				));*/
-				
 				Engine::instance()->add_rule(new Rule(
 						'apine_url_secure',
 						'~\{apine_url_(path|resource)_secure:(([^\/\s]+\/)?(.*))\}~',
 						'<?php echo Apine\\MVC\\URLHelper::get_instance()->$1("$2", APINE_PROTOCOL_HTTPS);?>'
 				));
+				
+				Engine::instance()->add_rule(new Rule(
+						'apine_view_apply_meta',
+						'~\{apine_apply_meta\}~',
+						'<?php echo Apine\\MVC\\HTMLView::apply_meta($data["apine_view_metatags"]);?>'
+						));
 				
 				Engine::instance()->add_rule(new Rule(
 						'apine_view_apply_scripts',
@@ -447,19 +419,6 @@ final class Application {
 						'<?php echo $this->importFile(apine_application()->include_path() . \'/$1\'); ?>'
 				));
 				
-				// Arrays
-				/*Engine::instance()->add_rule(new Rule(
-						'variable_array',
-						'~\{(\w+)\[(\w+)\]\}~',
-						'<?php echo $this->showVariable(\'$1\')[\'$2\']; ?>'
-				));
-				
-				Engine::instance()->add_rule(new Rule(
-						'variable_array_escape',
-						'~\{escape:(\w+)\[(\w+)\]\}~',
-						'<?php echo htmlentities($this->showVariable(\'$1\')[\'$2\']); ?>'
-				));*/
-				
 				if (!empty(Request::get()['request']) && Request::get()['request'] != '/') {
 					$request = Request::get()['request'];
 				} else {
@@ -484,6 +443,8 @@ final class Application {
 			// Draw the output is a view is returned
 			if(!is_null($view) && is_a($view, 'Apine\MVC\View')) {
 				$view->draw();
+			} else {
+				throw new UnexpectedValueException();
 			}
 		} catch (GenericException $e) {
 			// Handle application errors

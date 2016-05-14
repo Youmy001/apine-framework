@@ -3,7 +3,7 @@
 use Apine\MVC\URLHelper;
 use Apine\Core\Config;
 use Apine\Session\SessionManager;
-use Apine\Translation\ApplicationTranslator;
+use Apine\Application\Translator;
 /**
  * #@+
  * Constants
