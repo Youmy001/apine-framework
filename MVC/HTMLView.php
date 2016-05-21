@@ -134,10 +134,10 @@ final class HTMLView extends View {
 		if ($a_layout != "") {
 			$location = Application\Application::get_instance()->framework_location();
 			// Verify if the layout file exists
-			if (file_exists("views" . DIRECTORY_SEPARATOR . "layouts" . DIRECTORY_SEPARATOR . "$a_layout.html")) {
-				$this->_layout = new Layout("views" . DIRECTORY_SEPARATOR . "layouts" . DIRECTORY_SEPARATOR . "$a_layout.html");
-			} else if (file_exists($location . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . "$a_layout.html")) {
-				$this->_layout = new Layout($location . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . "$a_layout.html");
+			if (file_exists("views/layouts/$a_layout.html")) {
+				$this->_layout = new Layout("views/layouts/$a_layout.html");
+			} else if (file_exists($location . "/Views/$a_layout.html")) {
+				$this->_layout = new Layout($location . "/Views/$a_layout.html");
 			} else if (file_exists("$a_layout.html")) {
 				$this->_layout = new Layout("$a_layout.html");
 			} else {
@@ -159,10 +159,10 @@ final class HTMLView extends View {
 			$location = Application\Application::get_instance()->framework_location();
 			$path = Application\Application::get_instance()->include_path();
 			// Verify if the view file exists
-			if (file_exists("views" . DIRECTORY_SEPARATOR . "$a_view.html")) {
-				$view = "$path" . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . "$a_view.html";
-			} else if (file_exists($location . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . "$a_view.html")) {
-				$view = "$location" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR . "$a_view.html";
+			if (file_exists("views/$a_view.html")) {
+				$view = "$path/views/$a_view.html";
+			} else if (file_exists($location . "/Views/$a_view.html")) {
+				$view = "$location/Views/$a_view.html";
 			} else if (file_exists("$a_view.html")) {
 				$view = "$a_view.html";
 			} else {
@@ -182,7 +182,7 @@ final class HTMLView extends View {
 	public function add_script($a_script) {
 	
 		if ($a_script!="") {
-			if (file_exists("resources" . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "scripts" . DIRECTORY_SEPARATOR . "$a_script.js")) {
+			if (file_exists("resources/public/scripts/$a_script.js")) {
 				$this->_scripts[] = URLHelper::resource("resources/public/scripts/$a_script.js");
 			} else if (file_exists("$a_script.js")) {
 				$this->_scripts[] = URLHelper::resource("$a_script.js");
@@ -199,7 +199,7 @@ final class HTMLView extends View {
 	public function add_stylesheet($a_sheet) {
 
 		if ($a_sheet!="") {
-			if (file_exists("resources" . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "css" . DIRECTORY_SEPARATOR . "$a_sheet.css")) {
+			if (file_exists("resources/public/css/$a_sheet.css")) {
 				$this->_styles[] = URLHelper::resource("resources/public/css/$a_sheet.css");
 			} else if (file_exists("$a_sheet.css")) {
 				$this->_styles[] = URLHelper::resource("$a_sheet.css");

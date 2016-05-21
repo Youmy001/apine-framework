@@ -45,7 +45,6 @@ final class TranslationDirectory {
 	public function __construct ($a_directory = 'resources/languages'){
 		
 		$this->directory = $a_directory . '/';
-		$this->directory = str_replace(DIRECTORY_SEPARATOR, '/', $this->directory);
 		
 		if (is_null(self::$languages) && is_null(self::$translations)) {
 			self::$languages = array();

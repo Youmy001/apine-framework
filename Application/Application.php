@@ -136,7 +136,7 @@ final class Application {
 		}
 		
 		// The include path should the the server root plus the webrout path
-		$include_path = realpath(implode(DIRECTORY_SEPARATOR, array($server_root, $this->webroot)));
+		$include_path = realpath(implode('/', array($server_root, $this->webroot)));
 		
 		if (!is_dir($include_path)) {
 			$include_path = realpath(dirname($include_path));
@@ -252,8 +252,8 @@ final class Application {
 			$a_runtime = APINE_RUNTIME_HYBRID;
 		}
 		
-		if ($this->use_composer && !strstr($this->apine_folder, 'vendor' . DIRECTORY_SEPARATOR . 'youmy001')) {
-			require_once 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+		if ($this->use_composer && !strstr($this->apine_folder, 'vendor/youmy001')) {
+			require_once 'vendor/autoload.php';
 		}
 		
 		/**
@@ -299,7 +299,7 @@ final class Application {
 			// Find a timezone for the user
 			// using geoip library and its local database
 			if (function_exists('geoip_open')) {
-				$gi = geoip_open($this->apine_folder . DIRECTORY_SEPARATOR . "GeoLiteCity.dat", GEOIP_STANDARD);
+				$gi = geoip_open($this->apine_folder . "/GeoLiteCity.dat", GEOIP_STANDARD);
 				$record = geoip_record_by_addr($gi, $_SERVER['REMOTE_ADDR']);
 				//$record = geoip_record_by_addr($gi, "24.230.215.89");
 				//var_dump($record);
