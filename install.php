@@ -10,20 +10,20 @@
 ini_set('display_errors', -1);
 ini_set('include_path', realpath('..'));
 
-$apine_folder = str_replace(DIRECTORY_SEPARATOR, '/', realpath(dirname(__FILE__)));
+$apine_folder = realpath(dirname(__FILE__));
 
-if (strstr($apine_folder, 'vendor' . DIRECTORY_SEPARATOR . 'youmy001')) {
-	require_once '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'autoload.php';
+if (strstr($apine_folder, 'vendor/youmy001')) {
+	require_once '../../autoload.php';
 } else {
-	if (file_exists('..' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php')) {
-		require_once '..' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+	if (file_exists('../vendor/autoload.php')) {
+		require_once '../vendor/autoload.php';
 	}
 }
 
-require_once $apine_folder . DIRECTORY_SEPARATOR . 'Autoloader.php';
+require_once $apine_folder . '/Autoloader.php';
 $loader = new Apine\Autoloader();
 $loader->add_module('Apine', $apine_folder);
-$loader->add_module('Apine\Controllers\System', $apine_folder . DIRECTORY_SEPARATOR . 'Controllers');
+$loader->add_module('Apine\Controllers\System', $apine_folder . '/Controllers');
 $loader->register();
 
 use Apine\Core\Request as Request;

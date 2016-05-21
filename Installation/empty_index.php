@@ -10,7 +10,7 @@
 
 ini_set('display_errors', -1);
 
-require_once '.{apine}' . DIRECTORY_SEPARATOR . 'Autoloader.php';
+require_once '.{apine}/Autoloader.php';
 $loader = new Apine\Autoloader();
 $loader->register();
 

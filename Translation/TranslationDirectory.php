@@ -79,7 +79,7 @@ final class TranslationDirectory {
 	public function get_all_languages () {
 		
 		// Return a liste of every language
-		return self::$languages[$this->directory];
+		return self::$languages;
 		
 	}
 	

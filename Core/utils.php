@@ -214,11 +214,11 @@ function recurse_copy ($src, $dst) {
 	
 	while (false !== ($file = readdir($dir))) {
 		if (($file != '.') && ($file != '..')) {
-			if (is_dir($src . DIRECTORY_SEPARATOR . $file)) {
-				recurse_copy($src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file);
+			if (is_dir($src . '/' . $file)) {
+				recurse_copy($src . '/' . $file, $dst . '/' . $file);
 			} else {
-				copy($src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file);
-				chmod($dst . DIRECTORY_SEPARATOR . $file, 0777);
+				copy($src . '/' . $file, $dst . '/' . $file);
+				chmod($dst . '/' . $file, 0777);
 			}
 		}
 	}

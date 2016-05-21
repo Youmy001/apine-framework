@@ -368,8 +368,6 @@ class User extends Apine\Entity\EntityModel {
 			$this->load_properties();
 		}
 		
-		$this->properties[$a_name]->load();
-		
 		return ($this->properties[$a_name]) ? $this->properties[$a_name]->get_value(): null;
 		
 	}
@@ -423,7 +421,7 @@ class User extends Apine\Entity\EntityModel {
 		
 		if ($data != null && count($data) > 0) {
 			foreach ($data as $item) {
-				$this->properties[$item['name']] = new Property($item['id']);
+				$this->properties[$item['name']] = new Property($this->id);
 			}
 		}
 		
