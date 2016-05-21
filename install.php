@@ -10,7 +10,7 @@
 ini_set('display_errors', -1);
 ini_set('include_path', realpath('..'));
 
-$apine_folder = realpath(dirname(__FILE__));
+$apine_folder = str_replace(DIRECTORY_SEPARATOR, '/', realpath(dirname(__FILE__)));
 
 if (strstr($apine_folder, 'vendor/youmy001')) {
 	require_once '../../autoload.php';
