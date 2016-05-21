@@ -69,6 +69,8 @@ class File {
 	public function __construct ($a_path, $a_readonly = false, $a_new = false) {
 
 		try {
+			$a_path = str_replace(DIRECTORY_SEPARATOR, '/', $a_path);
+			
 			if (!is_file($a_path) && !$a_new) {
 				throw new GenericException('File not found');
 			} else if ($a_new == true) {
@@ -80,7 +82,7 @@ class File {
 				
 				$this->path = $a_path;
 				$this->name = basename($a_path);
-				$this->location = substr($this->path, 0, strripos($a_path, "/") + 1);
+				$this->location = substr($this->path, 0, strripos($a_path, DIRECTORY_SEPARATOR) + 1);
 				$this->content = "";
 			} else {
 			
@@ -98,7 +100,7 @@ class File {
 				$this->readonly = $a_readonly;
 				$this->path = $a_path;
 				$this->name = basename($a_path);
-				$this->location = substr($this->path, 0, strripos($a_path, "/") + 1);
+				$this->location = substr($this->path, 0, strripos($a_path, DIRECTORY_SEPARATOR) + 1);
 			}
 		} catch (GenericException $e) {
 			throw $e;
@@ -280,7 +282,7 @@ class File {
 
 		if (!$this->readonly) {
 			if ($a_path == null) {
-				$directory = substr($this->path, 0, strripos($this->path, '/') + 1);
+				$directory = substr($this->path, 0, strripos($this->path, DIRECTORY_SEPARATOR) + 1);
 				$path = $directory . $this->name;
 				
 				//fclose($this->file);
@@ -291,14 +293,14 @@ class File {
 				//$this->file = fopen($path, "c+");
 			} else {
 				// Verify is there's a filename in the path
-				$file_name = substr($a_path, strripos($a_path, '/') + 1);
-				$directory = substr($a_path, 0, strripos($a_path, '/') + 1);
+				$file_name = substr($a_path, strripos($a_path, DIRECTORY_SEPARATOR) + 1);
+				$directory = substr($a_path, 0, strripos($a_path, DIRECTORY_SEPARATOR) + 1);
 					
 				if ($file_name != '') {
 					$this->name = $file_name;
 					$path = $a_path;
 				}else{
-					$path = $directory . '/' . $this->name;
+					$path = $directory . DIRECTORY_SEPARATOR . $this->name;
 				}
 					
 				// If there's a filename, configure the class's name
@@ -349,9 +351,9 @@ class File {
 				throw new GenericException('Invalid Path');
 			}
 			
-			if (stripos($a_copy_path, '/') !== false) {
-				$directory = substr($a_copy_path, 0, strripos($a_copy_path, '/') + 1);
-				$name = substr($a_copy_path, strripos($a_copy_path, '/') + 1);
+			if (stripos($a_copy_path, DIRECTORY_SEPARATOR) !== false) {
+				$directory = substr($a_copy_path, 0, strripos($a_copy_path, DIRECTORY_SEPARATOR) + 1);
+				$name = substr($a_copy_path, strripos($a_copy_path, DIRECTORY_SEPARATOR) + 1);
 				
 				if ($name == '') {
 					$name = $this->name;
@@ -360,7 +362,7 @@ class File {
 				$path = $directory . $name;
 			} else {
 				$name = $a_copy_path;
-				$directory = substr($this->path, 0, strripos($this->path, '/') + 1);
+				$directory = substr($this->path, 0, strripos($this->path, DIRECTORY_SEPARATOR) + 1);
 				$path = $directory . $name;
 			}
 			
@@ -389,11 +391,11 @@ class File {
 	final public function rename ($a_file_name) {
 		
 		if (!$this->readonly) {
-			if (stripos($a_file_name, '/') !== false) {
+			if (stripos($a_file_name, DIRECTORY_SEPARATOR) !== false) {
 				throw new GenericException('Invalid File name');
 			}
 			
-			$directory = substr($this->path, 0, strripos($this->path, '/') + 1);
+			$directory = substr($this->path, 0, strripos($this->path, DIRECTORY_SEPARATOR) + 1);
 			$path = $directory . $a_file_name;
 			
 			$success = rename($this->path, $path);

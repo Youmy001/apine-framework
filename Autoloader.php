@@ -10,7 +10,7 @@ namespace Apine;
 
 //use \Exception;
 
-require_once __DIR__ . '/Core/utils.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'Core' . DIRECTORY_SEPARATOR . 'utils.php';
 
 //$before = microtime(true) * 1000;
 apine_execution_time();
@@ -38,7 +38,7 @@ final class Autoloader {
 		$this->add_module('Apine', $apine_folder);
 		$this->add_module('Apine\Modules', 'modules');
 		$this->add_module('Apine\Controllers\User', 'controllers');
-		$this->add_module('Apine\Controllers\System', $apine_folder . '/Controllers');
+		$this->add_module('Apine\Controllers\System', $apine_folder . DIRECTORY_SEPARATOR . 'Controllers');
 		
 	}
 	
@@ -59,7 +59,7 @@ final class Autoloader {
 		$prefix = trim($prefix, '\\') . '\\';
 	
 		// normalize the base directory with a trailing separator
-		$base_dir = rtrim($base_dir, DIRECTORY_SEPARATOR) . '/';
+		$base_dir = rtrim($base_dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 	
 		// initialize the namespace prefix array
 		if (isset($this->prefixes[$prefix]) === false) {
@@ -94,8 +94,8 @@ final class Autoloader {
 	static function load_module ($module_name) {
 		
 		// Verify if the module actually exists
-		if (is_dir('modules/' . $module_name . '/')) {
-			$dir = 'modules/' . $module_name . '/';
+		if (is_dir('modules' . DIRECTORY_SEPARATOR . $module_name . DIRECTORY_SEPARATOR)) {
+			$dir = 'modules' . DIRECTORY_SEPARATOR . $module_name . DIRECTORY_SEPARATOR;
 			$autoloader = &$this;
 			
 			// Load the autoloader if it exists.
@@ -119,9 +119,9 @@ final class Autoloader {
 					return false;
 				}
 			}
-		} else if (is_file('modules/'.$module_name)) {
-			if (file_extension('modules/' . $module_name) === "php") {
-				require_once 'modules/'.$module_name;
+		} else if (is_file('modules'.DIRECTORY_SEPARATOR.$module_name)) {
+			if (file_extension('modules' . DIRECTORY_SEPARATOR . $module_name) === "php") {
+				require_once 'modules' . DIRECTORY_SEPARATOR . $module_name;
 			}
 			
 			return true;
@@ -198,7 +198,7 @@ final class Autoloader {
 			// replace namespace separators with directory separators
 			// in the relative class name, append with .php
 			$file = $base_dir
-			. str_replace('\\', '/', $relative_class)
+			. str_replace('\\', DIRECTORY_SEPARATOR, $relative_class)
 			. '.php';
 	
 			// if the mapped file exists, require it
@@ -253,7 +253,7 @@ final class Autoloader {
 				
 				foreach (scandir($directory) as $file) {
 					if ($file != "." && $file != "..") {
-						if (is_dir($directory . $file . '/')) {
+						if (is_dir($directory . $file . DIRECTORY_SEPARATOR)) {
 							$a_dir[] = $directory . $file;
 						} else {
 							$a_file[] = $directory . $file;
@@ -264,7 +264,7 @@ final class Autoloader {
 				// Run sub-directories first
 				foreach ($a_dir as $file) {
 					if ($file != "." && $file != "..") {
-						$directory_array=self::get_folder_files($file . '/', false);
+						$directory_array=self::get_folder_files($file . DIRECTORY_SEPARATOR, false);
 							
 						foreach ($directory_array as $directory_file) {
 							$array[] = $directory_file;
@@ -280,8 +280,8 @@ final class Autoloader {
 				
 				foreach (scandir($directory) as $file) {
 					if ($file != "." && $file != "..") {
-						if (is_dir($directory . $file . '/')) {
-							$directory_array = self::get_folder_files($directory . $file . '/', false);
+						if (is_dir($directory . $file . DIRECTORY_SEPARATOR)) {
+							$directory_array = self::get_folder_files($directory . $file . DIRECTORY_SEPARATOR, false);
 		
 							foreach ($directory_array as $directory_file) {
 								$array[] = $directory_file;
@@ -312,7 +312,7 @@ final class Autoloader {
 		
 		foreach ($files as $item) {
 			if (is_dir($item)) {
-				self::load_folder_files($item . "/");
+				self::load_folder_files($item . DIRECTORY_SEPARATOR);
 			}
 		}
 		

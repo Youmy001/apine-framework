@@ -52,13 +52,13 @@ final class FileView extends View {
 	 */
 	public function draw() {
 
-		if (!$this->_file==null) {
+		$this->apply_headers();
+		
+		if (!is_null($this->_file)) {
 			// Set headers
-			// PHP must return an image instead of a html
 			header("Content-type: ".$this->_file->type());
-			// Tell the browser the image size
 			header("Content-Length: " . $this->_file->size());
-				
+			// Return the file
 			$this->_file->output();
 		}
 
@@ -73,10 +73,10 @@ final class FileView extends View {
 
 		ob_start();
 		$this->_file->output();
-		$content = ob_get_contents();
+		$this->content = ob_get_contents();
 		ob_end_clean();
 
-		return $content;
+		return $this->content;
 
 	}
 

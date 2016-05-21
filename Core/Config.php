@@ -39,7 +39,7 @@ final class Config {
 	public function __construct ($a_path = 'config.ini') {
 		
 		if (file_exists($a_path)) {
-			$this->path = $a_path;
+			$this->path = str_replace(DIRECTORY_SEPARATOR, '/', $a_path);
 			$this->settings = parse_ini_file($a_path, true);
 		} else {
 			throw new \Apine\Exception\GenericException("Config file not found.", 500);

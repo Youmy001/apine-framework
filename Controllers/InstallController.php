@@ -15,23 +15,34 @@ use Apine\MVC\HTMLView;
 
 class InstallController extends MVC\Controller {
 	
-	const COMPOSER_LOCATION = '/vendor/youmy001/apine-framework';
-	
 	private $parent;
 	
 	private $parent_name;
 	
 	private $project;
 	
+	private $composer_location;	// This was supposed to be a constant but Windows is a fucking asshole
+	
 	public function __construct() {
 		
 		$this->parent = dirname(dirname(__FILE__));
 		$this->parent_name = basename($this->parent);
 		
-		if (strstr($this->parent, self::COMPOSER_LOCATION)) {
-			$this->project = str_replace(self::COMPOSER_LOCATION, '', $this->parent);
+		/*if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+			$this->composer_location = '/vendor/youmy001/apine-framework';
+		} else {*/
+			$this->parent = str_replace(DIRECTORY_SEPARATOR, '/', $this->parent);
+			$this->composer_location = DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'youmy001' . DIRECTORY_SEPARATOR . 'apine-framework';
+		//}
+		
+		if (strstr($this->parent, $this->composer_location)) {
+			$this->project = str_replace($this->composer_location, '', $this->parent);
 		} else {
 			$this->project = dirname($this->parent);
+		}
+		
+		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+			$this->project = str_replace(DIRECTORY_SEPARATOR, '/', $this->project);
 		}
 		
 	}
@@ -42,20 +53,20 @@ class InstallController extends MVC\Controller {
 	 */
 	public function index () {
 
-		if (file_exists($this->project . '/.htaccess') && file_exists($this->project . '/config.ini')) {
+		if (file_exists($this->project . DIRECTORY_SEPARATOR . '.htaccess') && file_exists($this->project . DIRECTORY_SEPARATOR . 'config.ini')) {
 			apine_internal_redirect('/home');
 		}
 		
-		if (!file_exists($this->project . '/.htaccess')) {
+		if (!file_exists($this->project . DIRECTORY_SEPARATOR . '.htaccess')) {
 			$htaccess_parent = str_replace($_SERVER['DOCUMENT_ROOT'], '', $this->parent);
 			// Load .htaccess templace
 			ob_start();
-			include_once $this->parent . '/Installation/htaccess_install.php';
+			include_once $this->parent . DIRECTORY_SEPARATOR . 'Installation' . DIRECTORY_SEPARATOR . 'htaccess_install.php';
 			$content = ob_get_contents();
 			ob_end_clean();
 			
 			// Create htaccess
-			$file = fopen($this->project . '/.htaccess', 'x+');
+			$file = fopen($this->project . DIRECTORY_SEPARATOR . '.htaccess', 'x+');
 			fwrite($file, $content);
 			fclose($file);
 		}
@@ -79,15 +90,15 @@ class InstallController extends MVC\Controller {
 				}
 			}
 			
-			include $this->parent . '/Installation/locales.php';
+			include $this->parent . DIRECTORY_SEPARATOR . 'Installation' . DIRECTORY_SEPARATOR . 'locales.php';
 			
 			if (!class_exists('\TinyTemplate\Engine')) {
-				$this->_view = new InstallView("Install APIne Framework", $this->parent . '/Views/install_view.html', $this->parent . '/Views/install_layout.html');
+				$this->_view = new InstallView("Install APIne Framework", $this->parent . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . 'install_view.html', $this->parent . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . 'install_layout.html');
 			} else {
 				$this->_view = new HTMLView();
 				$this->_view->set_title("Install APIne Framework");
-				$this->_view->set_layout($this->parent . '/Views/install_layout');
-				$this->_view->set_view($this->parent . '/Views/install_view');
+				$this->_view->set_layout($this->parent . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . 'install_layout');
+				$this->_view->set_view($this->parent . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . 'install_view');
 			}
 			$this->_view->set_param('timezones', $locations);
 			$this->_view->set_param('locales', $locales);
@@ -102,66 +113,66 @@ class InstallController extends MVC\Controller {
 
 		try {
 			if ($structure) {
-				if (!is_dir($this->project . '/views')) {
-					if (!@mkdir($this->project . '/views')) {
-						throw new Exception ('Cannot create directory ' . $this->project . '/views');
+				if (!is_dir($this->project . DIRECTORY_SEPARATOR . 'views')) {
+					if (!@mkdir($this->project . DIRECTORY_SEPARATOR . 'views')) {
+						throw new Exception ('Cannot create directory ' . $this->project . DIRECTORY_SEPARATOR . 'views');
 					}
 					
 					@chmod($this->project . '/views', 0777);
 				}
 				
-				if (!is_dir($this->project . '/controllers')) {
-					if (!@mkdir($this->project . '/controllers')) {
-						throw new Exception ('Cannot create directory ' . $this->project . '/controllers');
+				if (!is_dir($this->project . DIRECTORY_SEPARATOR . 'controllers')) {
+					if (!@mkdir($this->project . DIRECTORY_SEPARATOR . 'controllers')) {
+						throw new Exception ('Cannot create directory ' . $this->project . DIRECTORY_SEPARATOR . 'controllers');
 					}
 					
-					@chmod($this->project . '/controllers', 0777);
+					@chmod($this->project . DIRECTORY_SEPARATOR . 'controllers', 0777);
 				}
 				
-				if (!is_dir($this->project . '/modules')) {
-					if (!@mkdir($this->project . '/modules')) {
-						throw new Exception ('Cannot create directory ' . $this->project . '/modules');
+				if (!is_dir($this->project . DIRECTORY_SEPARATOR . 'modules')) {
+					if (!@mkdir($this->project . DIRECTORY_SEPARATOR . 'modules')) {
+						throw new Exception ('Cannot create directory ' . $this->project . DIRECTORY_SEPARATOR . 'modules');
 					}
 					
-					@chmod($this->project . '/modules', 0777);
+					@chmod($this->project . DIRECTORY_SEPARATOR . 'modules', 0777);
 				}
 				
-				if (!is_dir($this->project . '/resources')) {
-					if (!@mkdir($this->project . '/resources')) {
-						throw new Exception ('Cannot create directory ' . $this->project . '/resources');
+				if (!is_dir($this->project . DIRECTORY_SEPARATOR . 'resources')) {
+					if (!@mkdir($this->project . DIRECTORY_SEPARATOR . 'resources')) {
+						throw new Exception ('Cannot create directory ' . $this->project . DIRECTORY_SEPARATOR . 'resources');
 					}
 					
-					@chmod($this->project . '/resources', 0777);
+					@chmod($this->project . DIRECTORY_SEPARATOR . 'resources', 0777);
 				}
 				
-				if (!is_dir($this->project . '/resources/languages')) {
-					if (!@mkdir($this->project . '/resources/languages')) {
-						throw new Exception ('Cannot create directory ' . $this->project . '/resources/languages');
+				if (!is_dir($this->project . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'languages')) {
+					if (!@mkdir($this->project . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'languages')) {
+						throw new Exception ('Cannot create directory ' . $this->project . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'languages');
 					}
 					
-					@chmod($this->project . '/resources/languages', 0777);
+					@chmod($this->project . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'languages', 0777);
 				}
 				
-				if (!is_dir($this->project . '/resources/public')) {
-					if (!@mkdir($this->project . '/resources/public')) {
-						throw new Exception ('Cannot create directory ' . $this->project . '/resources/public');
+				if (!is_dir($this->project . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'public')) {
+					if (!@mkdir($this->project . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'public')) {
+						throw new Exception ('Cannot create directory ' . $this->project . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'public');
 					}
 					
-					@mkdir($this->project . '/resources/public/assets');
-					@mkdir($this->project . '/resources/public/css');
-					@mkdir($this->project . '/resources/public/scripts');
-					@chmod($this->project . '/resources/public', 0777);
-					@chmod($this->project . '/resources/public/assets', 0777);
-					@chmod($this->project . '/resources/public/css', 0777);
-					@chmod($this->project . '/resources/public/scripts', 0777);
+					@mkdir($this->project . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'assets');
+					@mkdir($this->project . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'css');
+					@mkdir($this->project . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'scripts');
+					@chmod($this->project . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'public', 0777);
+					@chmod($this->project . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'assets', 0777);
+					@chmod($this->project . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'css', 0777);
+					@chmod($this->project . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'scripts', 0777);
 				}
 				
-				if (!file_exists($this->project . '/composer.phar') && !strstr($this->parent, self::COMPOSER_LOCATION)) {
+				if (!file_exists($this->project . DIRECTORY_SEPARATOR . 'composer.phar') && !strstr($this->parent, $this->composer_location)) {
 					$composer_versions = json_decode(file_get_contents("http://getcomposer.org/versions"), true);
 					$composer_stable_url = $composer_versions['stable'][0]['path'];
 					$composer_phar = file_get_contents("http://getcomposer.org$composer_stable_url");
 					
-					$composer = fopen($this->project . '/composer.phar', 'x+');
+					$composer = fopen($this->project . DIRECTORY_SEPARATOR . 'composer.phar', 'x+');
 					$result = fwrite($composer, $composer_phar);
 					fclose($composer);
 					
@@ -169,13 +180,13 @@ class InstallController extends MVC\Controller {
 						throw new Exception('Cannot install composer');
 					}
 				
-					chmod($this->project . '/composer.phar', 0777);
+					chmod($this->project . DIRECTORY_SEPARATOR . 'composer.phar', 0777);
 				}
 			}
 			
-			if (!file_exists($this->project . '/composer.json')) {
-				$composer = fopen($this->project . '/composer.json', 'x+');
-				$content = file_get_contents($this->parent . '/Installation/composer.json');
+			if (!file_exists($this->project . DIRECTORY_SEPARATOR . 'composer.json')) {
+				$composer = fopen($this->project . DIRECTORY_SEPARATOR . 'composer.json', 'x+');
+				$content = file_get_contents($this->parent . DIRECTORY_SEPARATOR . 'Installation' . DIRECTORY_SEPARATOR . 'composer.json');
 				$result = fwrite($composer, $content);
 				fclose($composer);
 					
@@ -183,19 +194,19 @@ class InstallController extends MVC\Controller {
 					throw new Exception('Cannot create composer config');
 				}
 				
-				chmod($this->project . '/composer.json', 0777);
+				chmod($this->project . DIRECTORY_SEPARATOR . 'composer.json', 0777);
 			}
 			
 			$htaccess_parent = str_replace($_SERVER['DOCUMENT_ROOT'], '', $this->parent);
 			
-			if (!file_exists($this->project . '/index.php')) {
-				if (strstr($this->parent, self::COMPOSER_LOCATION)) {
-					$content = file_get_contents($this->parent . '/Installation/composer_empty_index.php');
+			if (!file_exists($this->project . DIRECTORY_SEPARATOR . 'index.php')) {
+				if (strstr($this->parent, $this->composer_location)) {
+					$content = file_get_contents($this->parent . DIRECTORY_SEPARATOR . 'Installation' . DIRECTORY_SEPARATOR . 'composer_empty_index.php');
 				} else {
-					$file_content = file_get_contents($this->parent . '/Installation/empty_index.php');
+					$file_content = file_get_contents($this->parent . DIRECTORY_SEPARATOR . 'Installation' . DIRECTORY_SEPARATOR . 'empty_index.php');
 					$content = str_replace('{apine}', $htaccess_parent, $file_content);
 				}
-				$index = fopen($this->project . '/index.php', 'x+');
+				$index = fopen($this->project . DIRECTORY_SEPARATOR . 'index.php', 'x+');
 				$result = fwrite($index, $content);
 				fclose($index);
 				
@@ -203,7 +214,7 @@ class InstallController extends MVC\Controller {
 					throw new Exception('Cannot move index script');
 				}
 				
-				chmod($this->project . '/index.php', 0777);
+				chmod($this->project . DIRECTORY_SEPARATOR . 'index.php', 0777);
 			}
 			
 			/*// Compute if in a sub directory
@@ -216,15 +227,15 @@ class InstallController extends MVC\Controller {
 			
 			// Load .htaccess templace
 			ob_start();
-			include_once $this->parent . '/Installation/htaccess_template.php';
+			include_once $this->parent . DIRECTORY_SEPARATOR . 'Installation' . DIRECTORY_SEPARATOR . 'htaccess_template.php';
 			$content = ob_get_contents();
 			ob_end_clean();
 					
 			// Create htaccess
-			$file = fopen($this->project . '/.htaccess', 'w+');
+			$file = fopen($this->project . DIRECTORY_SEPARATOR . '.htaccess', 'w+');
 			fwrite($file, $content);
 			fclose($file);
-			chmod($this->project . '/.htaccess', 0777);
+			chmod($this->project . DIRECTORY_SEPARATOR . '.htaccess', 0777);
 		} catch (\Exception $e) {
 			throw new GenericException($e->getMessage(), $e->getCode(), $e);
 		}
@@ -284,13 +295,13 @@ class InstallController extends MVC\Controller {
 			$this->parent = dirname(dirname(__FILE__));
 			$this->parent_name = basename($this->parent);
 			
-			if (strstr($this->parent, self::COMPOSER_LOCATION)) {
-				$this->project = str_replace(self::COMPOSER_LOCATION, '', $this->parent);
+			if (strstr($this->parent, $this->composer_location)) {
+				$this->project = str_replace($this->composer_location, '', $this->parent);
 			} else {
 				$this->project = dirname($this->parent);
 			}
 			
-			if (file_exists($this->project . '/config.ini')) {
+			if (file_exists($this->project . DIRECTORY_SEPARATOR . 'config.ini')) {
 				return;
 			}
 			
@@ -299,13 +310,13 @@ class InstallController extends MVC\Controller {
 			$entries['runtime']['default_layout'] = 'layout';
 			
 			// Write as ini config
-			$result = write_ini_file($entries, $this->project . '/config.ini', true);
+			$result = write_ini_file($entries, $this->project . DIRECTORY_SEPARATOR . 'config.ini', true);
 			
 			if ($result === false) {
 				throw new Exception('Cannot write config file');
 			}
 			
-			chmod($this->project . '/config.ini', 0777);
+			chmod($this->project . DIRECTORY_SEPARATOR . 'config.ini', 0777);
 		} catch (\Exception $e) {
 			throw new GenericException($e->getMessage(), $e->getCode(), $e);
 		}
@@ -318,13 +329,13 @@ class InstallController extends MVC\Controller {
 			$this->parent = dirname(dirname(__FILE__));
 			$this->parent_name = basename($this->parent);
 			
-			if (strstr($this->parent, self::COMPOSER_LOCATION)) {
-				$this->project = str_replace(self::COMPOSER_LOCATION, '', $this->parent);
+			if (strstr($this->parent, $this->composer_location)) {
+				$this->project = str_replace($this->composer_location, '', $this->parent);
 			} else {
 				$this->project = dirname($this->parent);
 			}
 			
-			include $this->parent . '/Installation/locales.php';
+			include $this->parent . DIRECTORY_SEPARATOR . 'Installation' . DIRECTORY_SEPARATOR . 'locales.php';
 			
 			$locale_name = $locales[$locale_code]['name'];
 			$locale_code_short = substr($locale_code, 0, 2);
@@ -346,11 +357,11 @@ class InstallController extends MVC\Controller {
 					'description' => $app_description 
 			);
 			
-			if (file_exists($this->project . '/resources/languages/' . $locale_code . '.json')) {
+			if (file_exists($this->project . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . $locale_code . '.json')) {
 				return;
 			}
 			
-			$locale_file = fopen($this->project . '/resources/languages/' . $locale_code . '.json', 'x+');
+			$locale_file = fopen($this->project . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . $locale_code . '.json', 'x+');
 			$result = fwrite($locale_file, json_encode($json_array, JSON_UNESCAPED_UNICODE));
 			fclose($locale_file);
 			
@@ -358,7 +369,7 @@ class InstallController extends MVC\Controller {
 				throw new Exception('Cannot write new locale file');
 			}
 			
-			chmod($this->project . '/resources/languages/' . $locale_code . '.json', 0777);
+			chmod($this->project . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . $locale_code . '.json', 0777);
 		} catch (\Exception $e) {
 			throw new GenericException($e->getMessage(), $e->getCode(), $e);
 		}
@@ -370,7 +381,7 @@ class InstallController extends MVC\Controller {
 		try {
 			$this->parent = dirname(dirname(__FILE__));
 			$database = new Database($entries ['type'], $entries ['host'], $entries ['dbname'], $entries ['username'], $entries ['password'], $entries ['charset']);
-			$sql_file = file_get_contents($this->parent . '/Installation/apine_sql_tables.sql');
+			$sql_file = file_get_contents($this->parent . DIRECTORY_SEPARATOR . 'Installation' . DIRECTORY_SEPARATOR . 'apine_sql_tables.sql');
 			$result = $database->exec($sql_file);
 			
 			if ($result === false) {
@@ -388,28 +399,28 @@ class InstallController extends MVC\Controller {
 			$this->parent = dirname(dirname(__FILE__));
 			$this->parent_name = basename($this->parent);
 			
-			if (strstr($this->parent, self::COMPOSER_LOCATION)) {
-				$this->project = str_replace(self::COMPOSER_LOCATION, '', $this->parent);
+			if (strstr($this->parent, $this->composer_location)) {
+				$this->project = str_replace($this->composer_location, '', $this->parent);
 			} else {
 				$this->project = dirname($this->parent);
 			}
 			
 			if (Application::get_instance()->get_routes_type() == APINE_ROUTES_XML) {
-				if (file_exists($this->project . '/routes.xml')) {
+				if (file_exists($this->project . DIRECTORY_SEPARATOR . 'routes.xml')) {
 					return;
 				}
 				
-				$routes = fopen($this->project . '/routes.xml', 'x+');
-				$path = $this->project . '/routes.xml';
-				$content = file_get_contents($this->parent . '/Installation/routes.xml');
+				$routes = fopen($this->project . DIRECTORY_SEPARATOR . 'routes.xml', 'x+');
+				$path = $this->project . DIRECTORY_SEPARATOR . 'routes.xml';
+				$content = file_get_contents($this->parent . DIRECTORY_SEPARATOR . 'Installation' . DIRECTORY_SEPARATOR . 'routes.xml');
 			} else {
-				if (file_exists($this->project . '/routes.json')) {
+				if (file_exists($this->project . DIRECTORY_SEPARATOR . 'routes.json')) {
 					return;
 				}
 				
-				$routes = fopen($this->project . '/routes.json', 'x+');
-				$path = $this->project . '/routes.json';
-				$content = file_get_contents($this->parent . '/Installation/routes.json');
+				$routes = fopen($this->project . DIRECTORY_SEPARATOR . 'routes.json', 'x+');
+				$path = $this->project . DIRECTORY_SEPARATOR . 'routes.json';
+				$content = file_get_contents($this->parent . DIRECTORY_SEPARATOR . 'Installation' . DIRECTORY_SEPARATOR . 'routes.json');
 			}
 			
 			$result = fwrite($routes, $content);

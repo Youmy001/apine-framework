@@ -331,6 +331,7 @@ final class WebSession implements SessionInterface {
 				//$_SESSION = array();
 				//ApineCookie::set('apine_session', $this->php_session_id, time() - 604801);
 				$this->session->reset();
+				$this->session->save();
 				$this->logged_in = false;
 				$this->set_session_type(APINE_SESSION_GUEST);
 				return true;
