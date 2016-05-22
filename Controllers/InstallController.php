@@ -283,15 +283,6 @@ class InstallController extends MVC\Controller {
 	private function generate_config ($entries) {
 
 		try {
-			$this->parent = dirname(dirname(__FILE__));
-			$this->parent_name = basename($this->parent);
-			
-			if (strstr($this->parent, self::COMPOSER_LOCATION)) {
-				$this->project = str_replace(self::COMPOSER_LOCATION, '', $this->parent);
-			} else {
-				$this->project = dirname($this->parent);
-			}
-			
 			if (file_exists($this->project . '/config.ini')) {
 				return;
 			}
@@ -317,15 +308,6 @@ class InstallController extends MVC\Controller {
 	private function generate_locale ($locale_code, $app_name, $app_author, $app_description) {
 
 		try {
-			$this->parent = dirname(dirname(__FILE__));
-			$this->parent_name = basename($this->parent);
-			
-			if (strstr($this->parent, self::COMPOSER_LOCATION)) {
-				$this->project = str_replace(self::COMPOSER_LOCATION, '', $this->parent);
-			} else {
-				$this->project = dirname($this->parent);
-			}
-			
 			include $this->parent . '/Installation/locales.php';
 			
 			$locale_name = $locales[$locale_code]['name'];
@@ -387,15 +369,6 @@ class InstallController extends MVC\Controller {
 	private function import_routes () {
 
 		try {
-			$this->parent = dirname(dirname(__FILE__));
-			$this->parent_name = basename($this->parent);
-			
-			if (strstr($this->parent, self::COMPOSER_LOCATION)) {
-				$this->project = str_replace(self::COMPOSER_LOCATION, '', $this->parent);
-			} else {
-				$this->project = dirname($this->parent);
-			}
-			
 			if (Application::get_instance()->get_routes_type() == APINE_ROUTES_XML) {
 				if (file_exists($this->project . '/routes.xml')) {
 					return;
