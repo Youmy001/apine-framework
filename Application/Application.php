@@ -429,7 +429,6 @@ final class Application {
 			}
 			
 			// Fetch and execute the route
-			//$router = new ApineRouter($this->routes_path, $this->routes_type);
 			$route = $router->route($request);
 			$view = $router->execute($route->controller, $route->action, $route->args);
 			

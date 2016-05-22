@@ -85,7 +85,6 @@ final class WebSession implements SessionInterface {
 	 */
 	public function __construct () {
 		
-		//$config = new ApineConfig();
 		$config = Apine\Application\Application::get_instance()->get_config();
 		
 		if ($config->get('runtime', 'user_class')) {
@@ -300,13 +299,10 @@ final class WebSession implements SessionInterface {
 				$new_user = $this->get_user();
 				$this->set_session_type($new_user->get_type());
 				
-				//$session_data['id'] = $user_id;
-				//$session_data['type'] = $new_user->get_type();
 				$this->session->set_var('id', $user_id);
 				$this->session->set_var('type', $new_user->get_type());
 				
 				if (isset($options["remember"]) && $options["remember"] === true) {
-					//$session_data['permanent'] = true;
 					$this->session->set_var('permanent', true);
 				}
 				
@@ -328,9 +324,8 @@ final class WebSession implements SessionInterface {
 
 		try {
 			if ($this->is_logged_in()) {
-				//$_SESSION = array();
-				//ApineCookie::set('apine_session', $this->php_session_id, time() - 604801);
 				$this->session->reset();
+				$this->session->save();
 				$this->logged_in = false;
 				$this->set_session_type(APINE_SESSION_GUEST);
 				return true;
@@ -343,11 +338,5 @@ final class WebSession implements SessionInterface {
 		}
 	
 	}
-	
-	/*public function __destruct() {
-		
-		$this->session->save();
-		
-	}*/
 
 }

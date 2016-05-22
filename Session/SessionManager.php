@@ -8,7 +8,6 @@
  */
 namespace Apine\Session;
 
-//use Apine\Core\Request;
 use Apine;
 use Apine\User\User;
 

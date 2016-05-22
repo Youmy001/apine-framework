@@ -39,7 +39,6 @@ abstract class View {
 	public function __construct() {
 		
 		$this->_params = new Collection();
-		//$this->_params = array();
 		$this->_headers = array();
 		
 	}
@@ -58,7 +57,6 @@ abstract class View {
 	 */
 	final public function set_param($a_name,$a_data) {
 		
-		//$this->_params[$a_name] = $a_data;
 		$this->_params->add_item($a_data, $a_name);
 		
 	}

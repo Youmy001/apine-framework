@@ -78,18 +78,6 @@ final class InstallView extends View {
 		$this->_scripts = array();
 	
 		$this->_title=$a_title;
-	
-		//$this->set_view($this->parent . '/Views/install_view');
-	
-		/*$config = Application\Application::get_instance()->get_config();
-	
-		if (!is_null($config)) {
-			if ($a_layout == "layout" && !is_null($config->get('runtime', 'default_layout'))) {
-				$a_layout = $config->get('runtime', 'default_layout');
-			}
-		}
-	
-		$this->set_layout($a_layout);*/
 		
 		$this->_view = $a_view;
 		$this->_layout = $a_layout;

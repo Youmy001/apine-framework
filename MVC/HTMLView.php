@@ -133,6 +133,7 @@ final class HTMLView extends View {
 		
 		if ($a_layout != "") {
 			$location = Application\Application::get_instance()->framework_location();
+			
 			// Verify if the layout file exists
 			if (file_exists("views/layouts/$a_layout.html")) {
 				$this->_layout = new Layout("views/layouts/$a_layout.html");
@@ -141,7 +142,6 @@ final class HTMLView extends View {
 			} else if (file_exists("$a_layout.html")) {
 				$this->_layout = new Layout("$a_layout.html");
 			} else {
-				//$this->_layout = new Layout($location . '/Views/layout.html');
 				throw new GenericException('Layout Not Found', 500);
 			}
 		}
@@ -158,6 +158,7 @@ final class HTMLView extends View {
 		if ($a_view!="") {
 			$location = Application\Application::get_instance()->framework_location();
 			$path = Application\Application::get_instance()->include_path();
+			
 			// Verify if the view file exists
 			if (file_exists("views/$a_view.html")) {
 				$view = "$path/views/$a_view.html";

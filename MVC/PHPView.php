@@ -162,6 +162,7 @@ final class PHPView extends View {
 
 		if ($a_view!="") {
 			$location = Application\Application::get_instance()->framework_location();
+			
 			// Verify if the view file exists
 			if (file_exists("views/$a_view.php")) {
 				$this->_view = "views/$a_view";
@@ -262,7 +263,6 @@ final class PHPView extends View {
 		include_once("$this->_layout.php");
 		$content = ob_get_contents();
 		ob_end_clean();
-		//die($content);
 		$this->content = $content;
 
 		return $content;

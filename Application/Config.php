@@ -98,7 +98,6 @@ final class Config {
 		$key = strtolower($key);
 		
 		self::get_instance()->settings[$prefix][$key] = $value;
-		//write_ini_file(self::get_instance()->settings, 'config.ini', true);
         
         // Update the parent and the file
         Application::get_instance()->get_config()->set($prefix, $key, $value);

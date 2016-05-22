@@ -28,7 +28,6 @@ final class Config {
 	 * 
 	 * @var array
 	 */
-	//private $settings;
 	private $settings = [];
 	
 	/**

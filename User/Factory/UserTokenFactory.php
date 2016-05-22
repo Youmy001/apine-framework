@@ -19,7 +19,6 @@ class UserTokenFactory implements Apine\Entity\EntityFactoryInterface {
 	 */
 	public static function is_id_exist ($a_user_id) {
 		
-		// $id_sql = (new Database())
 		$database = new Apine\Core\Database();
 		$id_sql = $database->select("SELECT `id` FROM `apine_api_users_tokens` WHERE `id` = $a_user_id");
 		
@@ -39,7 +38,6 @@ class UserTokenFactory implements Apine\Entity\EntityFactoryInterface {
 	 */
 	public static function is_token_exist ($a_token) {
 	
-		// $id_sql = (new Database())
 		$database = new Apine\Core\Database();
 		$id_sql = $database->select("SELECT `id` FROM `apine_api_users_tokens` WHERE `token` = '$a_token'");
 	
@@ -58,7 +56,6 @@ class UserTokenFactory implements Apine\Entity\EntityFactoryInterface {
 	 */
 	public static function create_all () {
 		
-		// $request = (new Database())
 		$database = new Apine\Core\Database();
 		$request = $database->select('SELECT `id` from `apine_api_users_tokens` ORDER BY `user_id` ASC');
 		$liste = new ApineCollection();

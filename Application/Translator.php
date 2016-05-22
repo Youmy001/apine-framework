@@ -8,9 +8,6 @@
  */
 namespace Apine\Application;
 
-/*use Apine\Core\ApplicationConfig;
-use Apine\Core\Cookie;
-use Apine\Core\Request;*/
 use Apine;
 use Apine\Translation\Translation;
 

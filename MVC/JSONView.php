@@ -56,9 +56,6 @@ final class JSONView extends View {
 		$this->apply_headers();
 
 		if($this->_json_file===null){
-			// Encode Objects to Array
-				
-			//print_r($this->_params->get_all());
 			// Encode to JSON
 			$this->set_json_file($this->_params->get_all());
 		}

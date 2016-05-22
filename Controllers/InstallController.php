@@ -93,7 +93,6 @@ class InstallController extends MVC\Controller {
 			}
 			$this->_view->set_param('timezones', $locations);
 			$this->_view->set_param('locales', $locales);
-			// $this->_view->add_script('lib/Installation/install');
 		}
 		
 		return $this->_view;
@@ -208,14 +207,6 @@ class InstallController extends MVC\Controller {
 				chmod($this->project . '/index.php', 0777);
 			}
 			
-			/*// Compute if in a sub directory
-			if (strlen($_SERVER['SCRIPT_NAME']) > 10) {
-				// Remove "/index.php" from the script name
-				$webroot = str_replace('/index.php', '', $_SERVER['SCRIPT_NAME']);
-			} else {
-				$webroot = '';
-			}*/
-			
 			// Load .htaccess templace
 			ob_start();
 			include_once $this->parent . '/Installation/htaccess_template.php';
@@ -255,7 +246,6 @@ class InstallController extends MVC\Controller {
 				throw new GenericException('Invalid Request', 400);
 			}
 		} catch (\Exception $e) {
-			// throw new GenericException($e->getMessage(), $e->getCode(), $e);
 			$protocol = (isset(Request::server() ['SERVER_PROTOCOL']) ? Request::server() ['SERVER_PROTOCOL'] : 'HTTP/1.0');
 			header($protocol . ' 500 Internal Server Error');
 		}
@@ -272,10 +262,8 @@ class InstallController extends MVC\Controller {
 				throw new GenericException('Invalid Request', 400);
 			}
 		} catch (DatabaseException $e) {
-			// throw new \Apine\Exception\GenericException('Unable to connect to database', 404);
 			$protocol = (isset(Request::server() ['SERVER_PROTOCOL']) ? Request::server() ['SERVER_PROTOCOL'] : 'HTTP/1.0');
 			header($protocol . ' 404 Not Found');
-			// print "Error";
 		}
 	
 	}
@@ -283,15 +271,6 @@ class InstallController extends MVC\Controller {
 	private function generate_config ($entries) {
 
 		try {
-			$this->parent = dirname(dirname(__FILE__));
-			$this->parent_name = basename($this->parent);
-			
-			if (strstr($this->parent, self::COMPOSER_LOCATION)) {
-				$this->project = str_replace(self::COMPOSER_LOCATION, '', $this->parent);
-			} else {
-				$this->project = dirname($this->parent);
-			}
-			
 			if (file_exists($this->project . '/config.ini')) {
 				return;
 			}
@@ -317,15 +296,6 @@ class InstallController extends MVC\Controller {
 	private function generate_locale ($locale_code, $app_name, $app_author, $app_description) {
 
 		try {
-			$this->parent = dirname(dirname(__FILE__));
-			$this->parent_name = basename($this->parent);
-			
-			if (strstr($this->parent, self::COMPOSER_LOCATION)) {
-				$this->project = str_replace(self::COMPOSER_LOCATION, '', $this->parent);
-			} else {
-				$this->project = dirname($this->parent);
-			}
-			
 			include $this->parent . '/Installation/locales.php';
 			
 			$locale_name = $locales[$locale_code]['name'];
@@ -370,7 +340,6 @@ class InstallController extends MVC\Controller {
 	private function import_database ($entries) {
 
 		try {
-			$this->parent = dirname(dirname(__FILE__));
 			$database = new Database($entries ['type'], $entries ['host'], $entries ['dbname'], $entries ['username'], $entries ['password'], $entries ['charset']);
 			$sql_file = file_get_contents($this->parent . '/Installation/apine_sql_tables.sql');
 			$result = $database->exec($sql_file);
@@ -387,15 +356,6 @@ class InstallController extends MVC\Controller {
 	private function import_routes () {
 
 		try {
-			$this->parent = dirname(dirname(__FILE__));
-			$this->parent_name = basename($this->parent);
-			
-			if (strstr($this->parent, self::COMPOSER_LOCATION)) {
-				$this->project = str_replace(self::COMPOSER_LOCATION, '', $this->parent);
-			} else {
-				$this->project = dirname($this->parent);
-			}
-			
 			if (Application::get_instance()->get_routes_type() == APINE_ROUTES_XML) {
 				if (file_exists($this->project . '/routes.xml')) {
 					return;

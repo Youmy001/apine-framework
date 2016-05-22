@@ -161,11 +161,6 @@ class File {
 	final public function type () {
 	
 		if (class_exists('finfo')) {
-			/*$finfo = new finfo(FILEINFO_MIME_TYPE);
-				
-			if (is_object($finfo)) {
-				$mime = $finfo->file($this->path);
-			}*/
 			$finfo = finfo_open(FILEINFO_MIME_TYPE);
 			$mime = finfo_file($finfo, $this->path); 
 		} elseif (!strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
@@ -283,12 +278,10 @@ class File {
 				$directory = substr($this->path, 0, strripos($this->path, '/') + 1);
 				$path = $directory . $this->name;
 				
-				//fclose($this->file);
 				$success = copy($this->path, $path);
 					
 				$this->path = $path;
 				$this->location = $directory;
-				//$this->file = fopen($path, "c+");
 			} else {
 				// Verify is there's a filename in the path
 				$file_name = substr($a_path, strripos($a_path, '/') + 1);
@@ -302,11 +295,9 @@ class File {
 				}
 					
 				// If there's a filename, configure the class's name
-				//fclose($this->file);
 				$success = rename($this->path, $path);
 				$this->path = $path;
 				$this->location = $directory;
-				//$this->file = fopen($path, "c+");
 			}
 			
 			return $success;

@@ -19,7 +19,6 @@ class UserGroupFactory implements Apine\Entity\EntityFactoryInterface {
 	 */
 	public static function is_id_exist ($a_id) {
 
-		//$request = (new Database())
 		$database = new Apine\Core\Database();
 		$request = $database->select("SELECT `id` FROM `apine_user_groups` WHERE `id`=$a_id");
 		
@@ -38,7 +37,6 @@ class UserGroupFactory implements Apine\Entity\EntityFactoryInterface {
 	 */
 	public static function create_all () {
 
-		//$request = (new Database())
 		$database = new Apine\Core\Database();
 		$request = $database->select("SELECT `id` FROM `apine_user_groups` ORDER BY `id`");
 		$liste = new Apine\Core\Collection();
@@ -61,7 +59,6 @@ class UserGroupFactory implements Apine\Entity\EntityFactoryInterface {
 	 */
 	public static function create_by_id ($a_id) {
 
-		//$request = (new Database())
 		$database = new Apine\Core\Database();
 		$request = $database->select("SELECT `id` FROM `apine_user_groups` WHERE `id`=$a_id");
 		
@@ -84,7 +81,6 @@ class UserGroupFactory implements Apine\Entity\EntityFactoryInterface {
 	 */
 	public static function create_by_user ($user) {
 	
-		//$request = (new Database())
 		$database = new Apine\Core\Database();
 		$request = $database->select("SELECT `group_id` FROM `apine_users_user_groups` WHERE `user_id`=$user");
 		$liste = new Apine\Core\Collection();

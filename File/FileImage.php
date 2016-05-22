@@ -78,7 +78,6 @@ final class FileImage extends File {
 
 		try {
 			parent::__construct($a_path);
-			//$this->write();
 			$this->load();
 		} catch (GenericException $e) {
 			throw $e;

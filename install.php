@@ -64,7 +64,6 @@ try {
 			));
 		}
 		
-		// print $controller."/".$action;
 		$maj_controller = ucfirst($controller) . 'Controller';
 		
 		print $maj_controller;
@@ -77,9 +76,6 @@ try {
 			throw new GenericException('Not Found', 404);
 		}
 	}
-	// $router = new WebRouter();
-	// $view = $router->execute('install', 'index');
-	// die();
 	
 	// Draw the output
 	if (!is_null($view) && is_a($view, 'Apine\MVC\View')) {

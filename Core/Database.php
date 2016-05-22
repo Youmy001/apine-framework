@@ -59,7 +59,6 @@ final class Database {
 				$this->instance->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 				$this->instance->exec('SET time_zone = "+00:00";');
 			} else { 
-				//self::$apine_instance = $this->get_instance();
 				if (!isset(self::$apine_instance)) {
 					try {
 						$config = \Apine\Application\Application::get_instance()->get_config();

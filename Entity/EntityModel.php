@@ -237,9 +237,6 @@ abstract class EntityModel implements EntityInterface {
 		$this->table_name = $table_name;
 		$this->id = $tuple_id;
 		$this->load_field = $field_name;
-		
-		//echo get_class($this)."\n";
-		//print_r(get_class_vars('ApineUser'));
 
 	}
 

@@ -30,15 +30,8 @@ class WebRouter implements RouterInterface {
 	final public function __construct ($a_path= 'routes.json', $a_type = APINE_ROUTES_JSON) {
 		
 		try {
-			//$application = Application::get_instance();
-			//$this->routes_file = $application->get_routes_path();
-			//$this->routes_type = $application->get_routes_type();
 			$this->routes_file = $a_path;
 			$this->routes_type = $a_type;
-			
-			/*if (!file_exists($this->routes_file)) {
-				throw new GenericException('Route File Not Found', 418);
-			}*/
 		} catch (Exception $e) {
 			throw new GenericException($e->getMessage(), $e->getCode(), $e);
 		}

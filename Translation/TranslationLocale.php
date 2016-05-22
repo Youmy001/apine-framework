@@ -21,7 +21,6 @@ final class TranslationLocale {
 	 * 
 	 * @var string[]
 	 */
-	//private $locale_entries = [];
 	private $locale_entries;
 	
 	/**
