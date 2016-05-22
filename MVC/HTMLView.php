@@ -297,9 +297,10 @@ final class HTMLView extends View {
 				$user_array['groups'] = array();
 				
 				$properties = $apine_user->get_property_all();
+				
 				if (is_array($properties)) {
 					foreach ($properties as $name => $value) {
-						$user_array["property_" . $name] = $value;
+						$user_array["property_" . $name] = $value->get_value();
 					}
 				}
 			} else {
