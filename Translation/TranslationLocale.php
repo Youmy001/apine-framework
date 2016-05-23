@@ -139,6 +139,10 @@ final class TranslationLocale {
 			throw new GenericException('Invalid Timestamp', 500);
 		}
 		
+		if (isset($this->locale_entries[$pattern])) {
+			$pattern = $this->locale_entries[$pattern];
+		}
+		
 		return strftime($pattern, strtotime($a_timestamp));
 		
 	}

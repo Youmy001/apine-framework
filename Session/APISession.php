@@ -50,8 +50,8 @@ final class APISession implements SessionInterface{
 	 */
 	public function __construct() {
 		
-		if (is_null(Apine\Application\ApplicationConfig::get('runtime', 'token_lifespan'))) {
-			$this->token_lifespan = Apine\Core\ApplicationConfig::get('runtime', 'token_lifespan');
+		if (is_null(Apine\Application\Config::get('runtime', 'token_lifespan'))) {
+			$this->token_lifespan = Apine\Core\Config::get('runtime', 'token_lifespan');
 		}
 		
 		$request = Apine\Core\Request::get_instance();
