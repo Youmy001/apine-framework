@@ -190,13 +190,7 @@ class WebRouter implements RouterInterface {
 		}
 		
 		// Add post arguments to args array
-		if (Request::get_request_type() != "GET") {
-			$args = array_merge($args, Request::post());
-		}
-		
-		if (!empty(Request::files())) {
-			$args = array_merge($args, array("uploads" => Request::files()));
-		}
+		$args = array_merge($args, Request::get_request_params());
 		
 		try {
 			if ($this->check_route($request)) {

@@ -35,13 +35,7 @@ final class APIRouter implements RouterInterface {
 			array_shift($args);
 			
 			// Add post arguments to args array
-			if (Request::get_request_type() != "GET") {
-				$args = array_merge($args, Request::post());
-			}
-			
-			if (!empty(Request::files())) {
-				$args = array_merge($args, array("uploads" => Request::files()));
-			}
+			$args = array_merge($args, Request::get_request_params());
 			
 			$maj_controller = ucfirst($controller) . 'Controller';
 			

@@ -216,6 +216,32 @@ final class Request {
 	}
 	
 	/**
+	 * Return an aggregate of all the input that are sent directly to the controllers through the routing procedure
+	 * 
+	 * @return array
+	 */
+	public static function get_request_params () {
+		
+		$params = array();
+		
+		// Add post arguments to args array
+		if (self::get_instance()->request_type == "POST") {
+			$params = array_merge($params, self::get_instance()->post);
+		}
+		
+		if (!empty(self::get_instance()->files())) {
+			$params = array_merge($params, array("uploads" => self::get_instance()->files));
+		}
+		
+		if (!empty(self::get_instance()->request_body)) {
+			$params['request_body'] = self::get_instance()->request_body;
+		}
+		
+		return $params;
+		
+	}
+	
+	/**
 	 * Checks if the request is made through the HTTPS protocol
 	 * 
 	 * @return boolean
