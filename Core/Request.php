@@ -234,6 +234,23 @@ final class Request {
 		}
 		
 		if (!empty(self::get_instance()->request_body)) {
+			
+			if (($_SERVER["CONTENT_TYPE"] == 'x-www-form-urlencoded' || $_SERVER["CONTENT_TYPE"] == 'multipart/form-data') && self::get_instance()->request_type != "POST") {
+				$raw_inputs = array();
+				mb_parse_str(self::get_instance()->request_body, $raw_inputs);
+				
+				// This should not be put directly in the arraay when the request is POST
+				// This would cause duplication in the params array
+				if (self::get_instance()->request_type != "POST") { 
+					array_merge($params, $raw_inputs);
+				} else {
+					$params['request_body'] = $raw_inputs;
+				}
+			} else if ($_SERVER["CONTENT_TYPE"] == 'application/json') {
+				$raw_inputs = json_decode(self::get_instance()->request_body, true);
+				array_merge($params, $raw_inputs);
+			}
+			
 			$params['request_body'] = self::get_instance()->request_body;
 		}
 		
