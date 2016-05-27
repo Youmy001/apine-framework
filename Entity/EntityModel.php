@@ -321,11 +321,7 @@ abstract class EntityModel implements EntityInterface {
 				foreach ($this->database_fields as $key => $value) {
 					if (!is_numeric($key)) {
 						if (isset($this->modified_fields[$key]) && $this->modified_fields[$key] == true) {
-							if ($value === "") {
-								$arUpdate[$key] = NULL;
-							} else {
-								$arUpdate[$key] = $value;
-							}
+							$arUpdate[$key] = $value;
 						}
 					}
 				}
