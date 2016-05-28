@@ -416,7 +416,7 @@ class User extends Apine\Entity\EntityModel {
 	private function load_properties () {
 		
 		$database = new Apine\Core\Database();
-		$request = $database->prepare('SELECT `id`, `name` FROM `apine_user_properties` WHERE `user_id` = ? ORDER BY `name` ASC');
+		$request = $database->prepare('SELECT `id`, `name`, `value` FROM `apine_user_properties` WHERE `user_id` = ? ORDER BY `name` ASC');
 		$data = $database->execute(array($this->id), $request);
 		
 		if ($data != null && count($data) > 0) {

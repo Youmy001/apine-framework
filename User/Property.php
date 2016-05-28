@@ -144,7 +144,11 @@ final class Property extends Entity\EntityModel {
 		if (!is_null($this->id)) {
 			$this->user = Factory\UserFactory::create_by_id($this->_get_field('user_id'));
 			$this->name = $this->_get_field('name');
-			$this->value = @unserialize($this->_get_field('value'));
+			if (@unserialize($this->_get_field('value'))) {
+				$this->value = @unserialize($this->_get_field('value'));
+			} else {
+				$this->value = $this->_get_field('value');
+			}
 		}
 		
 	}
