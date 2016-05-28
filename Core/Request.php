@@ -225,7 +225,7 @@ final class Request {
 		$params = array();
 		
 		// Add post arguments to args array
-		if (self::get_instance()->request_type == "POST") {
+		/*if (self::get_instance()->request_type == "POST") {
 			$params = array_merge($params, self::get_instance()->post);
 		}
 		
@@ -235,7 +235,7 @@ final class Request {
 		
 		if (!empty(self::get_instance()->request_body)) {
 			
-			if (($_SERVER["CONTENT_TYPE"] == 'x-www-form-urlencoded' || $_SERVER["CONTENT_TYPE"] == 'multipart/form-data') && self::get_instance()->request_type != "POST") {
+			if (($_SERVER["CONTENT_TYPE"] == 'application/x-www-form-urlencoded' || $_SERVER["CONTENT_TYPE"] == 'multipart/form-data') && self::get_instance()->request_type != "POST") {
 				$raw_inputs = array();
 				mb_parse_str(self::get_instance()->request_body, $raw_inputs);
 				
@@ -252,6 +252,53 @@ final class Request {
 			}
 			
 			$params['request_body'] = self::get_instance()->request_body;
+		}*/
+		
+		if (self::get_instance()->api_call) { /* RESTful Call */
+			// first of all, pull the GET vars
+			if (isset($_SERVER['QUERY_STRING'])) {
+				mb_parse_str($_SERVER['QUERY_STRING'], $params);
+			}
+			
+			$body = self::get_instance()->request_body;
+			$content_type = false;
+			if(isset($_SERVER['CONTENT_TYPE'])) {
+				$content_type = $_SERVER['CONTENT_TYPE'];
+			}
+			switch($content_type) {
+				case "application/json":
+					$body_params = json_decode($body);
+					
+					if($body_params) {
+						foreach($body_params as $param_name => $param_value) {
+							$params[$param_name] = $param_value;
+						}
+					}
+					
+					break;
+				case "application/x-www-form-urlencoded":
+					mb_parse_str($body, $postvars);
+					
+					foreach($postvars as $field => $value) {
+						$params[$field] = urldecode($value);
+			
+					}
+					
+					break;
+				default:
+					// we could parse other supported formats here
+					$params['request_body'] = $body;
+					break;
+			}
+		} else { /* Web App Call */
+			// Add post arguments to args array
+			if (self::get_instance()->request_type == "POST") {
+				$params = array_merge($params, self::get_instance()->post);
+			}
+		}
+		
+		if (!empty(self::get_instance()->files())) {
+			$params = array_merge($params, array("uploads" => self::get_instance()->files));
 		}
 		
 		return $params;
