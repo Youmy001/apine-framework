@@ -303,6 +303,11 @@ final class HTMLView extends View {
 						$user_array["property_" . $name] = $value->get_value();
 					}
 				}
+				
+				foreach ($apine_user->get_group() as $group) {
+					$user_array['group_' . $group->get_id()] = true;
+					$user_array['groups'][$group->get_id()] = $group->get_id();
+				}
 			} else {
 				$user_array = false;
 			}

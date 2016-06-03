@@ -132,6 +132,14 @@ final class Database {
 			
 			if (is_string($val)) {
 				$val = $this->quote($val);
+			} else if (is_null($val)) {
+				$val = 'NULL';
+			} else if (is_bool($val)) {
+				if ($val === true) {
+					$val = 'TRUE';
+				} else {
+					$val = 'FALSE';
+				}
 			}
 			
 			$new_values[] = $val;
@@ -183,6 +191,12 @@ final class Database {
 				$val = $this->quote($val);
 			} else if (is_null($val)) {
 				$val = 'NULL';
+			} else if (is_bool($val)) {
+				if ($val === true) {
+					$val = 'TRUE';
+				} else {
+					$val = 'FALSE';
+				}
 			}
 			
 			$new_values[] = "$field = $val";

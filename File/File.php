@@ -72,7 +72,7 @@ class File {
 			if (!is_file($a_path) && !$a_new) {
 				throw new GenericException('File not found');
 			} else if ($a_new == true) {
-				$this->file = fopen($a_path, "c+");
+				$this->file = fopen($a_path, "x+");
 				
 				if (!$this->file) {
 					throw new GenericException('Could not create file');
@@ -83,7 +83,7 @@ class File {
 				$this->location = substr($this->path, 0, strripos($a_path, "/") + 1);
 				$this->content = "";
 			} else {
-			
+				
 				if (filesize($a_path) == 0) {
 					throw new GenericException('Empty file');
 				}
@@ -92,7 +92,7 @@ class File {
 				if ($a_readonly) {
 					$this->file = fopen($a_path, "r");
 				} else {
-					$this->file = fopen($a_path, "x+");
+					$this->file = fopen($a_path, "c+");
 				}
 				
 				$this->readonly = $a_readonly;

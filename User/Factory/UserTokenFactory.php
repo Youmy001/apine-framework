@@ -8,6 +8,7 @@
 namespace Apine\User\Factory;
 
 use Apine;
+use Apine\User\UserToken;
 
 class UserTokenFactory implements Apine\Entity\EntityFactoryInterface {
 
@@ -58,7 +59,7 @@ class UserTokenFactory implements Apine\Entity\EntityFactoryInterface {
 		
 		$database = new Apine\Core\Database();
 		$request = $database->select('SELECT `id` from `apine_api_users_tokens` ORDER BY `user_id` ASC');
-		$liste = new ApineCollection();
+		$liste = new Apine\Core\Collection();
 		
 		if ($request != null && count($request) > 0) {
 			foreach ($request as $item) {
@@ -102,14 +103,14 @@ class UserTokenFactory implements Apine\Entity\EntityFactoryInterface {
 	 */
 	public static function create_by_token ($a_token) {
 		
-		$database = new ApineDatabase();
+		$database = new Apine\Core\Database();
 		$user_sql_id = $database->prepare('SELECT `id` FROM `apine_api_users_tokens` WHERE `token` = ?');
 		$ar_user_sql = $database->execute(array(
 						$a_token
 		), $user_sql_id);
 		
 		if ($ar_user_sql) {
-			$return = new ApineUserToken((int) $ar_user_sql[0]['id']);
+			$return = new UserToken((int) $ar_user_sql[0]['id']);
 		} else {
 			$return = null;
 		}
@@ -130,9 +131,9 @@ class UserTokenFactory implements Apine\Entity\EntityFactoryInterface {
 	 */
 	public static function authentication ($a_name, $a_token, $a_delay) {
 		
-		$user = ApineUserFactory::create_by_name($a_name);
+		$user = UserFactory::create_by_name($a_name);
 
-		$database = new ApineDatabase();
+		$database = new Apine\Core\Database();
 		$token_statement_id = $database->prepare('SELECT `id` FROM `apine_api_users_tokens` WHERE `user_id` = ? AND `token` = ? AND `last_access_date` > ? AND `disabled` = false');
 		$ar_token = $database->execute(array(
 						$user->get_id(),
