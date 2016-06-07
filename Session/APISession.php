@@ -62,7 +62,7 @@ final class APISession implements SessionInterface{
 			$authorization_array = explode(':', $autorization_string);
 			$name = $authorization_array[0];
 			$token = $authorization_array[1];
-			$referer = isset($request->server()['HTTP_REFERER']) ? $request->server()['HTTP_REFERER'] : '';
+			$referer = isset($request->server()['REMOTE_ADDR']) ? $request->server()['REMOTE_ADDR'] : '';
 			$agent = isset($request->server()['HTTP_USER_AGENT']) ? $request->server()['HTTP_USER_AGENT'] : '';
 		
 			$token_id = Apine\User\Factory\UserTokenFactory::authentication($name, $token, $this->token_lifespan);
@@ -217,7 +217,7 @@ final class APISession implements SessionInterface{
 			$request_server = Apine\Core\Request::server();
 			
 			if ($user_id) {
-				$referer = isset($request_server['HTTP_REFERER']) ? $request_server['HTTP_REFERER'] : '';
+				$referer = isset($request_server['REMOTE_ADDR']) ? $request_server['REMOTE_ADDR'] : '';
 				$agent = isset($request_server['HTTP_USER_AGENT']) ? $request_server['HTTP_USER_AGENT'] : '';
 				$creation_time = time();
 				$new_user_token = new Apine\User\UserToken();
