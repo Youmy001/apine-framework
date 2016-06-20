@@ -436,7 +436,7 @@ final class Application {
 			if(!is_null($view) && is_a($view, 'Apine\MVC\View')) {
 				$view->draw();
 			} else {
-				throw new UnexpectedValueException();
+				throw new GenericException('Empty Apine View', 488);
 			}
 		} catch (GenericException $e) {
 			// Handle application errors
