@@ -2,8 +2,10 @@
 
 use Apine\MVC\URLHelper;
 use Apine\Core\Config;
+use Apine\Core\Request;
 use Apine\Session\SessionManager;
 use Apine\Application\Translator;
+use Apine\MVC\RedirectionView;
 /**
  * #@+
  * Constants
@@ -252,18 +254,38 @@ function apine_execution_time () {
  * Redirect to another end point of the application
  * using a full query string
  * 
- * @param string $request
- * @param string $protocol
+ * @param string $a_request
+ * @param string $a_protocol
+ * @return Apine\MVC\RedirectionView
  */
 function apine_internal_redirect ($a_request, $a_protocol = APINE_PROTOCOL_DEFAULT) {
 	
-	$protocol = (isset(Apine\Core\Request::server()['SERVER_PROTOCOL']) ? Apine\Core\Request::server()['SERVER_PROTOCOL'] : 'HTTP/1.0');
+	$new_view = new RedirectionView();
+	$protocol = (isset(Request::server()['SERVER_PROTOCOL']) ? Request::server()['SERVER_PROTOCOL'] : 'HTTP/1.0');
 	
-	if ($a_request == Apine\Core\Request::get()['request']) {
-		header($protocol . ' 302 Moved Temporarily');
+	if ($a_request == Request::get()['request']) {
+		$new_view->set_header_rule($protocol . ' 302 Moved Temporarily');
 	}
-	header('Location: ' . Apine\MVC\URLHelper::path($a_request, $a_protocol));
 	
+	$new_view->set_header_rule('Location', URLHelper::path($a_request, $a_protocol));
+	
+	return $new_view;
+	
+}
+	
+/**
+ * Safely redirect to another URI.
+ *
+ * @param string $a_request
+ * @return Apine\MVC\RedirectionView
+ */
+function apine_redirect ($a_request) {
+
+	$new_view = new RedirectionView();
+	$new_view->set_header_rule('Location', $a_request);
+
+	return $new_view;
+
 }
 
 /**
