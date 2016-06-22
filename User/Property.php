@@ -134,7 +134,12 @@ final class Property extends Entity\EntityModel {
 		
 		if ( null !== $value = serialize($a_value)) {
 			$this->value = $a_value;
-			$this->_set_field('value', serialize($a_value));
+
+			if (!is_null($a_value)) {
+				$this->_set_field('value', serialize($a_value));
+			} else {
+				$this->_set_field('value', null);
+			}
 		}
 		
 	}
@@ -144,7 +149,8 @@ final class Property extends Entity\EntityModel {
 		if (!is_null($this->id)) {
 			$this->user = Factory\UserFactory::create_by_id($this->_get_field('user_id'));
 			$this->name = $this->_get_field('name');
-			if (@unserialize($this->_get_field('value'))) {
+		
+			if (@unserialize($this->_get_field('value')) !== false) {
 				$this->value = @unserialize($this->_get_field('value'));
 			} else {
 				$this->value = $this->_get_field('value');
