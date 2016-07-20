@@ -77,6 +77,25 @@ final class APISession implements SessionInterface{
 				$this->token->save();
 			}
 		
+		} else if (isset($_COOKIE['apine_session'])) {
+
+			$session = new WebSession();
+			$data = $session->data();
+
+			if ($data != null) {
+				$user_id = $data->get_var('id');
+
+				if ($user_id != null) {
+					$user = \Apine\User\Factory\UserFactory::create_by_id($user_id);
+					$token = new \Apine\User\UserToken();
+					$token->set_user($user);
+					$this->logged_in = true;
+					$this->token = $token;
+					$this->session_type = $data->get_var('type');
+					$this->token->set_last_access_date(date('d M Y H:i:s',time() + $this->token_lifespan));
+				}
+			}
+			
 		}
 		
 	}
