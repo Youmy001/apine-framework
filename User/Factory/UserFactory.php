@@ -40,7 +40,7 @@ class UserFactory implements Apine\Entity\EntityFactoryInterface {
 	 */
 	public static function is_name_exist ($user_name){
 
-		$id_sql = (new Apine\Core\Database())->select("SELECT `id` FROM `apine_users` WHERE `username` = '$user_name' OR `email` = '$user_name'  AND `type` <> 10");
+		$id_sql = (new Apine\Core\Database())->select("SELECT `id` FROM `apine_users` WHERE (`username`='$user_name' OR `email`='$user_name') AND `type`<>10;");
 		
 		if ($id_sql) {
 			return true;

@@ -117,30 +117,20 @@ final class WebSession implements SessionInterface {
 		$this->session = new SessionData($token);
 		$this->php_session_id = $token;
 		$delay = $this->session_lifespan;
+		$this->logged_in = false;
 		
 		if ($this->session->get_var('id') != null) {
-			$this->logged_in = false;
-			
 			if ($this->session->get_var('permanent') != null) {
-				if ($this->session->is_valid($this->session_permanent_lifespan)) {
-					$this->logged_in = true;
-					$this->user_id  = $this->session->get_var('id');
-					$this->session_type = $this->session->get_var('type');
-					$delay = $this->session_permanent_lifespan;
-				} else {
-					$this->session->reset();
-				}
-			} else {
-				if ($this->session->is_valid($this->session_lifespan)) {
-					$this->logged_in = true;
-					$this->user_id  = $this->session->get_var('id');
-					$this->session_type = $this->session->get_var('type');
-				} else {
-					$this->session->reset();
-				}
+				$delay = $this->session_permanent_lifespan;
 			}
-		} else {
-			$this->logged_in = false;
+
+			if ($this->session->is_valid($delay) && Apine\User\Factory\UserFactory::is_id_exist($this->session->get_var('id'))) {
+				$this->logged_in = true;
+				$this->user_id  = $this->session->get_var('id');
+				$this->session_type = $this->session->get_var('type');
+			} else {
+				$this->session->reset();
+			}
 		}
 		
 		setcookie('apine_session', $this->php_session_id, time() + $delay, '/');

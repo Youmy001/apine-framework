@@ -248,7 +248,7 @@ final class Request {
 			$body = self::get_instance()->request_body;
 			$content_type = false;
 			if(isset($_SERVER['CONTENT_TYPE'])) {
-				$content_type = $_SERVER['CONTENT_TYPE'];
+				$content_type = substr($_SERVER['CONTENT_TYPE'], 0, strpos($_SERVER['CONTENT_TYPE'],';'));
 			}
 			switch($content_type) {
 				case "application/json":
@@ -467,4 +467,5 @@ final class Request {
 		return $result;
 		
 	}
+	
 }

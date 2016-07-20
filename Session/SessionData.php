@@ -41,10 +41,10 @@ final class SessionData extends EntityModel {
 	 */
 	public function __construct ($a_id = null) {
 		
-		if (Cookie::get('apine_session') != null) {
-			$this->session_id = Cookie::get('apine_session');
-		} else if ($a_id != null) {
+		if ($a_id != null) {
 			$this->session_id = $a_id;
+		} else if (Cookie::get('apine_session') != null) {
+			$this->session_id = Cookie::get('apine_session');
 		} else {
 			$this->session_id = Encryption::token();
 		}

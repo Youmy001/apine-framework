@@ -181,12 +181,19 @@ final class HTMLView extends View {
 	 * @param string $a_script URL to script
 	 */
 	public function add_script($a_script) {
+
+
 	
 		if ($a_script!="") {
 			if (file_exists("resources/public/scripts/$a_script.js")) {
 				$this->_scripts[] = URLHelper::resource("resources/public/scripts/$a_script.js");
 			} else if (file_exists("$a_script.js")) {
 				$this->_scripts[] = URLHelper::resource("$a_script.js");
+			} else {
+				$headers = @get_headers($a_script);
+				if (stripos($headers[0], '200')) {
+					$this->_scripts[] = $a_script;
+				}
 			}
 		}
 	

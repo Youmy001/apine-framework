@@ -285,13 +285,13 @@ final class Application {
 			if (SessionManager::is_logged_in()) {
 				if ($this->secure_session) {
 					if (!Request::is_https() && $this->use_https) {
-						apine_internal_redirect(Request::get()['request'], APINE_PROTOCOL_HTTPS);
+						die(apine_internal_redirect(Request::get()['request'], APINE_PROTOCOL_HTTPS)->draw());
 					} else if (Request::is_https() && !$this->use_https) {
-						apine_internal_redirect(Request::get()['request'], APINE_PROTOCOL_HTTP);
+						die(apine_internal_redirect(Request::get()['request'], APINE_PROTOCOL_HTTP)->draw());
 					}
 				} else {
 					if (Request::is_https()) {
-						apine_internal_redirect(Request::get()['request'], APINE_PROTOCOL_HTTP);
+						die(apine_internal_redirect(Request::get()['request'], APINE_PROTOCOL_HTTP)->draw());
 					}
 				}
 			}

@@ -266,8 +266,11 @@ function apine_internal_redirect ($a_request, $a_protocol = APINE_PROTOCOL_DEFAU
 	if ($a_request == Request::get()['request']) {
 		$new_view->set_header_rule($protocol . ' 302 Moved Temporarily');
 	}
+
+	// Remove Trailing slash
+	$request = trim($a_request, '/');
 	
-	$new_view->set_header_rule('Location', URLHelper::path($a_request, $a_protocol));
+	$new_view->set_header_rule('Location: '. URLHelper::path($request, $a_protocol));
 	
 	return $new_view;
 	
