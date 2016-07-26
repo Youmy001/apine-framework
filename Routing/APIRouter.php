@@ -68,7 +68,7 @@ final class APIRouter implements RouterInterface {
 		$controller = $args[0];
 		
 		try {
-			$maj_controller = ucfirst($controller) . 'Controller';
+			$maj_controller = str_replace('_', '', ucwords($controller,"_")) . 'Controller';
 			$return = false;
 			
 			if (class_exists('Apine\\Controllers\\User\\' . $maj_controller) && in_array('Apine\\MVC\\APIActionsInterface', class_implements('Apine\\Controllers\\User\\' . $maj_controller))) {
