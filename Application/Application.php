@@ -271,9 +271,17 @@ final class Application {
 				die("Critical Error : Framework Installation Not Completed");
 			}
 			
+			if (!Request::is_api_call() && (!empty(Request::get()['request']) && Request::get()['request'] != '/')) {
+				$request = Request::get()['request'];
+			} else if (!Request::is_api_call()) {
+				$request = '/index';
+			} else {
+				$request = Request::get()['request'];
+			}
+			
 			// Verify is the protocol is allowed
 			if (Request::is_https() && !$this->use_https) {
-				apine_internal_redirect(Request::get()['request'], APINE_PROTOCOL_HTTP);
+				apine_internal_redirect($request, APINE_PROTOCOL_HTTP);
 			}
 			
 			if (is_null($this->config)) {
@@ -285,16 +293,18 @@ final class Application {
 			if (SessionManager::is_logged_in()) {
 				if ($this->secure_session) {
 					if (!Request::is_https() && $this->use_https) {
-						die(apine_internal_redirect(Request::get()['request'], APINE_PROTOCOL_HTTPS)->draw());
+						die(apine_internal_redirect($request, APINE_PROTOCOL_HTTPS)->draw());
 					} else if (Request::is_https() && !$this->use_https) {
-						die(apine_internal_redirect(Request::get()['request'], APINE_PROTOCOL_HTTP)->draw());
+						die(apine_internal_redirect($request, APINE_PROTOCOL_HTTP)->draw());
 					}
 				} else {
 					if (Request::is_https()) {
-						die(apine_internal_redirect(Request::get()['request'], APINE_PROTOCOL_HTTP)->draw());
+						die(apine_internal_redirect($request, APINE_PROTOCOL_HTTP)->draw());
 					}
 				}
 			}
+
+			unset($request);
 			
 			// Find a timezone for the user
 			// using geoip library and its local database
