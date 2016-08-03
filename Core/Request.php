@@ -282,7 +282,7 @@ final class Request {
 			}
 		}
 		
-		if (!empty(self::get_instance()->files())) {
+		if (!empty(self::get_instance()->files)) {
 			$params = array_merge($params, array("uploads" => self::get_instance()->files));
 		}
 		

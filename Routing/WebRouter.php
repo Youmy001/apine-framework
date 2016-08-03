@@ -9,6 +9,7 @@
 namespace Apine\Routing;
 
 use \Exception as Exception;
+use Apine\Application\Application as Application;
 use Apine\Core\Request as Request;
 use Apine\XML as XML;
 use Apine\Exception\GenericException as GenericException;
@@ -70,7 +71,8 @@ class WebRouter implements RouterInterface {
 		        				$replace = "/$controller/$action";
 		        				
 		        				if ($match_route->getAttribute('args') == true) {
-		        					$number_args = (!empty($match_route->getAttribute('argsnum'))) ? $match_route->getAttribute('argsnum') : preg_match_all("/(\(.*?\))/", $match);
+									$args_num = $match_route->getAttribute('argsnum');
+		        					$number_args = (!empty($args_num)) ? $args_num : preg_match_all("/(\(.*?\))/", $match);
 		        					
 		        					for ($i = 1; $i <= $number_args; $i++) {
 		        						$replace .= "/$" . $i;
@@ -235,7 +237,8 @@ class WebRouter implements RouterInterface {
 		}
 		
 		try {
-			$maj_controller = str_replace('_', '', ucwords($controller,"_")) . 'Controller';
+			$maj_controller = ucfirst($controller) . 'Controller';
+			
 			$return = false;
 			
 			if (class_exists('Apine\\Controllers\\User\\' . $maj_controller) && method_exists('Apine\\Controllers\\User\\' . $maj_controller, $action)) {

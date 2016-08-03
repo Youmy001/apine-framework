@@ -265,17 +265,17 @@ class Pagination {
 			print '<ul class="pager">';
 			
 			if ($this->cur_page == 1) {
-				print '<li class="previous disabled"><a href="">&larr; ' . PAGER_OLDER . '</a></li>';
+				print '<li class="previous disabled"><a href=""><span aria-hidden="true">&larr;</span> Older</a></li>';
 			} else {
 				print '<li class="previous"><a class=\"effect\" href="' . $this->base . $prev_page;
-				print '">&larr; ' . PAGER_OLDER . '</a></li>';
+				print '"><span aria-hidden="true">&larr;</span> Older</a></li>';
 			}
 			
 			if ($this->cur_page == $this->num_page) {
-				print '<li class="next disabled"><a href="">' . PAGER_NEWER . ' &rarr;</a></li>';
+				print '<li class="next disabled"><a href="">Newer <span aria-hidden="true">&rarr;</span></a></li>';
 			} else {
 				print '<li class="next"><a class="effect" href="' . $this->base . $next_page;
-				print '">' . PAGER_NEWER . ' &rarr;</a></li>';
+				print '">Newer <span aria-hidden="true">&rarr;</span></a></li>';
 			}
 			
 			print '</ul>';
