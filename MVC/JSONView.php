@@ -23,6 +23,13 @@ final class JSONView extends View {
 	 */
 	public function set_json_file($a_json) {
 
+		$options = 0;
+		$get = \Apine\Core\Request::get();
+
+		if (isset($get['json_pretty'])) {
+			$options |= JSON_PRETTY_PRINT;
+		}
+
 		if (is_string($a_json)) {
 			// Verify if valid json array
 			$result = json_decode($a_json);
@@ -34,10 +41,10 @@ final class JSONView extends View {
 				$return=null;
 			}
 		} else if (is_object($a_json)) {
-			$this->_json_file=json_encode($a_json);
+			$this->_json_file=json_encode($a_json, $options);
 			$return=$this->_json_file;
 		} else if (is_array($a_json)) {
-			$this->_json_file=json_encode($a_json);
+			$this->_json_file=json_encode($a_json, $options);
 			$return=$this->_json_file;
 		} else {
 			$return=null;
