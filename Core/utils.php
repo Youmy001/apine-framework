@@ -263,7 +263,7 @@ function apine_internal_redirect ($a_request, $a_protocol = APINE_PROTOCOL_DEFAU
 	$new_view = new RedirectionView();
 	$protocol = (isset(Request::server()['SERVER_PROTOCOL']) ? Request::server()['SERVER_PROTOCOL'] : 'HTTP/1.0');
 	
-	if ($a_request == Request::get()['request']) {
+	if (!empty(Request::get()['request']) && $a_request == Request::get()['request']) {
 		$new_view->set_header_rule($protocol . ' 302 Moved Temporarily');
 	}
 
