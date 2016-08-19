@@ -342,14 +342,18 @@ final class Database {
 			try {
 				$result->execute($input_parameters);
 				
-				while ($data = $result->fetch()) {
-					$arResult[] = $data;
+				if ($result->columnCount() == 0) {
+					$arResult = (bool) $result->rowCount();
+				} else {
+					while ($data = $result->fetch()) {
+						$arResult[] = $data;
+					}
 				}
 				
 				$result->closeCursor();
 				return $arResult;
 			} catch (\PDOException $e) {
-				throw new \Apine\Exception\DatabaseException($e->getMessage(), $e->getCode(), $e);
+				throw new \Apine\Exception\DatabaseException($e->getMessage(), 500, $e);
 			}
 		}else{
 			throw new \Apine\Exception\DatabaseException('Trying to fetch on non-existent PDO Statement.', 500);
