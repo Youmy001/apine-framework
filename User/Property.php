@@ -1,21 +1,47 @@
 <?php
-
+/**
+ * This file contains the user property class
+ *
+ * @license MIT
+ * @copyright 2016 Tommy Teasdale
+ */
 namespace Apine\User;
 
 use Apine\Entity as Entity;
 
+/**
+ * Implementation of the database representation of user properties
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\User
+ */
 final class Property extends Entity\EntityModel {
-	
+
+    /**
+     * @var integer
+     */
 	private $id;
-	
+
+    /**
+     * @var User
+     */
 	private $user;
-	
+
+    /**
+     * @var string
+     */
 	private $name;
-	
-	private $type;
-	
+
+    /**
+     * @var mixed
+     */
 	private $value;
-	
+
+    /**
+     * Property constructor.
+     *
+     * @param integer $a_id
+     */
 	public function __construct($a_id = null) {
 		
 		$this->_initialize('apine_user_properties', $a_id);
@@ -73,8 +99,8 @@ final class Property extends Entity\EntityModel {
 	/**
 	 * Set the token user
 	 *
-	 * @param <User|integer> $a_user
-	 * @return <User|integer>
+	 * @param User|integer $a_user
+	 * @return User
 	 */
 	public function set_user ($a_user) {
 	
@@ -87,14 +113,19 @@ final class Property extends Entity\EntityModel {
 		} else if (is_a($a_user, 'Apine\User\User')) {
 			$this->user = $a_user;
 		} else {
-			return false;
+			return null;
 		}
 	
 		$this->_set_field('user_id', $this->user->get_id());
 		return $this->user;
 	
 	}
-	
+
+    /**
+     * Fetch the property name
+     *
+     * @return string
+     */
 	public function get_name () {
 		
 		if ($this->loaded == 0) {
@@ -104,7 +135,12 @@ final class Property extends Entity\EntityModel {
 		return $this->name;
 		
 	}
-	
+
+    /**
+     * Set the name of the property
+     *
+     * @param string $a_name
+     */
 	public function set_name ($a_name) {
 		
 		if ($this->loaded == 0) {
@@ -115,7 +151,12 @@ final class Property extends Entity\EntityModel {
 		$this->_set_field('name', $a_name);
 		
 	}
-	
+
+    /**
+     * Fetch the value of the property
+     *
+     * @return mixed
+     */
 	public function get_value () {
 		
 		if ($this->loaded == 0) {
@@ -125,7 +166,12 @@ final class Property extends Entity\EntityModel {
 		return $this->value;
 		
 	}
-	
+
+    /**
+     * Set the value of the property
+     *
+     * @param mixed $a_value
+     */
 	public function set_value ($a_value) {
 		
 		if ($this->loaded == 0) {
@@ -143,7 +189,10 @@ final class Property extends Entity\EntityModel {
 		}
 		
 	}
-	
+
+    /**
+     * @see Entity\EntityInterface::load()
+     */
 	public function load () {
 		
 		if (!is_null($this->id)) {
@@ -158,14 +207,20 @@ final class Property extends Entity\EntityModel {
 		}
 		
 	}
-	
+
+    /**
+     * @see Entity\EntityInterface::save()
+     */
 	public function save () {
 		
 		parent::_save();
 		$this->set_id($this->_get_id());
 		
 	}
-	
+
+    /**
+     * @see Entity\EntityInterface::delete()
+     */
 	public function delete () {
 		
 		parent::_destroy();

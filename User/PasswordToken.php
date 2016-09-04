@@ -27,9 +27,9 @@ class PasswordToken extends Apine\Entity\EntityModel {
 	/**
 	 * Token user
 	 *
-	 * @var ApineUser
+	 * @var User
 	 */
-	private $user_id;
+	private $user;
 	
 	/**
 	 * Token string
@@ -46,7 +46,7 @@ class PasswordToken extends Apine\Entity\EntityModel {
 	private $creation_date;
 	
 	/**
-	 * ApinePasswordToken class' constructor
+	 * PasswordToken class' constructor
 	 *
 	 * @param integer $a_id
 	 *        Token identifier
@@ -80,6 +80,7 @@ class PasswordToken extends Apine\Entity\EntityModel {
 	 * 
 	 * @param integer $a_id
 	 *        Token's identifier
+     * @return integer
 	 */
 	public function set_id ($a_id) {
 	
@@ -173,7 +174,7 @@ class PasswordToken extends Apine\Entity\EntityModel {
 	/**
 	 * Fetch the token user
 	 *
-	 * @return ApineUser
+	 * @return User
 	 */
 	public function get_user () {
 	
@@ -188,8 +189,8 @@ class PasswordToken extends Apine\Entity\EntityModel {
 	/**
 	 * Set the token user
 	 *
-	 * @param <ApineUser|integer> $a_user
-	 * @return ApineUser
+	 * @param <User|integer> $a_user
+	 * @return User
 	 */
 	public function set_user ($a_user) {
 	
@@ -202,7 +203,7 @@ class PasswordToken extends Apine\Entity\EntityModel {
 		} else if (is_integer($a_user) && Factory\UserFactory::is_id_exist($a_user)){
 			$this->user = Factory\UserFactory::create_by_id($a_user);
 		} else {
-			return false;
+			return null;
 		}
 	
 		$this->_set_field('user_id', $this->user->get_id());

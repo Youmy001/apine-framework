@@ -1,13 +1,19 @@
 <?php
+/**
+ * HTML View Abstraction for installation
+ *
+ * @license MIT
+ * @copyright 2016 Tommy Teasdale
+ */
 namespace Apine\MVC;
 
 use Apine\Application as Application;
-use Apine\Exception\GenericException;
 
 /**
- * HTML View
+ * Install View
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\MVC
  */
 final class InstallView extends View {
 	
@@ -33,19 +39,6 @@ final class InstallView extends View {
 	private $_title;
 	
 	/**
-	 * List of custom meta tags
-	 * @var array $_metatags
-	 */
-	private $_metatags;
-	
-	/**
-	 * List of stylesheets to include
-	 *
-	 * @var array
-	 */
-	private $_styles;
-	
-	/**
 	 * List of scripts to include
 	 *
 	 * @var array
@@ -60,7 +53,10 @@ final class InstallView extends View {
 	private $content;
 	
 	private $data;
-	
+
+    /**
+     * @var Rule[]
+     */
 	private $rules;
 	
 	private $stack;
@@ -277,6 +273,9 @@ final class InstallView extends View {
 
 /**
  * A Rule can be applied to a template to process its content in different ways.
+ *
+ * @author François Allard <allard.f@kitaiweb.ca>
+ * @package Apine\MVC
  */
 class Rule {
 

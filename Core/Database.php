@@ -8,12 +8,19 @@
  */
 namespace Apine\Core;
 
+use Apine\Application\Application;
+use Apine\Exception\DatabaseException;
+use Apine\Exception\GenericException;
+
 /**
  * Database Access Tools
  *
  * Binding for PDO classes. Support select, insert, update and delete
  * statements, execute queries, prepared queries, transactions
- * and singleton.     
+ * and singleton.
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Core
  */
 final class Database {
 
@@ -48,8 +55,14 @@ final class Database {
 
 	/**
 	 * Database class' constructor
-	 * 
-	 * @throws ApineDatabaseException If cannot connect to database server
+	 *
+     * @param string $db_type
+     * @param string $db_host
+     * @param string $db_name
+     * @param string $db_user
+     * @param string $db_password
+     * @param string $db_charset
+	 * @throws DatabaseException If cannot connect to database server
 	 */
 	public function __construct ($db_type = null, $db_host = null, $db_name = null, $db_user = 'root', $db_password = '', $db_charset = 'utf8') {
 
@@ -61,12 +74,12 @@ final class Database {
 			} else { 
 				if (!isset(self::$apine_instance)) {
 					try {
-						$config = \Apine\Application\Application::get_instance()->get_config();
+						$config = Application::get_instance()->get_config();
 						self::$apine_instance = new \PDO($config->get('database', 'type').':host='.$config->get('database', 'host').';dbname='.$config->get('database', 'dbname').';charset='.$config->get('database', 'charset'), $config->get('database', 'username'), $config->get('database', 'password'));
 						self::$apine_instance->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 						self::$apine_instance->exec('SET time_zone = "+00:00";');
 					} catch (\PDOException $e) {
-						throw new \Apine\Exception\DatabaseException($e->getMessage(), $e->getCode(), $e);
+						throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
 					}
 				}
 			}
@@ -75,7 +88,7 @@ final class Database {
 				$this->instance = &self::$apine_instance;
 			}
 		} catch (\PDOException $e) {
-			throw new \Apine\Exception\DatabaseException($e->getMessage(), $e->getCode(), $e);
+			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
 	
 	}
@@ -86,8 +99,8 @@ final class Database {
 	 * 
 	 * @param string $query
 	 *        Query of a SELECT type to execute
-	 * @throws ApineDatabaseException If unable to execute query
-	 * @return multitype:mixed Matching rows
+	 * @throws DatabaseException If unable to execute query
+	 * @return array Matching rows
 	 */
 	public function select ($query) {
 
@@ -105,7 +118,7 @@ final class Database {
 			
 			return $arResult;
 		} catch (\PDOException $e) {
-			throw new \Apine\Exception\DatabaseException($e->getMessage(), $e->getCode(), $e);
+			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
 	
 	}
@@ -114,17 +127,17 @@ final class Database {
 	 * Insert a new table row into the database through the PDO
 	 * handler
 	 * 
-	 * @param string $tableName
+	 * @param string $table_name
 	 *        Name of the table in which insert the row
-	 * @param string[] $arValues
+	 * @param string[] $ar_values
 	 *        Field names and values to include in the row
-	 * @throws ApineDatabaseException If cannot execute insertion query
+	 * @throws \Apine\Exception\DatabaseException If cannot execute insertion query
 	 * @return string Id of the newly inserted row
 	 */
-	public function insert ($tableName, $arValues) {
+	public function insert ($table_name, $ar_values) {
 		
-		$fields = array_keys($arValues);
-		$values = array_values($arValues);
+		$fields = array_keys($ar_values);
+		$values = array_values($ar_values);
 		$new_values = array();
 		
 		// Quote string values
@@ -146,7 +159,7 @@ final class Database {
 		}
 		
 		// Create query
-		$query = "INSERT into $tableName (";
+		$query = "INSERT into $table_name (";
 		$query .= join(',', $fields);
 		$query .= ') values (';
 		$query .= join(',', $new_values) . ')';
@@ -161,7 +174,7 @@ final class Database {
 			
 			return $this->last_insert_id();
 		} catch (\PDOException $e) {
-			throw new \Apine\Exception\DatabaseException($e->getMessage(), $e->getCode(), $e);
+			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
 	
 	}
@@ -170,22 +183,23 @@ final class Database {
 	 * Update one or many table rows from the database through the PDO
 	 * handler
 	 * 
-	 * @param string $tableName
+	 * @param string $table_name
 	 *        Name of the table in which modify rows
-	 * @param string[] $arValues
+	 * @param string[] $ar_values
 	 *        Field names and values to modify on rows
-	 * @param string[] $arConditions
+	 * @param string[] $ar_conditions
 	 *        Field names and values to match desired rows - Used to
 	 *        define the "WHERE" SQL statement
-	 * @throws ApineDatabaseException If cannot execute update query
+	 * @throws DatabaseException If cannot execute update query
+     * @throws GenericException
 	 */
-	public function update ($tableName, $arValues, $arConditions) {
+	public function update ($table_name, $ar_values, $ar_conditions) {
 		
 		$new_values = array();
-		$arWhere = array();
+		$ar_where = array();
 		
 		// Quote string values
-		foreach ($arValues as $field=>$val) {
+		foreach ($ar_values as $field=>$val) {
 			
 			if (is_string($val)) {
 				$val = $this->quote($val);
@@ -203,30 +217,30 @@ final class Database {
 		}
 		
 		// Quote Conditions values
-		foreach ($arConditions as $field=>$val) {
+		foreach ($ar_conditions as $field=>$val) {
 			
 			if (is_string($val) && !is_numeric($val)) {
 				$val = $this->quote($val);
 			}
 			
-			$arWhere[] = "$field = $val";
+			$ar_where[] = "$field = $val";
 		}
 		
 		// Create query
-		$query = "UPDATE $tableName SET ";
+		$query = "UPDATE $table_name SET ";
 		$query .= join(' , ', $new_values);
-		$query .= ' WHERE ' . join(' AND ', $arWhere);
+		$query .= ' WHERE ' . join(' AND ', $ar_where);
 		
 		//print $query;
 		try {
 			
-			if (count($arValues) > 0) {
+			if (count($ar_values) > 0) {
 				$this->instance->exec($query);
 			} else {
-				throw new \Apine\Exception\GenericException('Missing Values', 500);
+				throw new GenericException('Missing Values', 500);
 			}
 		} catch (\PDOException $e) {
-			throw new \Apine\Exception\DatabaseException($e->getMessage(), $e->getCode(), $e);
+			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
 	
 	}
@@ -235,30 +249,30 @@ final class Database {
 	 * Delete one or many table rows from the database through the PDO
 	 * handler
 	 * 
-	 * @param string $tableName
+	 * @param string $table_name
 	 *        Name of the table in which delete rows
-	 * @param string[] $arCondition
+	 * @param string[] $ar_conditions
 	 *        Field names and values to match desired rows - Used to
 	 *        define the "WHERE" SQL statement
-	 * @throws ApineDatabaseException If cannot execute delete query
+	 * @throws \Apine\Exception\DatabaseException If cannot execute delete query
 	 * @return boolean
 	 */
-	public function delete ($tableName, $arCondition) {
+	public function delete ($table_name, $ar_conditions) {
 		
-		$arWhere = array();
+		$ar_where = array();
 		
 		// Quote Conditions values
-		foreach($arCondition as $field=>$val){
+		foreach($ar_conditions as $field=>$val){
 			
 			if (is_string($val)) {
 				$val = $this->quote($val);
 			}
 			
-			$arWhere[] = "$field = $val";
+			$ar_where[] = "$field = $val";
 		}
 		
 		// Create query
-		$query = "DELETE FROM $tableName WHERE " . join(' AND ', $arWhere);
+		$query = "DELETE FROM $table_name WHERE " . join(' AND ', $ar_where);
 		
 		try {
 			$success = $this->instance->exec($query);
@@ -269,7 +283,7 @@ final class Database {
 			
 			return true;
 		} catch (\PDOException $e) {
-			throw new \Apine\Exception\DatabaseException($e->getMessage(), $e->getCode(), $e);
+			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
 	
 	}
@@ -280,7 +294,7 @@ final class Database {
 	 * 
 	 * @param string $query
 	 *        Query of any type to execute
-	 * @throws ApineDatabaseException If cannot execute the query
+	 * @throws DatabaseException If cannot execute the query
 	 * @return integer
 	 */
 	public function exec ($query) {
@@ -289,7 +303,7 @@ final class Database {
 			$result = $this->instance->exec($query);
 			return $result;
 		} catch (\PDOException $e) {
-			throw new \Apine\Exception\DatabaseException($e->getMessage(), $e->getCode(), $e);
+			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
 		}
 	
 	}
@@ -300,8 +314,7 @@ final class Database {
 	 * @param string $statement
 	 *        MySQL query statement
 	 * @param array $driver_options
-	 *        Attributes as defined on <a
-	 *        href="http://php.net/manual/en/pdo.prepare.php">http://php.net/manual/en/pdo.prepare.php</a>
+	 *        Attributes as defined on http://php.net/manual/en/pdo.prepare.php
 	 * @return integer
 	 */
 	public function prepare ($statement, $driver_options = array()) {
@@ -321,8 +334,8 @@ final class Database {
 	 *        Values to replace markers in statement
 	 * @param integer $index
 	 *        Id of the statement to execute
-	 * @throws ApineDatabaseException If cannot execute statement
-	 * @return multitype:mixed
+	 * @throws \Apine\Exception\DatabaseException If cannot execute statement
+	 * @return mixed
 	 */
 	public function execute ($input_parameters = array(), $index = null) {
 		
@@ -340,6 +353,10 @@ final class Database {
 			}
 			
 			try {
+			    if (!isset($result)) {
+			        throw new DatabaseException('Non-existent PDO Statement', 500);
+                }
+
 				$result->execute($input_parameters);
 				
 				if ($result->columnCount() == 0) {
@@ -353,10 +370,10 @@ final class Database {
 				$result->closeCursor();
 				return $arResult;
 			} catch (\PDOException $e) {
-				throw new \Apine\Exception\DatabaseException($e->getMessage(), 500, $e);
+				throw new DatabaseException($e->getMessage(), 500, $e);
 			}
 		}else{
-			throw new \Apine\Exception\DatabaseException('Trying to fetch on non-existent PDO Statement.', 500);
+			throw new DatabaseException('Trying to fetch on non-existent PDO Statement.', 500);
 		}
 	
 	}
@@ -375,9 +392,9 @@ final class Database {
 			$index = key($this->Execute);
 		}
 		
-		if (array_key_exists($index, $this->Execute) == true) {
+		/*if (array_key_exists($index, $this->Execute) == true) {
 			$result = $this->Execute[$index];
-		}
+		}*/
 		
 		if (count($this->Execute) > 0) {
 			unset($this->Execute[$index]);
@@ -400,7 +417,7 @@ final class Database {
 	 */
 	public function last_insert_id ($name = null) {
 
-		return $this->instance->lastInsertID($name);
+		return $this->instance->lastInsertId($name);
 	
 	}
 

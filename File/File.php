@@ -14,6 +14,9 @@ use Apine\Exception\GenericException;
 /**
  * File Resource Handler
  * Manager wrapping PHP file method in an easy Object Oriented way
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\File
  */
 class File {
 
@@ -64,6 +67,8 @@ class File {
 	 * Extract the file located at the provided location
 	 *
 	 * @param string $a_path
+     * @param boolean $a_readonly
+     * @param boolean $a_new
 	 * @throws Exception
 	 */
 	public function __construct ($a_path, $a_readonly = false, $a_new = false) {
@@ -112,7 +117,7 @@ class File {
 	 * Create a new empty file
 	 * 
 	 * @param string $a_path
-	 * @return ApineFile
+	 * @return File
 	 */
 	public static function create ($a_path) {
 		
@@ -159,7 +164,9 @@ class File {
 	 * @return string
 	 */
 	final public function type () {
-	
+
+	    $mime = '';
+
 		if (class_exists('finfo')) {
 			$finfo = finfo_open(FILEINFO_MIME_TYPE);
 			$mime = finfo_file($finfo, $this->path); 
@@ -245,7 +252,7 @@ class File {
 	 * Add content to the file
 	 * 
 	 * @param string $a_content
-	 * @param string $a_append
+	 * @param boolean $a_append
 	 */
 	public function write ($a_content, $a_append = true) {
 
@@ -303,6 +310,8 @@ class File {
 			return $success;
 		}
 
+		return false;
+
 	}
 
 	/**
@@ -329,7 +338,7 @@ class File {
 	 * Copy the file to another location
 	 * 
 	 * @param string $a_copy_path
-	 * @throws ApineException
+	 * @throws GenericException
 	 * @return boolean
 	 */
 	final public function copy ($a_copy_path) {
@@ -374,7 +383,7 @@ class File {
 	 * Rename the file
 	 * 
 	 * @param string $a_file_name
-	 * @throws ApineException
+	 * @throws GenericException
 	 * @return boolean
 	 */
 	final public function rename ($a_file_name) {
@@ -389,7 +398,7 @@ class File {
 			
 			$success = rename($this->path, $path);
 			
-			$this->name = $file_name;
+			$this->name = $a_file_name;
 			$this->path = $path;
 				
 			fclose($this->file);

@@ -1,10 +1,20 @@
 <?php
+/**
+ * JSON View Abstraction
+ *
+ * @license MIT
+ * @copyright 2016 Tommy Teasdale
+ */
 namespace Apine\MVC;
+
+use Apine\Core\Request;
 
 /**
  * JSON View
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @author François Allard <allard.f@kitaiweb.ca>
+ * @package Apine\MVC
  */
 final class JSONView extends View {
 
@@ -24,7 +34,7 @@ final class JSONView extends View {
 	public function set_json_file($a_json) {
 
 		$options = 0;
-		$get = \Apine\Core\Request::get();
+		$get = Request::get();
 
 		if (isset($get['json_pretty'])) {
 			$options |= JSON_PRETTY_PRINT;
@@ -32,7 +42,8 @@ final class JSONView extends View {
 
 		if (is_string($a_json)) {
 			// Verify if valid json array
-			$result = json_decode($a_json);
+			//$result = json_decode($a_json);
+            json_decode($a_json);
 				
 			if (json_last_error() === JSON_ERROR_NONE) {
 				$this->_json_file=$a_json;

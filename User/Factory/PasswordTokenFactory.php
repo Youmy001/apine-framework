@@ -9,12 +9,18 @@ namespace Apine\User\Factory;
 
 use Apine;
 
+/**
+ * Class PasswordTokenFactory
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\User\Factory
+ */
 class PasswordTokenFactory implements Apine\Entity\EntityFactoryInterface {
 	
 	/**
 	 * Verify if the identifier exists
 	 * 
-	 * @param integer $user_id
+	 * @param integer $a_user_id
 	 * @return boolean
 	 */
 	public static function is_id_exist ($a_user_id) {

@@ -9,17 +9,17 @@
 namespace Apine\Routing;
 
 use \Exception as Exception;
-use Apine\Application\Application as Application;
 use Apine\Core\Request as Request;
 use Apine\XML as XML;
-use Apine\Exception\GenericException as GenericException;
+use Apine\Exception\GenericException;
 use Apine\MVC\View;
 
 /**
  * Web App Request Router
  * Route requests toward the best matching controller. This is part of the MVC architecture
  * 
- * @author Tommy Teasdale
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Routing
  */
 class WebRouter implements RouterInterface {
 	
@@ -40,18 +40,16 @@ class WebRouter implements RouterInterface {
 	
 	/**
 	 * Find matching route in XML route configuration and return modified request string 
-	 * 
+	 *
+     * @param string $request
 	 * @return mixed
+     * @deprecated
 	 */
 	final private function xml_route ($request) {
 		
 		$xml_routes = new XML\Parser();
 		$xml_routes->load_from_file($this->routes_file);
-		$route_found = false;
-		
 		$routes = $xml_routes->getElementsByAttributeValue('method', Request::get_request_type());
-		
-		$str_routes = "";
 		$found_route = null;
 		
 		foreach ($routes as $item) {
@@ -104,6 +102,7 @@ class WebRouter implements RouterInterface {
 	 * 
 	 * @param string $request
 	 * @return mixed
+     * @throws GenericException
 	 */
 	final private function json_route ($request) {
 		
@@ -188,6 +187,7 @@ class WebRouter implements RouterInterface {
 			$action = "index";
 		} else {
 			$controller = null;
+            $action = null;
 		}
 		
 		// Add post arguments to args array
@@ -219,6 +219,7 @@ class WebRouter implements RouterInterface {
 	 *  
 	 * @param string $a_route
 	 * @return boolean
+     * @throws GenericException
 	 */
 	private function check_route ($a_route) {
 		
@@ -267,6 +268,7 @@ class WebRouter implements RouterInterface {
 	/**
 	 * 
 	 * @return View
+     * @throws GenericException
 	 * {@inheritDoc}
 	 * @see ApineRouterInterface::execute()
 	 */

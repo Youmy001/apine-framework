@@ -18,6 +18,7 @@ use Apine\Application\Application as Application;
  * Write URL from server's informations
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\MVC
  */
 final class URLHelper {
 	
@@ -25,7 +26,7 @@ final class URLHelper {
 	 * Instance of the URL Writer
 	 * Singleton Implementation
 	 *
-	 * @var ApineURLHelper
+	 * @var URLHelper
 	 */
 	private static $_instance;
 	
@@ -93,7 +94,7 @@ final class URLHelper {
 	 * Singleton design pattern implementation
 	 *
 	 * @static
-	 * @return ApineURLHelper
+	 * @return URLHelper
 	 */
 	public static function get_instance() {
 		
@@ -216,7 +217,8 @@ final class URLHelper {
 	
 	/**
 	 * Get current current http path
-	 * 
+	 *
+     * @param integer $protocol
 	 * @return string
 	 */
 	public static function get_current_path($protocol = APINE_PROTOCOL_DEFAULT) {

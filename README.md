@@ -97,4 +97,4 @@ Get support at the following links :
 
 ## License
 
-The APIne Framework is licensed under the MIT license. See the [LICENSE file](https://github.com/Youmy001/apine-framework/blob/master/LICENSE) for more information.
+The APIne Framework is distributed under the MIT license. See the [LICENSE file](https://github.com/Youmy001/apine-framework/blob/master/LICENSE) for more information.

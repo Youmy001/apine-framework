@@ -12,6 +12,9 @@ namespace Apine\Core;
  * Request Management Tool
  * 
  * Handle information from the request and user inputs
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Core
  */
 final class Request {
 	
@@ -19,7 +22,7 @@ final class Request {
 	 * Instance of the Request
 	 * Singleton Implementation
 	 * 
-	 * @var ApineRequest
+	 * @var Request
 	 */
 	private static $_instance;
 	

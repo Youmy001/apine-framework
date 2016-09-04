@@ -16,7 +16,8 @@ use Apine\Exception\GenericException as GenericException;
  * API Request Router
  * Route requests toward the best matching controller. This is part of the MVC architecture
  *
- * @author Tommy Teasdale
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Routing
  */
 final class APIRouter implements RouterInterface {
 	
@@ -37,8 +38,6 @@ final class APIRouter implements RouterInterface {
 			// Add post arguments to args array
 			$args = array_merge($args, Request::get_request_params());
 			
-			$maj_controller = ucfirst($controller) . 'Controller';
-			
 			if (self::check_route($request)) {
 				$route = new Route($controller, strtolower(Request::get_request_type()), $args);
 			}
@@ -58,8 +57,9 @@ final class APIRouter implements RouterInterface {
 	/**
 	 * Verifies if the request string matches an existing controller
 	 *  
-	 * @param string $a_route
+	 * @param string $route
 	 * @return boolean
+     * @throws GenericException
 	 */
 	private function check_route ($route) {
 		

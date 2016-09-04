@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Installation Controller
+ *
+ * @license MIT
+ * @copyright 2016 Tommy Teasdale
+ */
 namespace Apine\Controllers\System;
 
 use Apine\Core as Core;
@@ -12,17 +17,72 @@ use Apine\Application\Application;
 use Apine\MVC\Controller;
 use Apine\MVC\InstallView;
 use Apine\MVC\HTMLView;
+use \Exception;
 
+/**
+ * Class InstallController
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.comm>
+ * @package Apine\Controllers\System
+ */
 class InstallController extends MVC\Controller {
-	
+
+    /**
+     * Location of the framework in Composer
+     */
 	const COMPOSER_LOCATION = '/vendor/youmy001/apine-framework';
-	
+
+    /**
+     * @var string Parent directory
+     */
 	private $parent;
-	
+
+    /**
+     * @var string Name of the parent directory
+     */
 	private $parent_name;
-	
+
+    /**
+     * @var string Project directory
+     */
 	private $project;
-	
+
+    /**
+     * @var array Locales available
+     */
+    private $locales = array(
+        'ar_AE' => array('code'=> 'ar_AE', 'name' => 'العربية (الإمارات العربية المتحدة)'),
+        'ar_EG' => array('code'=> 'ar_EG', 'name' => 'العربية (مصر)'),
+        'ar_IQ' => array('code'=> 'ar_IQ', 'name' => 'العربية (العراق)'),
+        'ar_MA' => array('code'=> 'ar_MA', 'name' => 'العربية (المغرب)'),
+        'de_DE' => array('code'=> 'de_DE', 'name' => 'Deutsche (Deutschland)'),
+        'de_AT' => array('code'=> 'de_AT', 'name' => 'Deutsche (Österreich)'),
+        'el_EL' => array('code'=> 'el_EL', 'name' => 'Ελληνικά'),
+        'en_US' => array('code'=> 'en_US', 'name' => 'English (US)'),
+        'en_GB' => array('code'=> 'en_GB', 'name' => 'English (UK)'),
+        'es_ES' => array('code'=> 'es_ES', 'name' => 'Español'),
+        'fi_FI' => array('code'=> 'fi_FI', 'name' => 'Suomi'),
+        'fr_FR' => array('code'=> 'fr_FR', 'name' => 'Français (France)'),
+        'fr_CA' => array('code'=> 'fr_CA', 'name' => 'Français (Canada)'),
+        'he_IL' => array('code'=> 'he_IL', 'name' => 'עִברִית'),
+        'it_IT' => array('code'=> 'it_IT', 'name' => 'Italiano'),
+        'nl_NL' => array('code'=> 'nl_NL', 'name' => 'Nederlands'),
+        'pt_BR' => array('code'=> 'pt_BR', 'name' => 'Português (Brasil)'),
+        'pt_PT' => array('code'=> 'pt_PT', 'name' => 'Português (Portugal)'),
+        'ru_RU' => array('code'=> 'ru_RU', 'name' => 'Русский'),
+        'th_TH' => array('code'=> 'th_TH', 'name' => 'ภาษาไทย'),
+        'vi_VN' => array('code'=> 'vi_VN', 'name' => 'Tiếng Việt'),
+        'cy_GB' => array('code'=> 'cy_GB', 'name' => 'Cymraeg'),
+        'kr_KR' => array('code'=> 'kr_KR', 'name' => '한국'),
+        'ja_JP' => array('code'=> 'ja_JP', 'name' => '日本語'),
+        'zh_CN' => array('code'=> 'zh_CN', 'name' => '中文 (简体)'),
+        'zh_TW' => array('code'=> 'zh_TW', 'name' => '中文 (繁体)')
+
+    );
+
+    /**
+     * InstallController constructor.
+     */
 	public function __construct() {
 		
 		parent::__construct();
@@ -39,7 +99,8 @@ class InstallController extends MVC\Controller {
 	}
 
 	/**
-	 *
+	 * Default Action
+     *
 	 * @return MVC\HTMLView
 	 */
 	public function index () {
@@ -64,6 +125,7 @@ class InstallController extends MVC\Controller {
 		
 		if (Core\Request::is_get()) {
 			$zones = timezone_identifiers_list();
+            $locations = array();
 			
 			foreach ($zones as $zone) {
 				$zone = explode('/', $zone); // 0 => Continent, 1 => City
@@ -81,7 +143,7 @@ class InstallController extends MVC\Controller {
 				}
 			}
 			
-			include $this->parent . '/Installation/locales.php';
+			//include $this->parent . '/Installation/locales.php';
 			
 			if (!class_exists('\TinyTemplate\Engine')) {
 				$this->_view = new InstallView("Install APIne Framework", $this->parent . '/Views/install_view.html', $this->parent . '/Views/install_layout.html');
@@ -92,13 +154,19 @@ class InstallController extends MVC\Controller {
 				$this->_view->set_view($this->parent . '/Views/install_view');
 			}
 			$this->_view->set_param('timezones', $locations);
-			$this->_view->set_param('locales', $locales);
+			$this->_view->set_param('locales', $this->locales);
 		}
 		
 		return $this->_view;
 	
 	}
 
+    /**
+     * Move basic assets
+     *
+     * @param bool $structure Move assets for project structure
+     * @throws GenericException
+     */
 	private function move_files ($structure = true) {
 
 		try {
@@ -224,6 +292,11 @@ class InstallController extends MVC\Controller {
 	
 	}
 
+    /**
+     * Apply new configuration
+     *
+     * @param $params
+     */
 	public function apply_new_config ($params) {
 
 		try {
@@ -252,6 +325,12 @@ class InstallController extends MVC\Controller {
 	
 	}
 
+    /**
+     * Test Database Connection
+     *
+     * @param array $params
+     * @throws GenericException
+     */
 	public function test_database ($params) {
 
 		try {
@@ -268,6 +347,12 @@ class InstallController extends MVC\Controller {
 	
 	}
 
+    /**
+     * Generate the default configuration file from template and user inputs
+     *
+     * @param $entries
+     * @throws GenericException
+     */
 	private function generate_config ($entries) {
 
 		try {
@@ -293,12 +378,20 @@ class InstallController extends MVC\Controller {
 	
 	}
 
+    /**
+     * Generate default locale
+     *
+     * @param string $locale_code
+     * @param string $app_name
+     * @param string $app_author
+     * @param string $app_description
+     * @throws GenericException
+     */
 	private function generate_locale ($locale_code, $app_name, $app_author, $app_description) {
 
 		try {
-			include $this->parent . '/Installation/locales.php';
 			
-			$locale_name = $locales[$locale_code]['name'];
+			$locale_name = $this->locales[$locale_code]['name'];
 			$locale_code_short = substr($locale_code, 0, 2);
 			
 			$json_array = array();
@@ -337,6 +430,13 @@ class InstallController extends MVC\Controller {
 	
 	}
 
+    /**
+     * Import APIne's table in the database
+     *
+     * @param array $entries
+     * @throws Exception
+     * @throws GenericException
+     */
 	private function import_database ($entries) {
 
 		try {
@@ -353,6 +453,11 @@ class InstallController extends MVC\Controller {
 	
 	}
 
+    /**
+     * Write the default routes file
+     *
+     * @throws GenericException
+     */
 	private function import_routes () {
 
 		try {
@@ -389,3 +494,5 @@ class InstallController extends MVC\Controller {
 	}
 
 }
+
+

@@ -15,7 +15,8 @@ use Apine\Core\Database;
  * design patern.
  * 
  * @abstract
- *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Entity
  */
 abstract class EntityModel implements EntityInterface {
 
@@ -107,8 +108,6 @@ abstract class EntityModel implements EntityInterface {
 			foreach ($this->modified_fields as $key => $values) {
 				$this->modified_fields[$key] = false;
 			}
-			
-			$modified = 0;
 		}
 
 	}
@@ -231,6 +230,8 @@ abstract class EntityModel implements EntityInterface {
 	 *        Entity Table name
 	 * @param string $tuple_id
 	 *        Entity identifier
+     * @param string $field_name
+     *        Name of the primary key column
 	 */
 	final protected function _initialize ($table_name, $tuple_id = null, $field_name = "id") {
 

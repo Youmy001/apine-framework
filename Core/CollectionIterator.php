@@ -8,12 +8,18 @@
  */
 namespace Apine\Core;
 
+/**
+ * Class CollectionIterator
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Core
+ */
 final class CollectionIterator implements \Iterator {
 
 	/**
 	 * Instance of the collection
 	 * 
-	 * @var Liste
+	 * @var Collection
 	 */
 	private $_collection;
 
@@ -34,7 +40,7 @@ final class CollectionIterator implements \Iterator {
 	/**
 	 * Iterator's constructor
 	 * 
-	 * @param Liste $a_liste
+	 * @param Collection $a_collection
 	 *        Instance of the collection
 	 */
 	public function __construct (Collection $a_collection) {

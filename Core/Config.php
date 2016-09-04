@@ -8,10 +8,15 @@
  */
 namespace Apine\Core;
 
+use Apine\Exception\GenericException;
+
 /**
  * Configuration Reader
  * 
  * Read and write project's configuration file
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Core
  */
 final class Config {
 	
@@ -33,7 +38,10 @@ final class Config {
 	/**
 	 * Construct the Conguration Reader handler
 	 * 
-	 * Extract string from the configuration file 
+	 * Extract string from the configuration file
+     *
+     * @param string $a_path
+     * @throws GenericException If file not found
 	 */
 	public function __construct ($a_path = 'config.ini') {
 		
@@ -41,7 +49,7 @@ final class Config {
 			$this->path = $a_path;
 			$this->settings = parse_ini_file($a_path, true);
 		} else {
-			throw new \Apine\Exception\GenericException("Config file not found.", 500);
+			throw new GenericException("Config file not found.", 500);
 		}
 		
 	}

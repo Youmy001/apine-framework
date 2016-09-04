@@ -1,40 +1,51 @@
 <?php
+/**
+ * XML Document
+ * This script contains the XML master class
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 namespace Apine\XML;
 
 use \DOMDocument;
+use \Exception;
 
-/*
-/ Projet Marie-Delice 
-/ Classe modèle de XML pour l'application Web
-/ License : 
-/ Auteurs: Marc-André Douville Auger, Véronique Blais, Tommy Teasdale
-*/
-/*************************************************
- * Classe XML
- * ---------------
- * Encapsulation de la classe DOM_Document
+/**
+ * Class XML
  *
- * Cette classe permet de créer, charger, générer
- * et sauvegarder des documents XML. 
- *************************************************/
+ * Representation of a XML-ish document
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\XML
+ * @deprecated
+ */
 class XML {
-	
-    private $xml_file;    // Chemin du fichier
+
+    /**
+     * Path of the XML file
+     *
+     * @var string
+     */
+    private $xml_file;
+
+    /**
+     * Instance of the DOM
+     *
+     * @var DOMDocument
+     */
+    protected $DOM_document;
+
+    /**
+     * Is the file HTML
+     *
+     * @var bool
+     */
+    private $html;
     
-    protected $DOM_document;    // Instance du DOM
-    
-    private $html;		// Est-ce un HTML?
-    
-    /*********************************************
-     * Méthode __construct
-     * ---------------
-     * Constructeur de la classe XML
-     * 
-     * ENTRIES
-     *    null
-     * RETURN
-     *    null
-     *********************************************/
+    /**
+     * XML constructor.
+     */
     public function __construct() {
     	
     	$this->DOM_document=new DOMDocument("1.0","UTF-8");
@@ -42,34 +53,23 @@ class XML {
     	
     }
     
-    /*********************************************
-     * Méthode load_from_string
-     * ---------------
-     * Ouvrir un Document XML avec une chaîne de caractère
-     * 
-     * ENTRIES
-     *    STRING $a_xml_string Document XML sous forme
-     *                         de chaîne de caractères
-     * RETURN
-     *    null
-     *********************************************/
-    public function load_from_string($a_xml_string,$options) {
+    /**
+     * Open a XML document from a string
+     *
+     * @param string $a_xml_string
+     * @param integer $options
+     */
+    public function load_from_string ($a_xml_string, $options) {
     	
-    	$this->DOM_document->loadXML($a_xml_string,$options);
+    	$this->DOM_document->loadXML($a_xml_string, $options);
     
     }
     
-    /*********************************************
-     * Méthode load_from_html
-     * ---------------
-     * Ouvrir un Document HTML avec une chaîne de caractère
+    /**
+     * Open a HTML documment from a string
      *
-     * ENTRIES
-     *    STRING $a_html_string Document HTML sous forme
-     *                         de chaîne de caractères
-     * RETURN
-     *    null
-     *********************************************/
+     * @param string $a_html_string
+     */
     public function load_from_html($a_html_string) {
     	
     	$this->DOM_document=new DOMDocument();
@@ -80,16 +80,12 @@ class XML {
     	
     }
     
-    /*********************************************
-     * Méthode load_from_file
-     * ---------------
-     * Ouvrir un Document XML avec un ficheir
-     * 
-     * ENTRIES
-     *    STRING $a_xml_file  Chemin vers le fichier XML
-     * RETURN
-     *    null
-     *********************************************/
+    /**
+     * Open a XML document from a file
+     *
+     * @param string $a_xml_file
+     *          Path of the XML file
+     */
     public function load_from_file($a_xml_file) {
     	
     	$this->set_xml_file($a_xml_file);
@@ -97,54 +93,44 @@ class XML {
     	
     }
     
-    /*********************************************
-     * Méthode set_xml_file
-     * ---------------
-     * Définir le chemin d'enregistrement du fichier
-     * 
-     * ENTRIES
-     *    STRING $a_xml_file  Chemin vers le fichier XML
-     * RETURN
-     *    null
-     *********************************************/
+    /**
+     * Modify the path of the XML file
+     *
+     * @param string $a_xml_file
+     */
     public function set_xml_file($a_xml_file) {
     	
     	$this->xml_file=$a_xml_file;
     	
     }
     
-    /*********************************************
-     * Méthode get_xml_file
-     * ---------------
-     * Obtenir le chemin d'enregistrement du fichier
-     * 
-     * ENTRIES
-     *    null
-     * RETURN
-     *    STRING              Chemin vers le fichier XML
-     *********************************************/
+    /**
+     * Return the path of the XML file
+     *
+     * @return string
+     */
     public function get_xml_file() {
     	
     	return $this->xml_file;
     	
     }
-    
+
+    /**
+     * Verify if the document is a HTML document
+     *
+     * @return bool
+     */
     private function is_html() {
     	
     	return $this->html;
     	
     }
     
-    /*********************************************
-     * Méthode __toString
-     * ---------------
-     * Obtenir le contenu du document en chaîne de carctère
-     * 
-     * ENTRIES
-     *    null
-     * RETURN
-     *    STRING              Contenu du document
-     *********************************************/
+    /**
+     * Return the content of the document as a string
+     *
+     * @return string
+     */
     public function __toString() {
     	
     	if (!$this->is_html()) {
@@ -156,35 +142,29 @@ class XML {
     	
     }
     
-    /*********************************************
-     * Méthode Save
-     * ---------------
-     * Sauvegarder le document XML dans un fichier
-     * 
-     * ENTRIES
-     *    null
-     * RETURN
-     *    INTEGER             1 si l'enregistrement s'est terminé avec succès
-     *                        0 si une erreur s'est produite
-     *********************************************/
-    public function Save() {
+    /**
+     * Save the document in a file
+     *
+     * @return boolean
+     *          Retrun TRUE on success
+     * @throws Exception
+     *          If it fails to save the document in a file
+     */
+    public function save() {
     	
-    	// Retourne 1 au succès de la sauvegarde dans un fichier
-    	// Retourne 0 lorsque la sauvegarde a échouée ou lorsqu'aucun nom de fichier n'est spécifié
     	try {
     		if ($this->get_xml_file()!="") {
     			$save_state=$this->DOM_document->save($this->get_xml_file());
     			if ($save_state==false) {
-    				throw new Exception("Une erreur s'est produite lors de l'enregistrement");
+    				throw new Exception("An unknown error occured while saving the document.");
     			}
     		} else {
-    			throw new Exception("L'enregistrement est impossible. Aucun chemin n'a été spécifié.");
+    			throw new Exception("Impossible to save the document. A saving location hasn't been specified.");
     		}
     		
-    		return 1;
+    		return true;
     	} catch(Exception $e) {
     		throw new Exception($e->getMessage()." - ".$e->getTraceAsString());
-    		return 0; 
     	}
     	
     }

@@ -13,6 +13,9 @@ use Apine\Exception\GenericException;
 /**
  * Language Translation
  * Representation of a translations for a language
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Translation
  */
 final class Translation {
 
@@ -42,7 +45,7 @@ final class Translation {
 	 * Extract string from the translation file
 	 * 
 	 * @param TranslationLanguage $a_language
-	 * @throws ApineException If the file is inexistant or invalid
+	 * @throws GenericException If the file is inexistant or invalid
 	 */
 	public function __construct (TranslationLanguage $a_language) {
 		
@@ -126,7 +129,7 @@ final class Translation {
 	/**
 	 * Return the Translation Language
 	 * 
-	 * @return ApineTranslationLanguage
+	 * @return TranslationLanguage
 	 */
 	public function get_language () {
 		
@@ -137,7 +140,7 @@ final class Translation {
 	/**
 	 * Return the locale linked with the translation
 	 * 
-	 * @return ApineTranslationLocale
+	 * @return TranslationLocale
 	 */
 	public function get_locale () {
 		

@@ -5,6 +5,7 @@ namespace Apine\Entity;
  * 
  * @license MIT
  * @copyright 2015 Tommy Teasdale
+ * @package Apine\Entity
  */
 interface EntityInterface {
 

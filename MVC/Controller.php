@@ -15,13 +15,14 @@ use Apine\Core\Request as Request;
  * Describes basics for user controllers
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\MVC
  */
 abstract class Controller {
 	
 	/**
 	 * Controller View
 	 * 
-	 * @var ApineView
+	 * @var View
 	 */
 	protected $_view;
 	

@@ -16,13 +16,14 @@ use Apine\Core\Request;
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @abstract
+ * @package Apine\MVC
  */
 abstract class View {
 	
 	/**
 	 * Variables to be accessible by the view
 	 * 
-	 * @var Apine\Core\Collection
+	 * @var Collection
 	 */
 	protected $_params;
 	
@@ -65,11 +66,11 @@ abstract class View {
 	 * Set a header rule
 	 * 
 	 * @param string $a_rule
-	 * @param string $a_name
+	 * @param string $a_value
 	 */
-	final public function set_header_rule($a_rule,$a_value=null) {
-		
-		$this->_headers[$a_rule] = $a_value;
+	final public function set_header_rule($a_rule, $a_value = null) {
+
+	    $this->_headers[$a_rule] = $a_value;
 		
 	}
 	

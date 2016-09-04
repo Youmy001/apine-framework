@@ -29,7 +29,7 @@ final class Autoloader {
 	 * @var array
 	 */
 	protected $prefixes = array();
-	
+
 	public function __construct() {
 		
 		//$apine_folder = basename(dirname(__FILE__));
@@ -41,7 +41,7 @@ final class Autoloader {
 		$this->add_module('Apine\Controllers\System', $apine_folder . '/Controllers');
 		
 	}
-	
+
 	/**
 	 * Adds a base directory for a namespace prefix.
 	 *
@@ -96,8 +96,7 @@ final class Autoloader {
 		// Verify if the module actually exists
 		if (is_dir('modules/' . $module_name . '/')) {
 			$dir = 'modules/' . $module_name . '/';
-			$autoloader = &$this;
-			
+
 			// Load the autoloader if it exists.
 			// Load recursively the directory if not.
 			if (file_exists($dir . 'Autoloader.php')) {
@@ -110,7 +109,8 @@ final class Autoloader {
 				try {
 					foreach ($files as $file) {
 						if (file_extension($file) === "php") {
-							require_once $file;
+                            /** @noinspection PhpIncludeInspection */
+                            require_once $file;
 						}
 					}
 					
@@ -128,7 +128,9 @@ final class Autoloader {
 		} else {
 			return false;
 		}
-		
+
+		return false;
+
 	}
 	
 	public function register ()  {

@@ -1,50 +1,46 @@
 <?php
+/**
+ * XML Parser
+ * This script contains a writing utility for XML documents
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 namespace Apine\XML;
 
-/*
-/ Projet Marie-Delice 
-/ Classe modèle d'écriture de XML pour l'application Web
-/ License : 
-/ Auteurs: Marc-André Douville Auger, Véronique Blais, Tommy Teasdale
-*/
+use \DOMNode;
+use \DOMAttr;
+use \DOMText;
+use \DOMComment;
+use \Exception;
 
-/*************************************************
- * Classe Writer
- * ---------------
- * Encapsulation des classes DOM_Document, DOM_Node et 
- * DOM_Element de PHP
+/**
+ * Class Writter
  *
- * Cette classe permet de modifier et écrire un
- * document XML. 
- *************************************************/
+ * Representation of a XML document specialized in document modification.
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\XML
+ * @deprecated
+ */
 class Writer extends Parser {
     
-    /*********************************************
-     * Méthode __construct
-     * ---------------
-     * Constructeur de la classe Writer
-     * 
-     * ENTRIES
-     *    null
-     * RETURN
-     *    null
-     *********************************************/
+    /**
+     * Writer constructor.
+     */
 	public function __construct() {
 		
-		parent::__construct(); // Appelle à la fois le contructeur de Parser et XML
+		parent::__construct();
 		
     }
     
-    /*********************************************
-     * Méthode createAttribute
-     * ---------------
-     * Créer un nouvel Attribut au document
-     * 
-     * ENTRIES
-     *    STRING $a_attir        Nom de l'attibut
-     * RETURN
-     *    DOMAttr $attribute     Attribute créé
-     *********************************************/
+    /**
+     * Create a new DOM attribute
+     *
+     * @param $a_attr
+     *          Name of the attribute
+     * @return DOMAttr
+     */
     public function createAttribute($a_attr) {
     	
     	$attribute=$this->DOM_document->createAttribute($a_attr);
@@ -52,34 +48,29 @@ class Writer extends Parser {
     	
     }
     
-    /*********************************************
-     * Méthode createElement
-     * ---------------
-     * Créer un nouvel Element au docuemnt
-     * 
-     * ENTRIES
-     *    STRING $name        Nom de l'élément
-     *    STRING $value       Valeur de l'élément
-     * RETURN
-     *    Element $element    Element créé
-     *********************************************/
+    /**
+     * Create a new element
+     *
+     * @param string $name
+     *          Tag name
+     * @param string $value
+     * @return Element
+     */
     public function createElement($name, $value = null){
 
-		$element = new Element($this->DOM_document, ($this->DOM_document->createElement($name, $value)));
+        $dom_element = $this->DOM_document->createElement($name, $value);
+		$element = new Element($this->DOM_document, $dom_element);
 		return $element;
 	
 	}
     
-    /*********************************************
-     * Méthode createTextNode
-     * ---------------
-     * Ajouter du texte au document
-     * 
-     * ENTRIES
-     *    STRING $content   Texte à ajouter
-     * RETURN
-     *    DOMTextNode $text    Node du texte
-     *********************************************/
+    /**
+     * Create a text node
+     *
+     * @param string $content
+     *          Text of the node
+     * @return DOMText
+     */
     public function createTextNode($content) {
     	
     	$text=$this->DOM_document->createTextNode($content);
@@ -87,16 +78,13 @@ class Writer extends Parser {
     	
     }
     
-    /*********************************************
-     * Méthode addComment
-     * ---------------
-     * Ajouter un commentaire à l'élément
-     * 
-     * ENTRIES
-     *    STRING $a_comment   Texte du commentaire
-     * RETURN
-     *    DOMComment $node    Node du commentaire ajouté
-     *********************************************/
+    /**
+     * Create a comment node
+     *
+     * @param string $comment
+     *          Text of the comment
+     * @return DOMComment
+     */
     public function addComment($comment) {
     	
     	$node=$this->DOM_document->createComment($comment);
@@ -105,16 +93,13 @@ class Writer extends Parser {
     	
     }
     
-    /*********************************************
-     * Méthode appendChild
-     * ---------------
-     * Ajouter un node enfant au document
-     * 
-     * ENTRIES
-     *    DOMNode $node       Node à ajouter
-     * RETURN
-     *    DOMNode $node       Node ajouté
-     *********************************************/
+    /**
+     * Add a node to the document
+     *
+     * @param DOMNode $node
+     *          Node to append
+     * @return DOMNode
+     */
     public function appendChild(DOMNode $node) {
     	
     	$node=$this->DOM_document->appendChild($node);
@@ -122,56 +107,53 @@ class Writer extends Parser {
     	
     }
     
-    /*********************************************
-     * Méthode insertBefore
-     * ---------------
-     * Ajouter un node enfant avant un autre
-     * 
-     * ENTRIES
-     *    DOMNode $new_node   Node à ajouter
-     *    DOMNode $ref_node   Node avant lequel insérer
-     * RETURN
-     *    DOMNode $node       Node ajouté
-     *********************************************/
+    /**
+     * Add a child node before another
+     *
+     * @param DOMNode $new_node
+     *          New node
+     * @param DOMNode $ref_node
+     *          Node in front of which insert the new node
+     * @return DOMNode
+     *          Node inserted
+     * @throws Exception
+     */
     public function insertBefore(DOMNode $new_node, DOMNode $ref_node=null) {
     	
     	try {
     		$node=$this->DOM_document->insertBefore($new_node,$ref_node);
     		return $node;
     	} catch(Exception $e) {
-    		throw new Exception("Erreur de DOM : ".$e->getMessage());
+    		throw new Exception("DOM Error : ".$e->getMessage());
         }
         
     }
-    
-    /*********************************************
-     * Méthode removeChild
-     * ---------------
-     * Retirer un node enfant du document
-     * 
-     * ENTRIES
-     *    DOMNode $old_node   Node à retirer
-     * RETURN
-     *    DOMNode $node       Node rétiré
-     *********************************************/
+
+    /**
+     * Remove node from document
+     *
+     * @param DOMNode $old_node
+     *          Node to remove
+     * @return DOMNode
+     *          Node removed
+     */
     public function removeChild(DOMNode $old_node) {
     	
     	$node=$this->DOM_document->removeChild($old_node);
     	return $node;
     	
     }
-    
-    /*********************************************
-     * Méthode replaceChild
-     * ---------------
-     * Remplacer un node enfant avec un autre
-     * 
-     * ENTRIES
-     *    DOMNode $new_node   Node à ajouter
-     *    DOMNode $old_node   Node à remplacer
-     * RETURN
-     *    DOMNode $node       Node ajouté
-     *********************************************/
+
+    /**
+     * Replace a node with another
+     *
+     * @param DOMNode $new_node
+     *          New Node
+     * @param DOMNode $old_node
+     *          Node to replace
+     * @return DOMNode
+     *          Node inserted
+     */
     public function replaceChild(DOMNode $new_node, DOMNode $old_node) {
     	
     	$node=$this->DOM_document->replaceChild($new_node,$old_node);
@@ -179,33 +161,27 @@ class Writer extends Parser {
     	
     }
     
-    /*********************************************
-     * Méthode cloneNode
-     * ---------------
-     * Cloner le document
-     * 
-     * ENTRIES
-     *    BOOLEAN $deep       Si il faut copier l'arbre au complet
-     * RETURN
-     *    DOMNode $node       Node cloné
-     *********************************************/
+    /**
+     * Clone the document
+     *
+     * @return DOMNode
+     *          Cloned Element
+     */
     public function cloneNode() {
     	
-    	$node=$this->DOM_document->cloneNode();
+    	$node=$this->DOM_document->cloneNode(true);
     	return $node;
     	
     }
     
-    /*********************************************
-     * Méthode importNode
-     * ---------------
-     * Importer un node enfant
-     * 
-     * ENTRIES
-     *    DOMNode $new_node   Node à importer
-     * RETURN
-     *    DOMNode $node       Node importé
-     *********************************************/
+    /**
+     * Import a node in the document
+     *
+     * @param DOMNode $new_node
+     *          Node to import
+     * @return DOMNode
+     *          Node inserted
+     */
     public function importNode(DOMNode $new_node) {
     	
     	$node=$this->DOM_document->importNode($new_node,true);

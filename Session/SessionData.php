@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file contains the session data class
+ *
+ * @license MIT
+ * @copyright 2016 Tommy Teasdale
+ */
 namespace Apine\Session;
 
 use Apine\Core\Cookie;
@@ -8,8 +14,8 @@ use Apine\Entity\EntityModel;
 /**
  * Manage data for a session
  * 
- * @author youmy
- *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Session
  */
 final class SessionData extends EntityModel {
 	
@@ -18,7 +24,7 @@ final class SessionData extends EntityModel {
 	 * 
 	 * @var string
 	 */
-	private $session_id;
+	public $session_id;
 	
 	/**
 	 * Data saved in the session
@@ -34,7 +40,7 @@ final class SessionData extends EntityModel {
 	private $last_access;
 	
 	/**
-	 * ApineSessionData class' constructor
+	 * SessionData class' constructor
 	 *
 	 * @param string $a_id
 	 *        Session Identifier
@@ -57,6 +63,7 @@ final class SessionData extends EntityModel {
 	 * Verify is a session is too old
 	 * 
 	 * @param integer $delay
+     * @return boolean
 	 */
 	public function is_valid ($delay = 7200) {
 		
@@ -72,6 +79,7 @@ final class SessionData extends EntityModel {
 	 * Get a session var
 	 * 
 	 * @param string $a_name
+     * @return mixed
 	 */
 	public function get_var ($a_name) {
 		
@@ -98,7 +106,7 @@ final class SessionData extends EntityModel {
 		}
 		
 		$this->data[$a_name] = $a_value;
-		
+
 	}
 	
 	/**
@@ -131,7 +139,7 @@ final class SessionData extends EntityModel {
 	
 	/**
 	 *
-	 * @see ApineEntityInterface::load()
+	 * @see EntityInterface::load()
 	 */
 	public function load () {
 		
@@ -143,7 +151,7 @@ final class SessionData extends EntityModel {
 	
 	/**
 	 *
-	 * @see ApineEntityInterface::save()
+	 * @see EntityInterface::save()
 	 */
 	public function save () {
 		
@@ -157,7 +165,7 @@ final class SessionData extends EntityModel {
 	
 	/**
 	 *
-	 * @see ApineEntityInterface::delete()
+	 * @see EntityInterface::delete()
 	 */
 	public function delete () {
 		
@@ -166,7 +174,7 @@ final class SessionData extends EntityModel {
 	}
 	
 	/**
-	 * ApineSessionData class' destructor
+	 * SessionData class' destructor
 	 */
 	public function __destruct() {
 		

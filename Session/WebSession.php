@@ -9,10 +9,17 @@
 namespace Apine\Session;
 
 use Apine;
+use Apine\Application\Application;
+use Apine\Core\Encryption;
+use Apine\User\Factory\UserFactory;
+use Apine\User\User;
 
 /**
  * Gestion and configuration of the a user session on a web app
  * This class manages user login and logout
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Session
  */
 final class WebSession implements SessionInterface {
 
@@ -47,19 +54,19 @@ final class WebSession implements SessionInterface {
 	/**
 	 * Instance of logged in user
 	 * 
-	 * @var ApineUser
+	 * @var Apine\User\User
 	 */
 	private $user;
 
 	/**
-	 * Session duration
+	 * Default session duration
 	 * 
 	 * @var integer
 	 */
 	private $session_lifespan = 7200;
 	
 	/**
-	 * Session duration with permanent option
+	 * Default session duration with permanent option
 	 *
 	 * @var integer
 	 */
@@ -75,9 +82,16 @@ final class WebSession implements SessionInterface {
 	/**
 	 * Session Entity
 	 * 
-	 * @var ApineSessionData
+	 * @var SessionData
 	 */
 	private $session;
+	
+	/**
+	 * Current session duration
+	 * 
+	 * @var integer
+	 */
+	private $current_session_lifespan;
 
 	/**
 	 * Construct the session handler
@@ -85,7 +99,7 @@ final class WebSession implements SessionInterface {
 	 */
 	public function __construct () {
 		
-		$config = Apine\Application\Application::get_instance()->get_config();
+		$config = Application::get_instance()->get_config();
 		
 		if ($config->get('runtime', 'user_class')) {
 			$user_class = $config->get('runtime', 'user_class');
@@ -104,35 +118,44 @@ final class WebSession implements SessionInterface {
 			$this->user_class_name = "Apine\User\User";
 		}
 		
+		/*if (!is_null($config->get('runtime', 'session_lifespan'))) {
+			$this->session_lifespan = (int) $config->get('runtime', 'session_lifespan');
+		}*/
+		
 		if (!is_null($config->get('runtime', 'session_lifespan'))) {
-			$this->session_lifespan = $config->get('runtime', 'session_lifespan');
+			$this->session_lifespan = (int) $config->get('runtime', 'session_lifespan');
+		}
+		
+		if (!is_null($config->get('runtime', 'session_permanent_lifespan'))) {
+			$this->session_lifespan = (int) $config->get('runtime', 'session_permanent_lifespan');
 		}
 		
 		if (isset($_COOKIE['apine_session'])) {
 			$token = $_COOKIE['apine_session'];
 		} else {
-			$token = Apine\Core\Encryption::token();
+			$token = Encryption::token();
 		}
 		
 		$this->session = new SessionData($token);
 		$this->php_session_id = $token;
 		$delay = $this->session_lifespan;
 		$this->logged_in = false;
-		
-		if ($this->session->get_var('id') != null) {
-			if ($this->session->get_var('permanent') != null) {
+
+		if ($this->session->get_var('apine_user_id') != null) {
+			if ($this->session->get_var('apine_session_permanent') != null) {
 				$delay = $this->session_permanent_lifespan;
 			}
 
-			if ($this->session->is_valid($delay) && Apine\User\Factory\UserFactory::is_id_exist($this->session->get_var('id'))) {
+			if ($this->session->is_valid($delay) && UserFactory::is_id_exist($this->session->get_var('apine_user_id'))) {
 				$this->logged_in = true;
-				$this->user_id  = $this->session->get_var('id');
-				$this->session_type = $this->session->get_var('type');
+				$this->user_id  = $this->session->get_var('apine_user_id');
+				$this->session_type = $this->session->get_var('apine_user_type');
 			} else {
 				$this->session->reset();
 			}
 		}
 		
+		$this->current_session_lifespan = $delay;
 		setcookie('apine_session', $this->php_session_id, time() + $delay, '/');
 	
 	}
@@ -174,11 +197,11 @@ final class WebSession implements SessionInterface {
 
 		if ($this->is_logged_in()) {
 			if (is_null($this->user)) {
-				$this->user = Apine\User\Factory\UserFactory::create_by_id($this->user_id);
+				$this->user = UserFactory::create_by_id($this->user_id);
 			}
-			
-			return $this->user;
 		}
+
+        return $this->user;
 	
 	}
 
@@ -191,7 +214,9 @@ final class WebSession implements SessionInterface {
 
 		if ($this->is_logged_in()) {
 			return $this->user_id;
-		}
+		} else {
+		    return null;
+        }
 	
 	}
 
@@ -222,6 +247,7 @@ final class WebSession implements SessionInterface {
 	 * 
 	 * @param integer $a_type
 	 *        Session access level type
+     * @return integer
 	 */
 	public function set_session_type ($a_type) {
 
@@ -238,6 +264,16 @@ final class WebSession implements SessionInterface {
 		
 		return $type;
 	
+	}
+	
+	/**
+	 * Return current session lifespan
+	 * 
+	 * @return integer
+	 */
+	public function get_session_lifespan () {
+		
+		return $this->current_session_lifespan;
 	}
 	
 	public function is_session_admin () {
@@ -274,26 +310,25 @@ final class WebSession implements SessionInterface {
 	public function login ($user_name, $password, $options = array()) {
 
 		if (!$this->is_logged_in()) {
-			if ((Apine\User\Factory\UserFactory::is_name_exist($user_name) || Apine\User\Factory\UserFactory::is_email_exist($user_name))) {
-				$encode_pass = Apine\Core\Encryption::hash_password($password);
+			if ((UserFactory::is_name_exist($user_name) || UserFactory::is_email_exist($user_name))) {
+				$encode_pass = Encryption::hash_password($password);
 			} else {
 				return false;
 			}
 			
-			$user_id = Apine\User\Factory\UserFactory::authentication($user_name, $encode_pass);
+			$user_id = UserFactory::authentication($user_name, $encode_pass);
 			
 			if ($user_id) {
-				$session_data = array();
 				$this->user_id = $user_id;
 				$this->logged_in = true;
 				$new_user = $this->get_user();
 				$this->set_session_type($new_user->get_type());
-				
-				$this->session->set_var('id', $user_id);
-				$this->session->set_var('type', $new_user->get_type());
+
+				$this->session->set_var('apine_user_id', $user_id);
+				$this->session->set_var('apine_user_type', $new_user->get_type());
 				
 				if (isset($options["remember"]) && $options["remember"] === true) {
-					$this->session->set_var('permanent', true);
+					$this->session->set_var('apine_session_permanent', true);
 				}
 				
 				return true;
@@ -309,6 +344,9 @@ final class WebSession implements SessionInterface {
 
 	/**
 	 * Log a user out
+     *
+     * @return boolean
+     * @throws Apine\Exception\GenericException
 	 */
 	public function logout () {
 
@@ -317,6 +355,8 @@ final class WebSession implements SessionInterface {
 				$this->session->reset();
 				$this->session->save();
 				$this->logged_in = false;
+                $this->user = null;
+                $this->user_id = null;
 				$this->set_session_type(APINE_SESSION_GUEST);
 				return true;
 			} else {
@@ -324,7 +364,6 @@ final class WebSession implements SessionInterface {
 			}
 		} catch (\Exception $e) {
 			throw new Apine\Exception\GenericException($e->getMessage(), $e->getCode(), $e);
-			return false;
 		}
 	
 	}

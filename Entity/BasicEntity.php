@@ -3,8 +3,11 @@
 namespace Apine\Entity;
 
 /**
-* Basic entity with no domain logic
-*/
+ * Basic entity with no domain logic
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Entity
+ */
 class BasicEntity extends EntityModel {
 
 	/**
@@ -16,6 +19,8 @@ class BasicEntity extends EntityModel {
 	 * @param string $a_id
 	 *        identifier of the entity in the
 	 *        table
+     * @param string $a_field
+     *        Name of the primary key column
 	 */
 	public function __construct ($a_table = null, $a_id = null, $a_field = "id") {
 
@@ -31,6 +36,7 @@ class BasicEntity extends EntityModel {
 	 *
 	 * @param string $a_table
 	 * @param string $a_id
+     * @param string $a_field
 	 */
 	public function initialize ($a_table, $a_id = null , $a_field = "id") {
 
@@ -61,9 +67,9 @@ class BasicEntity extends EntityModel {
 	 * @param string $a_id
 	 *        Entity Identifier
 	 */
-	public function set_id ($id) {
+	public function set_id ($a_id) {
 
-		$this->_set_id($id);
+		$this->_set_id($a_id);
 
 	}
 
@@ -77,7 +83,9 @@ class BasicEntity extends EntityModel {
 
 		if ($a_field != null) {
 			return $this->_get_field($a_field);
-		}
+		} else {
+		    return null;
+        }
 
 	}
 
@@ -88,12 +96,15 @@ class BasicEntity extends EntityModel {
 	 *        Field Name
 	 * @param mixed $a_value
 	 *        Field Value
+     * @return mixed
 	 */
 	public function set_field ($a_field, $a_value) {
 
 		if ($a_field != null) {
 			return $this->_set_field($a_field, $a_value);
-		}
+		} else {
+		    return null;
+        }
 
 	}
 

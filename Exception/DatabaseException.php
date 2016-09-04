@@ -11,7 +11,8 @@ namespace Apine\Exception;
 /**
  * Custom implementation of the PDO exception handler
  *
- * @author Tommy Teasdale
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Exception
  */
 class DatabaseException extends \PDOException {
 }

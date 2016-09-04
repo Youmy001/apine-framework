@@ -1,7 +1,6 @@
 <?php
 
 use Apine\MVC\URLHelper;
-use Apine\Core\Config;
 use Apine\Core\Request;
 use Apine\Session\SessionManager;
 use Apine\Application\Translator;
@@ -31,7 +30,7 @@ define('APINE_PAGINATION_TYPE_PAGER', 110);
  * A split method that supports unicode characters
  *
  * @param string $str        
- * @param number $l        
+ * @param integer $l
  * @return string
  */
 function str_split_unicode ($str, $l = 0) {
@@ -55,9 +54,10 @@ function str_split_unicode ($str, $l = 0) {
 /**
  * Check if a string is a valid ISO 8601 Timestamp
  *
+ * Source : http://community.sitepoint.com/t/check-whether-the-string-is-timestamp/4468/19
+ *
  * @param string $timestamp        
- * @return boolean Source :
- *         http://community.sitepoint.com/t/check-whether-the-string-is-timestamp/4468/19
+ * @return boolean
  */
 function is_timestamp ($timestamp) {
 
@@ -87,6 +87,7 @@ function is_json($string) {
  *
  * @param string $module_name
  *        Name of the folder of the module
+ * @return boolean
  */
 function apine_load_module ($module_name) {
 
@@ -99,6 +100,12 @@ function apine_load_module ($module_name) {
  *
  * Source:
  * http://stackoverflow.com/questions/1268378/create-ini-file-write-values-in-php
+ *
+ * @param array $assoc_arr
+ * @param string $path
+ * @param boolean $has_sections
+ *
+ * @return boolean
  */
 function write_ini_file ($assoc_arr, $path, $has_sections = FALSE) {
 
@@ -149,7 +156,7 @@ function write_ini_file ($assoc_arr, $path, $has_sections = FALSE) {
  *
  * @param double $n
  *        Ratio multiplier
- * @param real $tolerance
+ * @param float $tolerance
  *        Precision level of the procedure
  * @return string
  */
@@ -208,6 +215,14 @@ function is_exec_available () {
 
 }
 
+/**
+ * Recursive file copy
+ * 
+ * @param string $src
+ * 			Source directory
+ * @param string $dst
+ * 			Destination directory
+ */
 function recurse_copy ($src, $dst) {
 
 	$dir = opendir($src);
@@ -238,6 +253,7 @@ function recurse_copy ($src, $dst) {
 function apine_execution_time () {
 
 	static $before;
+    $return = '';
 	
 	if (is_null($before)) {
 		$before = microtime(true) * 1000;
@@ -245,17 +261,20 @@ function apine_execution_time () {
 		$after = microtime(true) * 1000;
 		$time = number_format($after - $before, 1);
 		
-		return $time;
+		$return = $time;
 	}
 
+	return $return;
+
 }
+
 
 /**
  * Redirect to another end point of the application
  * using a full query string
  * 
  * @param string $a_request
- * @param string $a_protocol
+ * @param integer $a_protocol
  * @return Apine\MVC\RedirectionView
  */
 function apine_internal_redirect ($a_request, $a_protocol = APINE_PROTOCOL_DEFAULT) {
@@ -275,6 +294,7 @@ function apine_internal_redirect ($a_request, $a_protocol = APINE_PROTOCOL_DEFAU
 	return $new_view;
 	
 }
+
 	
 /**
  * Safely redirect to another URI.
@@ -291,6 +311,7 @@ function apine_redirect ($a_request) {
 
 }
 
+
 /**
  * Return the instance of the Apine Application
  * 
@@ -302,16 +323,18 @@ function apine_application () {
 	
 }
 
+
 /**
  * Return the instance of the Apine Config
  * 
- * @return Apine\Application\ApplicationConfig
+ * @return Apine\Application\Config
  */
 function apine_app_config () {
 
 	return Apine\Application\Config::get_instance();
 
 }
+
 
 /**
  * Return the instance of the Session Manager
@@ -324,16 +347,18 @@ function apine_session () {
 
 }
 
+
 /**
  * Return the instance of the Application Translator
  * 
- * @return Apine\Application\ApplicationTranslator
+ * @return Apine\Application\Translator
  */
 function apine_app_translator () {
 
 	return Apine\Application\Translator::get_instance();
 
 }
+
 
 /**
  * Return the instance of the URL Helper
@@ -345,6 +370,7 @@ function apine_url_helper () {
 	return Apine\MVC\URLHelper::get_instance();
 	
 }
+
 
 /**
  * Return the extension from a file name
@@ -364,6 +390,32 @@ function file_extension ($a_file_path) {
 	}
 	
 	return $extension;
+	
+}
+
+
+function is_ref (&$var, $function = '', $negate = false) {
+	
+	$stat = true;
+	
+	if (!isset($var)) {
+		$stat = false;
+	} else {
+		if (!empty($function) && function_exists($function)) {
+			$stat = $function($var);
+			$stat = ($negate) ? $stat^1 : $stat;
+		} else if ($function === 'empty') {
+			$stat = empty($var);
+			$stat = ($negate) ? $stat^1 : $stat;
+		} else if (!function_exists($function)) {
+			$stat = false;
+			trigger_error("$function() is not a valid function");
+		}
+		
+		$stat = ($stat) ? true : false;
+	}
+	
+	return $stat;
 	
 }
 
@@ -395,16 +447,18 @@ function apine_export_routes ($file) {
 					}
 				}
 			}
-				
-			foreach ($item->getElementsByTagName('*') as $node) {
-				if ($node->nodeType == XML_ELEMENT_NODE) {
-					if ($node->nodeName === 'request') {
-						$request = $node->nodeValue;
-					} else {
-						$nodes[$node->nodeName] = $node->nodeValue;
-					}
-				}
-			}
+
+			if (method_exists($item, 'getElementsByTagName')) {
+                foreach ($item->getElementsByTagName('*') as $node) {
+                    if ($node->nodeType == XML_ELEMENT_NODE) {
+                        if ($node->nodeName === 'request') {
+                            $request = $node->nodeValue;
+                        } else {
+                            $nodes[$node->nodeName] = $node->nodeValue;
+                        }
+                    }
+                }
+            }
 				
 			$routes[$request][$method] = $nodes;
 		}

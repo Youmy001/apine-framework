@@ -23,15 +23,15 @@ use TinyTemplate\Rule;
 /**
  * Apine Application
  * 
- * @author youmy
- *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Application
  */
 final class Application {
 	
 	/**
 	 * Instance of the Application
 	 * 
-	 * @var Apine\Application\Application
+	 * @var Application
 	 */
 	private static $_instance;
 	
@@ -110,18 +110,23 @@ final class Application {
 	/**
 	 * APIne Application Config
 	 * 
-	 * @var Apine\Core\Config
+	 * @var Config
 	 */
 	private $config;
 	
 	/**
 	 * APIne versions
 	 * 
-	 * @var Apine\Core\Version
+	 * @var Version
 	 */
 	private $version;
-	
-	public function __construct() {
+
+    /**
+     * Application constructor.
+     *
+     * @return Application
+     */
+    public function __construct() {
 		
 		ini_set('display_errors', 0);
 		error_reporting(E_ERROR);
@@ -148,9 +153,9 @@ final class Application {
 		
 		if (!isset(self::$_instance)) {
 			self::$_instance = &$this;
-		} else {
-			return self::$_instance;
 		}
+
+        return self::$_instance;
 		
 	}
 	
@@ -179,7 +184,12 @@ final class Application {
 		}
 		
 	}
-	
+
+    /**
+     * Define if the application must force the use of https for use sessions
+     *
+     * @param bool $a_bool
+     */
 	public function set_secure_session ($a_bool = true) {
 		
 		if (is_bool($a_bool)) {
@@ -187,16 +197,27 @@ final class Application {
 		}
 		
 	}
-	
-	public function use_composer ($a_bool = true) {
+
+    /**
+     * Define if the application must make use of Composer packages
+     *
+     * @param bool $a_bool
+     */
+    public function use_composer ($a_bool = true) {
 		
 		if (is_bool($a_bool)) {
 			$this->use_composer = $a_bool;
 		}
 		
 	}
-	
-	public function set_application_version ($a_version_number) {
+
+    /**
+     * Set the version number of the application
+     *
+     * @param $a_version_number
+     * @throws Exception
+     */
+    public function set_application_version ($a_version_number) {
 		
 		if (Version::validate($a_version_number)) {
 			$this->application_version = $a_version_number;
@@ -211,14 +232,19 @@ final class Application {
      * 
      * The application tries by default to guess it.
      *
-     * @params string $a_webroot
+     * @param string $a_webroot
      */
     public function set_webroot ($a_webroot = '') {
         
         $this->webroot = $a_webroot;
         
     }
-	
+
+    /**
+     * Set the type of route to use
+     *
+     * @param int $a_type
+     */
 	public function set_routes_type ($a_type = APINE_ROUTES_JSON) {
 		
 		if ($a_type === APINE_ROUTES_JSON || $a_type === APINE_ROUTES_XML) {
@@ -228,7 +254,12 @@ final class Application {
 		}
 		
 	}
-	
+
+    /**
+     * Set the error reporting mode of the application
+     *
+     * @param int $a_mode
+     */
 	public function set_mode ($a_mode = APINE_MODE_PRODUCTION) {
 		
 		if ($a_mode !== $this->mode) {
@@ -245,7 +276,12 @@ final class Application {
 		}
 		
 	}
-	
+
+    /**
+     * Run the application
+     *
+     * @param int $a_runtime Runtime mode
+     */
 	public function run ($a_runtime = APINE_RUNTIME_HYBRID) {
 		
 		if ($a_runtime !== APINE_RUNTIME_HYBRID && $a_runtime !== APINE_RUNTIME_API && $a_runtime !== APINE_RUNTIME_APP) {
@@ -310,7 +346,7 @@ final class Application {
 			// using geoip library and its local database
 			if (function_exists('geoip_open')) {
 				$gi = geoip_open($this->apine_folder . "/GeoLiteCity.dat", GEOIP_STANDARD);
-				$record = geoip_record_by_addr($gi, $_SERVER['REMOTE_ADDR']);
+				$record = GeoIP_record_by_addr($gi, $_SERVER['REMOTE_ADDR']);
 				//$record = geoip_record_by_addr($gi, "24.230.215.89");
 				//var_dump($record);
 			
@@ -484,48 +520,88 @@ final class Application {
 		}
 		
 	}
-	
+
+    /**
+     * Return the current mode
+     *
+     * @return int
+     */
 	public function get_mode () {
 		
 		return $this->mode;
 		
 	}
-	
+
+    /**
+     * Return the https state
+     *
+     * @return bool
+     */
 	public function get_use_https () {
 		
 		return (bool) $this->use_https;
 		
 	}
-	
+
+    /**
+     * Return the secure session state
+     *
+     * @return bool
+     */
 	public function get_secure_session () {
 		
 		return (bool) $this->secure_session;
 		
 	}
-	
+
+    /**
+     * Return the system configuration handler
+     *
+     * @return Config
+     */
 	public function get_config () {
 		
 		return $this->config;
 		
 	}
-	
+
+    /**
+     * Return the path of the routes file
+     *
+     * @return string
+     */
 	public function get_routes_path () {
 		
 		return $this->routes_path;
 	}
-	
+
+    /**
+     * Return the type of route
+     *
+     * @return int
+     */
 	public function get_routes_type () {
 		
 		return  $this->routes_type;
 		
 	}
-	
+
+    /**
+     * Return the path to the root of the host
+     *
+     * @return string
+     */
 	public function get_webroot () {
 		
 		return $this->webroot;
 		
 	}
-	
+
+    /**
+     * Return the version
+     *
+     * @return Version
+     */
 	public function get_version () {
 		
 		if (is_null($this->version)) {
@@ -535,13 +611,23 @@ final class Application {
 		return $this->version;
 		
 	}
-	
+
+    /**
+     * Return the location of the framework on the server
+     *
+     * @return string
+     */
 	public function framework_location () {
 		
 		return $this->apine_folder;
 		
 	}
-	
+
+    /**
+     * Return the default include path of the application
+     *
+     * @return string
+     */
 	public function include_path () {
 	
 		return $this->include_path;

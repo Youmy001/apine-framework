@@ -1,8 +1,15 @@
 <?php
+/**
+ * HTML View Abstraction
+ *
+ * @license MIT
+ * @copyright 2016 Tommy Teasdale
+ */
 namespace Apine\MVC;
 
 use Apine\Application as Application;
 use Apine\Exception\GenericException;
+use Apine\Session\SessionManager;
 use TinyTemplate\Template;
 use TinyTemplate\Layout;
 use TinyTemplate\Engine;
@@ -11,20 +18,21 @@ use TinyTemplate\Engine;
  * HTML View
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\MVC
  */
 final class HTMLView extends View {
 
 	/**
 	 * Path to layout file
 	 *
-	 * @var string
+	 * @var Layout
 	 */
 	private $_layout;
 
 	/**
 	 * Path to view file
 	 *
-	 * @var string
+	 * @var Template
 	 */
 	private $_view;
 
@@ -128,6 +136,7 @@ final class HTMLView extends View {
 	 * Set path to layout file
 	 *
 	 * @param string $a_layout
+     * @throws GenericException
 	 */
 	public function set_layout($a_layout) {
 		
@@ -152,6 +161,7 @@ final class HTMLView extends View {
 	 * Set path to view file
 	 *
 	 * @param string $a_view
+     * @throws GenericException
 	 */
 	public function set_view($a_view) {
 
@@ -218,6 +228,9 @@ final class HTMLView extends View {
 	
 	/**
 	 * Insert meta tag into the view
+     *
+     * @param string[] $metatags
+     * @return string
 	 */
 	public static function apply_meta ($metatags) {
 	
@@ -235,6 +248,9 @@ final class HTMLView extends View {
 
 	/**
 	 * Insert script into the view
+     *
+     * @param string[] $scripts
+     * @return string
 	 */
 	public static function apply_scripts($scripts) {
 		
@@ -252,6 +268,9 @@ final class HTMLView extends View {
 	
 	/**
 	 * Insert stylesheets into the view
+     *
+     * @param string[] $styles
+     * @return string
 	 */
 	public static function apply_stylesheets($styles) {
 		
@@ -289,12 +308,12 @@ final class HTMLView extends View {
 	 */
 	public function content() {
 
-		$config = \Apine\Application\Application::get_instance()->get_config();
+		$config = Application\Application::get_instance()->get_config();
 		
 		if (!is_null($config)) {
-			if (\Apine\Session\SessionManager::is_logged_in()) {
+            if (SessionManager::is_logged_in()) {
 				$user_array = array();
-				$apine_user = \Apine\Session\SessionManager::get_user();
+				$apine_user = SessionManager::get_user();
 				$user_array['id'] = $apine_user->get_id();
 				$user_array['username'] = $apine_user->get_username();
 				$user_array['password'] = $apine_user->get_password();

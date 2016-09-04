@@ -13,11 +13,14 @@ use Apine\Exception\GenericException;
 /**
  * Translation Locales
  * Representation of a locales for translations
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Translation
  */
 final class TranslationLocale {
 	
 	/**
-	 * Entries linke to locales
+	 * Entries linked to locales
 	 * 
 	 * @var string[]
 	 */
@@ -132,6 +135,7 @@ final class TranslationLocale {
 	 * @param int|string $a_timestamp
 	 * @param string $pattern According to http://php.net/manual/en/function.strftime.php
 	 * @throws GenericException
+     * @return string
 	 */
 	public function format_date ($a_timestamp, $pattern = null) {
 		

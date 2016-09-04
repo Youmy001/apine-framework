@@ -12,7 +12,8 @@ namespace Apine\Exception;
  * Custom implementation of the exception handler matching
  * more closely a RESTful approach
  * 
- * @author Tommy Teasdale
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Exception
  */
 class GenericException extends \Exception {
 

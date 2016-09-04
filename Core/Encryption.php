@@ -14,6 +14,9 @@ use Apine\Application as Application;
  * Encryption Tools
  * 
  * Encrypt and decrypt string namely for security concerns
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Core
  */
 final class Encryption {
 	
@@ -68,7 +71,6 @@ final class Encryption {
 	 * Cipher a user password
 	 * 
 	 * @param string $clear_password
-	 * @param string $username
 	 * @return string
 	 */
 	public static function hash_password ($clear_password) {
@@ -123,6 +125,7 @@ final class Encryption {
 	 * Generate a md5 hash for string
 	 *
 	 * @param string $string
+     * @return string
 	 */
 	public static function md5 ($string) {
 	

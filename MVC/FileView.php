@@ -7,20 +7,21 @@ use Apine\File\File;
  * File View
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\MVC
  */
 final class FileView extends View {
 
 	/**
 	 * View File
 	 *
-	 * @var ApineFile
+	 * @var File
 	 */
 	private $_file;
 
 	/**
 	 * Construct File View
 	 *
-	 * @param ApineFile $a_file
+	 * @param File $a_file
 	 */
 	public function __construct(File $a_file=null) {
 
@@ -33,7 +34,7 @@ final class FileView extends View {
 	/**
 	 * Set file
 	 *
-	 * @param string|ApineFile $a_file
+	 * @param string|File $a_file
 	 */
 	public function set_file($a_file=null) {
 

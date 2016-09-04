@@ -12,6 +12,7 @@ namespace Apine\Routing;
  * Basic representation of a route
  * 
  * @author Tommy Teasdale
+ * @package Apine\Routing
  */
 final class Route {
 	
@@ -40,7 +41,7 @@ final class Route {
 	 *
 	 * @param string $controller
 	 * @param string $action
-	 * @param string $args
+	 * @param array $args
 	 */
 	public function __construct($controller, $action, $args = array()) {
 		

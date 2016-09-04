@@ -12,6 +12,9 @@ namespace Apine\Application;
  * Configuration Reader
  * 
  * Read and write project's configuration file
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Application
  */
 final class Config {
 	
@@ -19,7 +22,7 @@ final class Config {
 	 * Instance of the Config reader
 	 * Singleton Implementation
 	 * 
-	 * @var ApplicationConfig
+	 * @var Config
 	 */
 	private static $_instance;
 	
@@ -47,7 +50,7 @@ final class Config {
 	 * Singleton design pattern implementation
 	 * 
 	 * @static
-	 * @return ApineConfig
+	 * @return Config
 	 */
 	public static function get_instance () {
 		

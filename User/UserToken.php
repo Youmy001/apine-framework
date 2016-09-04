@@ -14,7 +14,8 @@ use Apine;
 /**
  * Implementation of the database representation of api login tokens
  * 
- * @author Tommy Teasdale
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\User
  */
 class UserToken extends Apine\Entity\EntityModel {
 
@@ -28,7 +29,7 @@ class UserToken extends Apine\Entity\EntityModel {
 	/**
 	 * Token user
 	 * 
-	 * @var ApineUser
+	 * @var Apine\User\User
 	 */
 	private $user;
 
@@ -102,6 +103,7 @@ class UserToken extends Apine\Entity\EntityModel {
 	 * 
 	 * @param integer $a_id
 	 *        Token's identifier
+     * @return integer
 	 */
 	public function set_id ($a_id) {
 
@@ -270,7 +272,7 @@ class UserToken extends Apine\Entity\EntityModel {
 	/**
 	 * Fetch the token user
 	 * 
-	 * @return ApineUser
+	 * @return Apine\User\User
 	 */
 	public function get_user () {
 		
@@ -285,8 +287,8 @@ class UserToken extends Apine\Entity\EntityModel {
 	/**
 	 * Set the token user
 	 * 
-	 * @param <ApineUser|integer> $a_user
-	 * @return <ApineUser|integer>
+	 * @param <Apine\User\User|integer> $a_user
+	 * @return Apine\User\User|integer>
 	 */
 	public function set_user ($a_user) {
 		

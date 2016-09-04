@@ -15,6 +15,9 @@ use Apine\Exception\GenericException;
  * Image File Resource Handler
  * 
  * Manager wrapping PHP image method in an easy Object Oriented way
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\File
  */
 final class FileImage extends File {
 
@@ -88,7 +91,7 @@ final class FileImage extends File {
 	/**
 	 * Load Image resource
 	 * 
-	 * @throws ApineException
+	 * @throws GenericException
 	 */
 	private function load () {
 		
@@ -110,7 +113,8 @@ final class FileImage extends File {
 	 * Create a new empty file
 	 * 
 	 * @param string $a_path
-	 * @throws Exception ApineFileImage can't handle empty files
+     * @return FileImage
+	 * @throws GenericException ApineFileImage can't handle empty files
 	 */
 	public static function create ($a_path) {
 		
@@ -125,8 +129,6 @@ final class FileImage extends File {
 	 * @return boolean
 	 */
 	public function is_valid_image () {
-
-		$extension = $this->extension();
 
 		if (in_array($this->type(), $this->allowed_mime_type)) {
 			return true;
@@ -172,15 +174,16 @@ final class FileImage extends File {
 	 * Crop the image to a specified ratio.
 	 * The cropped image will be centered inside the original image.
 	 * 
-	 * @param string $a_ratio
+	 * @param <string|float> $a_ratio
 	 *        Desired height/width ratio
+     * @throws GenericException
 	 */
 	public function crop_to_ratio ($a_ratio) {
 		
 		if (!$this->readonly) {
-			$ratio_w;
-			$ratio_h;
-			$ratio;
+			$ratio_w = null;
+			$ratio_h = null;
+			$ratio = null;
 	
 			if (strpos($a_ratio, ":")) {
 				$ar_ratio = explode(':', $a_ratio);
@@ -194,10 +197,10 @@ final class FileImage extends File {
 				$ratio = (double) $ratio_w / $ratio_h;
 			} else if (floatval($a_ratio) > 0) {
 				$ratio = (double) floatval($a_ratio);
-				$s_ratio = float2rat($ratio);
+				/*$s_ratio = float2rat($ratio);
 				$ar_ratio = explode('/', $s_ratio);
 				$ratio_w = (int) $ar_ratio[0];
-				$ratio_h = (int) $ar_ratio[1];
+				$ratio_h = (int) $ar_ratio[1];*/
 			}
 	
 			$crop_w = $this->width();
@@ -244,13 +247,14 @@ final class FileImage extends File {
 	 * @param integer $y
 	 *        Vertical Position of the cropped image inside the
 	 *        original image from the upp-left corner.
+     * @throws GenericException
 	 */
 	public function crop ($n_width, $n_height, $x, $y) {
 	
 		if (!$this->readonly) {
 			
 			if (($n_width + $x) > $this->width() || ($n_height + $y) > $this->height()) {
-				throw new ApineException("Invalid cropping dimensions");
+				throw new GenericException("Invalid cropping dimensions");
 			}
 			
 			$new_image = imagecreatetruecolor($n_width, $n_height);
@@ -272,6 +276,7 @@ final class FileImage extends File {
 	 *        Desired width in pixels
 	 * @param integer $n_height
 	 *        Desired heigth in pixels
+     * @throws GenericException
 	 */
 	public function resize ($n_width, $n_height) {
 	
@@ -302,6 +307,7 @@ final class FileImage extends File {
 	 *        See the php manual for a list of optional arguments.
 	 * @param string $arg4[optional]
 	 *        See the php manual for a list of optional arguments.
+     * @throws GenericException
 	 * @link http://www.php.net/manual/en/function.imagefilter.php
 	 */
 	public function filter ($filtertype, $arg1 = null, $arg2 = null, $arg3 = null, $arg4 = null) {
@@ -321,6 +327,7 @@ final class FileImage extends File {
 	 * @param integer $mode
 	 *        Flip mode. See php manual for a list of available Flip
 	 *        modes.
+     * @throws GenericException
 	 * @link http://php.net/manual/en/function.imageflip.php
 	 */
 	public function flip ($mode) {
@@ -348,6 +355,7 @@ final class FileImage extends File {
 	 * 
 	 * @param Resource $a_image Modified Image Resource Stream
 	 * @param null $useless Seriously, don't try to put anything here. It won't have any effect
+     * @throws GenericException
 	 */
 	public function write ($a_image = null, $useless = null) {
 		

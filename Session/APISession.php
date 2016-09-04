@@ -8,18 +8,25 @@
 namespace Apine\Session;
 
 use Apine;
+use Apine\Application\Application;
+use Apine\Core\Request;
 use Apine\User\User;
+use Apine\User\UserToken;
+use Apine\User\Factory\UserFactory;
 
 /**
  * Gestion and configuration of the a user session on a RESTful service
  * This class manages user login and logout
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Session
  */
 final class APISession implements SessionInterface{
 	
 	/**
 	 * Session token for currently logged in user
 	 * 
-	 * @var ApineUserToken
+	 * @var UserToken
 	 */
 	private $token;
 	
@@ -49,17 +56,19 @@ final class APISession implements SessionInterface{
 	 * Fetch data from request headers and authenticate the user
 	 */
 	public function __construct() {
-		
-		if (is_null(Apine\Application\Config::get('runtime', 'token_lifespan'))) {
-			$this->token_lifespan = Apine\Core\Config::get('runtime', 'token_lifespan');
+
+        $config = Application::get_instance()->get_config();
+
+		if (!is_null($config->get('runtime', 'token_lifespan'))) {
+			$this->token_lifespan = (int) $config->get('runtime', 'token_lifespan');
 		}
 		
-		$request = Apine\Core\Request::get_instance();
+		$request = Request::get_instance();
 		
 		if (isset($request->get_request_headers()['Authorization'])) {
 			
-			$autorization_string = $request->get_request_headers()['Authorization'];
-			$authorization_array = explode(':', $autorization_string);
+			$authorization_string = $request->get_request_headers()['Authorization'];
+			$authorization_array = explode(':', $authorization_string);
 			$name = $authorization_array[0];
 			$token = $authorization_array[1];
 			$referer = isset($request->server()['REMOTE_ADDR']) ? $request->server()['REMOTE_ADDR'] : '';
@@ -86,8 +95,8 @@ final class APISession implements SessionInterface{
 				$user_id = $data->get_var('id');
 
 				if ($user_id != null) {
-					$user = \Apine\User\Factory\UserFactory::create_by_id($user_id);
-					$token = new \Apine\User\UserToken();
+					$user = UserFactory::create_by_id($user_id);
+					$token = new UserToken();
 					$token->set_user($user);
 					$this->logged_in = true;
 					$this->token = $token;
@@ -107,18 +116,18 @@ final class APISession implements SessionInterface{
 	 */
 	public function get_session_identifier () {
 		
-		return ($this->is_logged_in()) ? $this->token->get_token() : 0; 
+		return ($this->is_logged_in()) ? $this->token->get_token() : null;
 		
 	}
 	
 	/**
 	 * Get the login token
 	 * 
-	 * @return ApineUserToken
+	 * @return UserToken
 	 */
 	public function get_token () {
 		
-		return ($this->is_logged_in()) ? $this->token : 0;
+		return ($this->is_logged_in()) ? $this->token : null;
 		
 	}
 
@@ -142,7 +151,9 @@ final class APISession implements SessionInterface{
 		
 		if ($this->is_logged_in()) {
 			return $this->token->get_user();
-		}
+		} else {
+		    return null;
+        }
 
 	}
 
@@ -155,7 +166,9 @@ final class APISession implements SessionInterface{
 		
 		if ($this->is_logged_in()) {
 			return $this->token->get_user()->get_id();
-		}
+		} else {
+		    return null;
+        }
 
 	}
 
@@ -175,6 +188,7 @@ final class APISession implements SessionInterface{
 	 *
 	 * @param integer $a_type
 	 *        Session access level type
+     * @return integer
 	 */
 	public function set_session_type ($a_type) {
 		
@@ -191,6 +205,16 @@ final class APISession implements SessionInterface{
 		
 		return $type;
 
+	}
+	
+	/**
+	 * Return current token duration
+	 *
+	 * @return integer
+	 */
+	public function get_session_lifespan () {
+	
+		return $this->token_lifespan;
 	}
 	
 	public function is_session_admin () {

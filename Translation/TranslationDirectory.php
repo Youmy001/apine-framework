@@ -11,7 +11,9 @@ namespace Apine\Translation;
 /**
  * Language Finder Tool
  * Manage multi-language configuration
- * 
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Translation
  */
 final class TranslationDirectory {
 	
@@ -52,9 +54,6 @@ final class TranslationDirectory {
 		}
 		
 		if(!isset(self::$languages[$this->directory])) {
-			
-			//$array= [];
-			$array = array();
 			
 			// Find and instantiate every languages
 			foreach (scandir($this->directory) as $file) {
@@ -100,7 +99,7 @@ final class TranslationDirectory {
 	 * Verify if a language is available
 	 * 
 	 * @param string $a_language_code
-	 * @return boolean
+	 * @return <boolean|string>
 	 */
 	public function is_exist_language ($a_language_code) {
 		

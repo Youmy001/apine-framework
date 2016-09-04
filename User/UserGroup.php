@@ -9,14 +9,17 @@
 namespace Apine\User;
 
 use Apine;
+use Apine\Entity\EntityModel;
+use Apine\Entity\EntityInterface;
 
 /**
  * Implementation of the database representation of users groups
  * 
  * @author François Allard <allard.f@kitaiweb.ca>
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\User
  */
-class UserGroup extends Apine\Entity\EntityModel {
+class UserGroup extends EntityModel {
 
 	/**
 	 * User identifier in database
@@ -110,7 +113,7 @@ class UserGroup extends Apine\Entity\EntityModel {
 	}
 
 	/**
-	 * @see ApineEntityInterface::load()
+	 * @see EntityInterface::load()
 	 */
 	public function load () {
 
@@ -122,7 +125,7 @@ class UserGroup extends Apine\Entity\EntityModel {
 	}
 
 	/**
-	 * @see ApineEntityInterface::save()
+	 * @see EntityInterface::save()
 	 */
 	public function save () {
 
@@ -131,7 +134,7 @@ class UserGroup extends Apine\Entity\EntityModel {
 	}
 
 	/**
-	 * @see ApineEntityInterface::delete()
+	 * @see EntityInterface::delete()
 	 */
 	public function delete () {
 

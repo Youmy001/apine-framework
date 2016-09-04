@@ -15,6 +15,7 @@ use Apine\User\User;
  * Abstraction for session management using the strategy pattern
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Session
  */
 final class SessionManager {
 
@@ -49,7 +50,7 @@ final class SessionManager {
 	/**
 	 * Singleton design pattern implementation
 	 * 
-	 * @return ApineSession
+	 * @return SessionManager
 	 */
 	public static function get_instance () {
 		
@@ -121,11 +122,22 @@ final class SessionManager {
 	 *
 	 * @param integer $a_type
 	 *        Session access level type
+     * @return integer
 	 */
 	public static function set_session_type ($a_type) {
 		
 		return self::get_instance()->strategy->set_session_type($a_type);
 
+	}
+	
+	/**
+	 * Return current session lifespan
+	 *
+	 * @return integer
+	 */
+	public function get_session_lifespan () {
+	
+		return self::get_instance()->strategy->get_session_lifespan();
 	}
 	
 	/**
@@ -164,7 +176,7 @@ final class SessionManager {
 	/**
 	 * Log a user in
 	 *
-	 * @param string $user_name
+	 * @param string $username
 	 *        Username of the user
 	 * @param string $password
 	 *        Password of the user
@@ -196,7 +208,7 @@ final class SessionManager {
 	/**
 	 * Returns the session handler
 	 * 
-	 * @return ApineSessionInterface
+	 * @return SessionInterface
 	 */
 	public static function get_handler () {
 		

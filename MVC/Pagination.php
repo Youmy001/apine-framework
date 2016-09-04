@@ -1,13 +1,19 @@
 <?php
-
+/**
+ * Pagination utility
+ * This script contains a class that draws a pagination navigation
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 namespace Apine\MVC;
 
 /**
  * A class that draws a pagination navigation for a list of various
  * items.
+ *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
- * @package bokaro
- * @subpackage view
+ * @package Apine\MVC
  */
 class Pagination {
 
@@ -146,6 +152,11 @@ class Pagination {
 	
 	}
 
+    /**
+     * Return the first page in the pagination bar
+     *
+     * @return int
+     */
 	public function get_first_display_page() {
 
 		if ($this->type == APINE_PAGINATION_TYPE_PAGINATION) {
@@ -176,6 +187,11 @@ class Pagination {
 	
 	}
 
+    /**
+     * Return the number of the last page in the pagination bar
+     *
+     * @return int
+     */
 	public function get_last_display_page() {
 
 		if ($this->type == APINE_PAGINATION_TYPE_PAGINATION) {
@@ -206,6 +222,9 @@ class Pagination {
 	
 	}
 
+    /**
+     * Send the pagination bar to output
+     */
 	public function draw() {
 
 		if ($this->type == APINE_PAGINATION_TYPE_PAGINATION) {

@@ -10,6 +10,9 @@ namespace Apine\Entity;
 /**
  * This is the implementation of the factory
  * design patern.
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Entity
  */
 interface EntityFactoryInterface {
 

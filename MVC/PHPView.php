@@ -1,12 +1,19 @@
 <?php
+/**
+ * PHP View Abstraction
+ *
+ * @license MIT
+ * @copyright 2016 Tommy Teasdale
+ */
 namespace Apine\MVC;
 
 use Apine\Application as Application;
 
 /**
- * HTML View
+ * PHP View
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\MVC
  */
 final class PHPView extends View {
 

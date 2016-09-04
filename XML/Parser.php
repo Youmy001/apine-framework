@@ -1,49 +1,42 @@
 <?php
+/**
+ * XML Parser
+ * This script contains a parsing utility for XML documents
+ *
+ * @license MIT
+ * @copyright 2015 Tommy Teasdale
+ */
 namespace Apine\XML;
 
-/*
-/ Projet Marie-Delice 
-/ Classe modèle de lecture de XML pour l'application Web
-/ License : 
-/ Auteurs: Marc-André Douville Auger, Véronique Blais, Tommy Teasdale
-*/
+use \DOMNodeList;
 
-/*************************************************
- * Classe Parser
- * ---------------
- * Encapsulation des classes DOM_Document, DOM_Node et 
- * DOM_Element de PHP
+/**
+ * Class Parser
  *
- * Cette classe permet de lire un document XML. 
- *************************************************/
+ * Representation of a XML document specialized in parsing.
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\XML
+ * @deprecated
+ */
 class Parser extends XML {
-    
-    /*********************************************
-     * Méthode __construct
-     * ---------------
-     * Constructeur de la classe Parser
-     * 
-     * ENTRIES
-     *    null
-     * RETURN
-     *    null
-     *********************************************/
+
+    /**
+     * Parser constructor.
+     */
     public function __construct() {
     	
     	parent::__construct();
     	
     }
     
-    /*********************************************
-     * Méthode getElementById
-     * ---------------
-     * Obtenir un élément avec un Id
-     * 
-     * ENTRIES
-     *    INTEGER $a_id       Id de l'élément
-     * RETURN
-     *    Element $element    Element correspondant
-     *********************************************/
+    /**
+     * Fetch an element by its ID
+     *
+     * @param string $a_id
+     *          ID of the element
+     * @return Element
+     */
     public function getElementById($a_id) {
     	
     	if ($this->hasChildNodes()) {
@@ -62,16 +55,13 @@ class Parser extends XML {
        
     }
     
-    /*********************************************
-     * Méthode getElementByAttribute
-     * ---------------
-     * Obtenir les éléments avec un nom d'attribut
-     * 
-     * ENTRIES
-     *    STRING $a_attr      Nom de l'attribut
-     * RETURN
-     *    DOMNodeList         Liste d'éléments correspondant
-     *********************************************/
+    /**
+     * Fetch elements by attribute name
+     *
+     * @param string $a_attr
+     *          Name of the attribute
+     * @return DOMNodeList
+     */
     public function getElementsByAttribute($a_attr) {
 
 		$list = $this->DOM_document->createElement("list");
@@ -92,17 +82,15 @@ class Parser extends XML {
 	
 	}
     
-    /*********************************************
-     * Méthode getElementByAttributeValue
-     * ---------------
-     * Obtenir les éléments avec le nom et la valeur d'attribut
-     * 
-     * ENTRIES
-     *    STRING $a_attr      Nom de l'attribut
-     *    STRING $a_value     Valeur de l'attribut
-     * RETURN
-     *    DOMNodeList         Liste d'éléments correspondant
-     *********************************************/
+    /**
+     * Fetch elements matching an attribute's value
+     *
+     * @param string $a_attr
+     *          Name of the attribute
+     * @param string $a_value
+     *          Value of the attribute
+     * @return DOMNodeList
+     */
     public function getElementsByAttributeValue($a_attr, $a_value) {
 
 		$list = $this->DOM_document->createElement("list");
@@ -123,16 +111,14 @@ class Parser extends XML {
 	
 	}
     
-    /*********************************************
-     * Méthode getElementByTagName
-     * ---------------
-     * Obtenir les éléments avec le nom de l'élément
-     * 
-     * ENTRIES
-     *    STRING $a_name      Nom de l'élément
-     * RETURN
-     *    DOMNodeList $list   Liste d'éléments correspondant
-     *********************************************/
+    /**
+     * Fetch elements from the name of the tag
+     *
+     * @param string $a_name
+     *          Name of the tag
+     * @return DOMNodeList
+     *          Matching nodes
+     */
     public function getElementByTagName($a_name) {
 
 		$list = $this->DOM_document->getElementsByTagName($a_name);
@@ -145,69 +131,51 @@ class Parser extends XML {
 	
 	}
     
-     /*********************************************
-     * Méthode getLineNumber
-     * ---------------
-     * Obtenir le numéro de ligne de l'élément
-     * 
-     * ENTRIES
-     *    null
-     * RETURN
-     *    INTEGER             Numéro de line
-     *********************************************/
+    /**
+     * Get line number of the element
+     *
+     * @return int
+     */
     public function getLineNumber() {
 
 		return $this->DOM_document->getLineNo();
 	
 	}
     
-    /*********************************************
-     * Méthode hasAttributes
-     * ---------------
-     * Vérifier si il y a des attributs
-     * 
-     * ENTRIES
-     *    nul
-     * RETURN
-     *    BOOLEAN             Si il y a des attributs
-     *********************************************/
+    /**
+     * Verify if the document has attributes
+     *
+     * @return bool
+     */
     public function hasAttributes() {
 
 		return $this->DOM_document->hasAttributes();
 	
 	}
     
-    /*********************************************
-     * Méthode hasChildNodes
-     * ---------------
-     * Vérifier si il y a des nodes enfants
-     * 
-     * ENTRIES
-     *    nul
-     * RETURN
-     *    BOOLEAN             Si il y a des enfants
-     *********************************************/
+    /**
+     * Verify if the document has child nodes
+     *
+     * @return bool
+     */
     public function hasChildNodes() {
 
 		return $this->DOM_document->hasChildNodes();
 	
 	}
     
-    /*********************************************
-     * Méthode getChildNodes
-     * ---------------
-     * Obtenir les nodes enfants
-     * 
-     * ENTRIES
-     *    nul
-     * RETURN
-     *    DOMNodeList $list   Liste d'éléments correspondant
-     *********************************************/
+    /**
+     * Fetch nodes of the document
+     *
+     * @return DOMNodeList
+     */
     public function getChildNodes() {
 
 		if ($this->hasChildNodes()) {
 			return $this->getElementByTagName('*');
-		}
+		} else {
+		    return null;
+        }
 	
 	}
 	

@@ -12,6 +12,9 @@ namespace Apine\Core;
  * Cookie writing and reading tool
  * 
  * Tool to easily read and write cookies
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Core
  */
 final class Cookie {
 	
@@ -25,7 +28,8 @@ final class Cookie {
 	
 		if (isset($_COOKIE[$cookie_name]))
 			return $_COOKIE[$cookie_name];
-	
+	    else
+	        return false;
 	}
 	
 	/**
@@ -39,14 +43,14 @@ final class Cookie {
 	 */
 	public static function set ($cookie_name, $value, $expiration_time = 0) {
 	
-		$ar_domain = explode('.', $_SERVER['SERVER_NAME']);
+		/*$ar_domain = explode('.', $_SERVER['SERVER_NAME']);
 		
 		if (count($ar_domain) >= 3) {
 			$start = strlen($ar_domain[0]) + 1;
 			$main_session_server = substr($_SERVER['SERVER_NAME'], $start);
 		} else {
 			$main_session_server = $_SERVER['SERVER_NAME'];
-		}
+		}*/
 		
 		if ($expiration_time == 0) {
 			return setcookie($cookie_name, $value, null, '/');

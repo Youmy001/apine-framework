@@ -1,10 +1,17 @@
 <?php
+/**
+ * Redirection View Abstraction
+ *
+ * @license MIT
+ * @copyright 2016 Tommy Teasdale
+ */
 namespace Apine\MVC;
 
 /**
  * Redirection View
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\MVC
  */
 final class RedirectionView extends View {
 

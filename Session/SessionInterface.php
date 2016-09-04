@@ -1,6 +1,18 @@
 <?php
+/**
+ * This file contains the interface for sesssion managers
+ *
+ * @license MIT
+ * @copyright 2016 Tommy Teasdale
+ */
 namespace Apine\Session;
 
+/**
+ * Interface SessionInterface
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Session
+ */
 interface SessionInterface {
 
 	/**
@@ -9,7 +21,7 @@ interface SessionInterface {
 	public function is_logged_in ();
 
 	/**
-	 * @return ApineUser
+	 * @return \Apine\User\User
 	 */
 	public function get_user ();
 

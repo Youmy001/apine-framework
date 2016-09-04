@@ -11,6 +11,12 @@ namespace Apine\User\Factory;
 
 use Apine;
 
+/**
+ * Class UserFactory
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\User\Factory
+ */
 class UserFactory implements Apine\Entity\EntityFactoryInterface {
 
 	/**
@@ -70,7 +76,7 @@ class UserFactory implements Apine\Entity\EntityFactoryInterface {
 	}
 	/**
 	 * Fetch all users
-	 * @return ApineCollection
+	 * @return Apine\Core\Collection
 	 */
 	public static function create_all () {
 
@@ -93,7 +99,7 @@ class UserFactory implements Apine\Entity\EntityFactoryInterface {
 	 * 
 	 * @param integer $a_id
 	 *        User Identifier
-	 * @return ApineUser
+	 * @return Apine\User\User
 	 */
 	public static function create_by_id ($a_id) {
 		
@@ -119,7 +125,7 @@ class UserFactory implements Apine\Entity\EntityFactoryInterface {
 	 * 
 	 * @param string $name
 	 *        User username
-	 * @return ApineUser
+	 * @return Apine\User\User
 	 */
 	public static function create_by_name ($name) {
 
@@ -146,7 +152,7 @@ class UserFactory implements Apine\Entity\EntityFactoryInterface {
 	 * 
 	 * @param integer $access
 	 *        User Permission level
-	 * @return ApineCollection
+	 * @return Apine\Core\Collection
 	 */
 	public static function create_by_access_right ($access) {
 
@@ -170,7 +176,7 @@ class UserFactory implements Apine\Entity\EntityFactoryInterface {
 	 * 
 	 * @param integer $group
 	 *        User Group id
-	 * @return ApineCollection
+	 * @return Apine\Core\Collection
 	 */
 	public static function create_by_group ($group) {
 	

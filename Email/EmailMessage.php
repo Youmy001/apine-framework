@@ -17,6 +17,7 @@ use Apine\Exception\GenericException as GenericException;
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @uses PHPMailer
+ * @package Apine\Email;
  */
 class EmailMessage {
 
@@ -63,7 +64,7 @@ class EmailMessage {
 	 * 
 	 * @param string $a_address
 	 * @param string $a_name
-	 * @throws ApineException If invalid email address
+	 * @throws GenericException If invalid email address
 	 */
 	public function set_sender($a_address, $a_name = null) {
 		

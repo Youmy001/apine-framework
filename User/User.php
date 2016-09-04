@@ -8,13 +8,17 @@
 namespace Apine\User;
 
 use Apine;
+use Apine\Core\Collection;
+use Apine\Entity\EntityModel;
+use Apine\Entity\EntityInterface;
 
 /**
  * Implementation of the database representation of users
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\User
  */
-class User extends Apine\Entity\EntityModel {
+class User extends EntityModel {
 
 	/**
 	 * User identifier in database
@@ -216,7 +220,7 @@ class User extends Apine\Entity\EntityModel {
 	/**
 	 * Fetch user's group
 	 * 
-	 * @return ApineCollection
+	 * @return Collection
 	 */
 	final public function get_group () {
 	
@@ -231,8 +235,9 @@ class User extends Apine\Entity\EntityModel {
 	/**
 	 * Set user's group
 	 * 
-	 * @param ApineCollection $a_group_list
+	 * @param Collection $a_group_list
 	 *        List of User's groups
+     * @throws \Exception
 	 */
 	final public function set_group ($a_group_list) {
 		
@@ -251,10 +256,12 @@ class User extends Apine\Entity\EntityModel {
 			
 			if ($valid) {
 				$this->group = $a_group_list;
- 			}
+ 			} else {
+                throw new \Exception('Invalid Group List');
+            }
 		} else {
-			return null;
-		}
+		    throw new \Exception('Invalid Group List');
+        }
 		
 	}
 	
@@ -306,6 +313,7 @@ class User extends Apine\Entity\EntityModel {
 	 * 
 	 * @param string $a_email
 	 *        User's email address
+     * @throws \Exception
 	 */
 	final public function set_email_address ($a_email) {
 
@@ -317,7 +325,7 @@ class User extends Apine\Entity\EntityModel {
 			$this->email_address = $a_email;
 			$this->_set_field('email', $a_email);
 		} else {
-			return false;
+            throw new \Exception('Invalid Email Address');
 		}
 	
 	}
@@ -342,6 +350,7 @@ class User extends Apine\Entity\EntityModel {
 	 * 
 	 * @param string $a_timestamp
 	 *        User's registration date
+     * @throws \Exception
 	 */
 	final public function set_register_date ($a_timestamp) {
 
@@ -354,14 +363,19 @@ class User extends Apine\Entity\EntityModel {
 		} else if (is_long($a_timestamp) && date('u', $a_timestamp)) {
 			$this->register_date = date('Y-m-d H:i:s', $a_timestamp);
 		} else {
-			return false;
+            throw new \Exception('Invalid UNIX Timestamp');
 		}
 		
 		$this->_set_field('register', $this->register_date);
-		return $this->register_date;
 	
 	}
-	
+
+    /**
+     * Fetch a property
+     *
+     * @param string $a_name
+     * @return mixed
+     */
 	public function get_property ($a_name) {
 		
 		if (is_null($this->properties)) {
@@ -371,7 +385,12 @@ class User extends Apine\Entity\EntityModel {
 		return ($this->properties[$a_name]) ? $this->properties[$a_name]->get_value(): null;
 		
 	}
-	
+
+    /**
+     * Fetch every properties
+     *
+     * @return array
+     */
 	public function get_property_all () {
 		
 		if (is_null($this->properties)) {
@@ -381,7 +400,13 @@ class User extends Apine\Entity\EntityModel {
 		return $this->properties;
 		
 	}
-	
+
+    /**
+     * Set a property
+     *
+     * @param string $a_name
+     * @param mixed $a_value
+     */
 	public function set_property ($a_name, $a_value) {
 		
 		if (is_null($this->properties)) {
@@ -399,7 +424,12 @@ class User extends Apine\Entity\EntityModel {
 		}
 		
 	}
-	
+
+    /**
+     * Remove a property
+     *
+     * @param string $a_name
+     */
 	public function unset_property ($a_name) {
 		
 		if (is_null($this->properties)) {
@@ -412,7 +442,10 @@ class User extends Apine\Entity\EntityModel {
 		}
 		
 	}
-	
+
+    /**
+     * Load Properties
+     */
 	private function load_properties () {
 		
 		$database = new Apine\Core\Database();
@@ -428,7 +461,7 @@ class User extends Apine\Entity\EntityModel {
 	}
 	
 	/**
-	 * @see ApineEntityInterface::load()
+	 * @see EntityInterface::load()
 	 */
 	public function load () {
 
@@ -444,7 +477,7 @@ class User extends Apine\Entity\EntityModel {
 	}
 
 	/**
-	 * @see ApineEntityInterface::save()
+	 * @see EntityInterface::save()
 	 */
 	public function save () {
 		
@@ -469,7 +502,7 @@ class User extends Apine\Entity\EntityModel {
 	}
 
 	/**
-	 * @see ApineEntityInterface::delete()
+	 * @see EntityInterface::delete()
 	 */
 	public function delete () {
 		

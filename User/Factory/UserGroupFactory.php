@@ -8,18 +8,27 @@
 namespace Apine\User\Factory;
 
 use Apine;
+use Apine\Core\Collection;
+use Apine\Core\Database;
+use Apine\User\UserGroup;
 
+/**
+ * Class UserGroupFactory
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\User\Factory
+ */
 class UserGroupFactory implements Apine\Entity\EntityFactoryInterface {
 
 	/**
 	 * Verify if the identifier exists
 	 *
-	 * @param integer $user_id
+	 * @param integer $a_id
 	 * @return boolean
 	 */
 	public static function is_id_exist ($a_id) {
 
-		$database = new Apine\Core\Database();
+		$database = new Database();
 		$request = $database->select("SELECT `id` FROM `apine_user_groups` WHERE `id`=$a_id");
 		
 		if ($request != null && count($request) > 0) {
@@ -33,17 +42,17 @@ class UserGroupFactory implements Apine\Entity\EntityFactoryInterface {
 	/**
 	 * Fetch all user groups
 	 * 
-	 * @return ApineCollection
+	 * @return Collection
 	 */
 	public static function create_all () {
 
-		$database = new Apine\Core\Database();
+		$database = new Database();
 		$request = $database->select("SELECT `id` FROM `apine_user_groups` ORDER BY `id`");
-		$liste = new Apine\Core\Collection();
+		$liste = new Collection();
 		
 		if ($request != null && count($request) > 0) {
 			foreach ($request as $item) {
-				$liste->add_item(new Apine\User\UserGroup((int) $item['id']));
+				$liste->add_item(new UserGroup((int) $item['id']));
 			}
 		}
 		
@@ -55,15 +64,15 @@ class UserGroupFactory implements Apine\Entity\EntityFactoryInterface {
 	 * Fetch a user group by id
 	 * 
 	 * @param integer $a_id
-	 * @return ApineUserGroup
+	 * @return UserGroup
 	 */
 	public static function create_by_id ($a_id) {
 
-		$database = new Apine\Core\Database();
+		$database = new Database();
 		$request = $database->select("SELECT `id` FROM `apine_user_groups` WHERE `id`=$a_id");
 		
 		if ($request != null && count($request) > 0) {
-			$return = new Apine\User\UserGroup((int) $request[0]['id']);
+			$return = new UserGroup((int) $request[0]['id']);
 		}else{
 			$return = null;
 		}
@@ -77,13 +86,13 @@ class UserGroupFactory implements Apine\Entity\EntityFactoryInterface {
 	 * 
 	 * @param integer $user
 	 *        User id
-	 * @return ApineCollection
+	 * @return Collection
 	 */
 	public static function create_by_user ($user) {
 	
-		$database = new Apine\Core\Database();
+		$database = new Database();
 		$request = $database->select("SELECT `group_id` FROM `apine_users_user_groups` WHERE `user_id`=$user");
-		$liste = new Apine\Core\Collection();
+		$liste = new Collection();
 		
 		if ($request != null && count($request) > 0) {
 			foreach ($request as $item) {

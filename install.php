@@ -28,7 +28,6 @@ $loader->register();
 
 use Apine\Core\Request as Request;
 use Apine\Exception\GenericException as GenericException;
-use Apine\Routing\WebRouter as WebRouter;
 use Apine\Controllers\System as Controllers;
 
 $apine = new Apine\Application\Application();

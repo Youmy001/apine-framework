@@ -10,9 +10,21 @@ namespace Apine\Controllers\System;
 use Apine\Application as Application;
 use Apine\MVC as MVC;
 use Apine\Core as Core;
+use \Exception;
 
+/**
+ * Class ErrorController
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.comm>
+ * @package Apine\Controllers\System
+ */
 class ErrorController extends MVC\Controller {
-	
+
+    /**
+     * HTTP Status handled by the controller
+     *
+     * @var array
+     */
 	private $errors = array(
 			400 => ['title' => 'Bad Request', 'method' => 'badrequest'],
 			401 => ['title' => 'Unauthorized', 'method' => 'unauthorized'],
@@ -28,7 +40,10 @@ class ErrorController extends MVC\Controller {
 			503 => ['title' => 'Service Unavailable', 'method' => 'unavailable'],
 			504 => ['title' => 'Gateway Time-out', 'method' => 'gatewaytimeout']
 	);
-	
+
+    /**
+     * ErrorController constructor.
+     */
 	public function __construct() {
 		
 		parent::__construct();
@@ -38,8 +53,14 @@ class ErrorController extends MVC\Controller {
 		}
 		
 	}
-	
-	public function badrequest ($a_exception = null) {
+
+    /**
+     * Bad Request Error
+     *
+     * @param Exception $a_exception
+     * @return MVC\View
+     */
+	public function badrequest (Exception $a_exception = null) {
 		
 		if (null == ($title = Application\Translator::translate('errors', '400'))) {
 			$title = $this->errors[400]['title'];
@@ -48,8 +69,14 @@ class ErrorController extends MVC\Controller {
 		return $this->custom(400, $title, $a_exception);
 	
 	}
-	
-	public function unauthorized ($a_exception = null) {
+
+    /**
+     * Authorization Error
+     *
+     * @param Exception $a_exception
+     * @return MVC\View
+     */
+	public function unauthorized (Exception $a_exception = null) {
 	
 		if (null == ($title = Application\Translator::translate('errors', '401'))) {
 			$title = $this->errors[401]['title'];
@@ -58,8 +85,14 @@ class ErrorController extends MVC\Controller {
 		return $this->custom(401, $title, $a_exception);
 	
 	}
-	
-	public function forbidden ($a_exception = null) {
+
+    /**
+     * Permission Error
+     *
+     * @param Exception $a_exception
+     * @return MVC\View
+     */
+	public function forbidden (Exception $a_exception = null) {
 	
 		if (null == ($title = Application\Translator::translate('errors', '403'))) {
 			$title = $this->errors[403]['title'];
@@ -68,8 +101,14 @@ class ErrorController extends MVC\Controller {
 		return $this->custom(403, $title, $a_exception);
 	
 	}
-	
-	public function notfound ($a_exception = null) {
+
+    /**
+     * Not Found Error
+     *
+     * @param Exception $a_exception
+     * @return MVC\View
+     */
+	public function notfound (Exception $a_exception = null) {
 		
 		if (null == ($title = Application\Translator::translate('errors', '404'))) {
 			$title = $this->errors[404]['title'];
@@ -78,8 +117,14 @@ class ErrorController extends MVC\Controller {
 		return $this->custom(404, $title, $a_exception);
 		
 	}
-	
-	public function methodnotallowed ($a_exception = null) {
+
+    /**
+     * Request Method Error
+     *
+     * @param Exception $a_exception
+     * @return MVC\View
+     */
+	public function methodnotallowed (Exception $a_exception = null) {
 	
 		if (null == ($title = Application\Translator::translate('errors', '405'))) {
 			$title = $this->errors[405]['title'];
@@ -88,8 +133,14 @@ class ErrorController extends MVC\Controller {
 		return $this->custom(405, $title, $a_exception);
 	
 	}
-	
-	public function notacceptable ($a_exception = null) {
+
+    /**
+     * Accepted Content Error
+     *
+     * @param Exception $a_exception
+     * @return MVC\View
+     */
+	public function notacceptable (Exception $a_exception = null) {
 	
 		if (null == ($title = Application\Translator::translate('errors', '406'))) {
 			$title = $this->errors[406]['title'];
@@ -98,8 +149,14 @@ class ErrorController extends MVC\Controller {
 		return $this->custom(406, $title, $a_exception);
 	
 	}
-	
-	public function gone ($a_exception = null) {
+
+    /**
+     * Gone Error
+     *
+     * @param Exception $a_exception
+     * @return MVC\View
+     */
+	public function gone (Exception $a_exception = null) {
 		
 		if (null == ($title = Application\Translator::translate('errors', '410'))) {
 			$title = $this->errors[410]['title'];
@@ -108,8 +165,14 @@ class ErrorController extends MVC\Controller {
 		return $this->custom(410, $title, $a_exception);
 		
 	}
-	
-	public function teapot ($a_exception = null) {
+
+    /**
+     * Teapot Error
+     *
+     * @param Exception $a_exception
+     * @return MVC\View
+     */
+	public function teapot (Exception $a_exception = null) {
 	
 		if (null == ($title = Application\Translator::translate('errors', '418'))) {
 			$title = $this->errors[418]['title'];
@@ -118,8 +181,14 @@ class ErrorController extends MVC\Controller {
 		return $this->custom(418, $title, $a_exception);
 	
 	}
-	
-	public function server ($a_exception = null) {
+
+    /**
+     * Server Error
+     *
+     * @param Exception $a_exception
+     * @return MVC\View
+     */
+	public function server (Exception $a_exception = null) {
 		
 		if (null == ($title = Application\Translator::translate('errors', '500'))) {
 			$title = $this->errors[500]['title'];
@@ -128,8 +197,14 @@ class ErrorController extends MVC\Controller {
 		return $this->custom(500, $title, $a_exception);
 		
 	}
-	
-	public function notimplemented ($a_exception = null) {
+
+    /**
+     * Implementation Error
+     *
+     * @param Exception $a_exception
+     * @return MVC\View
+     */
+	public function notimplemented (Exception $a_exception = null) {
 	
 		if (null == ($title = Application\Translator::translate('errors', '501'))) {
 			$title = $this->errors[501]['title'];
@@ -138,8 +213,14 @@ class ErrorController extends MVC\Controller {
 		return $this->custom(501, $title, $a_exception);
 	
 	}
-	
-	public function badgateway ($a_exception = null) {
+
+    /**
+     * Gateway Error
+     *
+     * @param Exception $a_exception
+     * @return MVC\View
+     */
+	public function badgateway (Exception $a_exception = null) {
 	
 		if (null == ($title = Application\Translator::translate('errors', '502'))) {
 			$title = $this->errors[502]['title'];
@@ -148,8 +229,14 @@ class ErrorController extends MVC\Controller {
 		return $this->custom(502, $title, $a_exception);
 	
 	}
-	
-	public function unavailable ($a_exception = null) {
+
+    /**
+     * Service Error
+     *
+     * @param Exception $a_exception
+     * @return MVC\View
+     */
+	public function unavailable (Exception $a_exception = null) {
 	
 		if (null == ($title = Application\Translator::translate('errors', '503'))) {
 			$title = $this->errors[503]['title'];
@@ -158,8 +245,14 @@ class ErrorController extends MVC\Controller {
 		return $this->custom(503, $title, $a_exception);
 	
 	}
-	
-	public function gatewaytimeout ($a_exception = null) {
+
+    /**
+     * Gateway Timeout Error
+     *
+     * @param Exception $a_exception
+     * @return MVC\View
+     */
+	public function gatewaytimeout (Exception $a_exception = null) {
 	
 		if (null == ($title = Application\Translator::translate('errors', '504'))) {
 			$title = $this->errors[504]['title'];
@@ -168,8 +261,16 @@ class ErrorController extends MVC\Controller {
 		return $this->custom(504, $title, $a_exception);
 	
 	}
-	
-	public function custom ($a_code, $a_message, $a_exception = null) {
+
+    /**
+     * Error view generation
+     *
+     * @param string|integer $a_code
+     * @param string $a_message
+     * @param Exception $a_exception
+     * @return MVC\View
+     */
+	public function custom ($a_code, $a_message, Exception $a_exception = null) {
 		
 		$this->_view->set_param('code', $a_code);
 		$this->_view->set_param('message', $a_message);
@@ -198,13 +299,25 @@ class ErrorController extends MVC\Controller {
 		return $this->_view;
 		
 	}
-	
+
+    /**
+     * Get the appropriate method for a status code
+     *
+     * @param string|integer $a_code
+     * @return boolean
+     */
 	public function method_for_code ($a_code) {
 		
 		return (isset($this->errors[$a_code])) ? $this->errors[$a_code]['method'] : false;
 		
 	}
-	
+
+    /**
+     * Verify a status code is handled by the controller
+     * 
+     * @param string|integer $a_code
+     * @return boolean
+     */
 	private function is_http_code ($a_code) {
 		
 		return (isset($this->errors[$a_code]));

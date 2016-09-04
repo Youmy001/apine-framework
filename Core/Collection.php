@@ -8,10 +8,15 @@
  */
 namespace Apine\Core;
 
+use Exception;
+
 /**
- * Liste Collection
+ * Collection
  * 
  * Traversable collection that mimics an array while providing easy to use features
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Core
  */
 final class Collection implements \IteratorAggregate {
 
@@ -48,7 +53,7 @@ final class Collection implements \IteratorAggregate {
 			
 			// Retrieve and return the key
 			return array_search($a_item, $this->items, true);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			return false;
 		}
 	
@@ -71,15 +76,15 @@ final class Collection implements \IteratorAggregate {
 				if ($this->key_exists($a_key)) {
 					unset($this->items[$a_key]);
 				} else {
-					throw new \Exception();
+					throw new Exception();
 				}
 				
 			} else {
-				throw new \Exception();
+				throw new Exception();
 			}
 			
 			return true;
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			return false;
 		}
 	
@@ -98,16 +103,16 @@ final class Collection implements \IteratorAggregate {
 		try {
 			
 			if ($this->length() == 0) {
-				throw new \Exception();
+				throw new Exception();
 			}
 			
 			if ($this->key_exists($a_key)) {
 				return $this->items[$a_key];
 			} else {
-				throw new \Exception();
+				throw new Exception();
 			}
 			
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
 			return false;
 		}
 	
@@ -123,11 +128,11 @@ final class Collection implements \IteratorAggregate {
 		try {
 			
 			if ($this->length() == 0) {
-				throw new \Exception();
+				throw new Exception();
 			}
 			
 			return $this->items;
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			return array();
 		}
 	
@@ -143,11 +148,11 @@ final class Collection implements \IteratorAggregate {
 		try {
 			
 			if ($this->length() == 0) {
-				throw new \Exception();
+				throw new Exception();
 			}
 			
 			return reset($this->items);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			return false;
 		}
 	
@@ -163,11 +168,11 @@ final class Collection implements \IteratorAggregate {
 		try {
 			
 			if ($this->length() == 0) {
-				throw new \Exception();
+				throw new Exception();
 			}
 			
 			return end($this->items);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			return false;
 		}
 	
@@ -183,7 +188,7 @@ final class Collection implements \IteratorAggregate {
 		try {
 			$this->items = array_reverse($this->items);
 			return true;
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			return false;
 		}
 	
@@ -238,11 +243,11 @@ final class Collection implements \IteratorAggregate {
 		try {
 			
 			if ($this->length() == 0) {
-				throw new \Exception();
+				throw new Exception();
 			}
 			
 			return (isset($this->items[$a_key]));
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			return false;
 		}
 	
@@ -280,14 +285,14 @@ final class Collection implements \IteratorAggregate {
 			}
 			
 			return false;
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
 			return false;
 		}
 		
 	}
 
 	/**
-	 * Get Liste's iterator (non-PHPdoc)
+	 * Get Collection iterator (non-PHPdoc)
 	 * 
 	 * @see IteratorAggregate::getIterator()
 	 */

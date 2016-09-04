@@ -11,6 +11,9 @@ namespace Apine\Translation;
 /**
  * Translation Language
  * Representation of a language for translations
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Translation
  */
 final class TranslationLanguage {
 	

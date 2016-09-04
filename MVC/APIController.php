@@ -13,13 +13,14 @@ namespace Apine\MVC;
  * Describes basics for user API controllers
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\MVC
  */
 abstract class APIController implements APIActionsInterface {
 
 	/**
 	 * Controller ApineView
 	 *
-	 * @var ApineJSONView
+	 * @var JSONView
 	 */
 	protected $_view;
 

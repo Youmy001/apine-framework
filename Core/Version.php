@@ -14,6 +14,7 @@ use Apine\Exception\GenericException;
  * Verifies version numbers for modules
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Core
  */
 final class Version {
 	
