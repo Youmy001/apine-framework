@@ -32,6 +32,9 @@ define('APINE_PAGINATION_TYPE_PAGER', 110);
  * @param string $str        
  * @param integer $l
  * @return string
+ *
+ * @author qerery <qeremy@gmail.com>
+ * @see http://us.php.net/str_split#107658
  */
 function str_split_unicode ($str, $l = 0) {
 
