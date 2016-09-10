@@ -92,7 +92,7 @@ final class APISession implements SessionInterface{
 			$data = $session->data();
 
 			if ($data != null) {
-				$user_id = $data->get_var('id');
+				$user_id = $data->get_var('apine_user_id');
 
 				if ($user_id != null) {
 					$user = UserFactory::create_by_id($user_id);
@@ -100,7 +100,7 @@ final class APISession implements SessionInterface{
 					$token->set_user($user);
 					$this->logged_in = true;
 					$this->token = $token;
-					$this->session_type = $data->get_var('type');
+					$this->session_type = $data->get_var('apine_user_type');
 					$this->token->set_last_access_date(date('d M Y H:i:s',time() + $this->token_lifespan));
 				}
 			}

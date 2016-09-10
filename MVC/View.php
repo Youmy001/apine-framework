@@ -162,6 +162,8 @@ abstract class View {
 	
 	/**
 	 * Return the content of the view
+	 *
+	 * @return string
 	 */
 	abstract public function content();
 	
