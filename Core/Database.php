@@ -59,23 +59,24 @@ final class Database {
      * @param string $db_type
      * @param string $db_host
      * @param string $db_name
+     * @param string $db_port
      * @param string $db_user
      * @param string $db_password
      * @param string $db_charset
 	 * @throws DatabaseException If cannot connect to database server
 	 */
-	public function __construct ($db_type = null, $db_host = null, $db_name = null, $db_user = 'root', $db_password = '', $db_charset = 'utf8') {
+	public function __construct ($db_type = null, $db_host = null, $db_name = null, $db_port = '3306', $db_user = 'root', $db_password = '', $db_charset = 'utf8') {
 
 		try {
 			if (!is_null($db_type) && !is_null($db_host) && !is_null($db_name)) {
-				$this->instance = new \PDO($db_type . ':host=' . $db_host . ';dbname=' . $db_name . ';charset=' . $db_charset, $db_user, $db_password);
+				$this->instance = new \PDO($db_type . ':host=' . $db_host . ';dbname=' . $db_name . ';port=' . $db_port . ';charset=' . $db_charset, $db_user, $db_password);
 				$this->instance->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 				$this->instance->exec('SET time_zone = "+00:00";');
 			} else { 
 				if (!isset(self::$apine_instance)) {
 					try {
 						$config = Application::get_instance()->get_config();
-						self::$apine_instance = new \PDO($config->get('database', 'type').':host='.$config->get('database', 'host').';dbname='.$config->get('database', 'dbname').';charset='.$config->get('database', 'charset'), $config->get('database', 'username'), $config->get('database', 'password'));
+						self::$apine_instance = new \PDO($config->get('database', 'type').':host='.$config->get('database', 'host').';dbname='.$config->get('database', 'dbname').';port=' . $config->get('database', 'port') . ';charset='.$config->get('database', 'charset'), $config->get('database', 'username'), $config->get('database', 'password'));
 						self::$apine_instance->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 						self::$apine_instance->exec('SET time_zone = "+00:00";');
 					} catch (\PDOException $e) {
