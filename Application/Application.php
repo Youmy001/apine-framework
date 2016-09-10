@@ -40,7 +40,7 @@ final class Application {
 	 * 
 	 * @var string
 	 */
-	private $apine_version = '1.0.1';
+	private $apine_version = '1.0.2';
 	
 	/**
 	 * Version number of the user application

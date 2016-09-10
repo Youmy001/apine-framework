@@ -23,7 +23,7 @@ APIne Framework is available as a Composer Package on Packagist as well as a sta
 
 ### With Composer
 
-Add the following line to your composer.json file : `"youmy001/apine-framework": "~1.*"`.
+Add the following line to your composer.json file : `"youmy001/apine-framework": ^1.0.2"`.
 Or enter this command : `$ composer require youmy001/apine-framework`.
 
 ### Standalone
