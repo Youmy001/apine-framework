@@ -17,8 +17,8 @@
 	"require": {
 		"php": ">=5.6.0",
 		"phpmailer/phpmailer": "^5.2",
-       "geoip/geoip": "~1.14",
-       "binarmorker/tinytemplate": ">=1.1"
+		"geoip/geoip": "~1.14",
+		"binarmorker/tinytemplate": ">=1.1"
     },
     "autoload": {
     	"files" : [
