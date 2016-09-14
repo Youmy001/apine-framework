@@ -7,7 +7,6 @@
  */
 namespace Apine\Entity;
 
-use Apine\Exception\GenericException;
 use \DateTime;
 use Apine\Core\Database;
 
@@ -19,7 +18,7 @@ use Apine\Core\Database;
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\Entity
  */
-abstract class EntityModel implements EntityInterface {
+abstract class OverloadEntityModel implements EntityInterface {
 
 	/**
 	 * In-database entity identifier
@@ -79,14 +78,64 @@ abstract class EntityModel implements EntityInterface {
 	/**
 	 * Name of the primary key field
 	 *
-	 * @var string $load_field
+	 * @var string $primary_key
 	 */
 	private $primary_key;
+
+	protected $field_mapping = array();
+
+	final public function __call ($a_name, $a_arguments) {
+
+		if (!$this->loaded) {
+			$this->_property_load();
+		}
+
+		$action = substr($a_name, 0, 3);
+		$property = strtolower(substr($a_name, 4));
+
+		switch ($action) {
+			case 'get':
+				if (property_exists($this, $property)) {
+					return $this->{$property};
+				} else {
+					$trace = debug_backtrace();
+					trigger_error('Undefined property  ' . $a_name . ' in ' . $trace[0]['file'] . ' on line ' . $trace[0]['line'], E_USER_NOTICE);
+					return null;
+				}
+				break;
+			case 'set':
+				if (property_exists($this, $property)) {
+					$this->{$property} = $a_arguments[0];
+
+					if (is_array($this->field_mapping) && (false !== ($field = array_search($property, $this->field_mapping)))) {
+						$this->_set_field($field, $a_arguments[0]);
+					} else {
+						$this->_set_field($property, $a_arguments[0]);
+					}
+
+					if ($property === $this->primary_key) {
+						$this->_set_id($a_arguments[0]);
+					}
+				} else {
+					$trace = debug_backtrace();
+					trigger_error('Undefined property  ' . $a_name . ' in ' . $trace[0]['file'] . ' on line ' . $trace[0]['line'], E_USER_NOTICE);
+					return null;
+				}
+				break;
+			default:
+				return false;
+		}
+
+	}
+
+	final protected function _load () {
+		$this->_property_load();
+	}
 
 	/**
 	 * Fetch database fields and values for entity
 	 */
-	final protected function _load () {
+	final protected function _database_load () {
 
 		$db = new Database();
 
@@ -114,6 +163,37 @@ abstract class EntityModel implements EntityInterface {
 	}
 
 	/**
+	 * Load database values into entity properties
+	 */
+	final protected function _property_load () {
+
+		if (!$this->loaded) {
+			if ($this->field_loaded == 0) {
+				$this->_database_load();
+			}
+
+			if ($this->entity_id !== null) {
+				foreach ($this->database_fields as $name => $value) {
+					if (is_array($this->field_mapping) && isset($this->field_mapping[$name])) {
+						$field = $name;
+						$name = $this->field_mapping[$name];
+						//$this->{$this->field_mapping[$name]} = $this->_get_field($name);
+					} else {
+						$field = $name;
+					}
+
+					if (property_exists($this, $name) && empty($this->{$name})) {
+						$this->{$name} = $this->_get_field($field);
+					}
+				}
+
+				$this->loaded = 1;
+			}
+		}
+
+	}
+
+	/**
 	 * Mark entity has loaded
 	 */
 	final protected function _force_loaded () {
@@ -133,12 +213,6 @@ abstract class EntityModel implements EntityInterface {
 
 	}
 
-	final protected function _is_field_loaded () {
-
-		return (bool) $this->field_loaded;
-
-	}
-
 	/**
 	 * Fetch a field's value
 	 *
@@ -150,7 +224,7 @@ abstract class EntityModel implements EntityInterface {
 
 		// Load entity if not loaded yet
 		if ($this->field_loaded == 0) {
-			$this->_load();
+			$this->_database_load();
 		}
 
 		if (isset($this->database_fields[$a_field])) {
@@ -177,7 +251,7 @@ abstract class EntityModel implements EntityInterface {
 
 		// Load entity if not loaded yet
 		if ($this->field_loaded == 0) {
-			$this->_load();
+			$this->_database_load();
 		}
 
 		return $this->database_fields;
@@ -218,12 +292,6 @@ abstract class EntityModel implements EntityInterface {
 
 	}
 
-	final protected function _get_primary_key () {
-
-		return $this->primary_key;
-
-	}
-
 	/**
 	 * Set entity table name
 	 *
@@ -252,6 +320,10 @@ abstract class EntityModel implements EntityInterface {
 		$this->entity_id = $tuple_id;
 		$this->primary_key = $field_name;
 
+		if (property_exists($this, $field_name)) {
+			$this->{$field_name} = $tuple_id;
+		}
+
 	}
 
 	/**
@@ -265,7 +337,7 @@ abstract class EntityModel implements EntityInterface {
 	final protected function _set_field ($field, $value) {
 
 		if ($this->field_loaded == 0) {
-			$this->_load();
+			$this->_database_load();
 		}
 
 		if (is_timestamp($value) && !is_numeric($value)) {
@@ -299,7 +371,7 @@ abstract class EntityModel implements EntityInterface {
 	/**
 	 * Save Entity state to database
 	 */
-	final protected function _save () {
+	final private function _save () {
 
 		$db = new Database();
 
@@ -320,10 +392,16 @@ abstract class EntityModel implements EntityInterface {
 			}
 
 			if (sizeof($new_dbf) > 0) {
-				$this->entity_id = $db->insert($this->table_name, $new_dbf);
+				$new_id = $db->insert($this->table_name, $new_dbf);
+
+				if (property_exists($this, $this->primary_key)) {
+					$this->set_{$this->primary_key} = $new_id;
+				} else {
+					$this->entity_id = $new_id;
+				}
 			}
 
-			$this->_load();
+			$this->_database_load();
 		} else {
 			// This is an already existing entity
 
@@ -345,6 +423,20 @@ abstract class EntityModel implements EntityInterface {
 				));
 			}
 		}
+
+	}
+
+	public function load () {}
+
+	public function save () {
+
+		$this->_save();
+
+	}
+
+	public function delete () {
+
+		$this->_destroy();
 
 	}
 

@@ -9,7 +9,7 @@ namespace Apine\User;
 
 use Apine;
 use Apine\Core\Collection;
-use Apine\Entity\EntityModel;
+use Apine\Entity\OverloadEntityModel;
 use Apine\Entity\EntityInterface;
 
 /**
@@ -18,7 +18,7 @@ use Apine\Entity\EntityInterface;
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\User
  */
-class User extends EntityModel {
+class User extends OverloadEntityModel {
 
 	/**
 	 * User identifier in database
@@ -76,6 +76,11 @@ class User extends EntityModel {
 	 */
 	protected $properties;
 
+	protected $field_mapping = array(
+		'register' => 'register_date',
+		'email' => 'email_address'
+	);
+
 	/**
 	 * User class' constructor
 	 * 
@@ -85,135 +90,6 @@ class User extends EntityModel {
 	public function __construct ($a_id = null) {
 
 		$this->_initialize('apine_users', $a_id);
-		
-		if (!is_null($a_id)) {
-			$this->id = $a_id;
-		}
-	
-	}
-
-	/**
-	 * Fetch user's identifier
-	 * 
-	 * @return integer
-	 */
-	final public function get_id () {
-		
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
-		return $this->id;
-	
-	}
-
-	/**
-	 * Set user's id
-	 * 
-	 * @param integer $a_id
-	 *        User's identifier
-	 */
-	final public function set_id ($a_id) {
-
-		$this->id = $a_id;
-		$this->_set_id($a_id);
-		$this->_set_field('id', $a_id);
-	
-	}
-
-	/**
-	 * Fetch user's username
-	 * 
-	 * @return string
-	 */
-	final public function get_username () {
-
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
-		return $this->username;
-	
-	}
-
-	/**
-	 * Set user's username
-	 * 
-	 * @param string $a_name
-	 *        User's username
-	 */
-	final public function set_username ($a_name) {
-
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
-		$this->username = $a_name;
-		$this->_set_field('username', $a_name);
-	
-	}
-
-	/**
-	 * Fetch user's encrypted password
-	 * 
-	 * @return string
-	 */
-	final public function get_password () {
-
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
-		return $this->password;
-	
-	}
-
-	/**
-	 * Set user's encrypted password
-	 * 
-	 * @param string $a_pass
-	 *        User's password
-	 */
-	final public function set_password ($a_pass) {
-
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
-		$this->password = $a_pass;
-		$this->_set_field('password', $a_pass);
-	
-	}
-
-	/**
-	 * Fetch user's permission level
-	 * 
-	 * @return integer
-	 */
-	final public function get_type () {
-
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
-		return $this->type;
-	
-	}
-
-	/**
-	 * Set user's permission level
-	 * 
-	 * @param integer $a_type
-	 *        User's permissions
-	 */
-	final public function set_type ($a_type) {
-
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
-		$this->type = $a_type;
-		$this->_set_field('type', $a_type);
 	
 	}
 	
@@ -225,7 +101,7 @@ class User extends EntityModel {
 	final public function get_group () {
 	
 		if ($this->group == null) {
-			$this->group= Factory\UserGroupFactory::create_by_user($this->id);
+			$this->group= Factory\UserGroupFactory::create_by_user($this->get_id());
 		}
 		
 		return $this->group;
@@ -241,10 +117,6 @@ class User extends EntityModel {
 	 */
 	final public function set_group ($a_group_list) {
 		
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-	
 		if (is_a($a_group_list, 'Apine\Core\Collection')) {
 			$valid=true;
 			
@@ -274,7 +146,7 @@ class User extends EntityModel {
 	final public function has_group ($a_group) {
 		
 		if ($this->group == null) {
-			$this->group=Factory\UserGroupFactory::create_by_user($this->id);
+			$this->group=Factory\UserGroupFactory::create_by_user($this->get_id());
 		}
 		
 		if (is_numeric($a_group)) {
@@ -294,21 +166,6 @@ class User extends EntityModel {
 	}
 
 	/**
-	 * Fetch user's email address
-	 * 
-	 * @return string
-	 */
-	final public function get_email_address () {
-
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
-		return $this->email_address;
-	
-	}
-
-	/**
 	 * Set user's email address
 	 * 
 	 * @param string $a_email
@@ -317,31 +174,11 @@ class User extends EntityModel {
 	 */
 	final public function set_email_address ($a_email) {
 
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
-		if (filter_var($a_email, FILTER_VALIDATE_EMAIL)) {
-			$this->email_address = $a_email;
-			$this->_set_field('email', $a_email);
-		} else {
+		if (!filter_var($a_email, FILTER_VALIDATE_EMAIL)) {
             throw new \Exception('Invalid Email Address');
 		}
-	
-	}
 
-	/**
-	 * Fetch user's registration date
-	 * 
-	 * @return string
-	 */
-	final public function get_register_date () {
-
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
-		return $this->register_date;
+		parent::set_email_address($a_email);
 	
 	}
 
@@ -353,20 +190,16 @@ class User extends EntityModel {
      * @throws \Exception
 	 */
 	final public function set_register_date ($a_timestamp) {
-
-		if ($this->loaded == 0) {
-			$this->load();
-		}
 		
 		if (is_string($a_timestamp) && strtotime($a_timestamp)) {
-			$this->register_date = date('Y-m-d H:i:s', strtotime($a_timestamp));
+			$register_date = date('Y-m-d H:i:s', strtotime($a_timestamp));
 		} else if (is_long($a_timestamp) && date('u', $a_timestamp)) {
-			$this->register_date = date('Y-m-d H:i:s', $a_timestamp);
+			$register_date = date('Y-m-d H:i:s', $a_timestamp);
 		} else {
             throw new \Exception('Invalid UNIX Timestamp');
 		}
 		
-		$this->_set_field('register', $this->register_date);
+		parent::set_register_date($register_date);
 	
 	}
 
@@ -459,30 +292,13 @@ class User extends EntityModel {
 		}
 		
 	}
-	
-	/**
-	 * @see EntityInterface::load()
-	 */
-	public function load () {
-
-		if (!is_null($this->id)) {
-			$this->username = $this->_get_field('username');
-			$this->password = $this->_get_field('password');
-			$this->type = $this->_get_field('type');
-			$this->email_address = $this->_get_field('email');
-			$this->register_date = $this->_get_field('register');
-			$this->loaded = 1;
-		}
-	
-	}
 
 	/**
 	 * @see EntityInterface::save()
 	 */
 	public function save () {
 		
-		parent::_save();
-		$this->set_id($this->_get_id());
+		parent::save();
 		
 		if ($this->get_group()->length() > 0) { 
 			$db = new Apine\Core\Database();
@@ -506,14 +322,10 @@ class User extends EntityModel {
 	 */
 	public function delete () {
 		
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
 		$db = new Apine\Core\Database();
 		$db->delete('apine_users_user_groups', array("user_id" => $this->get_id()));
 
-		parent::_destroy();
+		parent::delete();
 		
 	}
 
