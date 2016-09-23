@@ -31,10 +31,15 @@ final class Encryption {
 		if (!Application\Config::get('runtime', 'encryption_key')) {
 			self::generate_key();
 		}
-		
-		$iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
-		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-		$encrypted_string = mcrypt_encrypt(MCRYPT_BLOWFISH, Application\Config::get('runtime', 'encryption_key'), utf8_encode($origin_string), MCRYPT_MODE_ECB, $iv);
+
+		if (Application\Config::get('runtime', 'encryption_method') !== 'ssl') {
+			$iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
+			$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+			$encrypted_string = mcrypt_encrypt(MCRYPT_BLOWFISH, Application\Config::get('runtime', 'encryption_key'), utf8_encode($origin_string), MCRYPT_MODE_ECB, $iv);
+		} else {
+			$iv = substr(Application\Config::get('runtime', 'encryption_key'), 0, 16);
+			$encrypted_string = openssl_encrypt($origin_string, 'AES128', Application\Config::get('runtime', 'encryption_key'), 0, $iv);
+		}
 		
 		return $encrypted_string;
 		
@@ -51,10 +56,15 @@ final class Encryption {
 		if (!Application\Config::get('runtime', 'encryption_key')) {
 			self::generate_key();
 		}
-		
-		$iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
-		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-		$decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, Application\Config::get('runtime', 'encryption_key'), $encrypted_string, MCRYPT_MODE_ECB, $iv);
+
+		if (Application\Config::get('runtime', 'encryption_method') !== 'ssl') {
+			$iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
+			$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+			$decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, Application\Config::get('runtime', 'encryption_key'), $encrypted_string, MCRYPT_MODE_ECB, $iv);
+		} else {
+			$iv = substr(Application\Config::get('runtime', 'encryption_key'), 0, 16);
+			$decrypted_string = openssl_decrypt($encrypted_string, 'AES128', Application\Config::get('runtime', 'encryption_key'), 0, $iv);
+		}
 		
 		return $decrypted_string;
 		
