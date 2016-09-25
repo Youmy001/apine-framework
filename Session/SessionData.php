@@ -9,7 +9,7 @@ namespace Apine\Session;
 
 use Apine\Core\Cookie;
 use Apine\Core\Encryption;
-use Apine\Entity\EntityModel;
+use Apine\Entity\Overload\EntityModel;
 
 /**
  * Manage data for a session
@@ -24,7 +24,7 @@ final class SessionData extends EntityModel {
 	 * 
 	 * @var string
 	 */
-	public $session_id;
+	protected $session_id;
 	
 	/**
 	 * Data saved in the session
@@ -37,7 +37,14 @@ final class SessionData extends EntityModel {
 	 * Time of the last access to the session
 	 * @var string
 	 */
-	private $last_access;
+	protected $last_access;
+
+	/**
+	 * @see EntityModel::$field_mapping
+	 */
+	protected $field_mapping = array(
+		'id' => 'session_id'
+	);
 	
 	/**
 	 * SessionData class' constructor
@@ -55,7 +62,7 @@ final class SessionData extends EntityModel {
 			$this->session_id = Encryption::token();
 		}
 		
-		$this->_initialize('apine_sessions', $this->session_id);
+		$this->initialize('apine_sessions', $this->session_id);
 		
 	}
 	
@@ -67,11 +74,7 @@ final class SessionData extends EntityModel {
 	 */
 	public function is_valid ($delay = 7200) {
 		
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
-		return (strtotime($this->last_access) > time() - $delay);
+		return (strtotime($this->get_last_access()) > time() - $delay);
 		
 	}
 	
@@ -83,7 +86,7 @@ final class SessionData extends EntityModel {
 	 */
 	public function get_var ($a_name) {
 		
-		if ($this->loaded == 0) {
+		if ($this->data === null) {
 			$this->load();
 		}
 		
@@ -101,7 +104,7 @@ final class SessionData extends EntityModel {
 	 */
 	public function set_var ($a_name, $a_value) {
 		
-		if ($this->loaded == 0) {
+		if ($this->data === null) {
 			$this->load();
 		}
 		
@@ -116,7 +119,7 @@ final class SessionData extends EntityModel {
 	 */
 	public function remove_var ($a_name) {
 		
-		if ($this->loaded == 0) {
+		if ($this->data === null) {
 			$this->load();
 		}
 		
@@ -129,7 +132,7 @@ final class SessionData extends EntityModel {
 	 */
 	public function reset () {
 		
-		if ($this->loaded == 0) {
+		if ($this->data === null) {
 			$this->load();
 		}
 		
@@ -138,38 +141,28 @@ final class SessionData extends EntityModel {
 	}
 	
 	/**
-	 *
 	 * @see EntityInterface::load()
 	 */
 	public function load () {
 		
-		$this->data = json_decode($this->_get_field('data'), true);
-		$this->last_access = $this->_get_field('last_access');
-		$this->loaded = 1;
+		$this->data = json_decode($this->get('data'), true);
 		
 	}
 	
 	/**
-	 *
 	 * @see EntityInterface::save()
 	 */
 	public function save () {
+
+		if (is_null($this->data)) {
+			$this->load();
+		}
 		
-		$this->_set_field('id', $this->session_id);
-		$this->_set_field('data', json_encode($this->data));
-		$this->_set_field('last_access', date('Y-m-d H:i:s', time()));
+		$this->set('id', $this->session_id);
+		$this->set('data', json_encode($this->data));
+		$this->set('last_access', date('Y-m-d H:i:s', time()));
 		
-		$this->_save();
-		
-	}
-	
-	/**
-	 *
-	 * @see EntityInterface::delete()
-	 */
-	public function delete () {
-		
-		$this->_destroy();
+		parent::save();
 		
 	}
 	
@@ -178,7 +171,7 @@ final class SessionData extends EntityModel {
 	 */
 	public function __destruct() {
 		
-		$this->save();
+		static::save();
 		
 	}
 	

@@ -9,23 +9,25 @@ namespace Apine\User;
 
 use Apine;
 use Apine\Core\Collection;
-use Apine\Entity\OverloadEntityModel;
 use Apine\Entity\EntityInterface;
+use Apine\Entity\Overload\EntityModel;
 
 /**
  * Implementation of the database representation of users
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\User
+ *
+ * @method string get_username() Fetch the username of the user
+ * @method string get_password() Fetch the password of the user
+ * @method string get_email_address() Fetch the email address of the user
+ * @method string get_register_date() Fetch the date of registration of the user
+ * @method integer get_type() Fetch the type of the user
+ * @method set_username(string $string) Set the username of the user
+ * @method set_password(string $string) Set the password of the user
+ * @method set_type(integer $type) Set the type of the user
  */
-class User extends OverloadEntityModel {
-
-	/**
-	 * User identifier in database
-	 * 
-	 * @var integer
-	 */
-	protected $id;
+class User extends EntityModel {
 
 	/**
 	 * Username
@@ -53,7 +55,7 @@ class User extends OverloadEntityModel {
 	 * 
 	 * @var Apine\Core\Collection[UserGroup]
 	 */
-	protected $group;
+	private $groups;
 
 	/**
 	 * User email address
@@ -74,8 +76,11 @@ class User extends OverloadEntityModel {
 	 * 
 	 * @var array[Property]
 	 */
-	protected $properties;
+	private $properties;
 
+	/**
+	 * @see EntityModel::$field_mapping
+	 */
 	protected $field_mapping = array(
 		'register' => 'register_date',
 		'email' => 'email_address'
@@ -89,7 +94,7 @@ class User extends OverloadEntityModel {
 	 */
 	public function __construct ($a_id = null) {
 
-		$this->_initialize('apine_users', $a_id);
+		$this->initialize('apine_users', $a_id);
 	
 	}
 	
@@ -100,11 +105,15 @@ class User extends OverloadEntityModel {
 	 */
 	final public function get_group () {
 	
-		if ($this->group == null) {
-			$this->group= Factory\UserGroupFactory::create_by_user($this->get_id());
+		if ($this->groups == null) {
+			if ($this->get_id() !== null) {
+				$this->groups = Factory\UserGroupFactory::create_by_user($this->get_id());
+			} else {
+				$this->groups = new Collection();
+			}
 		}
 		
-		return $this->group;
+		return $this->groups;
 	
 	}
 	
@@ -127,7 +136,7 @@ class User extends OverloadEntityModel {
 			}
 			
 			if ($valid) {
-				$this->group = $a_group_list;
+				$this->groups = $a_group_list;
  			} else {
                 throw new \Exception('Invalid Group List');
             }
@@ -144,21 +153,33 @@ class User extends OverloadEntityModel {
 	 * @return boolean
 	 */
 	final public function has_group ($a_group) {
-		
-		if ($this->group == null) {
-			$this->group=Factory\UserGroupFactory::create_by_user($this->get_id());
+
+		if ($this->groups == null) {
+			if ($this->get_id() !== null) {
+				$this->groups = Factory\UserGroupFactory::create_by_user($this->get_id());
+			} else {
+				$this->groups = new Collection();
+			}
 		}
+
+		$is_group=false;
 		
 		if (is_numeric($a_group)) {
 			if (Factory\UserGroupFactory::is_id_exist($a_group)) {
-				$is_group=$this->group->value_exists(new UserGroup($a_group));
-			} else {
-				$is_group=false;
+				foreach ($this->groups->get_all() as $key => $item) {
+					if (((int) $item->get_id()) === $a_group) {
+						$is_group = true;
+						break;
+					}
+				}
 			}
 		} else if (is_a($a_group, 'Apine\User\UserGroup')) {
-			$is_group=$this->group->value_exists($a_group);
-		} else {
-			$is_group=false;
+			foreach ($this->groups->get_all() as $key => $item) {
+				if (((int) $item->get_id()) === ((int) $a_group->get_id())) {
+					$is_group = true;
+					break;
+				}
+			}
 		}
 		
 		return $is_group;
@@ -187,7 +208,7 @@ class User extends OverloadEntityModel {
 	 * 
 	 * @param string $a_timestamp
 	 *        User's registration date
-     * @throws \Exception
+     * @throws \Exception If the the UNIX Timestamp is invalid
 	 */
 	final public function set_register_date ($a_timestamp) {
 		
@@ -250,7 +271,6 @@ class User extends OverloadEntityModel {
 			$this->properties[$a_name]->set_value($a_value);
 		} else {
 			$property = new Property();
-			$property->set_user($this->id);
 			$property->set_name($a_name);
 			$property->set_value($a_value);
 			$this->properties[$a_name] = $property;
@@ -283,7 +303,7 @@ class User extends OverloadEntityModel {
 		
 		$database = new Apine\Core\Database();
 		$request = $database->prepare('SELECT `id`, `name`, `value` FROM `apine_user_properties` WHERE `user_id` = ? ORDER BY `name` ASC');
-		$data = $database->execute(array($this->id), $request);
+		$data = $database->execute(array($this->get_id()), $request);
 		
 		if ($data != null && count($data) > 0) {
 			foreach ($data as $item) {
@@ -311,6 +331,10 @@ class User extends OverloadEntityModel {
 		
 		if (count($this->properties) > 0) {
 			foreach ($this->properties as $item) {
+				if ($item->get_user() === null) {
+					$item->set_user($this->get_id());
+				}
+
 				$item->save();
 			}
 		}

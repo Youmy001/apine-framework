@@ -138,7 +138,7 @@ final class TranslationLocale {
      * @return string
 	 */
 	public function format_date ($a_timestamp, $pattern = null) {
-		
+
 		if (!is_timestamp($a_timestamp)) {
 			throw new GenericException('Invalid Timestamp', 500);
 		}

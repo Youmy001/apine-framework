@@ -15,7 +15,7 @@ namespace Apine\Entity;
  */
 trait OverloadTrait {
 
-	private $field_mapping;
+	protected $field_mapping;
 
 	final public function __call ($a_name, $a_arguments) {
 
@@ -93,12 +93,12 @@ trait OverloadTrait {
 
 	}
 
-	public function load () {
+	/*public function load () {
 
 	}
 
 	public function save () {
-		$this->_save();
+		parent::save();
 
 		if (property_exists($this, $this->_get_primary_key())) {
 			$this->set_{$this->_get_primary_key()} = $this->_get_id();
@@ -106,6 +106,6 @@ trait OverloadTrait {
 	}
 
 	public function delete () {
-		$this->_destroy();
-	}
+		parent::delete();
+	}*/
 }

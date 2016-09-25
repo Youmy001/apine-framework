@@ -7,7 +7,6 @@
  */
 namespace Apine\Entity;
 
-use Apine\Exception\GenericException;
 use \DateTime;
 use Apine\Core\Database;
 

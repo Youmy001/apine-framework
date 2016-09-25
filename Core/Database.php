@@ -380,7 +380,7 @@ final class Database {
 				if ($result->columnCount() == 0) {
 					$arResult = (bool) $result->rowCount();
 				} else {
-					while ($data = $result->fetch()) {
+					while ($data = $result->fetch(\PDO::FETCH_ASSOC)) {
 						$arResult[] = $data;
 					}
 				}

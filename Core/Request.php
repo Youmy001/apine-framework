@@ -134,9 +134,9 @@ final class Request {
 		
 		$this->get 		= $_GET;
 		$this->post		= $_POST;
-		$this->files		= $_FILES;
+		$this->files	= $_FILES;
 		$this->request	= $_REQUEST;
-		$this->server		= $_SERVER;
+		$this->server	= $_SERVER;
 		$this->session	= &$_SESSION;
 		
 		foreach ($this->post as $key=>$value) {

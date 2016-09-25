@@ -11,7 +11,7 @@ The most notable features include a complete session manager with basic users an
 * MySQL 5
 * Apache 2.4
 * mod_rewrite
-* filter_module``````
+* filter_module
 
 The project must be set in a virtual host that allows rewrites and .htaccess files for routes to work. PHP's user must have writing permissions on the project directory.
 

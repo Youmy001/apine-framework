@@ -10,63 +10,65 @@
 namespace Apine\User;
 
 use Apine;
+use Apine\Entity\Overload\EntityModel;
 
 /**
  * Implementation of the database representation of api login tokens
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\User
+ *
+ * @method string get_token() Fetch the value of the token string
+ * @method string get_origin() Fetch the user origin string
+ * @method string get_creation_date() Fetch the date of creation of the token
+ * @method string get_last_access_date() Fetch the date of the last access to the application using the token
+ * @method boolean get_disabled() Fetch the value of the flag indicating if the token is disabled
+ * @method set_origin(string $string) Set the user origin string
+ * @method set_disabled(boolean $boolean) Set the value of the flag indicating if the token is disabled
  */
-class UserToken extends Apine\Entity\EntityModel {
-
-	/**
-	 * Database identifier
-	 * 
-	 * @var integer
-	 */
-	private $id;
+class UserToken extends EntityModel {
 
 	/**
 	 * Token user
 	 * 
 	 * @var Apine\User\User
 	 */
-	private $user;
+	protected $user;
 
 	/**
 	 * Token string
 	 * 
 	 * @var string
 	 */
-	private $token;
+	protected $token;
 
 	/**
 	 * Token user origin
 	 * 
 	 * @var string
 	 */
-	private $origin;
+	protected $origin;
 
 	/**
 	 * Token creation date
 	 * 
 	 * @var string
 	 */
-	private $creation_date;
+	protected $creation_date;
 
 	/**
 	 * Token last access date
 	 * 
 	 * @var string
 	 */
-	private $last_access_date;
+	protected $last_access_date;
 	
 	/**
 	 * Is token disabled
 	 * 
 	 * @var boolean
 	 */
-	private $disabled = false;
+	protected $disabled = false;
 
 	/**
 	 * ApineUserToken class' constructor
@@ -76,129 +78,20 @@ class UserToken extends Apine\Entity\EntityModel {
 	 */
 	public function __construct ($a_id = null) {
 
-		$this->_initialize('apine_api_users_tokens', $a_id);
-		
-		if (!is_null($a_id)) {
-			$this->id = $a_id;
-		}
-	
-	}
-
-	/**
-	 * Fetch token's identifier
-	 * 
-	 * @return integer
-	 */
-	public function get_id () {
-
-		if (!$this->_is_loaded()) {
-			$this->load();
-		}
-		return $this->id;
-	
-	}
-
-	/**
-	 * Set token's id
-	 * 
-	 * @param integer $a_id
-	 *        Token's identifier
-     * @return integer
-	 */
-	public function set_id ($a_id) {
-
-		$this->id = $a_id;
-		$this->_set_id($a_id);
-		$this->_set_field('id', $a_id);
-		
-		return $a_id;
-	
-	}
-
-	/**
-	 * Fetch token string
-	 * 
-	 * @return string
-	 */
-	public function get_token () {
-
-		if (!$this->_is_loaded()) {
-			$this->load();
-		}
-		
-		return $this->token;
+		$this->initialize('apine_api_users_tokens', $a_id);
 	
 	}
 
 	/**
 	 * Set token string
 	 * 
-	 * @param string $a_token        
-	 * @return string
+	 * @param string $a_token
 	 */
 	public function set_token ($a_token) {
 
-		if (!$this->_is_loaded()) {
-			$this->load();
-		}
-		
 		if (strlen($a_token) == 64) {
-			$this->token = $a_token;
-			$this->_set_field('token', $a_token);
-		} else {
-			return false;
+			parent::set_token($a_token);
 		}
-		
-		return $this->token;
-	
-	}
-
-	/**
-	 * Fetch origin string
-	 * 
-	 * @return string
-	 */
-	public function get_origin () {
-
-		if (!$this->_is_loaded()) {
-			$this->load();
-		}
-		
-		return $this->origin;
-	
-	}
-
-	/**
-	 * Set origin string
-	 * 
-	 * @param string $a_origin
-	 * @return string
-	 */
-	public function set_origin ($a_origin) {
-
-		if (!$this->_is_loaded()) {
-			$this->load();
-		}
-		
-		$this->origin = $a_origin;
-		$this->_set_field('origin', $a_origin);
-		
-		return $this->origin;
-	
-	}
-
-	/**
-	 * Fetch token's creation date
-	 * 
-	 * @return string
-	 */
-	public function get_creation_date () {
-
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
-		return $this->creation_date;
 	
 	}
 
@@ -207,65 +100,40 @@ class UserToken extends Apine\Entity\EntityModel {
 	 * 
 	 * @param string $a_timestamp
 	 *        Token's creation date
-	 * @return string
+	 * @throws \Exception If the the UNIX Timestamp is invalid
 	 */
 	public function set_creation_date ($a_timestamp) {
 
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
 		if (is_string($a_timestamp) && strtotime($a_timestamp)) {
-			$this->creation_date = date('Y-m-d H:i:s', strtotime($a_timestamp));
+			$creation_date = date('Y-m-d H:i:s', strtotime($a_timestamp));
 		} else if (is_long($a_timestamp) && date('u', $a_timestamp)) {
-			$this->creation_date = date('Y-m-d H:i:s', $a_timestamp);
+			$creation_date = date('Y-m-d H:i:s', $a_timestamp);
 		} else {
-			return false;
+			throw new \Exception('Invalid UNIX Timestamp');
 		}
 		
-		$this->_set_field('creation_date', $this->creation_date);
-		return $this->creation_date;
+		parent::set_creation_date($creation_date);
 	
 	}
 
 	/**
-	 * Fetch token's creation date
-	 * 
-	 * @return string
-	 */
-	public function get_last_access_date () {
-
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
-		return $this->creation_date;
-	
-	}
-
-	/**
-	 * Set token's creation date
+	 * Set token's last access date
 	 * 
 	 * @param string $a_timestamp
 	 *        Token's creation date
-	 * @return string
+	 * @throws \Exception If the the UNIX Timestamp is invalid
 	 */
 	public function set_last_access_date ($a_timestamp) {
 
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
 		if (is_string($a_timestamp) && strtotime($a_timestamp)) {
-			$this->last_access_date = date('Y-m-d H:i:s', strtotime($a_timestamp));
+			$last_access_date = date('Y-m-d H:i:s', strtotime($a_timestamp));
 		} else if (is_long($a_timestamp) && date('u', $a_timestamp)) {
-			$this->last_access_date = date('Y-m-d H:i:s', $a_timestamp);
+			$last_access_date = date('Y-m-d H:i:s', $a_timestamp);
 		} else {
-			return false;
+			throw new \Exception('Invalid UNIX Timestamp');
 		}
 		
-		$this->_set_field('last_access_date', $this->last_access_date);
-		return $this->last_access_date;
+		parent::set_last_access_date($last_access_date);
 	
 	}
 	
@@ -276,8 +144,8 @@ class UserToken extends Apine\Entity\EntityModel {
 	 */
 	public function get_user () {
 		
-		if ($this->loaded == 0) {
-			$this->load();
+		if (is_null($this->user)) {
+			$this->user = Factory\UserFactory::create_by_id($this->get('user_id'));
 		}
 		
 		return $this->user;
@@ -287,25 +155,20 @@ class UserToken extends Apine\Entity\EntityModel {
 	/**
 	 * Set the token user
 	 * 
-	 * @param <Apine\User\User|integer> $a_user
-	 * @return Apine\User\User|integer>
+	 * @param User|integer $a_user
+	 * @throws \Exception If the input value is invalid
 	 */
 	public function set_user ($a_user) {
-		
-		if ($this->loaded == 0) {
-			$this->load();
-		}
 		
 		if (is_numeric($a_user) && Factory\UserFactory::is_id_exist($a_user)) {
 			$this->user = Factory\UserFactory::create_by_id($a_user);
 		} else if (is_a($a_user, 'Apine\User\User')) {
 			$this->user = $a_user;
 		} else {
-			return false;
+			throw new \Exception('Invalid User');
 		}
 		
-		$this->_set_field('user_id', $this->user->get_id());
-		return $this->user;
+		$this->set('user_id', $this->user->get_id());
 		
 	}
 	
@@ -314,65 +177,34 @@ class UserToken extends Apine\Entity\EntityModel {
 	 */
 	public function disable () {
 		
-		if ($this->loaded == 0) {
-			$this->load();
+		if (is_null($this->disabled)) {
+			$this->disabled = (bool) $this->get('disabled');
 		}
 		
-		$this->disabled = true;
-		$this->_set_field('disabled', true);
+		parent::set_disabled(true);
 		
 	}
 
 	/**
-	 *
-	 * @see ApineEntityInterface::load()
-	 */
-	public function load () {
-
-		if (!is_null($this->id)) {
-			$this->user = Factory\UserFactory::create_by_id($this->_get_field('user_id'));
-			$this->token = $this->_get_field('token');
-			$this->origin = $this->_get_field('origin');
-			$this->creation_date = $this->_get_field('creation_date');
-			$this->last_access_date = $this->_get_field('last_access_date');
-			$this->disabled = (bool) $this->_get_field('disabled');
-			$this->loaded = 1;
-		}
-	
-	}
-
-	/**
-	 *
-	 * @see ApineEntityInterface::save()
+	 * @see EntityInterface::save()
 	 */
 	public function save () {
 
-		if (is_null($this->creation_date)) {
+		if ($this->get_creation_date() == null) {
 			$this->creation_date = date('Y-m-d H:i:s', time());
-			$this->_set_field('creation_date', $this->creation_date);
+			$this->set('creation_date', $this->creation_date);
 		}
 		
-		if (is_null($this->last_access_date)) {
+		if ($this->get_last_access_date() == null) {
 			$this->last_access_date = date('Y-m-d H:i:s', time());
-			$this->_set_field('last_access_date', $this->last_access_date);
+			$this->set('last_access_date', $this->last_access_date);
 		}
 		
-		if (is_null($this->token) || is_null($this->user)) {
-			throw new Apine\Exception\GenericException('Missing values', 500);
+		if ($this->get_token() === null || $this->get_user() === null) {
+			throw new \Exception('Missing values', 500);
 		}
 		
-		parent::_save();
-		$this->set_id($this->_get_id());
-	
-	}
-
-	/**
-	 *
-	 * @see ApineEntityInterface::delete()
-	 */
-	public function delete () {
-
-		parent::_destroy();
+		parent::save();
 	
 	}
 
