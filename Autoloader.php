@@ -10,9 +10,9 @@ namespace Apine;
 
 //use \Exception;
 
-require_once __DIR__ . '/Includes/Constants.php';
-require_once __DIR__ . '/Includes/Functions.php';
-require_once __DIR__ . '/Includes/Time.php';
+require_once __DIR__ . '/src/Includes/Constants.php';
+require_once __DIR__ . '/src/Includes/Functions.php';
+require_once __DIR__ . '/src/Includes/Time.php';
 
 apine_execution_time();
 
@@ -35,10 +35,10 @@ final class Autoloader {
 		
 		$apine_folder = __DIR__;
 		
-		$this->add_module('Apine', $apine_folder);
+		$this->add_module('Apine', $apine_folder . "/src");
 		$this->add_module('Apine\Modules', 'modules');
 		$this->add_module('Apine\Controllers\User', 'controllers');
-		$this->add_module('Apine\Controllers\System', $apine_folder . '/Controllers');
+		$this->add_module('Apine\Controllers\System', $apine_folder . '/src/Controllers');
 		
 	}
 

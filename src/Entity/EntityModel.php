@@ -6,8 +6,7 @@
  * @license MIT
  * @copyright 2016 Tommy Teasdale
  */
-namespace Apine\Entity\Overload;
-
+namespace Apine\Entity;
 
 use Apine\Core\Database;
 use Apine\Utility\Types;
@@ -17,7 +16,7 @@ use Apine\Utility\Types;
  * overloading capabilities.
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
- * @package Apine\Entity\Overload
+ * @package Apine\Entity
  * @abstract
  *
  * @method integer get_id() Return the value of the primary key

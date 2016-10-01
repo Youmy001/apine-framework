@@ -9,7 +9,7 @@ namespace Apine\Session;
 
 use Apine\Core\Cookie;
 use Apine\Core\Encryption;
-use Apine\Entity\Overload\EntityModel;
+use Apine\Entity\EntityModel;
 
 /**
  * Manage data for a session

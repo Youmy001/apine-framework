@@ -10,7 +10,7 @@ namespace Apine\User;
 use Apine;
 use Apine\Core\Collection;
 use Apine\Entity\EntityInterface;
-use Apine\Entity\Overload\EntityModel;
+use Apine\Entity\EntityModel;
 
 /**
  * Implementation of the database representation of users

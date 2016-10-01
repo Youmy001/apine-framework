@@ -10,7 +10,6 @@ namespace Apine\Routing;
 
 use \Exception as Exception;
 use Apine\Core\Request as Request;
-use Apine\XML as XML;
 use Apine\Exception\GenericException;
 use Apine\MVC\View;
 
@@ -25,75 +24,13 @@ class WebRouter implements RouterInterface {
 	
 	private $routes_file;
 	
-	private $routes_type;
-	
-	final public function __construct ($a_path= 'routes.json', $a_type = APINE_ROUTES_JSON) {
+	final public function __construct ($a_path= 'routes.json') {
 		
 		try {
 			$this->routes_file = $a_path;
-			$this->routes_type = $a_type;
 		} catch (Exception $e) {
 			throw new GenericException($e->getMessage(), $e->getCode(), $e);
 		}
-		
-	}
-	
-	/**
-	 * Find matching route in XML route configuration and return modified request string 
-	 *
-     * @param string $request
-	 * @return mixed
-     * @deprecated
-	 */
-	final private function xml_route ($request) {
-		
-		$xml_routes = new XML\Parser();
-		$xml_routes->load_from_file($this->routes_file);
-		$routes = $xml_routes->getElementsByAttributeValue('method', Request::get_request_type());
-		$found_route = null;
-		
-		foreach ($routes as $item) {
-			
-			if ($item->nodeType == XML_ELEMENT_NODE) {
-				foreach ($item->childNodes as $attr) {
-		        	if ($attr->nodeType == XML_ELEMENT_NODE){
-		        		if ($attr->tagName == "request") {
-		        			if ($item->getAttribute('method') == $_SERVER['REQUEST_METHOD']) {
-		        				$match_route = $item->cloneNode(true);
-		        				
-		        				$controller = $match_route->getElementsByTagName('controller')->item(0)->nodeValue;
-		        				$action = $match_route->getElementsByTagName('action')->item(0)->nodeValue;
-		        				
-		        				$match = str_ireplace('/','\\/',$match_route->getElementsByTagName('request')->item(0)->nodeValue);
-		        				$match = '/^' . $match . '$/';
-		        				$replace = "/$controller/$action";
-		        				
-		        				if ($match_route->getAttribute('args') == true) {
-									$args_num = $match_route->getAttribute('argsnum');
-		        					$number_args = (!empty($args_num)) ? $args_num : preg_match_all("/(\(.*?\))/", $match);
-		        					
-		        					for ($i = 1; $i <= $number_args; $i++) {
-		        						$replace .= "/$" . $i;
-		        					}
-		        				}
-		        				
-		        				if(preg_match($match, $request)){
-		        					$request = preg_replace($match, $replace, $request);
-		        					$found_route = $item->cloneNode(true);
-		        					break;
-		        				}
-		        			}
-		        		}
-		        	}
-				}
-		    }
-		    
-		    if ($found_route !== null) {
-		    	break;
-		    }
-		}
-		
-		return $request;
 		
 	}
 	
@@ -156,21 +93,8 @@ class WebRouter implements RouterInterface {
 		$vanilla_route_found = self::check_route($request);
 		
 		if (!$vanilla_route_found && file_exists($this->routes_file)) {
-			switch ($this->routes_type) {
-				case APINE_ROUTES_JSON:
-					$file_request = $this->json_route($request);
-					break;
-				case APINE_ROUTES_XML:
-					$file_request = $this->xml_route($request);
-					break;
-				default:
-					$file_request = null;
-			}
-			
-			if ($file_request !== $request) {
-				$route_found = true;
-				$request = $file_request;
-			}
+			$request = $this->json_route($request);
+			$route_found = true;
 		}
 		
 		$args = explode("/",$request);

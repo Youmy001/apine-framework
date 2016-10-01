@@ -10,7 +10,7 @@
 namespace Apine\User;
 
 use Apine;
-use Apine\Entity\Overload\EntityModel;
+use Apine\Entity\EntityModel;
 
 /**
  * Implementation of the database representation of api login tokens

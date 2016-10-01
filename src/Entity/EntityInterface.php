@@ -6,13 +6,13 @@
  * @license MIT
  * @copyright 2016 Tommy Teasdale
  */
-namespace Apine\Entity\Overload;
+namespace Apine\Entity;
 
 /**
  * Entity interface declaration.
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
- * @package Apine\Entity\Overload
+ * @package Apine\Entity
  */
 interface EntityInterface {
 

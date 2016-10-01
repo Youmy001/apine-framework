@@ -39,7 +39,7 @@ final class Application {
 	 * 
 	 * @var string
 	 */
-	private $apine_version = '1.1.0-dev';
+	private $apine_version = '2.0.0-dev';
 	
 	/**
 	 * Version number of the user application
@@ -84,13 +84,6 @@ final class Application {
 	 * @var string
 	 */
 	private $routes_path = 'routes.json';
-	
-	/**
-	 * Type of routes
-	 * 
-	 * @var integer
-	 */
-	private $routes_type = APINE_ROUTES_JSON;
 	
 	/**
 	 * Should Session transactions be secured through HTTPS connection
@@ -198,19 +191,6 @@ final class Application {
 	}
 
     /**
-     * Define if the application must make use of Composer packages
-     *
-     * @param bool $a_bool
-     */
-    public function use_composer ($a_bool = true) {
-		
-		if (is_bool($a_bool)) {
-			$this->use_composer = $a_bool;
-		}
-		
-	}
-
-    /**
      * Set the version number of the application
      *
      * @param $a_version_number
@@ -238,21 +218,6 @@ final class Application {
         $this->webroot = $a_webroot;
         
     }
-
-    /**
-     * Set the type of route to use
-     *
-     * @param int $a_type
-     */
-	public function set_routes_type ($a_type = APINE_ROUTES_JSON) {
-		
-		if ($a_type === APINE_ROUTES_JSON || $a_type === APINE_ROUTES_XML) {
-			$this->routes_type = $a_type;
-		} else {
-			$this->routes_type = APINE_ROUTES_JSON;
-		}
-		
-	}
 
     /**
      * Set the error reporting mode of the application
@@ -287,7 +252,7 @@ final class Application {
 			$a_runtime = APINE_RUNTIME_HYBRID;
 		}
 		
-		if ($this->use_composer && !strstr($this->apine_folder, 'vendor/youmy001')) {
+		if (!strstr($this->apine_folder, 'vendor/youmy001')) {
 			require_once 'vendor/autoload.php';
 		}
 		
@@ -328,13 +293,16 @@ final class Application {
 			if (SessionManager::is_logged_in()) {
 				if ($this->secure_session) {
 					if (!Request::is_https() && $this->use_https) {
-						die(Routes::internal_redirect($request, APINE_PROTOCOL_HTTPS)->draw());
+						Routes::internal_redirect($request, APINE_PROTOCOL_HTTPS)->draw();
+						die();
 					} else if (Request::is_https() && !$this->use_https) {
-						die(Routes::internal_redirect($request, APINE_PROTOCOL_HTTP)->draw());
+						Routes::internal_redirect($request, APINE_PROTOCOL_HTTP)->draw();
+						die();
 					}
 				} else {
 					if (Request::is_https()) {
-						die(Routes::internal_redirect($request, APINE_PROTOCOL_HTTP)->draw());
+						Routes::internal_redirect($request, APINE_PROTOCOL_HTTP)->draw();
+						die();
 					}
 				}
 			}
@@ -373,7 +341,7 @@ final class Application {
 					$request = '/index';
 				}
 				
-				$router = new WebRouter($this->routes_path, $this->routes_type);
+				$router = new WebRouter($this->routes_path);
 			} else {
 				if ($a_runtime == APINE_RUNTIME_APP) {
 					throw new GenericException('RESTful API calls are not implemented', 501);
@@ -482,17 +450,6 @@ final class Application {
 	public function get_routes_path () {
 		
 		return $this->routes_path;
-	}
-
-    /**
-     * Return the type of route
-     *
-     * @return int
-     */
-	public function get_routes_type () {
-		
-		return  $this->routes_type;
-		
 	}
 
     /**
