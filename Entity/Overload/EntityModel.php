@@ -10,6 +10,7 @@ namespace Apine\Entity\Overload;
 
 
 use Apine\Core\Database;
+use Apine\Utility\Types;
 
 /**
  * Simple data mapper implementation with method
@@ -436,7 +437,7 @@ abstract class EntityModel implements EntityInterface {
 			 * It add the current offset to the UTC+0 timezone to
 			 * valid UNIX timestamps.
 			 */
-			if (is_timestamp($value) && !is_numeric($value)) {
+			if (Types::is_timestamp($value) && !is_numeric($value)) {
 				$datetime = new \DateTime('now');
 				$time = strtotime($value);
 				$time += $datetime->getOffset();
@@ -515,7 +516,7 @@ abstract class EntityModel implements EntityInterface {
 		 * valid UNIX timestamps. This has the effect of bringing
 		 * back the timestamp to current timezone.
 		 */
-		if (is_timestamp($a_value) && !is_numeric($a_value)) {
+		if (Types::is_timestamp($a_value) && !is_numeric($a_value)) {
 			$datetime = new \DateTime('now');
 			$time = strtotime($a_value);
 			$time -= $datetime->getOffset();

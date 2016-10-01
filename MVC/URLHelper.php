@@ -113,10 +113,12 @@ final class URLHelper {
 	 * @return string
 	 */
 	private static function protocol ($param) {
+
+		$application = Application::get_instance();
 		
-		if (!apine_application()->get_use_https()) {
+		if (!$application->get_use_https()) {
 			$protocol = 'http://';
-		} else if (apine_application()->get_secure_session() && SessionManager::is_logged_in()) {
+		} else if ($application->get_secure_session() && SessionManager::is_logged_in()) {
 			$protocol = 'https://';
 		} else {
 			switch ($param) {

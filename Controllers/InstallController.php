@@ -95,6 +95,8 @@ class InstallController extends MVC\Controller {
 		} else {
 			$this->project = dirname($this->parent);
 		}
+
+		require_once $this->parent . '/Includes/Functions.php';
 		
 	}
 

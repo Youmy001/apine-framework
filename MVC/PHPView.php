@@ -190,12 +190,16 @@ final class PHPView extends View {
 	 * @param string $a_script URL to script
 	 */
 	public function add_script($a_script) {
-	
+		
 		if ($a_script!="") {
 			if (file_exists("resources/public/scripts/$a_script.js")) {
 				$this->_scripts[] = URLHelper::resource("resources/public/scripts/$a_script.js");
 			} else if (file_exists("$a_script.js")) {
 				$this->_scripts[] = URLHelper::resource("$a_script.js");
+			} else if (stripos(@get_headers($a_script)[0], '200')) {
+				$this->_scripts[] = $a_script;
+			} else {
+				throw new \RuntimeException('File "' . $a_script . '.js" not found');
 			}
 		}
 	
@@ -207,12 +211,16 @@ final class PHPView extends View {
 	 * @param string $a_sheet URL to script
 	 */
 	public function add_stylesheet($a_sheet) {
-
+		
 		if ($a_sheet!="") {
 			if (file_exists("resources/public/css/$a_sheet.css")) {
 				$this->_styles[] = URLHelper::resource("resources/public/css/$a_sheet.css");
 			} else if (file_exists("$a_sheet.css")) {
 				$this->_styles[] = URLHelper::resource("$a_sheet.css");
+			} else if (stripos(@get_headers($a_sheet)[0], '200')) {
+				$this->_styles[] = $a_sheet;
+			} else {
+				throw new \RuntimeException('File "' . $a_sheet . '.css" not found');
 			}
 		}
 

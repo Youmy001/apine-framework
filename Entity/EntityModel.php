@@ -9,6 +9,7 @@ namespace Apine\Entity;
 
 use \DateTime;
 use Apine\Core\Database;
+use Apine\Utility\Types;
 
 /**
  * This is the implementation of the data mapper
@@ -153,7 +154,7 @@ abstract class EntityModel implements EntityInterface {
 		}
 
 		if (isset($this->database_fields[$a_field])) {
-			if (is_timestamp($this->database_fields[$a_field]) && !is_numeric($this->database_fields[$a_field])) {
+			if (Types::is_timestamp($this->database_fields[$a_field]) && !is_numeric($this->database_fields[$a_field])) {
 				$datetime = new DateTime('now');
 				$time = strtotime($this->database_fields[$a_field]);
 				$time += $datetime->getOffset();
@@ -267,7 +268,7 @@ abstract class EntityModel implements EntityInterface {
 			$this->_load();
 		}
 
-		if (is_timestamp($value) && !is_numeric($value)) {
+		if (Types::is_timestamp($value) && !is_numeric($value)) {
 			$datetime = new DateTime('now');
 			$time = strtotime($value);
 			$time -= $datetime->getOffset();

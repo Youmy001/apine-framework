@@ -192,7 +192,7 @@ final class Database {
 			
 			return $this->last_insert_id();
 		} catch (\PDOException $e) {
-			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
+			throw new DatabaseException($e->getMessage(), 500, $e);
 		}
 	
 	}
@@ -258,7 +258,7 @@ final class Database {
 				throw new GenericException('Missing Values', 500);
 			}
 		} catch (\PDOException $e) {
-			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
+			throw new DatabaseException($e->getMessage(), 500, $e);
 		}
 	
 	}
@@ -301,7 +301,7 @@ final class Database {
 			
 			return true;
 		} catch (\PDOException $e) {
-			throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
+			throw new DatabaseException($e->getMessage(), 500, $e);
 		}
 	
 	}

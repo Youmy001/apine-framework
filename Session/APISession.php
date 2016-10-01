@@ -82,7 +82,7 @@ final class APISession implements SessionInterface{
 				$this->token = $token;
 				$this->session_type = $this->token->get_user()->get_type();
 				
-				$this->token->set_last_access_date(date('d M Y H:i:s',time() + $this->token_lifespan));
+				$this->token->set_last_access_date(date('Y-m-d H:i:s',time() + $this->token_lifespan));
 				$this->token->save();
 			}
 		
@@ -101,7 +101,7 @@ final class APISession implements SessionInterface{
 					$this->logged_in = true;
 					$this->token = $token;
 					$this->session_type = $data->get_var('apine_user_type');
-					$this->token->set_last_access_date(date('d M Y H:i:s',time() + $this->token_lifespan));
+					$this->token->set_last_access_date(date('Y-m-d H:i:s',time() + $this->token_lifespan));
 				}
 			}
 			

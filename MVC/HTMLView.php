@@ -10,6 +10,7 @@ namespace Apine\MVC;
 use Apine\Application as Application;
 use Apine\Exception\GenericException;
 use Apine\Session\SessionManager;
+use Symfony\Component\Console\Exception\RuntimeException;
 use TinyTemplate\Template;
 use TinyTemplate\Layout;
 use TinyTemplate\Engine;
@@ -192,18 +193,15 @@ final class HTMLView extends View {
 	 */
 	public function add_script($a_script) {
 
-
-	
 		if ($a_script!="") {
 			if (file_exists("resources/public/scripts/$a_script.js")) {
 				$this->_scripts[] = URLHelper::resource("resources/public/scripts/$a_script.js");
 			} else if (file_exists("$a_script.js")) {
 				$this->_scripts[] = URLHelper::resource("$a_script.js");
+			} else if (stripos(@get_headers($a_script)[0], '200')) {
+				$this->_scripts[] = $a_script;
 			} else {
-				$headers = @get_headers($a_script);
-				if (stripos($headers[0], '200')) {
-					$this->_scripts[] = $a_script;
-				}
+				throw new \RuntimeException('File "' . $a_script . '.js" not found');
 			}
 		}
 	
@@ -221,6 +219,10 @@ final class HTMLView extends View {
 				$this->_styles[] = URLHelper::resource("resources/public/css/$a_sheet.css");
 			} else if (file_exists("$a_sheet.css")) {
 				$this->_styles[] = URLHelper::resource("$a_sheet.css");
+			} else if (stripos(@get_headers($a_sheet)[0], '200')) {
+				$this->_styles[] = $a_sheet;
+			} else {
+				throw new \RuntimeException('File "' . $a_sheet . '.css" not found');
 			}
 		}
 
@@ -307,6 +309,9 @@ final class HTMLView extends View {
 	 * @return string
 	 */
 	public function content() {
+
+		$location = Application\Application::get_instance()->framework_location() . DIRECTORY_SEPARATOR . "Includes" . DIRECTORY_SEPARATOR . "Rules.php";
+		include_once $location;
 
 		$config = Application\Application::get_instance()->get_config();
 		
