@@ -1,10 +1,7 @@
+.gitignore
 .idea/*
 .buildpath
 .project
 .settings
-vendor/*
-/config.ini
-/vendor/
-test-old/
-/test_old/
-/test/
+test_old/
+test_site/

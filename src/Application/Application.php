@@ -8,6 +8,7 @@
  */
 namespace Apine\Application;
 
+use Apine\Session\SessionData;
 use \Exception as Exception;
 use Apine\Core\Request as Request;
 use Apine\Core\Config as Config;
