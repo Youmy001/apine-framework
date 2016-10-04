@@ -323,6 +323,27 @@ final class Application {
 				$this->config = new Config('config.ini');
 			}
 			
+			// Find a timezone for the user
+			// using geoip library and its local database
+			if (function_exists('geoip_open')) {
+				$gi = geoip_open($this->apine_folder . DIRECTORY_SEPARATOR . "Includes" . DIRECTORY_SEPARATOR . "GeoLiteCity.dat", GEOIP_STANDARD);
+				$record = GeoIP_record_by_addr($gi, $_SERVER['REMOTE_ADDR']);
+				//$record = geoip_record_by_addr($gi, "24.230.215.89");
+				//var_dump($record);
+				
+				if (isset($record)) {
+					$timezone = get_time_zone($record->country_code, ($record->region!='') ? $record->region : 0);
+				} else if (!is_null($this->config->get('dateformat', 'timezone'))) {
+					$timezone = $this->config->get('dateformat', 'timezone');
+				} else {
+					$timezone = 'America/New_York';
+				}
+				
+				date_default_timezone_set($timezone);
+			} else if (!is_null($this->config->get('dateformat', 'timezone'))) {
+				date_default_timezone_set($this->config->get('dateformat', 'timezone'));
+			}
+			
 			// If a user is logged in; redirect to the allowed protocol
 			// Secure session only work when Use HTTPS is set to "yes"
 			if (SessionManager::is_logged_in()) {
@@ -340,27 +361,6 @@ final class Application {
 			}
 
 			unset($request);
-			
-			// Find a timezone for the user
-			// using geoip library and its local database
-			if (function_exists('geoip_open')) {
-				$gi = geoip_open($this->apine_folder . DIRECTORY_SEPARATOR . "Includes" . DIRECTORY_SEPARATOR . "GeoLiteCity.dat", GEOIP_STANDARD);
-				$record = GeoIP_record_by_addr($gi, $_SERVER['REMOTE_ADDR']);
-				//$record = geoip_record_by_addr($gi, "24.230.215.89");
-				//var_dump($record);
-			
-				if (isset($record)) {
-					$timezone = get_time_zone($record->country_code, ($record->region!='') ? $record->region : 0);
-				} else if (!is_null($this->config->get('dateformat', 'timezone'))) {
-					$timezone = $this->config->get('dateformat', 'timezone');
-				} else {
-					$timezone = 'America/New_York';
-				}
-				
-				date_default_timezone_set($timezone);
-			} else if (!is_null($this->config->get('dateformat', 'timezone'))) {
-				date_default_timezone_set($this->config->get('dateformat', 'timezone'));
-			}
 			
 			if (!Request::is_api_call()) {
 				if ($a_runtime == APINE_RUNTIME_API) {
