@@ -40,7 +40,7 @@ final class Application {
 	 * 
 	 * @var string
 	 */
-	private $apine_version = '1.0.2';
+	private $apine_version = '1.0.3';
 	
 	/**
 	 * Version number of the user application
@@ -324,24 +324,6 @@ final class Application {
 				$this->config = new Config('config.ini');
 			}
 			
-			// If a user is logged in; redirect to the allowed protocol
-			// Secure session only work when Use HTTPS is set to "yes"
-			if (SessionManager::is_logged_in()) {
-				if ($this->secure_session) {
-					if (!Request::is_https() && $this->use_https) {
-						die(apine_internal_redirect($request, APINE_PROTOCOL_HTTPS)->draw());
-					} else if (Request::is_https() && !$this->use_https) {
-						die(apine_internal_redirect($request, APINE_PROTOCOL_HTTP)->draw());
-					}
-				} else {
-					if (Request::is_https()) {
-						die(apine_internal_redirect($request, APINE_PROTOCOL_HTTP)->draw());
-					}
-				}
-			}
-
-			unset($request);
-			
 			// Find a timezone for the user
 			// using geoip library and its local database
 			if (function_exists('geoip_open')) {
@@ -362,6 +344,24 @@ final class Application {
 			} else if (!is_null($this->config->get('dateformat', 'timezone'))) {
 				date_default_timezone_set($this->config->get('dateformat', 'timezone'));
 			}
+			
+			// If a user is logged in; redirect to the allowed protocol
+			// Secure session only work when Use HTTPS is set to "yes"
+			if (SessionManager::is_logged_in()) {
+				if ($this->secure_session) {
+					if (!Request::is_https() && $this->use_https) {
+						die(apine_internal_redirect($request, APINE_PROTOCOL_HTTPS)->draw());
+					} else if (Request::is_https() && !$this->use_https) {
+						die(apine_internal_redirect($request, APINE_PROTOCOL_HTTP)->draw());
+					}
+				} else {
+					if (Request::is_https()) {
+						die(apine_internal_redirect($request, APINE_PROTOCOL_HTTP)->draw());
+					}
+				}
+			}
+
+			unset($request);
 			
 			if (!Request::is_api_call()) {
 				if ($a_runtime == APINE_RUNTIME_API) {
