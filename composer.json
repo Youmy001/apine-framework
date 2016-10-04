@@ -24,7 +24,7 @@
     },
     "autoload": {
     	"files" : [
-    		"Autoloader.php"
+    		"src/Autoloader.php"
     	]
     },
 	"extra": {

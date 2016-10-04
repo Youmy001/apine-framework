@@ -10,6 +10,7 @@
 namespace Apine\User\Factory;
 
 use Apine;
+use Apine\Application\Application;
 
 /**
  * Class UserFactory
@@ -236,15 +237,18 @@ class UserFactory implements Apine\Entity\EntityFactoryInterface {
 		static $class;
 	
 		if (is_null($class)) {
-			if (Apine\Application\Config::get('runtime', 'user_class')) {
-				$pos_slash = strpos(Apine\Application\Config::get('runtime', 'user_class'), '/');
-				$class = substr(Apine\Application\Config::get('runtime', 'user_class'), $pos_slash+1);
+			$config = Application::get_instance()->get_config();
+			
+			if ($config->get('runtime', 'user_class')) {
+				$user_class = $config->get('runtime', 'user_class');
+				$pos_slash = strpos($user_class, '/');
+				$class = substr($user_class, $pos_slash+1);
 				
 				if (!is_a($class, 'Apine\User\User', true)) {
 					$class = 'Apine\User\User';
 				}
 			} else {
-				$class = "Apine\User\User";
+				$class = 'Apine\User\User';
 			}
 		}
 		

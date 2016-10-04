@@ -43,30 +43,32 @@
 </IfModule>
 
 <ifModule mod_headers.c>
-    # Turn on Expires and set default expires to 7 days
-    ExpiresActive On
-    ExpiresDefault A604800
-
-    # Set up caching on media files and fonts for 1 month
-    <filesMatch ".(ico|gif|jpg|jpeg|png|swf|mp3|mp4|ttf|woff)$">
-        ExpiresDefault A2419200
-        Header append Cache-Control "public"
-    </filesMatch>
-
-    # Set up 1 Week caching on commonly updated files
-    <filesMatch ".(html|js|css)$">
-        #ExpiresDefault A2678400
-        ExpiresDefault A0
-        #Header append Cache-Control "private, must-revalidate"
-        Header append Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
-    </filesMatch>
-
-    # Force no caching for dynamic files
-    <filesMatch ".(php|cgi)$">
-        ExpiresDefault A0
-        Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
-        Header set Pragma "no-cache"
-    </filesMatch>
+	<ifModule mod_expires.c>
+		# Turn on Expires and set default expires to 7 days
+		ExpiresActive On
+		ExpiresDefault A604800
+		
+		# Set up caching on media files and fonts for 1 month
+		<filesMatch ".(ico|gif|jpg|jpeg|png|swf|mp3|mp4|ttf|woff)$">
+			ExpiresDefault A2419200
+			Header append Cache-Control "public"
+		</filesMatch>
+	
+		# Set up 1 Week caching on commonly updated files
+		<filesMatch ".(html|js|css)$">
+			#ExpiresDefault A2678400
+			ExpiresDefault A0
+			#Header append Cache-Control "private, must-revalidate"
+			Header append Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+		</filesMatch>
+	
+		# Force no caching for dynamic files
+		<filesMatch ".(php|cgi)$">
+			ExpiresDefault A0
+			Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+			Header set Pragma "no-cache"
+		</filesMatch>
+	</ifModule>
 </ifModule>
 
 #Options +FollowSymlinks

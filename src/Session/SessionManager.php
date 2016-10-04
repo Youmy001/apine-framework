@@ -40,7 +40,15 @@ final class SessionManager {
 	private function __construct () {
 		
 		if (Apine\Core\Request::is_api_call()) {
-			$this->strategy = new APISession();
+			$request = Apine\Core\Request::get_instance();
+			
+			if (isset($request->get_request_headers()['Authorization'])) {
+				$this->strategy = new APISession();
+			} else if (isset($_COOKIE['apine_session'])) {
+				$this->strategy = new WebSession();
+			} else {
+				$this->strategy = new APISession();
+			}
 		} else {
 			$this->strategy = new WebSession();
 		}

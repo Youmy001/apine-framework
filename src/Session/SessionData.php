@@ -16,6 +16,8 @@ use Apine\Entity\EntityModel;
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\Session
+ *
+ * @method string get_last_access()
  */
 final class SessionData extends EntityModel {
 	
