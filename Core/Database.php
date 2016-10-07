@@ -128,10 +128,9 @@ final class Database {
 			$result = $this->instance->query($query);
 			
 			if ($result) {
-				
 				$arResult = $result->fetchAll(\PDO::FETCH_ASSOC);
-				
 				$result->closeCursor();
+				$result = null;
 			}
 			
 			return $arResult;
@@ -415,6 +414,7 @@ final class Database {
 		}*/
 		
 		if (count($this->Execute) > 0) {
+			$this->Execute[$index] = null;
 			unset($this->Execute[$index]);
 		}
 		
@@ -454,5 +454,20 @@ final class Database {
 		return $this->instance->quote($string, $parameter_type);
 	
 	}
-
+	
+	public function __destruct () {
+		
+		if (count($this->Execute) > 0) {
+			foreach ($this->Execute as $id => $statement) {
+				$this->Execute[$id] = null;
+				unset($this->Execute[$id]);
+			}
+		}
+		
+		if ($this->instance !== self::$apine_instance) {
+			$this->instance = null;
+		}
+		
+	}
+	
 }

@@ -118,10 +118,6 @@ final class WebSession implements SessionInterface {
 			$this->user_class_name = "Apine\User\User";
 		}
 		
-		/*if (!is_null($config->get('runtime', 'session_lifespan'))) {
-			$this->session_lifespan = (int) $config->get('runtime', 'session_lifespan');
-		}*/
-		
 		if (!is_null($config->get('runtime', 'session_lifespan'))) {
 			$this->session_lifespan = (int) $config->get('runtime', 'session_lifespan');
 		}
