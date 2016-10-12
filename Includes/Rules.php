@@ -87,6 +87,18 @@ Engine::instance()->add_rule(new Rule(
 ));
 
 Engine::instance()->add_rule(new Rule(
+	'apine_view_apply_literals',
+	'apine_apply_literals',
+	'<?php echo (isset($data["apine_view_literals"]["default"])) ? Apine\\MVC\\HTMLView::apply_html_literals($data["apine_view_literals"]["default"]) : "";?>'
+));
+
+Engine::instance()->add_rule(new Rule(
+	'apine_view_apply_literals_zone',
+	'apine_apply_literals:(\w+)',
+	'<?php echo (isset($data["apine_view_literals"]["$1"])) ? Apine\\MVC\\HTMLView::apply_html_literals($data["apine_view_literals"]["$1"]) : "";?>'
+));
+
+Engine::instance()->add_rule(new Rule(
 	'apine_user_has_group',
 	'if:apine_user\[groups\]==([0-9]+)',
 	'<?php if (\Apine\Session\SessionManager::get_user()->has_group($1)) : ?>'

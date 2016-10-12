@@ -1,3 +1,4 @@
+.gitignore
 .idea/*
 .buildpath
 .project
@@ -8,3 +9,4 @@ vendor/*
 test-old/
 /test_old/
 /test/
+/test_site/

@@ -63,6 +63,12 @@ final class HTMLView extends View {
 	 * @var array
 	 */
 	private $_scripts;
+	
+	/**
+	 * List of HTML literal string to include
+	 * @var array
+	 */
+	private $literals;
 
 	/**
 	 * View's HTML Document
@@ -287,6 +293,34 @@ final class HTMLView extends View {
 		return $output;
 	
 	}
+	
+	/**
+	 * Inject literal HTML in the view
+	 *
+	 * @param string $a_literal
+	 * @param string $a_zone
+	 */
+	public function add_html_literal ($a_literal, $a_zone = "default") {
+		
+		if($a_literal!="") {
+			$this->literals[$a_zone][] = $a_literal;
+		}
+		
+	}
+	
+	public static function apply_html_literals ($a_literals) {
+		
+		$output = "";
+		
+		if (count($a_literals)>0) {
+			foreach ($a_literals as $literal) {
+				$output .= $literal;
+			}
+		}
+		
+		return $output;
+		
+	}
 
 	/**
 	 * Send the view to output
@@ -351,6 +385,7 @@ final class HTMLView extends View {
 				'apine_application_https' => Application\Application::get_instance()->get_use_https(),
 				'apine_application_mode' => Application\Application::get_instance()->get_mode(),
 				'apine_application_secure' => Application\Application::get_instance()->get_secure_session(),
+				"apine_view_literals" => $this->literals,
 				'apine_view_metatags' => $this->_metatags,
 				'apine_view_scripts' => $this->_scripts,
 				'apine_view_stylesheets' => $this->_styles,
