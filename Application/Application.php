@@ -126,6 +126,10 @@ final class Application {
      * @return Application
      */
     public function __construct() {
+	
+		if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50600) {
+			trigger_error('PHP version 5.6 or above is required for APIne. Please upgrade to continue.', E_USER_ERROR);
+		}
 		
 		ini_set('display_errors', 0);
 		error_reporting(E_ERROR);
