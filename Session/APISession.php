@@ -86,7 +86,9 @@ final class APISession implements SessionInterface{
 				$this->token->save();
 			}
 		
-		} else if (isset($_COOKIE['apine_session'])) {
+		}
+		
+		if (isset($_COOKIE['apine_session'])) {
 
 			$session = new WebSession();
 			$data = $session->data();
