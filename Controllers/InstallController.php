@@ -366,6 +366,7 @@ class InstallController extends MVC\Controller {
 			$entries['runtime']['token_lifespan'] = 600;
 			$entries['runtime']['default_layout'] = 'layout';
 			$entries['runtime']['encryption_method'] = "ssl";
+			$entries['entity']['adjust_timestamp'] = "yes";
 			
 			// Write as ini config
 			$result = write_ini_file($entries, $this->project . '/config.ini', true);

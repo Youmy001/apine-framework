@@ -94,7 +94,7 @@ INSERT INTO `apine_user_groups` (`id`, `name`) VALUES
 CREATE TABLE IF NOT EXISTS `apine_users_user_groups` (
   `user_id` int(11) NOT NULL,
   `group_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `apine_users_user_groups`
  ADD PRIMARY KEY (`user_id`,`group_id`);

@@ -154,7 +154,9 @@ abstract class EntityModel implements EntityInterface {
 		}
 
 		if (isset($this->database_fields[$a_field])) {
-			if (Types::is_timestamp($this->database_fields[$a_field]) && !is_numeric($this->database_fields[$a_field])) {
+			$adjust = Application::get_instance()->get_config()->get('entity', 'adjust_timestamp');
+			
+			if (($adjust !== 'no' || $adjust !== 'false' || $adjust !== false) && Types::is_timestamp($this->database_fields[$a_field]) && !is_numeric($this->database_fields[$a_field])) {
 				$datetime = new DateTime('now');
 				$time = strtotime($this->database_fields[$a_field]);
 				$time += $datetime->getOffset();
@@ -267,12 +269,16 @@ abstract class EntityModel implements EntityInterface {
 		if ($this->field_loaded == 0) {
 			$this->_load();
 		}
-
-		if (Types::is_timestamp($value) && !is_numeric($value)) {
-			$datetime = new DateTime('now');
-			$time = strtotime($value);
-			$time -= $datetime->getOffset();
-			$value = date("Y-m-d H:i:s", $time);
+		
+		$adjust = Application::get_instance()->get_config()->get('entity', 'adjust_timestamp');
+		
+		if ($adjust !== 'no' || $adjust !== 'false' || $adjust !== false) {
+			if (Types::is_timestamp($value) && !is_numeric($value)) {
+				$datetime = new DateTime('now');
+				$time = strtotime($value);
+				$time -= $datetime->getOffset();
+				$value = date("Y-m-d H:i:s", $time);
+			}
 		}
 
 		$this->database_fields[$field] = $value;

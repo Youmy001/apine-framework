@@ -9,6 +9,7 @@
 namespace Apine\Entity\Overload;
 
 
+use Apine\Application\Application;
 use Apine\Core\Database;
 use Apine\Utility\Types;
 
@@ -427,21 +428,25 @@ abstract class EntityModel implements EntityInterface {
 
 		if (isset($values_array[$a_field])) {
 			$value = $values_array[$a_field];
-
-			/*
-			 * Normalize the time values to the UTC+0 timezone.
-			 * This allows many instances of APIne Framework located
-			 * in different timezones and using Entities to connect
-			 * to the same database and have coherent time value.
-			 *
-			 * It add the current offset to the UTC+0 timezone to
-			 * valid UNIX timestamps.
-			 */
-			if (Types::is_timestamp($value) && !is_numeric($value)) {
-				$datetime = new \DateTime('now');
-				$time = strtotime($value);
-				$time += $datetime->getOffset();
-				$value = date('Y-m-d H:i:s', $time);
+			
+			$adjust = Application::get_instance()->get_config()->get('entity', 'adjust_timestamp');
+			
+			if ($adjust !== 'no' || $adjust !== 'false' || $adjust !== false) {
+				/*
+				 * Normalize the time values to the UTC+0 timezone.
+				 * This allows many instances of APIne Framework located
+				 * in different timezones and using Entities to connect
+				 * to the same database and have coherent time value.
+				 *
+				 * It add the current offset to the UTC+0 timezone to
+				 * valid UNIX timestamps.
+				 */
+				if (Types::is_timestamp($value) && !is_numeric($value)) {
+					$datetime = new \DateTime('now');
+					$time = strtotime($value);
+					$time += $datetime->getOffset();
+					$value = date('Y-m-d H:i:s', $time);
+				}
 			}
 		}
 
@@ -505,22 +510,28 @@ abstract class EntityModel implements EntityInterface {
 	 * @param mixed $a_value Value to assign in the field
 	 */
 	final protected function set ($a_field, $a_value) {
-
-		/*
-		 * Normalize the time values to the UTC+0 timezone.
-		 * This allows many instances of APIne Framework located
-		 * in different timezones and using Entities to connect
-		 * to the same database and have coherent time value.
-		 *
-		 * It subtract the current offset to the UTC+0 timezone to
-		 * valid UNIX timestamps. This has the effect of bringing
-		 * back the timestamp to current timezone.
-		 */
-		if (Types::is_timestamp($a_value) && !is_numeric($a_value)) {
-			$datetime = new \DateTime('now');
-			$time = strtotime($a_value);
-			$time -= $datetime->getOffset();
-			$value = date("Y-m-d H:i:s", $time);
+		
+		$adjust = Application::get_instance()->get_config()->get('entity', 'adjust_timestamp');
+		
+		if ($adjust !== 'no' || $adjust !== 'false' || $adjust !== false) {
+			/*
+			 * Normalize the time values to the UTC+0 timezone.
+			 * This allows many instances of APIne Framework located
+			 * in different timezones and using Entities to connect
+			 * to the same database and have coherent time value.
+			 *
+			 * It subtract the current offset to the UTC+0 timezone to
+			 * valid UNIX timestamps. This has the effect of bringing
+			 * back the timestamp to current timezone.
+			 */
+			if (Types::is_timestamp($a_value) && !is_numeric($a_value)) {
+				$datetime = new \DateTime('now');
+				$time = strtotime($a_value);
+				$time -= $datetime->getOffset();
+				$value = date("Y-m-d H:i:s", $time);
+			} else {
+				$value = $a_value;
+			}
 		} else {
 			$value = $a_value;
 		}
