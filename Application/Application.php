@@ -318,84 +318,99 @@ final class Application {
 				$request = Request::get()['request'];
 			}
 			
-			// Verify is the protocol is allowed
-			if (Request::is_https() && !$this->use_https) {
-				Routes::internal_redirect($request, APINE_PROTOCOL_HTTP);
-			}
-			
 			if (is_null($this->config)) {
 				$this->config = new Config('config.ini');
 			}
 			
-			// Find a timezone for the user
-			// using geoip library and its local database
-			if (function_exists('geoip_open')) {
-				$gi = geoip_open($this->apine_folder . DIRECTORY_SEPARATOR . "Includes" . DIRECTORY_SEPARATOR . "GeoLiteCity.dat", GEOIP_STANDARD);
-				$record = GeoIP_record_by_addr($gi, $_SERVER['REMOTE_ADDR']);
-				//$record = geoip_record_by_addr($gi, "24.230.215.89");
-				//var_dump($record);
-				
-				if (isset($record)) {
-					$timezone = get_time_zone($record->country_code, ($record->region!='') ? $record->region : 0);
-				} else if (!is_null($this->config->get('dateformat', 'timezone'))) {
-					$timezone = $this->config->get('dateformat', 'timezone');
-				} else {
-					$timezone = 'America/New_York';
-				}
-				
-				date_default_timezone_set($timezone);
-			} else if (!is_null($this->config->get('dateformat', 'timezone'))) {
-				date_default_timezone_set($this->config->get('dateformat', 'timezone'));
-			}
-			
-			// If a user is logged in; redirect to the allowed protocol
-			// Secure session only work when Use HTTPS is set to "yes"
-			if (SessionManager::is_logged_in()) {
-				if ($this->secure_session) {
-					if (!Request::is_https() && $this->use_https) {
-						die(Routes::internal_redirect($request, APINE_PROTOCOL_HTTPS)->draw());
-					} else if (Request::is_https() && !$this->use_https) {
-						die(Routes::internal_redirect($request, APINE_PROTOCOL_HTTP)->draw());
-					}
-				} else {
-					if (Request::is_https()) {
-						die(Routes::internal_redirect($request, APINE_PROTOCOL_HTTP)->draw());
-					}
-				}
-			}
-
-			unset($request);
-			
-			if (!Request::is_api_call()) {
-				if ($a_runtime == APINE_RUNTIME_API) {
-					throw new GenericException('Web Application calls are not implemented', 501);
-				}
-				
-				if (!empty(Request::get()['request']) && Request::get()['request'] != '/') {
-					$request = Request::get()['request'];
-				} else {
-					$request = '/index';
-				}
-				
-				$router = new WebRouter($this->routes_path, $this->routes_type);
-			} else {
-				if ($a_runtime == APINE_RUNTIME_APP) {
-					throw new GenericException('RESTful API calls are not implemented', 501);
-				}
-				
-				$request = Request::get()['request'];
-				$router = new APIRouter();
-			}
-			
-			// Fetch and execute the route
-			$route = $router->route($request);
-			$view = $router->execute($route->controller, $route->action, $route->args);
-			
-			// Draw the output is a view is returned
-			if(!is_null($view) && is_a($view, 'Apine\MVC\View')) {
+			// Verify is the protocol is allowed
+			if (Request::is_https() && !$this->use_https) {
+				$view = Routes::internal_redirect($request, APINE_PROTOCOL_HTTP);
+				$view->draw();
+			} else if (!Request::is_https() && $this->use_https) {
+				$view = Routes::internal_redirect($request, APINE_PROTOCOL_HTTPS);
 				$view->draw();
 			} else {
-				throw new GenericException('Empty Apine View', 488);
+				// Find a timezone for the user
+				// using geoip library and its local database
+				if (function_exists('geoip_open')) {
+					$gi = geoip_open($this->apine_folder . DIRECTORY_SEPARATOR . "Includes" . DIRECTORY_SEPARATOR . "GeoLiteCity.dat", GEOIP_STANDARD);
+					$record = GeoIP_record_by_addr($gi, $_SERVER['REMOTE_ADDR']);
+					//$record = geoip_record_by_addr($gi, "24.230.215.89");
+					//var_dump($record);
+					
+					if (isset($record)) {
+						$timezone = get_time_zone($record->country_code, ($record->region != '') ? $record->region : 0);
+					} else {
+						if (!is_null($this->config->get('dateformat', 'timezone'))) {
+							$timezone = $this->config->get('dateformat', 'timezone');
+						} else {
+							$timezone = 'America/New_York';
+						}
+					}
+					
+					date_default_timezone_set($timezone);
+				} else {
+					if (!is_null($this->config->get('dateformat', 'timezone'))) {
+						date_default_timezone_set($this->config->get('dateformat', 'timezone'));
+					}
+				}
+				
+				// If a user is logged in; redirect to the allowed protocol
+				// Secure session only work when Use HTTPS is set to "yes"
+				if (SessionManager::is_logged_in()) {
+					if ($this->secure_session) {
+						if (!Request::is_https() && $this->use_https) {
+							$redirect = Routes::internal_redirect($request, APINE_PROTOCOL_HTTPS);
+						} else {
+							if (Request::is_https() && !$this->use_https) {
+								$redirect = Routes::internal_redirect($request, APINE_PROTOCOL_HTTP);
+							}
+						}
+					} else {
+						if (Request::is_https()) {
+							$redirect = Routes::internal_redirect($request, APINE_PROTOCOL_HTTP);
+						}
+					}
+					
+					if (isset($redirect)) {
+						$redirect->draw();
+						die();
+					}
+				}
+				
+				unset($request);
+				
+				if (!Request::is_api_call()) {
+					if ($a_runtime == APINE_RUNTIME_API) {
+						throw new GenericException('Web Application calls are not implemented', 501);
+					}
+					
+					if (!empty(Request::get()['request']) && Request::get()['request'] != '/') {
+						$request = Request::get()['request'];
+					} else {
+						$request = '/index';
+					}
+					
+					$router = new WebRouter($this->routes_path, $this->routes_type);
+				} else {
+					if ($a_runtime == APINE_RUNTIME_APP) {
+						throw new GenericException('RESTful API calls are not implemented', 501);
+					}
+					
+					$request = Request::get()['request'];
+					$router = new APIRouter();
+				}
+				
+				// Fetch and execute the route
+				$route = $router->route($request);
+				$view = $router->execute($route->controller, $route->action, $route->args);
+				
+				// Draw the output is a view is returned
+				if(!is_null($view) && is_a($view, 'Apine\MVC\View')) {
+					$view->draw();
+				} else {
+					throw new GenericException('Empty Apine View', 488);
+				}
 			}
 		} catch (GenericException $e) {
 			// Handle application errors

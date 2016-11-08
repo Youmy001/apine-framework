@@ -99,6 +99,7 @@ final class WebSession implements SessionInterface {
 	 */
 	public function __construct () {
 		
+		$application = Application::get_instance();
 		$config = Application::get_instance()->get_config();
 		
 		if ($config->get('runtime', 'user_class')) {
@@ -115,7 +116,7 @@ final class WebSession implements SessionInterface {
 			}
 		
 		} else {
-			$this->user_class_name = "Apine\User\User";
+			$this->user_class_name = 'Apine\User\User';
 		}
 		
 		if (!is_null($config->get('runtime', 'session_lifespan'))) {
@@ -152,7 +153,7 @@ final class WebSession implements SessionInterface {
 		}
 		
 		$this->current_session_lifespan = $delay;
-		setcookie('apine_session', $this->php_session_id, time() + $delay, '/');
+		setcookie('apine_session', $this->php_session_id, time() + $delay, '/', '', ($application->get_secure_session() && $application->get_use_https()));
 	
 	}
 	
