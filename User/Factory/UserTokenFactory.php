@@ -141,18 +141,22 @@ class UserTokenFactory implements Apine\Entity\EntityFactoryInterface {
 	public static function authentication ($a_name, $a_token, $a_delay) {
 		
 		$user = UserFactory::create_by_name($a_name);
-
-		$database = new Database();
-		$token_statement_id = $database->prepare('SELECT `id` FROM `apine_api_users_tokens` WHERE `user_id` = ? AND `token` = ? AND `last_access_date` > ? AND `disabled` = false');
-		$ar_token = $database->execute(array(
-						$user->get_id(),
-						$a_token,
-						date('d M Y H:i:s',time() - $a_delay)
-		), $token_statement_id);
 		
-		if ($ar_token) {
-			$connect = end($ar_token);
-			$return = (int) $connect['id'];
+		if (!is_null($user)) {
+			$database = new Database();
+			$token_statement_id = $database->prepare('SELECT `id` FROM `apine_api_users_tokens` WHERE `user_id` = ? AND `token` = ? AND `last_access_date` > ? AND `disabled` = false');
+			$ar_token = $database->execute(array(
+				$user->get_id(),
+				$a_token,
+				date('d M Y H:i:s', time() - $a_delay)
+			), $token_statement_id);
+			
+			if ($ar_token) {
+				$connect = end($ar_token);
+				$return = (int) $connect['id'];
+			} else {
+				$return = false;
+			}
 		} else {
 			$return = false;
 		}
