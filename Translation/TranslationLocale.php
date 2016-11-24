@@ -141,15 +141,17 @@ final class TranslationLocale {
 	 */
 	public function format_date ($a_timestamp, $pattern = null) {
 
-		if (!Types::is_timestamp($a_timestamp)) {
+		if (!is_numeric($a_timestamp)&& !Types::is_timestamp($a_timestamp)) {
 			throw new GenericException('Invalid Timestamp', 500);
+		} else if (!is_numeric($a_timestamp)) {
+			$a_timestamp = strtotime($a_timestamp);
 		}
 		
 		if (isset($this->locale_entries[$pattern])) {
 			$pattern = $this->locale_entries[$pattern];
 		}
 		
-		return strftime($pattern, strtotime($a_timestamp));
+		return strftime($pattern, $a_timestamp);
 		
 	}
 }

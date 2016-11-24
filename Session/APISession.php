@@ -65,9 +65,9 @@ final class APISession implements SessionInterface{
 		
 		$request = Request::get_instance();
 		
-		if (isset($request->get_request_headers()['Authorization'])) {
+		if (isset($request->get_request_headers()['X-API-Authentication'])) {
 			
-			$authorization_string = $request->get_request_headers()['Authorization'];
+			$authorization_string = $request->get_request_headers()['X-API-Authentication'];
 			$authorization_array = explode(':', $authorization_string);
 			$name = $authorization_array[0];
 			$token = $authorization_array[1];
