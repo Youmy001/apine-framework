@@ -122,4 +122,18 @@ final class Property extends EntityModel {
 		
 	}
 	
+	public function serialize ($data = false) {
+		
+		/*$array = array();
+		$array['value'] = $this->get_value();
+		$array['name'] = $this->get('name');
+		return $array;*/
+		if ($data) {
+			return $this->get_value();
+		} else {
+			return parent::serialize();
+		}
+		
+	}
+	
 }

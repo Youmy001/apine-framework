@@ -55,7 +55,7 @@ class User extends EntityModel {
 	 * 
 	 * @var Apine\Core\Collection[UserGroup]
 	 */
-	private $groups;
+	protected $groups;
 
 	/**
 	 * User email address
@@ -76,7 +76,7 @@ class User extends EntityModel {
 	 * 
 	 * @var array[Property]
 	 */
-	private $properties;
+	protected $properties;
 
 	/**
 	 * @see EntityModel::$field_mapping
@@ -149,7 +149,7 @@ class User extends EntityModel {
 	/**
 	 * Check if the user is member of a User Group
 	 * 
-	 * @param UserGroup $a_group
+	 * @param int|UserGroup $a_group
 	 * @return boolean
 	 */
 	final public function has_group ($a_group) {

@@ -12,6 +12,9 @@ namespace Apine\Entity\Overload;
 use Apine\Application\Application;
 use Apine\Core\Database;
 use Apine\Utility\Types;
+use Serializable;
+use JsonSerializable;
+use Traversable;
 
 /**
  * Simple data mapper implementation with method
@@ -25,7 +28,7 @@ use Apine\Utility\Types;
  * @method set_id(integer $integer) Assign a new value to the primary key
  * @method load() Procedure to load more complex properties or properties that are not directly represented in the database. Optional.
  */
-abstract class EntityModel implements EntityInterface {
+abstract class EntityModel implements EntityInterface, Serializable, JsonSerializable {
 
 	/**
 	 * Name of the primary key column
@@ -539,5 +542,90 @@ abstract class EntityModel implements EntityInterface {
 		$this->edited_values[$a_field] = $value;
 
 	}
-
+	
+	/**
+	 * Implementation of Serializable
+	 *
+	 * @param bool $data Return serializable data or serialized string
+	 * @return array|string
+	 */
+	public function serialize ($data = false) {
+		
+		if ($data) {
+			return $this->serialization();
+		} else {
+			return serialize($this->serialization(true));
+		}
+		
+	}
+	
+	public function unserialize ($serialized) {
+		// TODO: Implement unserialize() method.
+	}
+	
+	public function jsonSerialize () {
+		
+		return $this->serialization();
+		
+	}
+	
+	private function serialization ($all = false) {
+		
+		$properties = get_class_vars(get_class($this)); // List of accessible properties
+		$serialized_array = array();
+		
+		$serialized_array['id'] = $this->get_id();
+		
+		foreach ($properties as $name => $value) {
+			if (($name=='field_mapping'||
+				$name=='key_value'||
+				$name=='key_field'||
+				$name=='table_name'||
+				$name=='values_loaded'||
+				$name=='initial_key_value'||
+				$name=='initial_values'||
+				$name=='edited_values'||
+				$name=='database') && $all === false
+			) {
+				continue;
+			} else {
+				$method = "get_$name";
+				$value = $this->$method();
+				
+				if (is_a($value, '\Apine\Entity\Overload\EntityModel')) {
+					$serialized_array[$name] = $value->serialize(!$all);
+				} else if (is_array($value) || $value instanceof Traversable) {
+					$serialized_array[$name] = $this->array_serialization($value, $all);
+				} else if (is_object($value)) {
+					$serialized_array[$name] = $this->array_serialization((array) $value, $all);
+				} else {
+					$serialized_array[$name] = $value;
+				}
+			}
+		}
+		
+		return $serialized_array;
+		
+	}
+	
+	private function array_serialization ($object, $all) {
+		
+		$master_array = array();
+		
+		foreach ($object as $array_name => $array_item) {
+			if(is_a($array_item, '\Apine\Entity\Overload\EntityModel')) {
+				$master_array[$array_name] = $array_item->serialize(!$all);
+			} else if (is_array($array_item) || $array_item instanceof Traversable) {
+				$master_array[$array_name] = $this->array_serialization($array_item, $all);
+			} else if (is_object($array_item)) {
+				$master_array[$array_name] = $this->array_serialization((array) $array_item, $all);
+			} else {
+				$master_array[$array_name] = $array_item;
+			}
+		}
+		
+		return $master_array;
+		
+	}
+	
 }

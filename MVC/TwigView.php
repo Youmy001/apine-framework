@@ -324,7 +324,6 @@ class TwigView extends View {
          * Execution Time : function (Ex: {{ execution_time() }})
          *
          */
-        //$this->layout_path = null;
         
         $loader1 = new \Twig_Loader_Filesystem($this->view_path);
 		$loader2 = new \Twig_Loader_Filesystem($this->layout_path);
@@ -353,6 +352,7 @@ class TwigView extends View {
 			'metadata' => $this->_metatags,
 			'literals' => $this->literals,*/
 			'user' => (SessionManager::get_user()) ? SessionManager::get_user() : null,
+			//'user_array' => (SessionManager::get_user()) ? SessionManager::get_user()->serialize() : null,
 			'version' => array(
 				'framework' => Application::get_instance()->get_version()->framework(),
 				'application' => Application::get_instance()->get_version()->application()
