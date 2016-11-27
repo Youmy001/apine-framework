@@ -10,6 +10,7 @@ namespace Apine\Session;
 
 use Apine;
 use Apine\Application\Application;
+use Apine\Autoloader;
 use Apine\Core\Encryption;
 use Apine\User\Factory\UserFactory;
 use Apine\User\User;
@@ -105,9 +106,14 @@ final class WebSession implements SessionInterface {
 		if ($config->get('runtime', 'user_class')) {
 			$user_class = $config->get('runtime', 'user_class');
 			$pos_slash = strpos($user_class, '/');
-			$module = substr($user_class, 0, $pos_slash);
-			$class = substr($user_class, $pos_slash + 1);
-			apine_load_module($module);
+			
+			if (is_integer($pos_slash)) {
+				$module = substr($user_class, 0, $pos_slash);
+				$class = substr($user_class, $pos_slash + 1);
+				Autoloader::load_module($module);
+			} else {
+				$class = $user_class;
+			}
 			
 			if (is_a($class, 'Apine\User\User')) {
 				$this->user_class_name = $class;
