@@ -8,6 +8,7 @@
 namespace Apine\Entity;
 
 use \DateTime;
+use Apine\Application\Application;
 use Apine\Core\Database;
 use Apine\Utility\Types;
 
