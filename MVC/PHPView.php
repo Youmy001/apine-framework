@@ -273,6 +273,8 @@ final class PHPView extends View {
 	 * @return string
 	 */
 	public function content() {
+		
+		require_once Application\Application::get_instance()->framework_location() . '/Includes/Functions.php';
 
 		ob_start();
 		include_once("$this->_layout.php");
