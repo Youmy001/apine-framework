@@ -83,22 +83,26 @@ abstract class EntityModel implements EntityInterface {
 	 * @var string $load_field
 	 */
 	private $primary_key;
+	
+	/**
+	 * Instance of the database connection
+	 * @var Database
+	 */
+	private $database;
 
 	/**
 	 * Fetch database fields and values for entity
 	 */
 	final protected function _load () {
 
-		$db = new Database();
-
 		if ($this->entity_id !== null) {
 			if (!is_numeric($this->entity_id)) {
-				$field_id = $db->quote($this->entity_id);
+				$field_id = $this->database->quote($this->entity_id);
 			} else {
 				$field_id = $this->entity_id;
 			}
 
-			$database_fields = $db->select("SELECT * from $this->table_name where $this->primary_key = $field_id");
+			$database_fields = $this->database->select("SELECT * from $this->table_name where $this->primary_key = $field_id");
 
 			if ($database_fields) {
 				$this->database_fields = $database_fields[0];
@@ -240,7 +244,7 @@ abstract class EntityModel implements EntityInterface {
 	}
 
 	/**
-	 * Prepare Data mapper for user
+	 * Prepare Data mapper for use
 	 *
 	 * @param string $table_name
 	 *        Entity Table name
@@ -248,12 +252,19 @@ abstract class EntityModel implements EntityInterface {
 	 *        Entity identifier
 	 * @param string $field_name
 	 *        Name of the primary key column
+	 * @param Database $database
+	 *        Instance of a database to commit changes to
 	 */
-	final protected function _initialize ($table_name, $tuple_id = null, $field_name = "id") {
+	final protected function _initialize ($table_name, $tuple_id = null, $field_name = "id", Database $database = null) {
 
 		$this->table_name = $table_name;
 		$this->entity_id = $tuple_id;
 		$this->primary_key = $field_name;
+		$this->database = $database;
+		
+		if (is_null($this->database) || !is_a($this->database, '\Apine\Core\Database')) {
+			$this->database = new Database();
+		}
 
 	}
 
@@ -293,10 +304,8 @@ abstract class EntityModel implements EntityInterface {
 	 */
 	final protected function _destroy () {
 
-		$db = new Database();
-
 		if ($this->entity_id) {
-			$db->delete($this->table_name, array(
+			$this->database->delete($this->table_name, array(
 				$this->primary_key => $this->entity_id
 			));
 		}
@@ -307,8 +316,6 @@ abstract class EntityModel implements EntityInterface {
 	 * Save Entity state to database
 	 */
 	final protected function _save () {
-
-		$db = new Database();
 
 		if ($this->entity_id === null) {
 			$this->field_loaded = 0;
@@ -327,7 +334,7 @@ abstract class EntityModel implements EntityInterface {
 			}
 
 			if (sizeof($new_dbf) > 0) {
-				$this->entity_id = $db->insert($this->table_name, $new_dbf);
+				$this->entity_id = $this->database->insert($this->table_name, $new_dbf);
 			}
 
 			$this->_load();
@@ -346,8 +353,8 @@ abstract class EntityModel implements EntityInterface {
 						}
 					}
 				}
-
-				$db->update($this->table_name, $arUpdate, array(
+				
+				$this->database->update($this->table_name, $arUpdate, array(
 					$this->primary_key => $this->entity_id
 				));
 			}

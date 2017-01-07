@@ -478,9 +478,10 @@ abstract class EntityModel implements EntityInterface, Serializable, JsonSeriali
 	 * @param string $a_table_name Name of the table
 	 * @param string|integer $a_id Value of the primary key of the entity in the database
 	 * @param string $a_field Name of the column marked as a primary key
+	 * @param Database $database Instance of a database to commit changes to. If empty, will try to connect to the default database
 	 * @throws \Exception If the table name of the column name are not valid
 	 */
-	final protected function initialize ($a_table_name, $a_id, $a_field = 'id') {
+	final protected function initialize ($a_table_name, $a_id, $a_field = 'id', Database $database = null) {
 
 		// Regular expression matching valid table names and column names
 		$regex = '/^([^0-9])([0-9a-zA-Z$_\x{0080}-\x{FFFF}]{1,64})$/u';
@@ -497,7 +498,11 @@ abstract class EntityModel implements EntityInterface, Serializable, JsonSeriali
 		$this->key_value = $a_id;
 		$this->initial_key_value = $a_id;
 		$this->table_name = $a_table_name;
-		$this->database = new Database();
+		$this->database = $database;
+		
+		if (is_null($this->database) || !is_a($this->database, '\Apine\Core\Database')) {
+			$this->database = new Database();
+		}
 
 		// Execute the custom loading method
 		if (method_exists($this, 'load')) {
@@ -559,6 +564,11 @@ abstract class EntityModel implements EntityInterface, Serializable, JsonSeriali
 		
 	}
 	
+	/**
+	 * Implementation of Serializable
+	 * 
+	 * @param string $serialized
+	 */
 	public function unserialize ($serialized) {
 		// TODO: Implement unserialize() method.
 	}

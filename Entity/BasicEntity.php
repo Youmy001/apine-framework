@@ -2,6 +2,8 @@
 
 namespace Apine\Entity;
 
+use Apine\Core\Database;
+
 /**
  * Basic entity with no domain logic
  *
@@ -21,11 +23,13 @@ class BasicEntity extends EntityModel {
 	 *        table
      * @param string $a_field
      *        Name of the primary key column
+	 * @param Database $database
+	 *        Instance of a database to commit changes to
 	 */
-	public function __construct ($a_table = null, $a_id = null, $a_field = "id") {
+	public function __construct ($a_table = null, $a_id = null, $a_field = "id", Database $database) {
 
 		if ($a_table != null) {
-			$this->_initialize($a_table, $a_id, $a_field);
+			$this->_initialize($a_table, $a_id, $a_field, $database);
 			$this->loaded = true;
 		}
 
