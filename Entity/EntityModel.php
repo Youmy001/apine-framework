@@ -262,7 +262,7 @@ abstract class EntityModel implements EntityInterface {
 		$this->primary_key = $field_name;
 		$this->database = $database;
 		
-		if (is_null($this->database) || !is_a($this->database, '\Apine\Core\Database')) {
+		if (is_null($this->database)) {
 			$this->database = new Database();
 		}
 

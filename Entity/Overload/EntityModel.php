@@ -500,7 +500,7 @@ abstract class EntityModel implements EntityInterface, Serializable, JsonSeriali
 		$this->table_name = $a_table_name;
 		$this->database = $database;
 		
-		if (is_null($this->database) || !is_a($this->database, '\Apine\Core\Database')) {
+		if (is_null($this->database)) {
 			$this->database = new Database();
 		}
 
