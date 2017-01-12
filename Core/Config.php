@@ -9,6 +9,7 @@
 namespace Apine\Core;
 
 use Apine\Exception\GenericException;
+use Apine\Utility\Files;
 
 /**
  * Configuration Reader
@@ -93,7 +94,7 @@ final class Config {
 		$key = strtolower($key);
 		
 		$this->settings[$prefix][$key] = $value;
-		write_ini_file($this->settings, $this->path, true);
+		Files::write_ini_file($this->settings, $this->path, true);
 		
 	}
 }

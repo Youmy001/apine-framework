@@ -42,7 +42,7 @@ class UserGroupFactory implements Apine\Entity\EntityFactoryInterface {
 	/**
 	 * Fetch all user groups
 	 * 
-	 * @return Collection
+	 * @return Collection[UserGroup]
 	 */
 	public static function create_all () {
 
@@ -82,11 +82,11 @@ class UserGroupFactory implements Apine\Entity\EntityFactoryInterface {
 	}
 	
 	/**
-	 * Fetch apine_user_groups by user
+	 * Fetch groups by user
 	 * 
 	 * @param integer $user
 	 *        User id
-	 * @return Collection
+	 * @return Collection[UserGroup]
 	 */
 	public static function create_by_user ($user) {
 	

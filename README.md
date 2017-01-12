@@ -7,7 +7,7 @@ The most notable features include a complete session manager with basic users an
 
 ## Requirements
 
-* PHP 5.4.0 or greater
+* PHP 5.6.0 or greater
 * MySQL 5
 * Apache 2.4
 * mod_rewrite

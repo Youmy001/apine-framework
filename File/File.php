@@ -10,6 +10,7 @@ namespace Apine\File;
 
 use \Exception;
 use Apine\Exception\GenericException;
+use Apine\Utility\Files;
 
 /**
  * File Resource Handler
@@ -173,7 +174,7 @@ class File {
 		} elseif (!strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 			$filename = escapeshellcmd($this->path);
 			$mime = shell_exec("file -b --mime-type '".$filename."'");
-		} elseif (is_exec_available()) {
+		} elseif (Files::is_exec_available()) {
 			$filename = escapeshellcmd($this->path);
 			$mime = exec("file -b --mime-type '".$filename."'");
 		}

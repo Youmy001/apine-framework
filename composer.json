@@ -17,13 +17,19 @@
 	"require": {
 		"php": ">=5.6.0",
 		"phpmailer/phpmailer": "^5.2",
-       "geoip/geoip": "~1.14",
-       "binarmorker/tinytemplate": ">=1.1"
+		"geoip/geoip": "~1.14",
+		"binarmorker/tinytemplate": ">=1.1",
+		"twig/twig": "^1.24"
     },
     "autoload": {
     	"files" : [
     		"Autoloader.php"
     	]
     },
+	"extra": {
+		"branch-alias": {
+			"dev-master": "1.1.x-dev"
+		}
+	},
 	"license": "MIT"
 }

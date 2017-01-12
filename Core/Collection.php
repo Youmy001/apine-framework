@@ -8,6 +8,7 @@
  */
 namespace Apine\Core;
 
+use Apine\Exception\GenericException;
 use Exception;
 
 /**
@@ -179,6 +180,19 @@ final class Collection implements \IteratorAggregate {
 	}
 
 	/**
+	 * Add multiple items at once.
+	 *
+	 * @param array $a_items
+	 */
+	public function inject_items (array $a_items) {
+
+		if (!empty($a_items)) {
+			$this->items = array_merge($this->items, $a_items);
+		}
+
+	}
+
+	/**
 	 * Sort item from the collection in reverse order
 	 * 
 	 * @return boolean
@@ -255,6 +269,11 @@ final class Collection implements \IteratorAggregate {
 	
 	/**
 	 * Verify if value exists in the collection
+	 *
+	 * Although it is possible to use this method with
+	 * EntityModel, the serial validation may give
+	 * unreliable results depending on your implementation
+	 * of the entity, thus we do not recommend it.
 	 * 
 	 * @param mixed $a_value
 	 *        Value to verify
@@ -267,16 +286,24 @@ final class Collection implements \IteratorAggregate {
 				return false;
 			}
 			
-			if (is_object($a_value) && is_a($a_value, '\Apine\Entity\EntityModel')) {
-				$a_value->load();
+			if (is_object($a_value) && (is_a($a_value, '\Apine\Entity\EntityModel') || is_a($a_value, '\Apine\Entity\Overload\EntityModel'))) {
+				if (is_a($a_value, '\Apine\Entity\Overload\EntityModel')) {
+					$a_value->get_id();
+				}else {
+					$a_value->load();
+				}
 			}
 			
 			$serial_value = serialize($a_value);
 			
-			// Cycle through every items in the Liste
+			// Cycle through every items in the collection
 			foreach ($this->items as $key => $item) {
-				if (is_object($item) && is_a($item, '\Apine\Entity\EntityModel')) {
-					$item->load();
+				if (is_object($item) && (is_a($item, '\Apine\Entity\EntityModel') || is_a($item, '\Apine\Entity\Overload\EntityModel'))) {
+					if (is_a($item, '\Apine\Entity\Overload\EntityModel')) {
+						$item->get_id();
+					}else {
+						$item->load();
+					}
 				}
 				
 				if ($serial_value === serialize($item)) {

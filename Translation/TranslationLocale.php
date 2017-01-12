@@ -9,6 +9,8 @@
 namespace Apine\Translation;
 
 use Apine\Exception\GenericException;
+use Apine\Utility\Files;
+use Apine\Utility\Types;
 
 /**
  * Translation Locales
@@ -66,7 +68,7 @@ final class TranslationLocale {
 		$this->language = $a_language;
 		
 		if (file_exists($this->language->file_path)) {
-			if(file_extension($this->language->file_path) == "json"){
+			if(Files::file_extension($this->language->file_path) == "json"){
 				$file = fopen($this->language->file_path, 'r');
 				$content = fread($file, filesize($this->language->file_path));
 				$content = json_decode($content);
@@ -138,16 +140,18 @@ final class TranslationLocale {
      * @return string
 	 */
 	public function format_date ($a_timestamp, $pattern = null) {
-		
-		if (!is_timestamp($a_timestamp)) {
+
+		if (!is_numeric($a_timestamp)&& !Types::is_timestamp($a_timestamp)) {
 			throw new GenericException('Invalid Timestamp', 500);
+		} else if (!is_numeric($a_timestamp)) {
+			$a_timestamp = strtotime($a_timestamp);
 		}
 		
 		if (isset($this->locale_entries[$pattern])) {
 			$pattern = $this->locale_entries[$pattern];
 		}
 		
-		return strftime($pattern, strtotime($a_timestamp));
+		return strftime($pattern, $a_timestamp);
 		
 	}
 }

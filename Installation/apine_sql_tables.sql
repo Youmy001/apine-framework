@@ -62,6 +62,9 @@ CREATE TABLE IF NOT EXISTS `apine_user_properties` (
 
 ALTER TABLE `apine_user_properties`
   ADD UNIQUE KEY `property` (`user_id`, `name`);
+
+ALTER TABLE `apine_user_properties`
+  ADD CONSTRAINT `apine_user_properties_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `apine_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
  
 -- --------------------------------------------------------
 
@@ -91,7 +94,7 @@ INSERT INTO `apine_user_groups` (`id`, `name`) VALUES
 CREATE TABLE IF NOT EXISTS `apine_users_user_groups` (
   `user_id` int(11) NOT NULL,
   `group_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `apine_users_user_groups`
  ADD PRIMARY KEY (`user_id`,`group_id`);
@@ -100,8 +103,8 @@ ALTER TABLE `apine_users_user_groups`
  ADD UNIQUE KEY `apine_users_user_groups_index` (`user_id`,`group_id`), ADD KEY `apine_users_user_groups_user_is` (`user_id`), ADD KEY `apine_users_user_groups_group_id` (`group_id`);
 
 ALTER TABLE `apine_users_user_groups`
-ADD CONSTRAINT `apine_users_user_groups_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `apine_user_groups` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `apine_users_user_groups_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `apine_users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `apine_users_user_groups_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `apine_user_groups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+ADD CONSTRAINT `apine_users_user_groups_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `apine_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- --------------------------------------------------------
 
@@ -123,7 +126,7 @@ ALTER TABLE `apine_api_users_tokens`
  ADD KEY `user_id` (`user_id`);
 
 ALTER TABLE `apine_api_users_tokens`
- ADD CONSTRAINT `apine_api_users_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `apine_users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ ADD CONSTRAINT `apine_api_users_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `apine_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
  
 -- --------------------------------------------------------
 
@@ -133,16 +136,16 @@ ALTER TABLE `apine_api_users_tokens`
 
 CREATE TABLE IF NOT EXISTS `apine_password_tokens` (
   `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
+  `user_id` int(11),
   `token` varchar(64) NOT NULL,
   `creation_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `apine_password_tokens`
  ADD KEY `apine_password_token_user_id` (`user_id`);
- 
+
 ALTER TABLE `apine_password_tokens`
- ADD CONSTRAINT `apine_password_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `apine_users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ ADD CONSTRAINT `apine_password_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `apine_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

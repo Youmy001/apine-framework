@@ -244,7 +244,7 @@ class UserFactory implements Apine\Entity\EntityFactoryInterface {
 					$class = 'Apine\User\User';
 				}
 			} else {
-				$class = "Apine\User\User";
+				$class = 'Apine\User\User';
 			}
 		}
 		

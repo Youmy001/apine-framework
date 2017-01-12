@@ -7,35 +7,33 @@
  */
 namespace Apine\User;
 
-use Apine\Entity as Entity;
+use Apine\Entity\Overload\EntityModel;
 
 /**
  * Implementation of the database representation of user properties
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\User
+ *
+ * @method string get_name() Get the name of the property
+ * @method set_name(string $a_name) Set the name of the property
  */
-final class Property extends Entity\EntityModel {
-
-    /**
-     * @var integer
-     */
-	private $id;
+final class Property extends EntityModel {
 
     /**
      * @var User
      */
-	private $user;
+	protected $user;
 
     /**
      * @var string
      */
-	private $name;
+	protected $name;
 
     /**
      * @var mixed
      */
-	private $value;
+	protected $value;
 
     /**
      * Property constructor.
@@ -44,127 +42,65 @@ final class Property extends Entity\EntityModel {
      */
 	public function __construct($a_id = null) {
 		
-		$this->_initialize('apine_user_properties', $a_id);
+		$this->initialize('apine_user_properties', $a_id);
 		
-		if (!is_null($a_id)) {
-			$this->id = $a_id;
-		}
-		
-	}
-	
-	/**
-	 * Fetch property's identifier
-	 * 
-	 * @return integer
-	 */
-	final public function get_id () {
-		
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
-		return $this->id;
-	
 	}
 
 	/**
-	 * Set property's id
-	 * 
-	 * @param integer $a_id
-	 *        Property's identifier
-	 */
-	final public function set_id ($a_id) {
-
-		$this->id = $a_id;
-		$this->_set_id($a_id);
-		$this->_set_field('id', $a_id);
-	
-	}
-	
-	/**
-	 * Fetch the token user
+	 * Get the owner of the property
 	 *
 	 * @return User
 	 */
 	public function get_user () {
-	
-		if ($this->loaded == 0) {
-			$this->load();
+
+		if (is_null($this->user)) {
+			$this->user = Factory\UserFactory::create_by_id($this->get('user_id'));
 		}
-	
+
 		return $this->user;
-	
+
 	}
 	
 	/**
-	 * Set the token user
+	 * Set the owner of the property
 	 *
 	 * @param User|integer $a_user
-	 * @return User
+	 * @throws \Exception If the input value is invalid
 	 */
 	public function set_user ($a_user) {
-	
-		if ($this->loaded == 0) {
-			$this->load();
-		}
 	
 		if (is_numeric($a_user) && Factory\UserFactory::is_id_exist($a_user)) {
 			$this->user = Factory\UserFactory::create_by_id($a_user);
 		} else if (is_a($a_user, 'Apine\User\User')) {
 			$this->user = $a_user;
 		} else {
-			return null;
+			throw new \Exception('Invalid User');
 		}
 	
-		$this->_set_field('user_id', $this->user->get_id());
-		return $this->user;
+		$this->set('user_id', $this->user->get_id());
 	
 	}
 
-    /**
-     * Fetch the property name
-     *
-     * @return string
-     */
-	public function get_name () {
-		
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
-		return $this->name;
-		
-	}
-
-    /**
-     * Set the name of the property
-     *
-     * @param string $a_name
-     */
-	public function set_name ($a_name) {
-		
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
-		$this->name = $a_name;
-		$this->_set_field('name', $a_name);
-		
-	}
-
-    /**
-     * Fetch the value of the property
-     *
-     * @return mixed
-     */
+	/**
+	 * Fetch the value of the property
+	 *
+	 * @return mixed
+	 */
 	public function get_value () {
-		
-		if ($this->loaded == 0) {
-			$this->load();
+
+		if (is_null($this->value)) {
+			$value = $this->get('value');
+
+			if (@unserialize($value) !== false) {
+				$this->value = @unserialize($value);
+			} else {
+				$this->value = $value;
+			}
 		}
-		
+
 		return $this->value;
-		
+
+
 	}
 
     /**
@@ -174,56 +110,29 @@ final class Property extends Entity\EntityModel {
      */
 	public function set_value ($a_value) {
 		
-		if ($this->loaded == 0) {
-			$this->load();
-		}
-		
 		if ( null !== $value = serialize($a_value)) {
 			$this->value = $a_value;
 
 			if (!is_null($a_value)) {
-				$this->_set_field('value', serialize($a_value));
+				$this->set('value', serialize($a_value));
 			} else {
-				$this->_set_field('value', null);
+				$this->set('value', null);
 			}
 		}
 		
 	}
-
-    /**
-     * @see Entity\EntityInterface::load()
-     */
-	public function load () {
+	
+	public function serialize ($data = false) {
 		
-		if (!is_null($this->id)) {
-			$this->user = Factory\UserFactory::create_by_id($this->_get_field('user_id'));
-			$this->name = $this->_get_field('name');
-		
-			if (@unserialize($this->_get_field('value')) !== false) {
-				$this->value = @unserialize($this->_get_field('value'));
-			} else {
-				$this->value = $this->_get_field('value');
-			}
+		/*$array = array();
+		$array['value'] = $this->get_value();
+		$array['name'] = $this->get('name');
+		return $array;*/
+		if ($data) {
+			return $this->get_value();
+		} else {
+			return parent::serialize();
 		}
-		
-	}
-
-    /**
-     * @see Entity\EntityInterface::save()
-     */
-	public function save () {
-		
-		parent::_save();
-		$this->set_id($this->_get_id());
-		
-	}
-
-    /**
-     * @see Entity\EntityInterface::delete()
-     */
-	public function delete () {
-		
-		parent::_destroy();
 		
 	}
 	

@@ -10,6 +10,7 @@ namespace Apine\MVC;
 use Apine\Application as Application;
 use Apine\Exception\GenericException;
 use Apine\Session\SessionManager;
+use Symfony\Component\Console\Exception\RuntimeException;
 use TinyTemplate\Template;
 use TinyTemplate\Layout;
 use TinyTemplate\Engine;
@@ -62,6 +63,12 @@ final class HTMLView extends View {
 	 * @var array
 	 */
 	private $_scripts;
+	
+	/**
+	 * List of HTML literal string to include
+	 * @var array
+	 */
+	private $literals;
 
 	/**
 	 * View's HTML Document
@@ -192,18 +199,15 @@ final class HTMLView extends View {
 	 */
 	public function add_script($a_script) {
 
-
-	
 		if ($a_script!="") {
 			if (file_exists("resources/public/scripts/$a_script.js")) {
 				$this->_scripts[] = URLHelper::resource("resources/public/scripts/$a_script.js");
 			} else if (file_exists("$a_script.js")) {
 				$this->_scripts[] = URLHelper::resource("$a_script.js");
+			} else if (stripos(@get_headers($a_script)[0], '200')) {
+				$this->_scripts[] = $a_script;
 			} else {
-				$headers = @get_headers($a_script);
-				if (stripos($headers[0], '200')) {
-					$this->_scripts[] = $a_script;
-				}
+				throw new \RuntimeException('File "' . $a_script . '.js" not found');
 			}
 		}
 	
@@ -221,6 +225,10 @@ final class HTMLView extends View {
 				$this->_styles[] = URLHelper::resource("resources/public/css/$a_sheet.css");
 			} else if (file_exists("$a_sheet.css")) {
 				$this->_styles[] = URLHelper::resource("$a_sheet.css");
+			} else if (stripos(@get_headers($a_sheet)[0], '200')) {
+				$this->_styles[] = $a_sheet;
+			} else {
+				throw new \RuntimeException('File "' . $a_sheet . '.css" not found');
 			}
 		}
 
@@ -285,6 +293,34 @@ final class HTMLView extends View {
 		return $output;
 	
 	}
+	
+	/**
+	 * Inject literal HTML in the view
+	 *
+	 * @param string $a_literal
+	 * @param string $a_zone
+	 */
+	public function add_html_literal ($a_literal, $a_zone = "default") {
+		
+		if($a_literal!="") {
+			$this->literals[$a_zone][] = $a_literal;
+		}
+		
+	}
+	
+	public static function apply_html_literals ($a_literals) {
+		
+		$output = "";
+		
+		if (count($a_literals)>0) {
+			foreach ($a_literals as $literal) {
+				$output .= $literal;
+			}
+		}
+		
+		return $output;
+		
+	}
 
 	/**
 	 * Send the view to output
@@ -307,6 +343,9 @@ final class HTMLView extends View {
 	 * @return string
 	 */
 	public function content() {
+
+		$location = Application\Application::get_instance()->framework_location() . DIRECTORY_SEPARATOR . "Includes" . DIRECTORY_SEPARATOR . "Rules.php";
+		include_once $location;
 
 		$config = Application\Application::get_instance()->get_config();
 		
@@ -346,6 +385,7 @@ final class HTMLView extends View {
 				'apine_application_https' => Application\Application::get_instance()->get_use_https(),
 				'apine_application_mode' => Application\Application::get_instance()->get_mode(),
 				'apine_application_secure' => Application\Application::get_instance()->get_secure_session(),
+				"apine_view_literals" => $this->literals,
 				'apine_view_metatags' => $this->_metatags,
 				'apine_view_scripts' => $this->_scripts,
 				'apine_view_stylesheets' => $this->_styles,

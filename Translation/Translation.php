@@ -9,6 +9,7 @@
 namespace Apine\Translation;
 
 use Apine\Exception\GenericException;
+use Apine\Utility\Files;
 
 /**
  * Language Translation
@@ -53,7 +54,7 @@ final class Translation {
 		$this->locale = new TranslationLocale($this->language);
 		
 		if (file_exists($this->language->file_path)) {
-			if (file_extension($this->language->file_path) != "json") {
+			if (Files::file_extension($this->language->file_path) != "json") {
 				throw new GenericException("Invalid File");
 			}
 		}else{

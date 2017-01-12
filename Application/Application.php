@@ -17,8 +17,7 @@ use Apine\Routing\WebRouter as WebRouter;
 use Apine\Routing\APIRouter as APIRouter;
 use Apine\Controllers\System as Controllers;
 use Apine\Core\Version as Version;
-use TinyTemplate\Engine;
-use TinyTemplate\Rule;
+use Apine\Utility\Routes;
 
 /**
  * Apine Application
@@ -40,7 +39,7 @@ final class Application {
 	 * 
 	 * @var string
 	 */
-	private $apine_version = '1.0.4';
+	private $apine_version = '1.1.0-dev';
 	
 	/**
 	 * Version number of the user application
@@ -127,6 +126,10 @@ final class Application {
      * @return Application
      */
     public function __construct() {
+	
+		if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50600) {
+			trigger_error('PHP version 5.6 or above is required for APIne. Please upgrade to continue.', E_USER_ERROR);
+		}
 		
 		ini_set('display_errors', 0);
 		error_reporting(E_ERROR);
@@ -315,174 +318,99 @@ final class Application {
 				$request = Request::get()['request'];
 			}
 			
-			// Verify is the protocol is allowed
-			if (Request::is_https() && !$this->use_https) {
-				apine_internal_redirect($request, APINE_PROTOCOL_HTTP);
-			}
-			
 			if (is_null($this->config)) {
 				$this->config = new Config('config.ini');
 			}
 			
-			// Find a timezone for the user
-			// using geoip library and its local database
-			if (function_exists('geoip_open')) {
-				$gi = geoip_open($this->apine_folder . "/GeoLiteCity.dat", GEOIP_STANDARD);
-				$record = GeoIP_record_by_addr($gi, $_SERVER['REMOTE_ADDR']);
-				//$record = geoip_record_by_addr($gi, "24.230.215.89");
-				//var_dump($record);
-			
-				if (isset($record)) {
-					$timezone = get_time_zone($record->country_code, ($record->region!='') ? $record->region : 0);
-				} else if (!is_null($this->config->get('dateformat', 'timezone'))) {
-					$timezone = $this->config->get('dateformat', 'timezone');
-				} else {
-					$timezone = 'America/New_York';
-				}
-				
-				date_default_timezone_set($timezone);
-			} else if (!is_null($this->config->get('dateformat', 'timezone'))) {
-				date_default_timezone_set($this->config->get('dateformat', 'timezone'));
-			}
-			
-			// If a user is logged in; redirect to the allowed protocol
-			// Secure session only work when Use HTTPS is set to "yes"
-			if (SessionManager::is_logged_in()) {
-				if ($this->secure_session) {
-					if (!Request::is_https() && $this->use_https) {
-						die(apine_internal_redirect($request, APINE_PROTOCOL_HTTPS)->draw());
-					} else if (Request::is_https() && !$this->use_https) {
-						die(apine_internal_redirect($request, APINE_PROTOCOL_HTTP)->draw());
-					}
-				} else {
-					if (Request::is_https()) {
-						die(apine_internal_redirect($request, APINE_PROTOCOL_HTTP)->draw());
-					}
-				}
-			}
-
-			unset($request);
-			
-			if (!Request::is_api_call()) {
-				if ($a_runtime == APINE_RUNTIME_API) {
-					throw new GenericException('Web Application calls are not implemented', 501);
-				}
-				
-				Engine::instance()->add_rule(new Rule(
-						'apine_data_loop',
-						'loopdata',
-						'<?php foreach ($this->data as $element): $this->wrap($element); ?>'
-				));
-				
-				Engine::instance()->add_rule(new Rule(
-						'apine_config',
-						'apine_config:(\w+),(\w+)',
-						'<?php echo \\Apine\\Application\\Application::get_instance()->get_config()->get(\'$1\',\'$2\');?>'
-				));
-				
-				Engine::instance()->add_rule(new Rule(
-						'apine_translate',
-						'apine_translate:(\w+),(\w+)',
-						'<?php echo \\Apine\\Application\\Translator::get_instance()->translate(\'$1\',\'$2\');?>'
-				));
-				
-				Engine::instance()->add_rule(new Rule(
-						'apine_format_date',
-						'apine_format_date:(\w+),(\w+)',
-						'<?php echo \\Apine\\Application\\Translator::get_instance()->translation()->get_locale()->format_date("$1", Apine\\Application\\Translator::get_instance()->translation()->get_locale()->$2());?>'
-				));
-				
-				Engine::instance()->add_rule(new Rule(
-						'apine_format_date_array',
-						'apine_format_date:(\w+)\[(\w+)\],(\w+)',
-						'<?php echo \\Apine\\Application\\Translator::get_instance()->translation()->get_locale()->format_date($this->data[\'$1\'][\'$2\'], Apine\\Application\\Translator::get_instance()->translation()->get_locale()->$3());?>'
-				));
-				
-				Engine::instance()->add_rule(new Rule(
-						'apine_language',
-						'apine_language:(code|short|name)',
-						'<?php switch("$1"){case "code": echo Apine\\Application\\Translator::get_instance()->translation()->get("language","code");break;case "short": echo Apine\Application\Translator::get_instance()->translation()->get("language","shortcode");break;case "name": echo Apine\Application\Translator::get_instance()->translation()->get("language","name");break;}?>'
-				));
-				
-				Engine::instance()->add_rule(new Rule(
-						'apine_execution',
-						'apine_execution_time',
-						'<?php echo apine_execution_time();?>'
-				));
-				
-				Engine::instance()->add_rule(new Rule(
-						'apine_version',
-						'apine_version:(framework|application)',
-						'<?php echo \\Apine\\Application\\Application::get_instance()->get_version()->$1();?>'
-				));
-				
-				Engine::instance()->add_rule(new Rule(
-						'apine_url',
-						'apine_url_(path|resource):(([^\/\s]+\/)?([^\{\}]*))',
-						'<?php echo \\Apine\\MVC\URLHelper::get_instance()->$1("$2");?>'
-						));
-				
-				Engine::instance()->add_rule(new Rule(
-						'apine_url_secure',
-						'apine_url_(path|resource)_secure:(([^\/\s]+\/)?([^\{\}]*))',
-						'<?php echo Apine\\MVC\\URLHelper::get_instance()->$1("$2", APINE_PROTOCOL_HTTPS);?>'
-				));
-				
-				Engine::instance()->add_rule(new Rule(
-						'apine_view_apply_meta',
-						'apine_apply_meta',
-						'<?php echo Apine\\MVC\\HTMLView::apply_meta($data["apine_view_metatags"]);?>'
-						));
-				
-				Engine::instance()->add_rule(new Rule(
-						'apine_view_apply_scripts',
-						'apine_apply_scripts',
-						'<?php echo Apine\\MVC\\HTMLView::apply_scripts($data["apine_view_scripts"]);?>'
-				));
-				
-				Engine::instance()->add_rule(new Rule(
-						'apine_view_apply_stylesheets',
-						'apine_apply_stylesheets',
-						'<?php echo Apine\\MVC\\HTMLView::apply_stylesheets($data["apine_view_stylesheets"]);?>'
-				));
-				
-				Engine::instance()->add_rule(new Rule(
-						'apine_user_has_group',
-						'if:apine_user\[groups\]==([0-9]+)',
-						'<?php if (\Apine\Session\SessionManager::get_user()->has_group($1)) : ?>'
-				));
-				
-				Engine::instance()->add_rule(new Rule(
-						'apine_user_group',
-						'apine_user\[groups\]\[([0-9]+)\]',
-						'<?php echo (\Apine\Session\SessionManager::get_user()->has_group($1)) : \Apine\Session\SessionManager::get_user()->get_group()->get_item($1)->get_name() : ""; ?>'
-				));
-				
-				if (!empty(Request::get()['request']) && Request::get()['request'] != '/') {
-					$request = Request::get()['request'];
-				} else {
-					$request = '/index';
-				}
-				
-				$router = new WebRouter($this->routes_path, $this->routes_type);
-			} else {
-				if ($a_runtime == APINE_RUNTIME_APP) {
-					throw new GenericException('RESTful API calls are not implemented', 501);
-				}
-				
-				$request = Request::get()['request'];
-				$router = new APIRouter();
-			}
-			
-			// Fetch and execute the route
-			$route = $router->route($request);
-			$view = $router->execute($route->controller, $route->action, $route->args);
-			
-			// Draw the output is a view is returned
-			if(!is_null($view) && is_a($view, 'Apine\MVC\View')) {
+			// Verify is the protocol is allowed
+			if (Request::is_https() && !$this->use_https) {
+				$view = Routes::internal_redirect($request, APINE_PROTOCOL_HTTP);
+				$view->draw();
+			} else if (!Request::is_https() && $this->use_https) {
+				$view = Routes::internal_redirect($request, APINE_PROTOCOL_HTTPS);
 				$view->draw();
 			} else {
-				throw new GenericException('Empty Apine View', 488);
+				// Find a timezone for the user
+				// using geoip library and its local database
+				if (function_exists('geoip_open')) {
+					$gi = geoip_open($this->apine_folder . DIRECTORY_SEPARATOR . "Includes" . DIRECTORY_SEPARATOR . "GeoLiteCity.dat", GEOIP_STANDARD);
+					$record = GeoIP_record_by_addr($gi, $_SERVER['REMOTE_ADDR']);
+					//$record = geoip_record_by_addr($gi, "24.230.215.89");
+					//var_dump($record);
+					
+					if (isset($record)) {
+						$timezone = get_time_zone($record->country_code, ($record->region != '') ? $record->region : 0);
+					} else {
+						if (!is_null($this->config->get('dateformat', 'timezone'))) {
+							$timezone = $this->config->get('dateformat', 'timezone');
+						} else {
+							$timezone = 'America/New_York';
+						}
+					}
+					
+					date_default_timezone_set($timezone);
+				} else {
+					if (!is_null($this->config->get('dateformat', 'timezone'))) {
+						date_default_timezone_set($this->config->get('dateformat', 'timezone'));
+					}
+				}
+				
+				// If a user is logged in; redirect to the allowed protocol
+				// Secure session only work when Use HTTPS is set to "yes"
+				if (SessionManager::is_logged_in()) {
+					if ($this->secure_session) {
+						if (!Request::is_https() && $this->use_https) {
+							$redirect = Routes::internal_redirect($request, APINE_PROTOCOL_HTTPS);
+						} else {
+							if (Request::is_https() && !$this->use_https) {
+								$redirect = Routes::internal_redirect($request, APINE_PROTOCOL_HTTP);
+							}
+						}
+					} else {
+						if (Request::is_https()) {
+							$redirect = Routes::internal_redirect($request, APINE_PROTOCOL_HTTP);
+						}
+					}
+					
+					if (isset($redirect)) {
+						$redirect->draw();
+						die();
+					}
+				}
+				
+				unset($request);
+				
+				if (!Request::is_api_call()) {
+					if ($a_runtime == APINE_RUNTIME_API) {
+						throw new GenericException('Web Application calls are not implemented', 501);
+					}
+					
+					if (!empty(Request::get()['request']) && Request::get()['request'] != '/') {
+						$request = Request::get()['request'];
+					} else {
+						$request = '/index';
+					}
+					
+					$router = new WebRouter($this->routes_path, $this->routes_type);
+				} else {
+					if ($a_runtime == APINE_RUNTIME_APP) {
+						throw new GenericException('RESTful API calls are not implemented', 501);
+					}
+					
+					$request = Request::get()['request'];
+					$router = new APIRouter();
+				}
+				
+				// Fetch and execute the route
+				$route = $router->route($request);
+				$view = $router->execute($route->controller, $route->action, $route->args);
+				
+				// Draw the output is a view is returned
+				if(!is_null($view) && is_a($view, 'Apine\MVC\View')) {
+					$view->draw();
+				} else {
+					throw new GenericException('Empty Apine View', 488);
+				}
 			}
 		} catch (GenericException $e) {
 			// Handle application errors

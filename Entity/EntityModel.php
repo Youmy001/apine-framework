@@ -8,7 +8,9 @@
 namespace Apine\Entity;
 
 use \DateTime;
+use Apine\Application\Application;
 use Apine\Core\Database;
+use Apine\Utility\Types;
 
 /**
  * This is the implementation of the data mapper
@@ -22,15 +24,15 @@ abstract class EntityModel implements EntityInterface {
 
 	/**
 	 * In-database entity identifier
-	 * 
+	 *
 	 * @var string
 	 * @access private
 	 */
-	private $id;
+	private $entity_id;
 
 	/**
 	 * Entity Table Name
-	 * 
+	 *
 	 * @var string
 	 * @access private
 	 */
@@ -38,7 +40,7 @@ abstract class EntityModel implements EntityInterface {
 
 	/**
 	 * Does Data mapper has loaded fields and values
-	 * 
+	 *
 	 * @var boolean
 	 * @access private
 	 */
@@ -46,7 +48,7 @@ abstract class EntityModel implements EntityInterface {
 
 	/**
 	 * Entity fields and values
-	 * 
+	 *
 	 * @var array
 	 * @access private
 	 */
@@ -54,7 +56,7 @@ abstract class EntityModel implements EntityInterface {
 
 	/**
 	 * Entity Modified fields and values
-	 * 
+	 *
 	 * @var array
 	 * @access private
 	 */
@@ -62,7 +64,7 @@ abstract class EntityModel implements EntityInterface {
 
 	/**
 	 * Has fields been modified
-	 * 
+	 *
 	 * @var boolean
 	 */
 	private $modified;
@@ -70,40 +72,44 @@ abstract class EntityModel implements EntityInterface {
 	/**
 	 * Does Entity has loaded loaded fields and
 	 * values
-	 * 
+	 *
 	 * @var boolean
 	 */
 	protected $loaded = 0;
-	
+
 	/**
 	 * Name of the primary key field
-	 * 
+	 *
 	 * @var string $load_field
 	 */
-	private $load_field;
+	private $primary_key;
 	
 	/**
-	* Fetch database fields and values for entity
-	*/
+	 * Instance of the database connection
+	 * @var Database
+	 */
+	private $database;
+
+	/**
+	 * Fetch database fields and values for entity
+	 */
 	final protected function _load () {
-		
-		$db = new Database();
-		
-		if ($this->id !== null) {
-			if (!is_numeric($this->id)) {
-				$field_id = $db->quote($this->id);
+
+		if ($this->entity_id !== null) {
+			if (!is_numeric($this->entity_id)) {
+				$field_id = $this->database->quote($this->entity_id);
 			} else {
-				$field_id = $this->id;
+				$field_id = $this->entity_id;
 			}
-			
-			$database_fields = $db->select("SELECT * from $this->table_name where $this->load_field = $field_id");
-			
+
+			$database_fields = $this->database->select("SELECT * from $this->table_name where $this->primary_key = $field_id");
+
 			if ($database_fields) {
 				$this->database_fields = $database_fields[0];
 				$this->field_loaded = 1;
 			}
 		}
-		
+
 		if (sizeof($this->modified_fields) > 0) {
 			foreach ($this->modified_fields as $key => $values) {
 				$this->modified_fields[$key] = false;
@@ -120,34 +126,42 @@ abstract class EntityModel implements EntityInterface {
 		$this->field_loaded = 1;
 
 	}
-	
+
 	/**
 	 * Verify if the entity is loaded
-	 * 
+	 *
 	 * @return boolean
 	 */
 	final protected function _is_loaded () {
-		
+
 		return (bool) $this->loaded;
-		
+
+	}
+
+	final protected function _is_field_loaded () {
+
+		return (bool) $this->field_loaded;
+
 	}
 
 	/**
 	 * Fetch a field's value
-	 * 
+	 *
 	 * @param string $a_field
 	 *        Field name
 	 * @return mixed
 	 */
 	final protected function _get_field ($a_field) {
-		
+
 		// Load entity if not loaded yet
 		if ($this->field_loaded == 0) {
 			$this->_load();
 		}
-		
+
 		if (isset($this->database_fields[$a_field])) {
-			if (is_timestamp($this->database_fields[$a_field]) && !is_numeric($this->database_fields[$a_field])) {
+			$adjust = Application::get_instance()->get_config()->get('entity', 'adjust_timestamp');
+			
+			if (($adjust !== 'no' || $adjust !== 'false' || $adjust !== false) && Types::is_timestamp($this->database_fields[$a_field]) && !is_numeric($this->database_fields[$a_field])) {
 				$datetime = new DateTime('now');
 				$time = strtotime($this->database_fields[$a_field]);
 				$time += $datetime->getOffset();
@@ -163,46 +177,46 @@ abstract class EntityModel implements EntityInterface {
 
 	/**
 	 * Fetch all fields' names and values
-	 * 
+	 *
 	 * @return array
 	 */
 	final protected function _get_all_fields () {
-		
+
 		// Load entity if not loaded yet
 		if ($this->field_loaded == 0) {
 			$this->_load();
 		}
-		
+
 		return $this->database_fields;
 
 	}
 
 	/**
 	 * Get entity identifier
-	 * 
+	 *
 	 * @return string
 	 */
 	final protected function _get_id () {
 
-		return $this->id;
+		return $this->entity_id;
 
 	}
 
 	/**
 	 * Set entity identifier
-	 * 
+	 *
 	 * @param string $id
 	 *        Entity identifier
 	 */
 	final protected function _set_id ($id) {
 
-		$this->id = $id;
+		$this->entity_id = $id;
 
 	}
 
 	/**
 	 * Get entity table name
-	 * 
+	 *
 	 * @return string
 	 */
 	final protected function _get_table_name () {
@@ -211,9 +225,15 @@ abstract class EntityModel implements EntityInterface {
 
 	}
 
+	final protected function _get_primary_key () {
+
+		return $this->primary_key;
+
+	}
+
 	/**
 	 * Set entity table name
-	 * 
+	 *
 	 * @param string $table
 	 *        Entity table name
 	 */
@@ -224,26 +244,33 @@ abstract class EntityModel implements EntityInterface {
 	}
 
 	/**
-	 * Prepare Data mapper for user
-	 * 
+	 * Prepare Data mapper for use
+	 *
 	 * @param string $table_name
 	 *        Entity Table name
 	 * @param string $tuple_id
 	 *        Entity identifier
-     * @param string $field_name
-     *        Name of the primary key column
+	 * @param string $field_name
+	 *        Name of the primary key column
+	 * @param Database $database
+	 *        Instance of a database to commit changes to
 	 */
-	final protected function _initialize ($table_name, $tuple_id = null, $field_name = "id") {
+	final protected function _initialize ($table_name, $tuple_id = null, $field_name = "id", Database $database = null) {
 
 		$this->table_name = $table_name;
-		$this->id = $tuple_id;
-		$this->load_field = $field_name;
+		$this->entity_id = $tuple_id;
+		$this->primary_key = $field_name;
+		$this->database = $database;
+		
+		if (is_null($this->database)) {
+			$this->database = new Database();
+		}
 
 	}
 
 	/**
 	 * Fetch all fields' names and values
-	 * 
+	 *
 	 * @param string $field
 	 *        Field name
 	 * @param mixed $value
@@ -255,13 +282,17 @@ abstract class EntityModel implements EntityInterface {
 			$this->_load();
 		}
 		
-		if (is_timestamp($value) && !is_numeric($value)) {
-			$datetime = new DateTime('now');
-			$time = strtotime($value);
-			$time -= $datetime->getOffset();
-			$value = date("Y-m-d H:i:s", $time);
-		}
+		$adjust = Application::get_instance()->get_config()->get('entity', 'adjust_timestamp');
 		
+		if ($adjust !== 'no' || $adjust !== 'false' || $adjust !== false) {
+			if (Types::is_timestamp($value) && !is_numeric($value)) {
+				$datetime = new DateTime('now');
+				$time = strtotime($value);
+				$time -= $datetime->getOffset();
+				$value = date("Y-m-d H:i:s", $time);
+			}
+		}
+
 		$this->database_fields[$field] = $value;
 		$this->modified = 1;
 		$this->modified_fields[$field] = true;
@@ -272,12 +303,10 @@ abstract class EntityModel implements EntityInterface {
 	 * Delete Entity from database
 	 */
 	final protected function _destroy () {
-		
-		$db = new Database();
-		
-		if ($this->id) {
-			$db->delete($this->table_name, array(
-							$this->load_field => $this->id
+
+		if ($this->entity_id) {
+			$this->database->delete($this->table_name, array(
+				$this->primary_key => $this->entity_id
 			));
 		}
 
@@ -287,17 +316,15 @@ abstract class EntityModel implements EntityInterface {
 	 * Save Entity state to database
 	 */
 	final protected function _save () {
-		
-		$db = new Database();
 
-		if ($this->id === null) {
+		if ($this->entity_id === null) {
 			$this->field_loaded = 0;
 		}
-		
+
 		if($this->field_loaded == 0) {
 			// This is a new or unloaded entity
 			$new_dbf = array();
-			
+
 			if (!empty($this->database_fields)) {
 				foreach ($this->database_fields as $field => $val) {
 					if (!is_numeric($field)) {
@@ -305,20 +332,20 @@ abstract class EntityModel implements EntityInterface {
 					}
 				}
 			}
-			
+
 			if (sizeof($new_dbf) > 0) {
-				$this->id = $db->insert($this->table_name, $new_dbf);
+				$this->entity_id = $this->database->insert($this->table_name, $new_dbf);
 			}
-			
+
 			$this->_load();
 		} else {
 			// This is an already existing entity
-				
+
 			// Update procedure only executed if at least
 			// one field was modified
 			if (count($this->modified_fields) > 0) {
 				$arUpdate = array();
-			
+
 				foreach ($this->database_fields as $key => $value) {
 					if (!is_numeric($key)) {
 						if (isset($this->modified_fields[$key]) && $this->modified_fields[$key] == true) {
@@ -326,9 +353,9 @@ abstract class EntityModel implements EntityInterface {
 						}
 					}
 				}
-			
-				$db->update($this->table_name, $arUpdate, array(
-								$this->load_field => $this->id
+				
+				$this->database->update($this->table_name, $arUpdate, array(
+					$this->primary_key => $this->entity_id
 				));
 			}
 		}
