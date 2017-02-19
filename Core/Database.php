@@ -56,15 +56,19 @@ final class Database {
 	/**
 	 * Database class' constructor
 	 *
+	 * We strongly discourage you from overriding the default database.
+	 * This could cause unforeseen issues.
+	 *
      * @param string $db_type
      * @param string $db_host
      * @param string $db_name
      * @param string $db_user
      * @param string $db_password
      * @param string $db_charset
+	 * @param boolean $db_override Replace the default database
 	 * @throws DatabaseException If cannot connect to database server
 	 */
-	public function __construct ($db_type = null, $db_host = null, $db_name = null, $db_user = 'root', $db_password = '', $db_charset = 'utf8') {
+	public function __construct ($db_type = null, $db_host = null, $db_name = null, $db_user = 'root', $db_password = '', $db_charset = 'utf8', $db_override = false) {
 
 		try {
 			if ((!is_null($db_type) && !is_null($db_host) && !is_null($db_name)) || !isset(self::$apine_instance)) {
@@ -99,7 +103,10 @@ final class Database {
 				$this->instance->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 				$this->instance->exec('SET time_zone = "+00:00";');
 
-				if (!(!is_null($db_type) && !is_null($db_host) && !is_null($db_name)) && !isset(self::$apine_instance)) {
+				if ((
+					!(!is_null($db_type) && !is_null($db_host) && !is_null($db_name)) 
+					&& !isset(self::$apine_instance)
+					) || $db_override === true) {
 					self::$apine_instance = $this->instance;
 				}
 			} else {
