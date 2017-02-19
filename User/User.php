@@ -236,7 +236,7 @@ class User extends EntityModel {
 			$this->load_properties();
 		}
 		
-		return ($this->properties[$a_name]) ? $this->properties[$a_name]->get_value(): null;
+		return (array_key_exists($a_name, $this->properties)) ? $this->properties[$a_name]->get_value(): null;
 		
 	}
 
