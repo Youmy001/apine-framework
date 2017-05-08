@@ -33,9 +33,16 @@ final class Translator {
 	private static $_instance;
 	
 	/**
-	 * Current Language
+	 * Current Language Translation
 	 * 
 	 * @var Translation
+	 */
+	private $translation;
+	
+	/**
+	 * Current Language Definition
+	 *
+	 * @var TranslationLanguage
 	 */
 	private $language;
 	
@@ -61,13 +68,20 @@ final class Translator {
 	 */
 	public static function set_language ($a_lang_code = null) {
 		
-		$directory = new TranslationDirectory();
+		if (!file_exists('shettings.json')) {
+			self::get_instance()->language = null;
+		}
+		
+		/*$directory = new TranslationDirectory();
+		$config = Application::get_instance()->get_config();
 		//$request = Apine\Core\Request::get_instance();
 		$request_get = Request::get();
-		//$config = new ApineConfig('config.ini');
+		//$config = new ApineConfig('config.ini');*/
 		
-		if (is_null($a_lang_code)) {
-			if (Config::get('localization', 'locale_detection') == "yes") {
+		
+		
+		/*if (is_null($a_lang_code)) {
+			if (!is_null($config) && $config->localization->detection === true) {
 				if (!isset($request_get['language'])) {
 					$language = self::cookie_best();
 					
@@ -79,29 +93,70 @@ final class Translator {
 				}
 				
 				if (!$language) {
-					$language = Config::get('localization', 'locale_default');
+					$language = $config->localization->defaults->locale;
 				}
 
 				self::get_instance()->language = $directory->get_translation($language);
 			} else {
-				if (isset($request_get['language'])) {
-					$language = self::request_best();
+				if (!is_null($config)) {
+					if (isset($request_get['language'])) {
+						$language = self::request_best();
+					} else {
+						$language = $config->localization->defaults->locale;
+					}
+					
+					self::get_instance()->language = $directory->get_translation($language);
 				} else {
-					$language = Config::get('localization', 'locale_default');
+					if (isset($request_get['language'])) {
+						$language = self::request_best();
+					} else {
+						$language = $config->localization->defaults->locale;
+					}
 				}
-				
-				self::get_instance()->language = $directory->get_translation($language);
 			}
 		} else {
 			if ($directory->is_exist_language($a_lang_code)) {
 				self::get_instance()->language = $directory->get_translation($a_lang_code);
 			} else {
-				self::get_instance()->language = $directory->get_translation(Config::get('localization', 'locale_default'));
+				if (!is_null($config)) {
+					self::get_instance()->language = $directory->get_translation($config->localization->defaults->locale);
+				} else {
+					$language = new TranslationLanguage('en-US', Application::get_instance()->framework_location() . '/src/Includes/en-US.json');
+					self::get_instance()->language = new Translation($language);
+				}
 			}
-		}
+		}*/
+		
+		/*if (!is_null($config)) {
+			if ($config->localization->detection === true) {
+				if (is_null($a_lang_code)) {
+					if (!isset($request_get['language'])) {
+						$language = self::cookie_best();
+						
+						if (!$language) {
+							$language = self::user_agent_best();
+						}
+					} else {
+						$language = self::request_best();
+					}
+				} else {
+					$language = self::request_best();
+				}
+				
+				if (!$language) {
+					$language = $config->localization->defaults->locale;
+				}
+			} else {
+				
+			}
+		} else {
+			
+		}*/
+		
+		/*self::get_instance()->language = $language;
 		
 		$code = str_replace('-', '_', self::get_instance()->language->get_language()->code);
-		setlocale(LC_ALL, $code . '.UTF8', $code, self::get_instance()->language->get_language()->code_short);
+		setlocale(LC_ALL, $code . '.UTF8', $code, self::get_instance()->language->get_language()->code_short);*/
 	
 	}
 	
@@ -112,12 +167,16 @@ final class Translator {
 	 */
 	private static function cookie_best () {
 		
-		$cookie = Apine\Core\Cookie::get('apine_language');
-        $return = null;
+		$config = Application::get_instance()->get_config();
+		$return = null;
 		
-		if (Config::get('localization', 'locale_use_cookie') === "yes" && $cookie) {
-			$directory = new TranslationDirectory();
-			$return = $directory->is_exist_language($cookie);
+		if ($config->localization->cookie !== null) {
+			$cookie = Apine\Core\Cookie::get($config->localization->cookie->name);
+			
+			//if (Config::get('localization', 'locale_use_cookie') === "yes" && $cookie) {
+				$directory = new TranslationDirectory();
+				$return = $directory->is_exist_language($cookie);
+			//}
 		}
 
 		return $return;
@@ -209,7 +268,7 @@ final class Translator {
 			self::set_language();
 		}
 	
-		return self::get_instance()->language->get_language();
+		return (self::get_instance()->language) ? self::get_instance()->language->get_language() : null;
 	
 	}
 	

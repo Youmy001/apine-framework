@@ -23,7 +23,20 @@ final class JSONView extends View {
 	 *
 	 * @var string
 	 */
-	private $_json_file;
+	private $json_file;
+	
+	/**
+	 * JSONView constructor.
+	 *
+	 * @param array $a_json
+	 */
+	public function __construct ($a_json = array()) {
+		
+		if (is_array($a_json) && count($a_json) > 0) {
+			$this->set_json_file($a_json);
+		}
+		
+	}
 
 	/**
 	 * Set Json File
@@ -46,17 +59,17 @@ final class JSONView extends View {
             json_decode($a_json);
 				
 			if (json_last_error() === JSON_ERROR_NONE) {
-				$this->_json_file=$a_json;
+				$this->json_file=$a_json;
 				$return=$a_json;
 			}else{
 				$return=null;
 			}
 		} else if (is_object($a_json)) {
-			$this->_json_file=json_encode($a_json, $options);
-			$return=$this->_json_file;
+			$this->json_file=json_encode($a_json, $options);
+			$return=$this->json_file;
 		} else if (is_array($a_json)) {
-			$this->_json_file=json_encode($a_json, $options);
-			$return=$this->_json_file;
+			$this->json_file=json_encode($a_json, $options);
+			$return=$this->json_file;
 		} else {
 			$return=null;
 		}
@@ -73,12 +86,12 @@ final class JSONView extends View {
 		$this->set_header_rule('Content-type: application/json');
 		$this->apply_headers();
 
-		if($this->_json_file===null){
+		if($this->json_file===null){
 			// Encode to JSON
-			$this->set_json_file($this->_params->get_all());
+			$this->set_json_file($this->params);
 		}
 
-		print $this->_json_file;
+		print $this->json_file;
 
 	}
 
@@ -89,11 +102,11 @@ final class JSONView extends View {
 	 */
 	public function content () {
 
-		if (is_null($this->_json_file)) {
-			$this->set_json_file($this->_params->get_all());
+		if (is_null($this->json_file)) {
+			$this->set_json_file($this->params);
 		}
 
-		return $this->_json_file;
+		return $this->json_file;
 
 	}
 

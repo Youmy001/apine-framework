@@ -14,8 +14,14 @@ namespace Apine\Entity;
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\Entity
  */
+/**
+ * Entity interface declaration.
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @package Apine\Entity\Overload
+ */
 interface EntityInterface {
-
+	
 	/**
 	 * Procedure to save the state of an entity into database
 	 *
@@ -26,7 +32,7 @@ interface EntityInterface {
 	 * @abstract
 	 */
 	public function save();
-
+	
 	/**
 	 * Procedure to delete an entity from databases
 	 *
@@ -37,7 +43,7 @@ interface EntityInterface {
 	 * @abstract
 	 */
 	public function delete();
-
+	
 	/**
 	 * Procedure to reset the state of an entity
 	 *
@@ -47,5 +53,5 @@ interface EntityInterface {
 	 * @abstract
 	 */
 	public function reset();
-
+	
 }

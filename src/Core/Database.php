@@ -33,7 +33,7 @@ final class Database {
 	private static $apine_instance;
 	
 	/**
-	 * Custom PDO connection instane
+	 * Custom PDO connection instance
 	 * 
 	 * @var \PDO
 	 */
@@ -56,15 +56,20 @@ final class Database {
 	/**
 	 * Database class' constructor
 	 *
+	 * We strongly discourage you from overriding the default database.
+	 * This could cause unforeseen issues with entities depending on
+	 * the default database instance..
+	 *
      * @param string $db_type
      * @param string $db_host
      * @param string $db_name
      * @param string $db_user
      * @param string $db_password
      * @param string $db_charset
+	 * @param boolean $db_override Replace the default database
 	 * @throws DatabaseException If cannot connect to database server
 	 */
-	public function __construct ($db_type = null, $db_host = null, $db_name = null, $db_user = 'root', $db_password = '', $db_charset = 'utf8') {
+	public function __construct ($db_type = null, $db_host = null, $db_name = null, $db_user = 'root', $db_password = '', $db_charset = 'utf8', $db_override = false) {
 
 		try {
 			if ((!is_null($db_type) && !is_null($db_host) && !is_null($db_name)) || !isset(self::$apine_instance)) {
@@ -72,7 +77,7 @@ final class Database {
 				$db_port = '3306';
 
 				if (!(!is_null($db_type) && !is_null($db_host) && !is_null($db_name))) {
-					$db_host = $config->get('database', 'host');
+					$db_host = $config->database->host;
 				}
 
 				// Split Host string to extract the port
@@ -89,9 +94,9 @@ final class Database {
 				if (!is_null($db_type) && !is_null($db_host) && !is_null($db_name)) {
 					$db_dns = $db_type . ':host=' . $db_host . ';dbname=' . $db_name . ';port=' . $db_port . ';charset=' . $db_charset;
 				} else {
-					$db_dns = $config->get('database', 'type') . ':host=' . $db_host . ';dbname=' . $config->get('database', 'dbname') . ';port=' . $db_port . ';charset=' . $config->get('database', 'charset');
-					$db_user = $config->get('database', 'username');
-					$db_password = $config->get('database', 'password');
+					$db_dns = $config->database->type . ':host=' . $db_host . ';dbname=' . $config->database->dbname . ';port=' . $db_port . ';charset=' . $config->database->charset;
+					$db_user = $config->database->username;
+					$db_password = $config->database->password;
 				}
 
 
@@ -99,7 +104,7 @@ final class Database {
 				$this->instance->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 				$this->instance->exec('SET time_zone = "+00:00";');
 
-				if (!(!is_null($db_type) && !is_null($db_host) && !is_null($db_name)) && !isset(self::$apine_instance)) {
+				 if ((!(!is_null($db_type) && !is_null($db_host) && !is_null($db_name)) && !isset(self::$apine_instance)) || $db_override === true) {
 					self::$apine_instance = $this->instance;
 				}
 			} else {

@@ -241,6 +241,15 @@ function is_ref (&$var, $function = '', $negate = false) {
 }
 
 /**
+ * @return string|null Calling Class
+ */
+function get_calling_class() {
+	
+	return \Apine\Utility\Types::get_calling_class();
+	
+}
+
+/**
  * Export XML routes in a JSON Format
  *
  * @param string $file

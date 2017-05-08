@@ -36,7 +36,7 @@ final class Autoloader {
 		$apine_folder = __DIR__;
 		
 		$this->add_module('Apine', $apine_folder);
-		$this->add_module('Apine\Modules', 'modules');
+		$this->add_module('Apine\Models', 'models');
 		$this->add_module('Apine\Controllers\User', 'controllers');
 		$this->add_module('Apine\Controllers\System', $apine_folder . '/Controllers');
 		
@@ -238,7 +238,7 @@ final class Autoloader {
 	 * @param string $directory
 	 * 			Path to the directory from the include path
 	 * @param boolean $root
-	 * 			Weither the directory is the base folder for the recursive parser.
+	 * 			Whether the directory is the base folder for the recursive parser.
 	 * @return mixed[] List of all files in a directory
 	 */
 	private static function get_folder_files ($directory, $root = true) {

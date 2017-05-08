@@ -42,19 +42,6 @@ class ErrorController extends MVC\Controller {
 	);
 
     /**
-     * ErrorController constructor.
-     */
-	public function __construct() {
-		
-		parent::__construct();
-		
-		if (Core\Request::is_api_call()) {
-			$this->_view = new MVC\JSONView();
-		}
-		
-	}
-
-    /**
      * Bad Request Error
      *
      * @param Exception $a_exception
@@ -272,31 +259,32 @@ class ErrorController extends MVC\Controller {
      */
 	public function custom ($a_code, $a_message, Exception $a_exception = null) {
 		
-		$this->_view->set_param('code', $a_code);
-		$this->_view->set_param('message', $a_message);
-		
 		if (Core\Request::is_api_call() || Core\Request::is_ajax()) {
-			$this->_view->set_param('request', Core\Request::get()['request']);
+			$view = new MVC\JSONView();
+			$view->set_param('request', Core\Request::get()['request']);
 		} else {
-			$this->_view->set_title($a_message);
-			$this->_view->set_view('error');
+			$view = new MVC\HTMLView('error', $a_message);
 		}
 		
+		$view->set_param('code', $a_code);
+		$view->set_param('message', $a_message);
+		
 		if ($a_exception !== null && !is_array($a_exception)) {
-			$this->_view->set_param('file', $a_exception->getFile());
-			$this->_view->set_param('line', $a_exception->getLine());
+			$view->set_param('file', $a_exception->getFile());
+			$view->set_param('line', $a_exception->getLine());
 			
-			if (Application\Application::get_instance()->get_mode() === APINE_MODE_DEVELOPMENT) {
-				$this->_view->set_param('trace', $a_exception->getTraceAsString());
+			if (Application\Application::get_instance()->is_debug_mode()) {
+				$view->set_param('trace', $a_exception->getTraceAsString());
 			}
 		}
 		
 		if ($this->is_http_code($a_code)) {
-			$this->_view->set_response_code($a_code);
+			$view->set_response_code($a_code);
 		} else {
-			$this->_view->set_response_code(500);
+			$view->set_response_code(500);
 		}
-		return $this->_view;
+		
+		return $view;
 		
 	}
 

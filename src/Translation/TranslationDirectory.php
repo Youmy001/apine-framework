@@ -8,6 +8,8 @@
  */
 namespace Apine\Translation;
 
+use Apine\Application\Application;
+
 /**
  * Language Finder Tool
  * Manage multi-language configuration
@@ -45,7 +47,7 @@ final class TranslationDirectory {
 	 * @param string $a_directory
 	 */
 	public function __construct ($a_directory = 'resources/languages'){
-		
+	//public function __construct ($a_directory = 'resources/languages'){
 		$this->directory = $a_directory . '/';
 		
 		if (is_null(self::$languages) && is_null(self::$translations)) {
@@ -54,17 +56,22 @@ final class TranslationDirectory {
 		}
 		
 		if(!isset(self::$languages[$this->directory])) {
-			
-			// Find and instantiate every languages
-			foreach (scandir($this->directory) as $file) {
-				if ($file != "." && $file != "..") {
-					$file_name = explode(".", $file);
-					$file_name = $file_name[0];
-					
-					if (is_file($this->directory . $file)) {
-						self::$languages[$this->directory][$file_name] = new TranslationLanguage($file_name, $this->directory . $file);
+			if (is_dir($this->directory)) {
+				// Find and instantiate every languages
+				foreach (scandir($this->directory) as $file) {
+					if ($file != "." && $file != "..") {
+						$file_name = explode(".", $file);
+						$file_name = $file_name[0];
+						
+						if (is_file($this->directory . $file)) {
+							self::$languages[$this->directory][$file_name] = new TranslationLanguage($file_name, $this->directory . $file);
+						}
 					}
 				}
+			}
+			
+			if (!isset(self::$languages[$this->directory])) {
+				self::$languages[$this->directory]['en-US'] = new TranslationLanguage('en-US', Application::get_instance()->framework_location() . '/src/Includes/en-US.json');
 			}
 		}
 		
@@ -99,7 +106,7 @@ final class TranslationDirectory {
 	 * Verify if a language is available
 	 * 
 	 * @param string $a_language_code
-	 * @return <boolean|string>
+	 * @return boolean
 	 */
 	public function is_exist_language ($a_language_code) {
 		
