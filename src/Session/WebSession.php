@@ -101,8 +101,8 @@ final class WebSession implements SessionInterface {
 		
 		$config = Application::get_instance()->get_config();
 		
-		if ($config->get('runtime', 'user_class')) {
-			$user_class = $config->get('runtime', 'user_class');
+		if ($config->session->user_class) {
+			$user_class = $config->session->user_class;
 			$pos_slash = strpos($user_class, '/');
 			$module = substr($user_class, 0, $pos_slash);
 			$class = substr($user_class, $pos_slash + 1);
@@ -122,12 +122,12 @@ final class WebSession implements SessionInterface {
 			$this->session_lifespan = (int) $config->get('runtime', 'session_lifespan');
 		}*/
 		
-		if (!is_null($config->get('runtime', 'session_lifespan'))) {
-			$this->session_lifespan = (int) $config->get('runtime', 'session_lifespan');
+		if (!is_null($config->session->lifespan)) {
+			$this->session_lifespan = (int) $config->session->lifespan;
 		}
 		
-		if (!is_null($config->get('runtime', 'session_permanent_lifespan'))) {
-			$this->session_lifespan = (int) $config->get('runtime', 'session_permanent_lifespan');
+		if (!is_null($config->session->lifespan_permanent)) {
+			$this->session_lifespan = (int) $config->session->lifespan_permanent;
 		}
 		
 		if (isset($_COOKIE['apine_session'])) {

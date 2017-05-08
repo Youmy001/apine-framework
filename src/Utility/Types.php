@@ -37,7 +37,13 @@ class Types {
 		return (json_last_error() == JSON_ERROR_NONE);
 
 	}
-
+	
+	/**
+	 * @param mixed $a_var
+	 * @param string $a_function
+	 * @param boolean $a_negate
+	 * @return boolean
+	 */
 	public static function is_ref (&$a_var, $a_function = '', $a_negate = false) {
 
 		$stat = true;
@@ -61,6 +67,57 @@ class Types {
 
 		return $stat;
 
+	}
+	
+	/**
+	 * Return the calling class to the class using it
+	 *
+	 * @return string|null Calling Class
+	 *
+	 * @author Kyle Farris (https://github.com/kylefarris), hasmstar (https://github.com/hamstar)
+	 * @see https://gist.github.com/kylefarris/5188645
+	 */
+	/*public static function get_calling_class() {
+		
+		//get the trace
+		$trace = debug_backtrace();
+		
+		// Get the class that is asking for who awoke it
+		$class = ( isset( $trace[1]['class'] ) ? $trace[1]['class'] : NULL );
+		
+		// +1 to i cos we have to account for calling this function
+		for ( $i=1; $i<count( $trace ); $i++ ) {
+			if ( isset( $trace[$i] ) && isset( $trace[$i]['class'] ) ) // is it set?
+				if ( $class != $trace[$i]['class'] ) // is it a different class
+					return $trace[$i]['class'];
+		}
+		
+	}*/
+	public static function get_calling_class() {
+		
+		// Get the class trace
+		$trace = debug_backtrace();
+		
+		// Get the class that is asking for who awoke it
+		// This method can be call directly or through
+		// an helper function
+		if (isset($trace[1]['class'])) {
+			$class = $trace[1]['class'];
+			$start = 1;
+		} else if (isset($trace[2]['class'])) {
+			$class = $trace[2]['class'];
+			$start = 2;
+		} else {
+			$class = null;
+			$start = 1;
+		}
+		
+		// +1 to i cos we have to account for calling this function
+		for ( $i=$start; $i<count( $trace ); $i++ ) {
+			if ( isset( $trace[$i] ) && isset( $trace[$i]['class'] ) ) // is it set?
+				if ( $class != $trace[$i]['class'] ) // is it a different class
+					return $trace[$i]['class'];
+		}
 	}
 
 }

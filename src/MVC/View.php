@@ -23,26 +23,16 @@ abstract class View {
 	/**
 	 * Variables to be accessible by the view
 	 * 
-	 * @var Collection
+	 * @var array
 	 */
-	protected $_params;
+	protected $params = array();
 	
 	/**
 	 * List of HTTP headers to apply
 	 * 
 	 * @var array
 	 */
-	protected $_headers;
-	
-	/**
-	 * Construct abstract View
-	 */
-	public function __construct() {
-		
-		$this->_params = new Collection();
-		$this->_headers = array();
-		
-	}
+	protected $headers = array();
 	
 	public function __toString() {
 		
@@ -58,7 +48,7 @@ abstract class View {
 	 */
 	final public function set_param($a_name,$a_data) {
 		
-		$this->_params->add_item($a_data, $a_name);
+		$this->params[$a_name]= $a_data;
 		
 	}
 	
@@ -70,7 +60,7 @@ abstract class View {
 	 */
 	final public function set_header_rule($a_rule, $a_value = null) {
 
-	    $this->_headers[$a_rule] = $a_value;
+	    $this->headers[$a_rule] = $a_value;
 		
 	}
 	
@@ -79,8 +69,8 @@ abstract class View {
 	 */
 	final public function apply_headers() {
 		
-		if (count($this->_headers)>0) {
-			foreach ($this->_headers as $key=>$value) {
+		if (count($this->headers)>0) {
+			foreach ($this->headers as $key=>$value) {
 				if ($value!=null) {
 					header("$key: $value");
 				} else {

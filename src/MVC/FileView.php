@@ -25,8 +25,6 @@ final class FileView extends View {
 	 */
 	public function __construct(File $a_file=null) {
 
-		parent::__construct();
-
 		$this->set_file($a_file);
 
 	}

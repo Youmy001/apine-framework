@@ -8,6 +8,8 @@
 namespace Apine\Controllers\System;
 
 use Apine\MVC as MVC;
+use Apine\Core\Request;
+use Apine\User\User;
 
 /**
  * Class HomeController
@@ -26,10 +28,31 @@ class HomeController extends MVC\Controller {
      */
 	public function index () {
 		
-		$this->_view->set_title('Home');
-		$this->_view->set_view('home');
+		return new MVC\HTMLView('view','Page Title', ['name'=>'value']);
 		
-		return $this->_view;
+	}
+	
+	public function inputTest ($input) {
+		
+	}
+	
+	public function inputTestTwo ($first, $second) {
+		
+	}
+	
+	public function inputTestMultiple ($first, $second, $third) {
+		
+	}
+	
+	public function inputTestObject (User $user) {
+		
+	}
+	
+	public function inputTestObjectOther (User $user, $other) {
+		
+	}
+	
+	public function inputTestObjectOtherMultiple (Request $first, User $user, $other) {
 		
 	}
 }

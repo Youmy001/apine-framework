@@ -28,13 +28,12 @@ final class Config {
 	 */
 	private $path;
 	
-	
 	/**
-	 * Setting strings extracted from the configuration file
-	 * 
-	 * @var array
+	 * Setting strings for the file
+	 *
+	 * @var object
 	 */
-	private $settings = [];
+	private $settings;
 	
 	/**
 	 * Construct the Conguration Reader handler
@@ -44,57 +43,36 @@ final class Config {
      * @param string $a_path
      * @throws GenericException If file not found
 	 */
-	public function __construct ($a_path = 'config.ini') {
+	public function __construct ($a_path) {
 		
-		if (file_exists($a_path)) {
+		try {
 			$this->path = $a_path;
-			$this->settings = parse_ini_file($a_path, true);
-		} else {
-			throw new GenericException("Config file not found.", 500);
+			$this->settings = JsonStore::get($a_path);
+		} catch (\Exception $e) {
+			throw new GenericException("Config file not found.", 500, $e);
 		}
 		
 	}
 	
 	/**
-	 * Fetch a configuration string
-	 * 
-	 * @param string $prefix
-	 * @param string $key
-	 * @return string
+	 * @param $name
+	 *
+	 * @return mixed
+	 *
 	 */
-	public function get ($prefix, $key) {
+	public function &__get ($name) {
 		
-		$prefix = strtolower($prefix);
-		$key = strtolower($key);
-		return isset($this->settings[$prefix][$key]) ? $this->settings[$prefix][$key] : null;
+		return $this->settings->settings->$name;
 		
 	}
 	
 	/**
-	 * Fetch all configuration strings
-	 * 
-	 * @return array
+	 * @param $name
+	 * @param $value
 	 */
-	public function get_config () {
+	public function __set ($name, $value) {
 		
-		return $this->settings;
-		
-	}
-	
-	/**
-	 * Write or update a configuration string
-	 * 
-	 * @param string $prefix
-	 * @param string $key
-	 * @param string $value
-	 */
-	public function set ($prefix, $key, $value) {
-		
-		$prefix = strtolower($prefix);
-		$key = strtolower($key);
-		
-		$this->settings[$prefix][$key] = $value;
-		Files::write_ini_file($this->settings, $this->path, true);
+		$this->settings->settings->$name = $value;
 		
 	}
 }

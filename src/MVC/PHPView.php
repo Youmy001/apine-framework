@@ -74,7 +74,6 @@ final class PHPView extends View {
 	 */
 	public function __construct($a_title = "", $a_view = "default", $a_layout = "default") {
 
-		parent::__construct();
 		$this->_scripts = array();
 
 		$this->_title=$a_title;

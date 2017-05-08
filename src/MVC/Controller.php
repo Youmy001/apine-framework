@@ -19,23 +19,5 @@ use Apine\Core\Request as Request;
  */
 abstract class Controller {
 	
-	/**
-	 * Controller View
-	 * 
-	 * @var View
-	 */
-	protected $_view;
 	
-	/**
-	 * Construct the Controller
-	 */
-	public function __construct() {
-		
-		if (Request::is_api_call() || Request::is_ajax()) {
-			$this->_view = new JSONView();
-		} else {
-			$this->_view = new HTMLView();
-		}
-		
-	}
 }

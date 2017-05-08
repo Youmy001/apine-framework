@@ -114,26 +114,24 @@ final class URLHelper {
 	 */
 	private static function protocol ($param) {
 
-		$application = Application::get_instance();
+		/*$application = Application::get_instance();
 		
 		if (!$application->get_use_https()) {
 			$protocol = 'http://';
 		} else if ($application->get_secure_session() && SessionManager::is_logged_in()) {
 			$protocol = 'https://';
-		} else {
+		} else {*/
 			switch ($param) {
 				case 0:
 					$protocol = 'http://';
 					break;
 				case 1:
-					$protocol = 'https://';
-					break;
 				case 2:
 				default:
-					$protocol = (Request::is_https()) ? 'https://' : 'http://';
+					$protocol = 'https://';
 					break;
 			}
-		}
+		//}
 		
 		return $protocol;
 	}

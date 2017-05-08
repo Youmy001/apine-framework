@@ -8,6 +8,7 @@
  */
 namespace Apine\Routing;
 
+use Apine\Core\JsonStore;
 use \Exception as Exception;
 use Apine\Core\Request as Request;
 use Apine\Exception\GenericException;
@@ -24,7 +25,7 @@ class WebRouter implements RouterInterface {
 	
 	private $routes_file;
 	
-	final public function __construct ($a_path= 'routes.json') {
+	final public function __construct ($a_path= 'settings.json') {
 		
 		try {
 			$this->routes_file = $a_path;
@@ -43,14 +44,28 @@ class WebRouter implements RouterInterface {
 	 */
 	final private function json_route ($request) {
 		
-		$path = $this->routes_file;
+		/*$path = $this->routes_file;
 		$file = fopen($path, 'r');
 		$content = fread($file, filesize($path));
-		$routes = json_decode($content);
+		$json_object = json_decode($content);
+		
+		if (isset($json_object->routes)) {
+			$routes = $json_object->routes;
+		} else {
+			$routes = null;
+		}*/
+		
+		$settings = JsonStore::get($this->routes_file);
+		
+		if (isset($settings->routes)) {
+			$routes = $settings->routes;
+		} else {
+			$routes = null;
+		}
 		
 		$json_error = json_last_error();
 		if ($routes === null && $json_error !== JSON_ERROR_NONE) {
-			throw new GenericException('Error Loading JSON file', $json_error);
+			throw new GenericException('Error Loading Routes', $json_error);
 		}
 		
 		foreach ($routes as $item => $values) {

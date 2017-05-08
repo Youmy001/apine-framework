@@ -101,14 +101,14 @@ final class Request {
 	 * 
 	 * @var boolean
 	 */
-	private $api_call;
+	private $api_call = false;
 	
 	/**
 	 * Session AJAX Call
 	 * 
 	 * @var boolean
 	 */
-	private $is_ajax;
+	private $is_ajax = false;
 	
 	/**
 	 * Headers received
@@ -117,6 +117,10 @@ final class Request {
 	 */
 	private $request_headers;
 	
+	private $request_resource;
+	
+	private $request_locale;
+	
 	/**
 	 * Construct the Request Management handler
 	 * 
@@ -124,12 +128,33 @@ final class Request {
 	 */
 	private function __construct () {
 		
+		$request_string = $_GET['apine-request'];
+		$request_array = explode("/",$request_string);
+		
+		if ($request_array[0] === 'api') {
+			$this->request_resource = substr($request_string, 3);
+			$this->api_call = true;
+		} else {
+			$results = array();
+			if (preg_match('([a-zA-Z]{2}(-[a-zA-Z]{2})?)', $request_array[0], $results)) {
+				$this->request_locale = $results[0];
+				$this->request_resource = substr($request_string, strlen($results[0]));
+			} else {
+				if ($request_string == '/') {
+					$this->request_resource = '/';
+				} else {
+					$this->request_resource = $request_string;
+				}
+			}
+		}
+		
+		unset($_GET['apine-request']);
+		
 		$this->request_type	= $_SERVER['REQUEST_METHOD'];
 		$this->request_port	= $_SERVER['SERVER_PORT'];
 		$this->request_ssl	= (isset($_SERVER['HTTPS'])&&!empty($_SERVER['HTTPS']));
 		$this->request_headers = apache_request_headers();
 		$this->request_body	= file_get_contents('php://input');
-		$this->api_call		= (isset($_GET['api']) && $_GET['api']==='api');
 		$this->is_ajax 		= (isset($this->request_headers['X-Requested-With']) && $this->request_headers['X-Requested-With'] == 'XMLHttpRequest');
 		
 		$this->get 		= $_GET;
@@ -218,6 +243,12 @@ final class Request {
 		
 	}
 	
+	public static function get_request_resource () {
+		
+		return self::get_instance()->request_resource;
+		
+	}
+	
 	/**
 	 * Return an aggregate of all the input that are sent directly to the controllers through the routing procedure
 	 * 
@@ -227,18 +258,6 @@ final class Request {
 		
 		$params = array();
 		$gets = self::get_instance()->get();
-		
-		if (isset($gets['request'])) {
-			unset($gets['request']);
-		}
-		
-		if (isset($gets['language'])) {
-			unset($gets['language']);
-		}
-		
-		if (isset($gets['api'])) {
-			unset($gets['api']);
-		}
 		
 		$params = array_merge($params, $gets);
 		
