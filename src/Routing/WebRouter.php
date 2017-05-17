@@ -115,7 +115,7 @@ class WebRouter implements RouterInterface {
 		$args = explode("/",$request);
 		array_shift($args);
 		
-		if (count($args) > 1) {
+ 		if (count($args) > 1) {
 			$controller = $args[0];
 			array_shift($args);
 			$action = $args[0];
