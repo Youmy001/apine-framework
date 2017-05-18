@@ -126,12 +126,14 @@ final class Property extends EntityModel {
 		
 	}
 	
+	/**
+	 * Serialize property object properly
+	 *
+	 * @param bool $data
+	 * @return array|mixed|string
+	 */
 	public function serialize ($data = false) {
 		
-		/*$array = array();
-		$array['value'] = $this->get_value();
-		$array['name'] = $this->get('name');
-		return $array;*/
 		if ($data) {
 			return $this->get_value();
 		} else {
