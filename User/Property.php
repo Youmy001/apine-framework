@@ -90,11 +90,15 @@ final class Property extends EntityModel {
 
 		if (is_null($this->value)) {
 			$value = $this->get('value');
-
+			
 			if (@unserialize($value) !== false) {
 				$this->value = @unserialize($value);
 			} else {
-				$this->value = $value;
+				if ($value === serialize(false)) {
+					$this->value = false;
+				} else {
+					$this->value = $value;
+				}
 			}
 		}
 
