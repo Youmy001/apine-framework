@@ -1,7 +1,7 @@
 {
 	"type": "library",
 	"name": "youmy001/apine-framework",
-	"description": "APIne is a simple to use modular MVC Framework ready for the IoT (Internet of Things).",
+	"description": "APIne is a simple to use modular MVC Framework ready for use as a basic RESTful API.",
 	"authors": [
 		{
 			"name": "Tommy Teasdale",
@@ -15,11 +15,12 @@
 		"source": "https://github.com/Youmy001/apine-framework"
 	},
 	"require": {
-		"php": ">=5.6.0",
+		"php": ">=7.0",
+		"ext-PDO": ">=7.0",
+		"ext-pdo_mysql": ">=7.0",
 		"lib-openssl": ">=1.0.1",
 		"phpmailer/phpmailer": "^5.2",
 		"geoip/geoip": "~1.14",
-		"binarmorker/tinytemplate": ">=1.1",
 		"twig/twig": "^1.24"
     },
     "autoload": {
@@ -29,7 +30,7 @@
     },
 	"extra": {
 		"branch-alias": {
-			"dev-master": "1.1.x-dev"
+			"dev-master": "2.0.x-dev"
 		}
 	},
 	"license": "MIT"
