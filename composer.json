@@ -1,4 +1,5 @@
 {
+	"type": "library",
 	"name": "youmy001/apine-framework",
 	"description": "APIne is a simple to use modular MVC Framework ready for the IoT (Internet of Things).",
 	"authors": [
@@ -13,9 +14,9 @@
 		"wiki": "https://github.com/Youmy001/apine-framework/wiki",
 		"source": "https://github.com/Youmy001/apine-framework"
 	},
-	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.6.0",
+		"lib-openssl": ">=1.0.1",
 		"phpmailer/phpmailer": "^5.2",
 		"geoip/geoip": "~1.14",
 		"binarmorker/tinytemplate": ">=1.1",
@@ -23,7 +24,7 @@
     },
     "autoload": {
     	"files" : [
-    		"Autoloader.php"
+    		"src/Autoloader.php"
     	]
     },
 	"extra": {

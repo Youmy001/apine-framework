@@ -20,7 +20,7 @@ if (strstr($apine_folder, 'vendor/youmy001')) {
 	}
 }
 
-require_once $apine_folder . '/Autoloader.php';
+require_once $apine_folder . '/src/Autoloader.php';
 $loader = new Apine\Autoloader();
 $loader->add_module('Apine', $apine_folder);
 $loader->add_module('Apine\Controllers\System', $apine_folder . '/Controllers');
