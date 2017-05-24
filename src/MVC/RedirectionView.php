@@ -5,6 +5,7 @@
  * @license MIT
  * @copyright 2016 Tommy Teasdale
  */
+
 namespace Apine\MVC;
 
 /**
@@ -13,28 +14,26 @@ namespace Apine\MVC;
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\MVC
  */
-final class RedirectionView extends View {
-
-	/**
-	 * Send View to output
-	 */
-	public function draw() {
-
-		$this->apply_headers();
-		
-		print $this->content();
-
-	}
-
-	/**
-	 * Return the content of the view
-	 *
-	 * @return string
-	 */
-	public function content () {
-		
-		return '';
-
-	}
-
+final class RedirectionView extends View
+{
+    /**
+     * Send View to output
+     */
+    public function draw()
+    {
+        $this->applyHeaders();
+        
+        print $this->content();
+    }
+    
+    /**
+     * Return the content of the view
+     *
+     * @return string
+     */
+    public function content()
+    {
+        return '';
+    }
+    
 }

@@ -6,23 +6,23 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
+
 namespace Apine\Exception;
 
 /**
  * Custom implementation of the exception handler matching
  * more closely a RESTful approach
- * 
+ *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\Exception
  */
-class GenericException extends \Exception {
-
-	protected $code = 500;
-
-	public function __construct($message = null, $code = 500, \Exception $previous = null){
-
-		parent::__construct($message, $code, $previous);
-
-	}
-
+class GenericException extends \Exception
+{
+    protected $code = 500;
+    
+    public function __construct($message = null, $code = 500, \Exception $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
+    
 }

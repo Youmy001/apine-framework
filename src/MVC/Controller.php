@@ -6,6 +6,7 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
+
 namespace Apine\MVC;
 
 use Apine\Core\Request as Request;
@@ -13,11 +14,10 @@ use Apine\Core\Request as Request;
 /**
  * Basic Controller
  * Describes basics for user controllers
- * 
+ *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\MVC
  */
-abstract class Controller {
-	
-	
+abstract class Controller
+{
 }

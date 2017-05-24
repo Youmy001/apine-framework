@@ -3,30 +3,32 @@
 /**
  * A split method that supports unicode characters
  *
- * @param string $str
+ * @param string  $str
  * @param integer $l
- * @return string
  *
- * @see \Apine\Utility\StringManipulation::split_unicode()
+ * @return string
+ * @see \Apine\Utility\StringManipulation::splitUnicode()
  */
-function str_split_unicode ($str, $l = 0) {
-
-	return \Apine\Utility\StringManipulation::split_unicode($str, $l);
-
+function str_split_unicode($str, $l = 0)
+{
+    
+    return \Apine\Utility\StringManipulation::splitUnicode($str, $l);
+    
 }
 
 /**
  * Check if a string is a valid ISO 8601 Timestamp
  *
  * @param string $timestamp
- * @return boolean
  *
- * @see \Apine\Utility\Types::is_timestamp()
+ * @return boolean
+ * @see \Apine\Utility\Types::isTimestamp()
  */
-function is_timestamp ($timestamp) {
-
-	return \Apine\Utility\Types::is_timestamp($timestamp);
-
+function is_timestamp($timestamp)
+{
+    
+    return \Apine\Utility\Types::isTimestamp($timestamp);
+    
 }
 
 
@@ -34,17 +36,16 @@ function is_timestamp ($timestamp) {
  * Check if a string is a valid JSON string
  *
  * @param string $string
- * @return boolean
  *
- * @see \Apine\Utility\Types::is_json()
+ * @return boolean
+ * @see \Apine\Utility\Types::isJson()
  */
-function is_json($string) {
-
-	return \Apine\Utility\Types::is_json($string);
-
+function is_json($string)
+{
+    
+    return \Apine\Utility\Types::isJson($string);
+    
 }
-
-
 
 /**
  * Loads all files recursively a user defined module in the model/
@@ -52,28 +53,31 @@ function is_json($string) {
  *
  * @param string $module_name
  *        Name of the folder of the module
+ *
  * @return boolean
  */
-function apine_load_module ($module_name) {
-
-	return Apine\Autoloader::load_module($module_name);
-
+function apine_load_module($module_name)
+{
+    
+    return Apine\Autoloader::loadModule($module_name);
+    
 }
 
 /**
  * Write strings in a configuration file in INI format
  *
- * @param array $assoc_arr
- * @param string $path
+ * @param array   $assoc_arr
+ * @param string  $path
  * @param boolean $has_sections
- * @return boolean
  *
- * @see \Apine\Utility\Files::write_ini_file()
+ * @return boolean
+ * @see \Apine\Utility\Files::writeIniFile()
  */
-function write_ini_file ($assoc_arr, $path, $has_sections = FALSE) {
-
-	return \Apine\Utility\Files::write_ini_file($assoc_arr, $path, $has_sections);
-
+function write_ini_file($assoc_arr, $path, $has_sections = false)
+{
+    
+    return \Apine\Utility\Files::writeIniFile($assoc_arr, $path, $has_sections);
+    
 }
 
 /**
@@ -81,59 +85,57 @@ function write_ini_file ($assoc_arr, $path, $has_sections = FALSE) {
  *
  * @param double $n
  *        Ratio multiplier
- * @param float $tolerance
+ * @param float  $tolerance
  *        Precision level of the procedure
- * @return string
  *
- * @see \Apine\Utility\Math::float_to_ratio()
+ * @return string
+ * @see \Apine\Utility\Math::floatToRatio()
  */
-function float2rat ($n, $tolerance = 1.e-6) {
-
-	return \Apine\Utility\Math::float_to_ratio($n, $tolerance);
-
+function float2rat($n, $tolerance = 1.e-6)
+{
+    
+    return \Apine\Utility\Math::floatToRatio($n, $tolerance);
+    
 }
 
 /**
  * Verify if exec is disabled
  *
- * @see \Apine\Utility\Files::is_exec_available()
+ * @see \Apine\Utility\Files::isExecAvailable()
  */
-function is_exec_available () {
-
-	return \Apine\Utility\Files::is_exec_available();
-
+function is_exec_available()
+{
+    return \Apine\Utility\Files::isExecAvailable();
 }
 
 /**
  * Recursive file copy
  *
  * @param string $src
- * 			Source directory
+ *            Source directory
  * @param string $dst
- * 			Destination directory
+ *            Destination directory
  *
- * @see \Apine\Utility\Files::recurse_copy()
+ * @see \Apine\Utility\Files::recursiveCopy()
  */
-function recurse_copy ($src, $dst) {
-
-	\Apine\Utility\Files::recurse_copy($src, $dst);
-
+function recurse_copy($src, $dst)
+{
+    \Apine\Utility\Files::recursiveCopy($src, $dst);
 }
 
 /**
  * Redirect to another end point of the application
  * using a full query string
  *
- * @param string $a_request
+ * @param string  $a_request
  * @param integer $a_protocol
- * @return Apine\MVC\RedirectionView
  *
- * @see \Apine\Utility\Routes::internal_redirect()
+ * @return Apine\MVC\RedirectionView
+ * @see \Apine\Utility\Routes::internalRedirect()
  */
-function apine_internal_redirect ($a_request, $a_protocol = APINE_PROTOCOL_DEFAULT) {
-
-	return \Apine\Utility\Routes::internal_redirect($a_request, $a_protocol);
-
+function apine_internal_redirect($a_request, $a_protocol = APINE_PROTOCOL_DEFAULT)
+{
+    return \Apine\Utility\Routes::internalRedirect($a_request, $a_protocol);
 }
 
 
@@ -141,14 +143,13 @@ function apine_internal_redirect ($a_request, $a_protocol = APINE_PROTOCOL_DEFAU
  * Safely redirect to another URI.
  *
  * @param string $a_request
- * @return Apine\MVC\RedirectionView
  *
+ * @return Apine\MVC\RedirectionView
  * @see \Apine\Utility\Routes::redirect()
  */
-function apine_redirect ($a_request) {
-
-	return \Apine\Utility\Routes::redirect($a_request);
-
+function apine_redirect($a_request)
+{
+    return \Apine\Utility\Routes::redirect($a_request);
 }
 
 
@@ -157,22 +158,20 @@ function apine_redirect ($a_request) {
  *
  * @return Apine\Application\Application
  */
-function apine_application () {
-
-	return Apine\Application\Application::get_instance();
-
+function apine_application()
+{
+    return Apine\Application\Application::getInstance();
 }
 
 
 /**
  * Return the instance of the Apine Config
  *
- * @return Apine\Application\Config
+ * @return Apine\Core\Config
  */
-function apine_app_config () {
-
-	return Apine\Application\Config::get_instance();
-
+function apine_app_config()
+{
+    return Apine\Application\Application::getInstance()->getConfig();
 }
 
 
@@ -181,10 +180,9 @@ function apine_app_config () {
  *
  * @return Apine\Session\SessionManager
  */
-function apine_session () {
-
-	return Apine\Session\SessionManager::get_instance();
-
+function apine_session()
+{
+    return Apine\Session\SessionManager::get_instance();
 }
 
 
@@ -193,10 +191,9 @@ function apine_session () {
  *
  * @return Apine\Application\Translator
  */
-function apine_app_translator () {
-
-	return Apine\Application\Translator::get_instance();
-
+function apine_app_translator()
+{
+    return Apine\Application\Translator::getInstance();
 }
 
 
@@ -205,10 +202,9 @@ function apine_app_translator () {
  *
  * @return Apine\MVC\URLHelper
  */
-function apine_url_helper () {
-
-	return Apine\MVC\URLHelper::get_instance();
-
+function apine_url_helper()
+{
+    return Apine\MVC\URLHelper::get_instance();
 }
 
 
@@ -216,47 +212,48 @@ function apine_url_helper () {
  * Return the extension from a file name
  *
  * @param string $a_file_path
- * @return string
  *
- * @see \Apine\Utility\Files::file_extension()
+ * @return string
+ * @see \Apine\Utility\Files::fileExtension()
  */
-function file_extension ($a_file_path) {
-
-	return \Apine\Utility\Files::file_extension($a_file_path);
-
+function file_extension($a_file_path)
+{
+    return \Apine\Utility\Files::fileExtension($a_file_path);
 }
 
 /**
- * @param mixed $var
- * @param string $function
+ * @param mixed   $var
+ * @param string  $function
  * @param boolean $negate
- * @return boolean
  *
- * @see \Apine\Utility\Types::is_ref()
+ * @return boolean
+ * @see \Apine\Utility\Types::isReference()
  */
-function is_ref (&$var, $function = '', $negate = false) {
-
-	return \Apine\Utility\Types::is_ref($var, $function, $negate);
-
+function is_reference(&$var, $function = '', $negate = false)
+{
+    return \Apine\Utility\Types::isReference($var, $function, $negate);
 }
 
 /**
  * @return string|null Calling Class
  */
-function get_calling_class() {
-	
-	return \Apine\Utility\Types::get_calling_class();
-	
+function get_calling_class()
+{
+    
+    return \Apine\Utility\Types::getCallingClass();
+    
 }
 
 /**
  * Export XML routes in a JSON Format
  *
  * @param string $file
+ *
  * @return array
  */
-function apine_export_routes ($file) {
-
-	return \Apine\Utility\Routes::export_to_json($file);
-
+function apine_export_routes($file)
+{
+    
+    return \Apine\Utility\Routes::exportToJson($file);
+    
 }

@@ -6,49 +6,50 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
+
 namespace Apine\Routing;
 
 /**
  * Basic representation of a route
- * 
+ *
  * @author Tommy Teasdale
  * @package Apine\Routing
  */
-final class Route {
-	
-	/**
-	 * Name of a controller
-	 * 
-	 * @var string
-	 */
-	public $controller;
-	
-	/**
-	 * Name of an action method
-	 * 
-	 * @var string
-	 */
-	public $action;
-	
-	/**
-	 * Parameters to pass to the action method
-	 * @var array
-	 */
-	public $args;
-	
-	/**
-	 * Instantiation of a route
-	 *
-	 * @param string $controller
-	 * @param string $action
-	 * @param array $args
-	 */
-	public function __construct($controller, $action, $args = array()) {
-		
-		$this->controller = $controller;
-		$this->action = $action;
-		$this->args = $args;
-		
-	}
-	
+final class Route
+{
+    /**
+     * Name of a controller
+     *
+     * @var string
+     */
+    public $controller;
+    
+    /**
+     * Name of an action method
+     *
+     * @var string
+     */
+    public $action;
+    
+    /**
+     * Parameters to pass to the action method
+     *
+     * @var array
+     */
+    public $args;
+    
+    /**
+     * Instantiation of a route
+     *
+     * @param string $controller
+     * @param string $action
+     * @param array  $args
+     */
+    public function __construct($controller, $action, $args = array())
+    {
+        $this->controller = $controller;
+        $this->action = $action;
+        $this->args = $args;
+    }
+    
 }

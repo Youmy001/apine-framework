@@ -9,6 +9,7 @@
 namespace Apine\Module;
 
 
-abstract class ModuleInterface {
-	
+abstract class ModuleInterface
+{
+
 }

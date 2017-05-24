@@ -6,141 +6,152 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
+
 namespace Apine\Core;
 
-use Apine\Application as Application;
+use Apine\Application\Application;
 
 /**
  * Encryption Tools
- * 
  * Encrypt and decrypt string namely for security concerns
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\Core
  */
-final class Encryption {
-	
-	/**
-	 * Encrypt a string against the encryption string
-	 * 
-	 * @param string $origin_string
-	 * @return string
-	 */
-	public static function encrypt ($origin_string) {
-		
-		if (!Application\Config::get('runtime', 'encryption_key')) {
-			self::generate_key();
-		}
-
-		if (Application\Config::get('runtime', 'encryption_method') !== 'ssl') {
-			$iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
-			$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-			$encrypted_string = mcrypt_encrypt(MCRYPT_BLOWFISH, Application\Config::get('runtime', 'encryption_key'), utf8_encode($origin_string), MCRYPT_MODE_ECB, $iv);
-		} else {
-			$iv = substr(Application\Config::get('runtime', 'encryption_key'), 0, 16);
-			$encrypted_string = openssl_encrypt($origin_string, 'AES128', Application\Config::get('runtime', 'encryption_key'), 0, $iv);
-		}
-		
-		return $encrypted_string;
-		
-	}
-	
-	/**
-	 * Decrypt a string from the encryption string
-	 * 
-	 * @param string $encrypted_string
-	 * @return string
-	 */
-	public static function decrypt ($encrypted_string) {
-		
-		if (!Application\Config::get('runtime', 'encryption_key')) {
-			self::generate_key();
-		}
-
-		if (Application\Config::get('runtime', 'encryption_method') !== 'ssl') {
-			$iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
-			$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-			$decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, Application\Config::get('runtime', 'encryption_key'), $encrypted_string, MCRYPT_MODE_ECB, $iv);
-		} else {
-			$iv = substr(Application\Config::get('runtime', 'encryption_key'), 0, 16);
-			$decrypted_string = openssl_decrypt($encrypted_string, 'AES128', Application\Config::get('runtime', 'encryption_key'), 0, $iv);
-		}
-		
-		return $decrypted_string;
-		
-	}
-	
-	private static function generate_key() {
-        
-		$hash = hash('md5', rand(1,100000) . '_' . rand(100001,200000));
-		Application\Config::set('runtime', 'encryption_key', $hash);
-		
-	}
-	
-	/**
-	 * Cipher a user password
-	 * 
-	 * @param string $clear_password
-	 * @return string
-	 */
-	public static function hash_password ($clear_password) {
-		
-		$encrypt_password = self::encrypt($clear_password);
-		$password = $clear_password . $encrypt_password;
-		$password = self::encrypt($password);
-		$ciphered_password = hash('sha256', $password);
-
-		return $ciphered_password;
-		
-	}
-	
-	/**
-	 * Cipher an api user token
-	 * 
-	 * @param string $a_username
-	 * @param string $a_clear_password
-	 * @param string $a_date
-	 * @return string
-	 */
-	public static function hash_api_user_token ($a_username, $a_clear_password, $a_date) {
-		
-		$encrypt_pass = self::encrypt($a_clear_password);
-		$encrypt_user = self::encrypt($a_username.$encrypt_pass.$a_date);
-		$token = self::encrypt($encrypt_pass.$encrypt_user);
-		$cipher_token = hash('sha256', base64_encode($token));
-		
-		return $cipher_token;
-		
-	}
-	
-	/**
-	 * Generate a unique token
-	 * 
-	 * @return string
-	 */
-	public static function token () {
-		
-		$time = microtime(true);
-		$micro = sprintf("%06d", ($time - floor($time)) * 1000000);
-		$date = new \DateTime(date('Y-m-d H:i:s.' . $micro, $time));
-		$milliseconds = $date->format("u");
-		
-		$cipher_string = hash('sha256', $milliseconds);
-		
-		return $cipher_string;
-		
-	}
-	
-	/**
-	 * Generate a md5 hash for string
-	 *
-	 * @param string $string
+final class Encryption
+{
+    /**
+     * Encrypt a string against the encryption string
+     *
+     * @param string $origin_string
+     *
      * @return string
-	 */
-	public static function md5 ($string) {
-	
-		return hash('md5', $string);
-	
-	}
-	
+     */
+    public static function encrypt($origin_string)
+    {
+        $config = Application::getInstance()->getConfig();
+        
+        if (!$config->encryption->key) {
+            self::generateKey();
+        }
+        
+        if ($config->encryption->method !== 'ssl') {
+            $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
+            $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+            $encrypted_string = mcrypt_encrypt(MCRYPT_BLOWFISH, $config->encryption->key,
+                utf8_encode($origin_string), MCRYPT_MODE_ECB, $iv);
+        } else {
+            $iv = substr($config->encryption->key, 0, 16);
+            $encrypted_string = openssl_encrypt($origin_string, 'AES128',
+                $config->encryption->key, 0, $iv);
+        }
+        
+        return $encrypted_string;
+    }
+    
+    /**
+     * Decrypt a string from the encryption string
+     *
+     * @param string $encrypted_string
+     *
+     * @return string
+     */
+    public static function decrypt($encrypted_string)
+    {
+        $config = Application::getInstance()->getConfig();
+        
+        if (!$config->encryption->key) {
+            self::generateKey();
+        }
+        
+        if ($config->encryption->method !== 'ssl') {
+            $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
+            $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+            $decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, $config->encryption->key,
+                $encrypted_string, MCRYPT_MODE_ECB, $iv);
+        } else {
+            $iv = substr($config->encryption->key, 0, 16);
+            $decrypted_string = openssl_decrypt($encrypted_string, 'AES128',
+                $config->encryption->key, 0, $iv);
+        }
+        
+        return $decrypted_string;
+        
+    }
+    
+    private static function generateKey()
+    {
+        $config = Application::getInstance()->getConfig();
+        $hash = hash('md5', rand(1, 100000) . '_' . rand(100001, 200000));
+        
+        $config->encryption = [
+            'key' => $hash,
+            'method' => 'ssl'
+        ];
+    }
+    
+    /**
+     * Cipher a user password
+     *
+     * @param string $clear_password
+     *
+     * @return string
+     */
+    public static function hashPassword($clear_password)
+    {
+        $encrypt_password = self::encrypt($clear_password);
+        $password = $clear_password . $encrypt_password;
+        $password = self::encrypt($password);
+        $ciphered_password = hash('sha256', $password);
+        
+        return $ciphered_password;
+    }
+    
+    /**
+     * Cipher an api user token
+     *
+     * @param string $a_username
+     * @param string $a_clear_password
+     * @param string $a_date
+     *
+     * @return string
+     */
+    public static function hashUserToken($a_username, $a_clear_password, $a_date)
+    {
+        $encrypt_pass = self::encrypt($a_clear_password);
+        $encrypt_user = self::encrypt($a_username . $encrypt_pass . $a_date);
+        $token = self::encrypt($encrypt_pass . $encrypt_user);
+        $cipher_token = hash('sha256', base64_encode($token));
+        
+        return $cipher_token;
+    }
+    
+    /**
+     * Generate a unique token
+     *
+     * @return string
+     */
+    public static function token()
+    {
+        $time = microtime(true);
+        $micro = sprintf("%06d", ($time - floor($time)) * 1000000);
+        $date = new \DateTime(date('Y-m-d H:i:s.' . $micro, $time));
+        $milliseconds = $date->format("u");
+        
+        $cipher_string = hash('sha256', $milliseconds);
+        
+        return $cipher_string;
+    }
+    
+    /**
+     * Generate a md5 hash for string
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    public static function md5($string)
+    {
+        return hash('md5', $string);
+    }
 }

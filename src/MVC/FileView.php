@@ -1,4 +1,5 @@
 <?php
+
 namespace Apine\MVC;
 
 use Apine\File\File;
@@ -9,74 +10,71 @@ use Apine\File\File;
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\MVC
  */
-final class FileView extends View {
-
-	/**
-	 * View File
-	 *
-	 * @var File
-	 */
-	private $_file;
-
-	/**
-	 * Construct File View
-	 *
-	 * @param File $a_file
-	 */
-	public function __construct(File $a_file=null) {
-
-		$this->set_file($a_file);
-
-	}
-
-	/**
-	 * Set file
-	 *
-	 * @param string|File $a_file
-	 */
-	public function set_file($a_file=null) {
-
-		if (!$a_file==null) {
-			if (is_string($a_file)) {
-				$this->_file = new File($a_file);
-			} else if (is_a($a_file,'Apine\File\File')) {
-				$this->_file = $a_file;
-			}
-		}
-
-	}
-
-	/**
-	 * Send View to output
-	 */
-	public function draw() {
-
-		if (!$this->_file==null) {
-			// Set headers
-			// PHP must return an image instead of a html
-			header("Content-type: ".$this->_file->type());
-			// Tell the browser the image size
-			header("Content-Length: " . $this->_file->size());
-				
-			$this->_file->output();
-		}
-
-	}
-
-	/**
-	 * Return the content of the view
-	 *
-	 * @return string
-	 */
-	public function content () {
-
-		ob_start();
-		$this->_file->output();
-		$content = ob_get_contents();
-		ob_end_clean();
-
-		return $content;
-
-	}
-
+final class FileView extends View
+{
+    /**
+     * View File
+     *
+     * @var File
+     */
+    private $file;
+    
+    /**
+     * Construct File View
+     *
+     * @param File $a_file
+     */
+    public function __construct(File $a_file = null)
+    {
+        $this->setFile($a_file);
+    }
+    
+    /**
+     * Set file
+     *
+     * @param string|File $a_file
+     */
+    public function setFile($a_file = null)
+    {
+        if (!$a_file == null) {
+            if (is_string($a_file)) {
+                $this->file = new File($a_file);
+            } else {
+                if ($a_file instanceof File) {
+                    $this->file = $a_file;
+                }
+            }
+        }
+    }
+    
+    /**
+     * Send View to output
+     */
+    public function draw()
+    {
+        if (!$this->file == null) {
+            // Set headers
+            // PHP must return an image instead of a html
+            header("Content-type: " . $this->file->type());
+            // Tell the browser the image size
+            header("Content-Length: " . $this->file->size());
+            
+            $this->file->output();
+        }
+    }
+    
+    /**
+     * Return the content of the view
+     *
+     * @return string
+     */
+    public function content()
+    {
+        ob_start();
+        $this->file->output();
+        $content = ob_get_contents();
+        ob_end_clean();
+        
+        return $content;
+    }
 }

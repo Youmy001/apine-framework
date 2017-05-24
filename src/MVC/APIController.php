@@ -6,6 +6,7 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
+
 namespace Apine\MVC;
 
 /**
@@ -15,21 +16,20 @@ namespace Apine\MVC;
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\MVC
  */
-abstract class APIController implements APIActionsInterface {
-
-	/**
-	 * Controller ApineView
-	 *
-	 * @var JSONView
-	 */
-	protected $_view;
-
-	/**
-	 * Construct the API Controller
-	 */
-	public function __construct() {
-
-		$this->_view = new JSONView();
-
-	}
+abstract class APIController implements APIActionsInterface
+{
+    /**
+     * Controller ApineView
+     *
+     * @var JSONView
+     */
+    protected $_view;
+    
+    /**
+     * Construct the API Controller
+     */
+    public function __construct()
+    {
+        $this->_view = new JSONView();
+    }
 }

@@ -5,6 +5,7 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
+
 namespace Apine\MVC;
 
 /**
@@ -14,29 +15,33 @@ namespace Apine\MVC;
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\MVC
  */
-interface APIActionsInterface {
-
+interface APIActionsInterface
+{
     /**
      * @param $params
+     *
      * @return View
      */
-	public function post($params);
-
+    public function post($params);
+    
     /**
      * @param $params
+     *
      * @return View
      */
-	public function get($params);
-
+    public function get($params);
+    
     /**
      * @param $params
+     *
      * @return View
      */
-	public function put($params);
-
+    public function put($params);
+    
     /**
      * @param $params
+     *
      * @return View
      */
-	public function delete($params);
+    public function delete($params);
 }

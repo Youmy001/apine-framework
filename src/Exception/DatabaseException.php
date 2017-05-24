@@ -6,6 +6,7 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
+
 namespace Apine\Exception;
 
 /**
@@ -14,5 +15,6 @@ namespace Apine\Exception;
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\Exception
  */
-class DatabaseException extends \PDOException {
+class DatabaseException extends \PDOException
+{
 }

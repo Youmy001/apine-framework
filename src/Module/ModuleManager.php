@@ -9,6 +9,7 @@
 namespace Apine\Module;
 
 
-class ModuleManager {
-	
+class ModuleManager
+{
+
 }
