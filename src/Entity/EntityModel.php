@@ -23,8 +23,8 @@ use Traversable;
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\Entity
  * @abstract
- * @method integer get_id() Return the value of the primary key
- * @method set_id(integer $integer) Assign a new value to the primary key
+ * @method integer getId() Return the value of the primary key
+ * @method setId(integer $integer) Assign a new value to the primary key
  * @method load() Procedure to load more complex properties or properties that are not directly represented in the
  *     database. Optional.
  */
