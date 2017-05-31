@@ -6,6 +6,7 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
+declare(strict_types=1);
 
 namespace Apine\Core;
 
@@ -23,14 +24,15 @@ final class Cookie
      *
      * @param string $cookie_name
      *
+     * @throws \ErrorException
      * @return string
      */
-    public static function get($cookie_name)
+    public static function get(string $cookie_name)
     {
         if (isset($_COOKIE[$cookie_name])) {
             return $_COOKIE[$cookie_name];
         } else {
-            return false;
+            throw new \ErrorException();
         }
     }
     
@@ -44,7 +46,7 @@ final class Cookie
      *
      * @return boolean
      */
-    public static function set($cookie_name, $value, $expiration_time = 0)
+    public static function set(string $cookie_name, string $value, int $expiration_time = 0) : bool
     {
         if ($expiration_time == 0) {
             return setcookie($cookie_name, $value, null, '/');

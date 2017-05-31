@@ -6,6 +6,7 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
+declare(strict_types=1);
 
 namespace Apine\Core;
 
@@ -70,13 +71,13 @@ final class Database
      * @throws DatabaseException If cannot connect to database server
      */
     public function __construct(
-        $db_type = null,
-        $db_host = null,
-        $db_name = null,
-        $db_user = 'root',
-        $db_password = '',
-        $db_charset = 'utf8',
-        $db_override = false
+        string $db_type = null,
+        string $db_host = null,
+        string $db_name = null,
+        string $db_user = 'root',
+        string $db_password = '',
+        string $db_charset = 'utf8',
+        bool $db_override = false
     ) {
         try {
             if ((!is_null($db_type) && !is_null($db_host) && !is_null($db_name)) || !isset(self::$apine_instance)) {

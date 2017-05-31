@@ -6,6 +6,7 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
+declare(strict_types=1);
 
 namespace Apine\Core;
 
@@ -43,7 +44,7 @@ final class Config
      *
      * @throws GenericException If file not found
      */
-    public function __construct($a_path)
+    public function __construct(string $a_path)
     {
         try {
             $this->path = $a_path;
@@ -58,7 +59,7 @@ final class Config
      *
      * @return mixed
      */
-    public function &__get($name)
+    public function &__get(string $name)
     {
         return $this->settings->settings->$name;
     }
@@ -67,7 +68,7 @@ final class Config
      * @param $name
      * @param $value
      */
-    public function __set($name, $value)
+    public function __set(string $name, $value)
     {
         $this->settings->settings->$name = $value;
     }

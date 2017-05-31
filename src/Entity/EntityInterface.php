@@ -6,6 +6,7 @@
  * @license MIT
  * @copyright 2016 Tommy Teasdale
  */
+declare(strict_types=1);
 
 namespace Apine\Entity;
 

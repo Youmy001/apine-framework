@@ -6,6 +6,7 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
+declare(strict_types=1);
 
 namespace Apine;
 
@@ -53,7 +54,7 @@ final class Autoloader
      *
      * @return void
      */
-    public function addModule($prefix, $base_dir, $prepend = false)
+    public function addModule(string $prefix, string $base_dir, bool $prepend = false)
     {
         // normalize namespace prefix
         $prefix = trim($prefix, '\\') . '\\';
@@ -88,7 +89,7 @@ final class Autoloader
      *
      * @return boolean
      */
-    static function loadModule($module_name)
+    static function loadModule(string $module_name) : bool
     {
         // Verify if the module actually exists
         if (is_dir('modules/' . $module_name . '/')) {
@@ -135,7 +136,7 @@ final class Autoloader
     
     public function register()
     {
-        spl_autoload_register(array($this, 'load_class'));
+        spl_autoload_register(array($this, 'loadClass'));
     }
     
     /**
@@ -146,7 +147,7 @@ final class Autoloader
      * @return mixed The mapped file name on success, or boolean false on
      * failure.
      */
-    public function loadClass($class)
+    public function loadClass(string $class)
     {
         // the current namespace prefix
         $prefix = $class;
@@ -186,7 +187,7 @@ final class Autoloader
      * @return mixed Boolean false if no mapped file can be loaded, or the
      * name of the mapped file that was loaded.
      */
-    protected function loadMappedFile($prefix, $relative_class)
+    protected function loadMappedFile(string $prefix, string $relative_class)
     {
         // are there any base directories for this namespace prefix?
         if (isset($this->prefixes[$prefix]) === false) {
@@ -221,7 +222,7 @@ final class Autoloader
      *
      * @return bool True if the file exists, false if not.
      */
-    protected function requireFile($file)
+    protected function requireFile(string $file) : bool
     {
         if (file_exists($file)) {
             require_once $file;
@@ -242,7 +243,7 @@ final class Autoloader
      *
      * @return mixed[] List of all files in a directory
      */
-    private static function getFolderFiles($directory, $root = true)
+    private static function getFolderFiles(string $directory, bool $root = true) : array
     {
         $array = array();
         
@@ -308,7 +309,7 @@ final class Autoloader
      * @param string $a_folder
      *            Path to the directory from the include path
      */
-    private function loadFolderFiles($a_folder)
+    private function loadFolderFiles(string $a_folder)
     {
         $files = glob($a_folder . '*');
         

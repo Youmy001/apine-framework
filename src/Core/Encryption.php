@@ -6,6 +6,7 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
+declare(strict_types=1);
 
 namespace Apine\Core;
 
@@ -27,7 +28,7 @@ final class Encryption
      *
      * @return string
      */
-    public static function encrypt($origin_string)
+    public static function encrypt(string $origin_string) : string
     {
         $config = Application::getInstance()->getConfig();
         
@@ -56,7 +57,7 @@ final class Encryption
      *
      * @return string
      */
-    public static function decrypt($encrypted_string)
+    public static function decrypt(string $encrypted_string) : string
     {
         $config = Application::getInstance()->getConfig();
         
@@ -97,7 +98,7 @@ final class Encryption
      *
      * @return string
      */
-    public static function hashPassword($clear_password)
+    public static function hashPassword(string $clear_password) : string
     {
         $encrypt_password = self::encrypt($clear_password);
         $password = $clear_password . $encrypt_password;
@@ -116,7 +117,7 @@ final class Encryption
      *
      * @return string
      */
-    public static function hashUserToken($a_username, $a_clear_password, $a_date)
+    public static function hashUserToken(string $a_username, string $a_clear_password, string $a_date) : string
     {
         $encrypt_pass = self::encrypt($a_clear_password);
         $encrypt_user = self::encrypt($a_username . $encrypt_pass . $a_date);
@@ -131,7 +132,7 @@ final class Encryption
      *
      * @return string
      */
-    public static function token()
+    public static function token() : string
     {
         $time = microtime(true);
         $micro = sprintf("%06d", ($time - floor($time)) * 1000000);
@@ -150,7 +151,7 @@ final class Encryption
      *
      * @return string
      */
-    public static function md5($string)
+    public static function md5($string) : string
     {
         return hash('md5', $string);
     }

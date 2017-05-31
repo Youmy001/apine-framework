@@ -6,6 +6,7 @@
  * @license MIT
  * @copyright 2016 Tommy Teasdale
  */
+declare(strict_types=1);
 
 namespace Apine\Entity;
 
@@ -24,7 +25,7 @@ use Traversable;
  * @package Apine\Entity
  * @abstract
  * @method integer getId() Return the value of the primary key
- * @method setId(integer $integer) Assign a new value to the primary key
+ * @method setId(mixed $integer) Assign a new value to the primary key
  * @method load() Procedure to load more complex properties or properties that are not directly represented in the
  *     database. Optional.
  */
@@ -122,7 +123,7 @@ abstract class EntityModel implements
      *                If the property does not exist or the
      *                method name does not exist
      */
-    final public function __call($a_name, $a_arguments)
+    final public function __call(string $a_name, array $a_arguments)
     {
         /*
          * Load the properties if they were not already
@@ -347,7 +348,7 @@ abstract class EntityModel implements
                     $id = $this->database->last_insert_id();
                     
                     if ($this->key_value === null) {
-                        $this->set_id($id);
+                        $this->setId($id);
                     }
                     
                     /*
@@ -382,7 +383,7 @@ abstract class EntityModel implements
                 /**
                  * Reset the entity to a unsaved state
                  */
-                $this->set_id(null); // Reset the property for the primary key
+                $this->setId(null); // Reset the property for the primary key
                 $this->edited_values = array_merge($this->initial_values, $this->edited_values);
                 unset($this->edited_values[$this->key_field]); // Remove the primary key value
                 $this->initial_values = array();
@@ -432,7 +433,7 @@ abstract class EntityModel implements
      *
      * @return mixed
      */
-    final protected function get($a_field)
+    final protected function get(string $a_field)
     {
         if (empty($this->initial_values)) {
             $this->dataLoading();
@@ -458,7 +459,7 @@ abstract class EntityModel implements
                  * It add the current offset to the UTC+0 timezone to
                  * valid UNIX timestamps.
                  */
-                if (Types::is_timestamp($value) && !is_numeric($value)) {
+                if (Types::isTimestamp($value) && !is_numeric($value)) {
                     $datetime = new \DateTime('now');
                     $time = strtotime($value);
                     $time += $datetime->getOffset();

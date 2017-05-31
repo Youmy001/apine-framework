@@ -5,6 +5,7 @@
  * Date: 17/01/14
  * Time: 2:16
  */
+declare(strict_types=1);
 
 namespace Apine\Core;
 
@@ -18,7 +19,7 @@ class JsonStore
      */
     private $jsons;
     
-    private static function get_instance()
+    private static function get_instance() : self
     {
         if (!isset(self::$_instance)) {
             self::$_instance = new static();
@@ -27,7 +28,7 @@ class JsonStore
         return self::$_instance;
     }
     
-    static function &get($a_path)
+    static function &get(string $a_path)
     {
         if (file_exists($a_path)) {
             $real_path = realpath($a_path);
