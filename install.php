@@ -32,6 +32,7 @@ use Apine\Controllers\System as Controllers;
 
 $apine = new Apine\Application\Application();
 $apine->set_mode(APINE_MODE_DEVELOPMENT);
+$apine->set_default_view("\Apine\MVC\InstallView");
 
 try {
 	if (count(Request::get()) === 0) {

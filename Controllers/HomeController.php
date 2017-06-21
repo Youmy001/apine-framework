@@ -7,7 +7,8 @@
  */
 namespace Apine\Controllers\System;
 
-use Apine\MVC as MVC;
+use Apine\MVC\Controller;
+use Apine\MVC\HTMLView;
 
 /**
  * Class HomeController
@@ -17,19 +18,21 @@ use Apine\MVC as MVC;
  * @author Tommy Teasdale <tteasdaleroads@gmail.comm>
  * @package Apine\Controllers\System
  */
-class HomeController extends MVC\Controller {
+class HomeController extends Controller {
 
     /**
      * Default Action
      *
-     * @return MVC\HTMLView
+     * @return HTMLView
      */
 	public function index () {
+
+	    $view = new HTMLView();
+
+		$view->set_title('Home');
+		$view->set_view('home');
 		
-		$this->_view->set_title('Home');
-		$this->_view->set_view('home');
-		
-		return $this->_view;
+		return $view;
 		
 	}
 }

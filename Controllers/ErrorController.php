@@ -7,10 +7,14 @@
  */
 namespace Apine\Controllers\System;
 
-use Apine\Application as Application;
-use Apine\MVC as MVC;
-use Apine\Core as Core;
+use Apine\Application\Application;
+use Apine\Application\Translator;
+use Apine\Core\Request;
+use Apine\MVC\Controller;
+use Apine\MVC\JSONView;
+use Apine\MVC\View;
 use \Exception;
+use ReflectionClass;
 
 /**
  * Class ErrorController
@@ -18,7 +22,7 @@ use \Exception;
  * @author Tommy Teasdale <tteasdaleroads@gmail.comm>
  * @package Apine\Controllers\System
  */
-class ErrorController extends MVC\Controller {
+class ErrorController extends Controller {
 
     /**
      * HTTP Status handled by the controller
@@ -42,27 +46,14 @@ class ErrorController extends MVC\Controller {
 	);
 
     /**
-     * ErrorController constructor.
-     */
-	public function __construct() {
-		
-		parent::__construct();
-		
-		if (Core\Request::is_api_call()) {
-			$this->_view = new MVC\JSONView();
-		}
-		
-	}
-
-    /**
      * Bad Request Error
      *
      * @param Exception $a_exception
-     * @return MVC\View
+     * @return View
      */
 	public function badrequest (Exception $a_exception = null) {
 		
-		if (null == ($title = Application\Translator::translate('errors', '400'))) {
+		if (null == ($title = Translator::translate('errors', '400'))) {
 			$title = $this->errors[400]['title'];
 		}
 		
@@ -74,11 +65,11 @@ class ErrorController extends MVC\Controller {
      * Authorization Error
      *
      * @param Exception $a_exception
-     * @return MVC\View
+     * @return View
      */
 	public function unauthorized (Exception $a_exception = null) {
 	
-		if (null == ($title = Application\Translator::translate('errors', '401'))) {
+		if (null == ($title = Translator::translate('errors', '401'))) {
 			$title = $this->errors[401]['title'];
 		}
 		
@@ -90,11 +81,11 @@ class ErrorController extends MVC\Controller {
      * Permission Error
      *
      * @param Exception $a_exception
-     * @return MVC\View
+     * @return View
      */
 	public function forbidden (Exception $a_exception = null) {
 	
-		if (null == ($title = Application\Translator::translate('errors', '403'))) {
+		if (null == ($title = Translator::translate('errors', '403'))) {
 			$title = $this->errors[403]['title'];
 		}
 		
@@ -106,11 +97,11 @@ class ErrorController extends MVC\Controller {
      * Not Found Error
      *
      * @param Exception $a_exception
-     * @return MVC\View
+     * @return View
      */
 	public function notfound (Exception $a_exception = null) {
 		
-		if (null == ($title = Application\Translator::translate('errors', '404'))) {
+		if (null == ($title = Translator::translate('errors', '404'))) {
 			$title = $this->errors[404]['title'];
 		}
 		
@@ -122,11 +113,11 @@ class ErrorController extends MVC\Controller {
      * Request Method Error
      *
      * @param Exception $a_exception
-     * @return MVC\View
+     * @return View
      */
 	public function methodnotallowed (Exception $a_exception = null) {
 	
-		if (null == ($title = Application\Translator::translate('errors', '405'))) {
+		if (null == ($title = Translator::translate('errors', '405'))) {
 			$title = $this->errors[405]['title'];
 		}
 		
@@ -138,11 +129,11 @@ class ErrorController extends MVC\Controller {
      * Accepted Content Error
      *
      * @param Exception $a_exception
-     * @return MVC\View
+     * @return View
      */
 	public function notacceptable (Exception $a_exception = null) {
 	
-		if (null == ($title = Application\Translator::translate('errors', '406'))) {
+		if (null == ($title = Translator::translate('errors', '406'))) {
 			$title = $this->errors[406]['title'];
 		}
 		
@@ -154,11 +145,11 @@ class ErrorController extends MVC\Controller {
      * Gone Error
      *
      * @param Exception $a_exception
-     * @return MVC\View
+     * @return View
      */
 	public function gone (Exception $a_exception = null) {
 		
-		if (null == ($title = Application\Translator::translate('errors', '410'))) {
+		if (null == ($title = Translator::translate('errors', '410'))) {
 			$title = $this->errors[410]['title'];
 		}
 		
@@ -170,11 +161,11 @@ class ErrorController extends MVC\Controller {
      * Teapot Error
      *
      * @param Exception $a_exception
-     * @return MVC\View
+     * @return View
      */
 	public function teapot (Exception $a_exception = null) {
 	
-		if (null == ($title = Application\Translator::translate('errors', '418'))) {
+		if (null == ($title = Translator::translate('errors', '418'))) {
 			$title = $this->errors[418]['title'];
 		}
 		
@@ -186,11 +177,11 @@ class ErrorController extends MVC\Controller {
      * Server Error
      *
      * @param Exception $a_exception
-     * @return MVC\View
+     * @return View
      */
 	public function server (Exception $a_exception = null) {
 		
-		if (null == ($title = Application\Translator::translate('errors', '500'))) {
+		if (null == ($title = Translator::translate('errors', '500'))) {
 			$title = $this->errors[500]['title'];
 		}
 		
@@ -202,11 +193,11 @@ class ErrorController extends MVC\Controller {
      * Implementation Error
      *
      * @param Exception $a_exception
-     * @return MVC\View
+     * @return View
      */
 	public function notimplemented (Exception $a_exception = null) {
 	
-		if (null == ($title = Application\Translator::translate('errors', '501'))) {
+		if (null == ($title = Translator::translate('errors', '501'))) {
 			$title = $this->errors[501]['title'];
 		}
 		
@@ -218,11 +209,11 @@ class ErrorController extends MVC\Controller {
      * Gateway Error
      *
      * @param Exception $a_exception
-     * @return MVC\View
+     * @return View
      */
 	public function badgateway (Exception $a_exception = null) {
 	
-		if (null == ($title = Application\Translator::translate('errors', '502'))) {
+		if (null == ($title = Translator::translate('errors', '502'))) {
 			$title = $this->errors[502]['title'];
 		}
 		
@@ -234,11 +225,11 @@ class ErrorController extends MVC\Controller {
      * Service Error
      *
      * @param Exception $a_exception
-     * @return MVC\View
+     * @return View
      */
 	public function unavailable (Exception $a_exception = null) {
 	
-		if (null == ($title = Application\Translator::translate('errors', '503'))) {
+		if (null == ($title = Translator::translate('errors', '503'))) {
 			$title = $this->errors[503]['title'];
 		}
 		
@@ -250,11 +241,11 @@ class ErrorController extends MVC\Controller {
      * Gateway Timeout Error
      *
      * @param Exception $a_exception
-     * @return MVC\View
+     * @return View
      */
 	public function gatewaytimeout (Exception $a_exception = null) {
 	
-		if (null == ($title = Application\Translator::translate('errors', '504'))) {
+		if (null == ($title = Translator::translate('errors', '504'))) {
 			$title = $this->errors[504]['title'];
 		}
 		
@@ -268,35 +259,42 @@ class ErrorController extends MVC\Controller {
      * @param string|integer $a_code
      * @param string $a_message
      * @param Exception $a_exception
-     * @return MVC\View
+     * @return View
      */
 	public function custom ($a_code, $a_message, Exception $a_exception = null) {
+
+        if (Request::is_api_call() || Request::is_ajax()) {
+            $view = new JSONView();
+        } else {
+            $viewClass = new ReflectionClass(Application::get_instance()->get_default_view());
+            $view = $viewClass->newInstance();
+        }
 		
-		$this->_view->set_param('code', $a_code);
-		$this->_view->set_param('message', $a_message);
+		$view->set_param('code', $a_code);
+		$view->set_param('message', $a_message);
 		
-		if (Core\Request::is_api_call() || Core\Request::is_ajax()) {
-			$this->_view->set_param('request', Core\Request::get()['request']);
+		if (Request::is_api_call() || Request::is_ajax()) {
+			$view->set_param('request', Request::get()['request']);
 		} else {
-			$this->_view->set_title($a_message);
-			$this->_view->set_view('error');
+			$view->set_title($a_message);
+			$view->set_view('error');
 		}
 		
 		if ($a_exception !== null && !is_array($a_exception)) {
-			$this->_view->set_param('file', $a_exception->getFile());
-			$this->_view->set_param('line', $a_exception->getLine());
+			$view->set_param('file', $a_exception->getFile());
+			$view->set_param('line', $a_exception->getLine());
 			
-			if (Application\Application::get_instance()->get_mode() === APINE_MODE_DEVELOPMENT) {
-				$this->_view->set_param('trace', $a_exception->getTraceAsString());
+			if (Application::get_instance()->get_mode() === APINE_MODE_DEVELOPMENT) {
+				$view->set_param('trace', $a_exception->getTraceAsString());
 			}
 		}
 		
 		if ($this->is_http_code($a_code)) {
-			$this->_view->set_response_code($a_code);
+			$view->set_response_code($a_code);
 		} else {
-			$this->_view->set_response_code(500);
+			$view->set_response_code(500);
 		}
-		return $this->_view;
+		return $view;
 		
 	}
 

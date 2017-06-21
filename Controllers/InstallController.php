@@ -7,8 +7,6 @@
  */
 namespace Apine\Controllers\System;
 
-use Apine\Core as Core;
-use Apine\MVC as MVC;
 use Apine\Core\Request;
 use Apine\Core\Database;
 use Apine\Exception\GenericException;
@@ -16,8 +14,8 @@ use Apine\Exception\DatabaseException;
 use Apine\Application\Application;
 use Apine\MVC\Controller;
 use Apine\MVC\InstallView;
-use Apine\MVC\HTMLView;
 use \Exception;
+use RuntimeException;
 
 /**
  * Class InstallController
@@ -25,7 +23,7 @@ use \Exception;
  * @author Tommy Teasdale <tteasdaleroads@gmail.comm>
  * @package Apine\Controllers\System
  */
-class InstallController extends MVC\Controller {
+class InstallController extends Controller {
 
     /**
      * Location of the framework in Composer
@@ -85,8 +83,6 @@ class InstallController extends MVC\Controller {
      */
 	public function __construct() {
 		
-		parent::__construct();
-		
 		$this->parent = str_replace(DIRECTORY_SEPARATOR, '/', dirname(dirname(__FILE__)));
 		$this->parent_name = basename($this->parent);
 		
@@ -103,7 +99,7 @@ class InstallController extends MVC\Controller {
 	/**
 	 * Default Action
      *
-	 * @return MVC\HTMLView
+	 * @return InstallView
 	 */
 	public function index () {
 
@@ -112,7 +108,6 @@ class InstallController extends MVC\Controller {
 		}
 		
 		if (!file_exists($this->project . '/.htaccess')) {
-			$htaccess_parent = str_replace($_SERVER['DOCUMENT_ROOT'], '', $this->parent);
 			// Load .htaccess templace
 			ob_start();
 			include_once $this->parent . '/Installation/htaccess_install.php';
@@ -125,7 +120,7 @@ class InstallController extends MVC\Controller {
 			fclose($file);
 		}
 		
-		if (Core\Request::is_get()) {
+		if (Request::is_get()) {
 			$zones = timezone_identifiers_list();
             $locations = array();
 			
@@ -146,21 +141,16 @@ class InstallController extends MVC\Controller {
 			}
 			
 			//include $this->parent . '/Installation/locales.php';
-			
-			if (!class_exists('\TinyTemplate\Engine')) {
-				$this->_view = new InstallView("Install APIne Framework", $this->parent . '/Views/install_view.html', $this->parent . '/Views/install_layout.html');
-			} else {
-				$this->_view = new HTMLView();
-				$this->_view->set_title("Install APIne Framework");
-				$this->_view->set_layout($this->parent . '/Views/install_layout');
-				$this->_view->set_view($this->parent . '/Views/install_view');
-			}
-			$this->_view->set_param('timezones', $locations);
-			$this->_view->set_param('locales', $this->locales);
+
+            $view = new InstallView("Install APIne Framework", $this->parent . '/Views/install_view.html', $this->parent . '/Views/install_layout.html');
+
+			$view->set_param('timezones', $locations);
+			$view->set_param('locales', $this->locales);
+
+            return $view;
 		}
-		
-		return $this->_view;
-	
+
+		throw new RuntimeException();
 	}
 
     /**
@@ -288,7 +278,7 @@ class InstallController extends MVC\Controller {
 			fwrite($file, $content);
 			fclose($file);
 			chmod($this->project . '/.htaccess', 0777);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			throw new GenericException($e->getMessage(), $e->getCode(), $e);
 		}
 	
@@ -320,7 +310,7 @@ class InstallController extends MVC\Controller {
 			} else {
 				throw new GenericException('Invalid Request', 400);
 			}
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$protocol = (isset(Request::server() ['SERVER_PROTOCOL']) ? Request::server() ['SERVER_PROTOCOL'] : 'HTTP/1.0');
 			header($protocol . ' 500 Internal Server Error');
 		}
@@ -338,7 +328,9 @@ class InstallController extends MVC\Controller {
 		try {
 			if (Request::is_ajax()) {
 				$body = json_decode(Request::get_request_body());
-				$database = new Database($body->type, $body->host, $body->name, $body->user, $body->pass, $body->char);
+				// Assert if the database connects
+				$temp = new Database($body->type, $body->host, $body->name, $body->user, $body->pass, $body->char);
+				unset($temp);
 			} else {
 				throw new GenericException('Invalid Request', 400);
 			}
@@ -376,7 +368,7 @@ class InstallController extends MVC\Controller {
 			}
 			
 			chmod($this->project . '/config.ini', 0777);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			throw new GenericException($e->getMessage(), $e->getCode(), $e);
 		}
 	
@@ -449,7 +441,7 @@ class InstallController extends MVC\Controller {
 			$result = $database->exec($sql_file);
 			
 			if ($result === false) {
-				throw new \Exception('Cannot import database tables');
+				throw new Exception('Cannot import database tables');
 			}
 		} catch (DatabaseException $e) {
 			throw new GenericException($e->getMessage(), $e->getCode(), $e);
@@ -491,7 +483,7 @@ class InstallController extends MVC\Controller {
 			}
 			
 			chmod($path, 0777);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			throw new GenericException($e->getMessage(), $e->getCode(), $e);
 		}
 	

@@ -8,7 +8,9 @@
  */
 namespace Apine\MVC;
 
+use Apine\Application\Application;
 use Apine\Core\Request as Request;
+use ReflectionClass;
 
 /**
  * Basic Controller
@@ -23,18 +25,22 @@ abstract class Controller {
 	 * Controller View
 	 * 
 	 * @var View
+     * @deprecated
 	 */
 	protected $_view;
 	
 	/**
 	 * Construct the Controller
+     *
+     * @deprecated
 	 */
 	public function __construct() {
 		
 		if (Request::is_api_call() || Request::is_ajax()) {
 			$this->_view = new JSONView();
 		} else {
-			$this->_view = new HTMLView();
+		    $viewClass = new ReflectionClass(Application::get_instance()->get_default_view());
+			$this->_view = $viewClass->newInstance();
 		}
 		
 	}

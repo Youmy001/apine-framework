@@ -8,6 +8,7 @@
 namespace Apine\MVC;
 
 use Apine\Application as Application;
+use Apine\Exception\GenericException;
 
 /**
  * Install View
@@ -68,15 +69,15 @@ final class InstallView extends View {
 	 * @param string $a_view
 	 * @param string $a_layout
 	 */
-	public function __construct($a_title = "", $a_view, $a_layout) {
-	
+	public function __construct($a_title = "", $a_view = "", $a_layout = "layout") {
+
 		parent::__construct();
 		$this->_scripts = array();
 	
 		$this->_title=$a_title;
 		
-		$this->_view = $a_view;
-		$this->_layout = $a_layout;
+		$this->set_view($a_view);
+		$this->set_layout($a_layout);
 		
 		$this->rules[] = new Rule(
 				'php_exclude',
@@ -178,6 +179,72 @@ final class InstallView extends View {
 				);
 	
 	}
+
+    /**
+     * Set page title
+     *
+     * @param string $a_title
+     */
+    public function set_title($a_title) {
+
+        if ($a_title!="") {
+            $this->_title=$a_title;
+        }
+
+    }
+
+    /**
+     * Set page view
+     *
+     * @param string $a_view
+     * @throws GenericException
+     */
+    public function set_view($a_view) {
+
+        if ($a_view != "") {
+            $location = Application\Application::get_instance()->framework_location();
+            $path = Application\Application::get_instance()->include_path();
+
+            // Verify if the view file exists
+            if (file_exists("views/$a_view.html")) {
+                $view = "$path/views/$a_view.html";
+            } else if (file_exists($location . "/Views/$a_view.html")) {
+                $view = "$location/Views/$a_view.html";
+            } else if (file_exists("$a_view.html")) {
+                $view = "$a_view.html";
+            } else {
+                throw new GenericException('View Not Found', 500);
+            }
+
+            $this->_view = $view;
+        }
+
+    }
+
+    /**
+     * Set page layout
+     *
+     * @param string $a_layout
+     * @throws GenericException
+     */
+    public function set_layout($a_layout) {
+
+        if ($a_layout != "") {
+            $location = Application\Application::get_instance()->framework_location();
+
+            // Verify if the layout file exists
+            if (file_exists("views/layouts/$a_layout.html")) {
+                $this->_layout = "views/layouts/$a_layout.html";
+            } else if (file_exists($location . "/Views/$a_layout.html")) {
+                $this->_layout = $location . "/Views/$a_layout.html";
+            } else if (file_exists("$a_layout.html")) {
+                $this->_layout = "$a_layout.html";
+            } else {
+                throw new GenericException('Layout Not Found', 500);
+            }
+        }
+
+    }
 	
 	/**
 	 * Send the view to output

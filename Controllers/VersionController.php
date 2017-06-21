@@ -8,8 +8,11 @@
 namespace Apine\Controllers\System;
 
 use Apine\Application\Application;
-use Apine\MVC as MVC;
-use Apine\Exception\GenericException as GenericException;
+use Apine\Exception\GenericException;
+use Apine\MVC\APIActionsInterface;
+use Apine\MVC\Controller;
+use Apine\MVC\HTMLView;
+use Apine\MVC\JSONView;
 
 /**
  * Class VersionController
@@ -17,46 +20,50 @@ use Apine\Exception\GenericException as GenericException;
  * @author Tommy Teasdale <tteasdaleroads@gmail.comm>
  * @package Apine\Controllers\System
  */
-class VersionController extends MVC\Controller implements MVC\APIActionsInterface {
+class VersionController extends Controller implements APIActionsInterface {
 
     /**
      * Default Action
      *
-     * @return MVC\HTMLView
+     * @return HTMLView
      */
     public function index () {
+
+        $view = new HTMLView();
 		
-		$this->_view->set_view('version');
-		$this->_view->set_title('Version');
+		$view->set_view('version');
+		$view->set_title('Version');
 		
-		return $this->_view;
+		return $view;
 		
 	}
 
     /**
      * HTTP GET action
      *
-     * @see MVC\APIActionsInterface
-     * @return MVC\JSONView
+     * @see APIActionsInterface
+     * @return JSONView
      */
 	public function get ($params) {
+
+	    $view = new JSONView();
 		
 		$version = Application::get_instance()->get_version();
 		
 		$array['application'] = array('version' => $version->application());
 		$array['apine_framework'] = array('version' => $version->framework());
 		
-		$this->_view->set_json_file($array);
-		$this->_view->set_response_code(200);
+		$view->set_json_file($array);
+		$view->set_response_code(200);
 		
-		return $this->_view;
+		return $view;
 		
 	}
 
     /**
      * HTTP POST action
      *
-     * @see MVC\APIActionsInterface
+     * @see APIActionsInterface
      * @throws GenericException
      */
 	public function post ($params) {
@@ -68,7 +75,7 @@ class VersionController extends MVC\Controller implements MVC\APIActionsInterfac
     /**
      * HTTP PUT action
      *
-     * @see MVC\APIActionsInterface
+     * @see APIActionsInterface
      * @throws GenericException
      */
 	public function put ($params) {
@@ -80,7 +87,7 @@ class VersionController extends MVC\Controller implements MVC\APIActionsInterfac
     /**
      * HTTP DELETE action
      *
-     * @see MVC\APIActionsInterface
+     * @see APIActionsInterface
      * @throws GenericException
      */
 	public function delete ($params) {

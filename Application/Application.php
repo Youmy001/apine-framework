@@ -8,7 +8,7 @@
  */
 namespace Apine\Application;
 
-use \Exception as Exception;
+use \Exception;
 use Apine\Core\Request as Request;
 use Apine\Core\Config as Config;
 use Apine\Exception\GenericException as GenericException;
@@ -39,7 +39,7 @@ final class Application {
 	 * 
 	 * @var string
 	 */
-	private $apine_version = '1.1.3';
+	private $apine_version = '1.2.0-dev';
 	
 	/**
 	 * Version number of the user application
@@ -121,6 +121,14 @@ final class Application {
 	private $version;
 
     /**
+     * Default view to be used when not specified in the controller
+     *
+     * @note Overriden by API and XHR calls
+     * @var string
+     */
+	private $default_view = '\Apine\MVC\TwigView';
+
+    /**
      * Application constructor.
      *
      * @return Application
@@ -188,6 +196,14 @@ final class Application {
 		
 	}
 
+	public function set_default_view ($a_view = '\Apine\MVC\TwigView') {
+
+	    if (is_string($a_view) && class_exists($a_view)) {
+	        $this->default_view = $a_view;
+        }
+
+    }
+
     /**
      * Define if the application must force the use of https for use sessions
      *
@@ -204,12 +220,14 @@ final class Application {
     /**
      * Define if the application must make use of Composer packages
      *
+     * @deprecated This doesn't work anymore. Always use Composer
      * @param bool $a_bool
      */
     public function use_composer ($a_bool = true) {
 		
 		if (is_bool($a_bool)) {
-			$this->use_composer = $a_bool;
+			//$this->use_composer = $a_bool;
+            $this->use_composer = true; // BREAKING FEATURE
 		}
 		
 	}
@@ -290,10 +308,18 @@ final class Application {
 		if ($a_runtime !== APINE_RUNTIME_HYBRID && $a_runtime !== APINE_RUNTIME_API && $a_runtime !== APINE_RUNTIME_APP) {
 			$a_runtime = APINE_RUNTIME_HYBRID;
 		}
-		
-		if ($this->use_composer && !strstr($this->apine_folder, 'vendor/youmy001')) {
-			require_once 'vendor/autoload.php';
-		}
+
+        // Include the autoloader and validate vendor installation (composer) if required
+        if ($this->use_composer && !strstr($this->apine_folder, 'vendor/youmy001')) {
+            if (is_dir('vendor') && file_exists('vendor/autoload.php')) {
+                require_once 'vendor/autoload.php';
+            } else {
+				$protocol = (isset(Request::server()['SERVER_PROTOCOL']) ? Request::server()['SERVER_PROTOCOL'] : 'HTTP/1.0');
+				header($protocol . ' 500 Internal Server Error');
+				header('Content-type: text/plain');
+                die("Could not find composer installation in the application path. Please run the following and try again\n\n$ php composer.phar install");
+            }
+        }
 		
 		/**
 		 * Main Execution
@@ -481,6 +507,16 @@ final class Application {
 		return (bool) $this->secure_session;
 		
 	}
+
+	public function get_default_view () {
+
+	    if (is_null($this->default_view)) {
+	        $this->default_view = '\Apine\MVC\TwigView';
+        }
+
+        return $this->default_view;
+
+    }
 
     /**
      * Return the system configuration handler
