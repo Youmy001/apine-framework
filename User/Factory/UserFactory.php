@@ -130,7 +130,7 @@ class UserFactory implements Apine\Entity\EntityFactoryInterface {
 	public static function create_by_name ($name) {
 
 		$database = new Apine\Core\Database();
-		$user_sql_id = $database->prepare('SELECT `id` FROM `apine_users` WHERE `username` = ? OR `email` = ?  AND `type` <> 10');
+		$user_sql_id = $database->prepare('SELECT `id` FROM `apine_users` WHERE (`username` = ? OR `email` = ?)  AND `type` <> 10');
 		$ar_user_sql = $database->execute(array(
 						$name,
 						$name
