@@ -48,26 +48,6 @@ class TwigView extends View {
     private $title;
 
     /**
-     * List of custom meta tags
-     * @var array $_metatags
-     */
-    //private $_metatags;
-
-    /**
-     * List of stylesheets to include
-     *
-     * @var array
-     */
-    //private $_styles;
-
-    /**
-     * List of scripts to include
-     *
-     * @var array
-     */
-    //private $_scripts;
-
-    /**
      * View's HTML Document
      *
      * @var string $content
@@ -112,27 +92,6 @@ class TwigView extends View {
             $this->title = $a_title;
         }
     }
-
-    /**
-     * Append a meta tag to <head>
-     *
-     * @param array $a_properties
-     */
-    /*public function add_meta ($a_properties) {
-
-        if (is_array($a_properties) && count($a_properties) >= 1) {
-
-            $tag = "<meta";
-
-            foreach ($a_properties as $name=>$value) {
-                $tag .= " $name=\"$value\"";
-            }
-
-            $tag .= ">";
-            $this->_metatags[] = $tag;
-        }
-
-    }*/
 
     /**
      * Set path to view file
@@ -186,123 +145,6 @@ class TwigView extends View {
         }
     }
 
-    /**
-     * Append javascript script to view
-     *
-     * @param string $a_script URL to script
-     */
-    /*public function add_script($a_script) {
-        if ($a_script!="") {
-            if (file_exists("resources/public/scripts/$a_script.js")) {
-                $this->_scripts[] = URLHelper::resource("resources/public/scripts/$a_script.js");
-            } else if (file_exists("$a_script.js")) {
-                $this->_scripts[] = URLHelper::resource("$a_script.js");
-            } else {
-                $headers = @get_headers($a_script);
-                if (stripos($headers[0], '200')) {
-                    $this->_scripts[] = $a_script;
-                }
-            }
-        }
-    }*/
-
-    /**
-     * Append stylesheet to view
-     *
-     * @param string $a_sheet URL to script
-     */
-    /*public function add_stylesheet($a_sheet) {
-        if ($a_sheet!="") {
-            if (file_exists("resources/public/css/$a_sheet.css")) {
-                $this->_styles[] = URLHelper::resource("resources/public/css/$a_sheet.css");
-            } else if (file_exists("$a_sheet.css")) {
-                $this->_styles[] = URLHelper::resource("$a_sheet.css");
-            }
-        }
-    }*/
-
-    /**
-     * Insert meta tag into the view
-     *
-     * @param string[] $metatags
-     * @return string
-     */
-    /*public static function apply_meta ($metatags) {
-        $output = "";
-
-        if (count($metatags) > 0) {
-            foreach ($metatags as $value) {
-                $output .= $value . "\r\n";
-            }
-        }
-
-        return $output;
-    }*/
-
-    /**
-     * Insert script into the view
-     *
-     * @param string[] $scripts
-     * @return string
-     */
-    /*public static function apply_scripts($scripts) {
-        $output = "";
-
-        if (count($scripts)>0) {
-            foreach ($scripts as $value) {
-                $output .= "<script src=\"$value\"></script>";
-            }
-        }
-
-        return $output;
-    }*/
-	
-	/**
-	 * Inject literal HTML in the view
-	 *
-	 * @param string $a_literal
-	 * @param string $a_zone
-	 */
-	/*public function add_html_literal ($a_literal, $a_zone = "default") {
-		
-		if($a_literal!="") {
-			$this->literals[$a_zone][] = $a_literal;
-		}
-		
-	}
-	
-	public static function apply_html_literals ($a_literals) {
-		
-		$output = "";
-		
-		if (count($a_literals)>0) {
-			foreach ($a_literals as $literal) {
-				$output .= $literal;
-			}
-		}
-		
-		return $output;
-		
-	}*/
-
-    /**
-     * Insert stylesheets into the view
-     *
-     * @param string[] $styles
-     * @return string
-     */
-    /*public static function apply_stylesheets($styles) {
-        $output = "";
-
-        if (count($styles)>0) {
-            foreach ($styles as $value) {
-                $output .= "<link href=\"$value\" rel=\"stylesheet\" />";
-            }
-        }
-
-        return $output;
-    }*/
-
     public function draw() {
         // Apply headers
 
@@ -314,16 +156,6 @@ class TwigView extends View {
     }
 
     public function content() {
-        /* TODO: Add rules
-         *
-         * Configuration : functions (Ex: {{ config('application', 'title') }})
-         * Translations: functions (Ex: {{ translate('text', 'category') }}, {{ text|translate('category') }})
-         * URLHelper : filters (Ex: {{ 'home/construction'|url_secure }}, {{ 'home/construction'|url }}, {{ 'resources/public/assets/favicon.ico'|url_resource }}, {{ url_secure('home/construction') }})
-         * Dynamic Insertions (Script Tags, Style Tags, Meta Tags, ...) : variables (Ex: {{ apine.meta }}, {{ apine.style }}, {{ apine.script }}, {{ apine.view }}, {{ apine.title }})
-         * Logged In User : global (Ex: {{ apine_user.get_username() }})
-         * Execution Time : function (Ex: {{ execution_time() }})
-         *
-         */
         
         $loader1 = new \Twig_Loader_Filesystem($this->view_path);
 		$loader2 = new \Twig_Loader_Filesystem($this->layout_path);
@@ -347,12 +179,7 @@ class TwigView extends View {
 				'short' => $language->code_short,
 				'name' => Translator::translation()->get("language","name")
 			),
-			/*'scripts' => $this->_scripts,
-			'stylesheets' => $this->_styles,
-			'metadata' => $this->_metatags,
-			'literals' => $this->literals,*/
 			'user' => (SessionManager::get_user()) ? SessionManager::get_user() : null,
-			//'user_array' => (SessionManager::get_user()) ? SessionManager::get_user()->serialize() : null,
 			'version' => array(
 				'framework' => Application::get_instance()->get_version()->framework(),
 				'application' => Application::get_instance()->get_version()->application()
@@ -368,18 +195,10 @@ class TwigView extends View {
 				'filepath' => $this->view_path.$this->view
 			) : null
         );
-
-        /*if (is_null($this->_layout)) {
-            $template = $twig->loadTemplate($this->_view);
-        } else {
-            $apine_array['view'] = $this->_view;
-            $template = $twig->loadTemplate($this->_layout);
-        }*/
 	
 		if (is_null($this->view)) {
 			$template = $twig->loadTemplate($this->layout);
 		} else {
-			//$apine_array['layout'] = $this->layout;
 			$template = $twig->loadTemplate($this->view);
 		}
 
