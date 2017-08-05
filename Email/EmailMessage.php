@@ -18,6 +18,7 @@ use Apine\Exception\GenericException as GenericException;
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @uses PHPMailer
  * @package Apine\Email;
+ * @deprecated
  */
 class EmailMessage {
 
