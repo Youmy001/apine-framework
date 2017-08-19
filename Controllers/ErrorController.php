@@ -269,26 +269,32 @@ class ErrorController extends Controller {
             $viewClass = new ReflectionClass(Application::get_instance()->get_default_view());
             $view = $viewClass->newInstance();
         }
-		
-		$view->set_param('code', $a_code);
-		$view->set_param('message', $a_message);
-		
-		if (Request::is_api_call() || Request::is_ajax()) {
-			$view->set_param('request', Request::get()['request']);
-		} else {
-			$view->set_title($a_message);
-			$view->set_view('error');
-		}
-		
-		if ($a_exception !== null && !is_array($a_exception)) {
-			$view->set_param('file', $a_exception->getFile());
-			$view->set_param('line', $a_exception->getLine());
-			
-			if (Application::get_instance()->get_mode() === APINE_MODE_DEVELOPMENT) {
-				$view->set_param('trace', $a_exception->getTraceAsString());
-			}
-		}
-		
+
+        $view->set_param('code', $a_code);
+        $view->set_param('message', $a_message);
+
+        if (Request::is_api_call() || Request::is_ajax()) {
+            $view->set_param('request', Request::get()['request']);
+        } else {
+            $view->set_title($a_message);
+            $view->set_view('error');
+        }
+
+        if ($a_exception !== null && !is_array($a_exception)) {
+            $view->set_param('file', $a_exception->getFile());
+            $view->set_param('line', $a_exception->getLine());
+
+            if (Application::get_instance()->get_mode() === APINE_MODE_DEVELOPMENT) {
+                if (Request::is_api_call() || Request::is_ajax()) {
+                    $view->set_param('trace', $a_exception->getTrace());
+                } else {
+                    $view->set_param('trace', $a_exception->getTraceAsString());
+                }
+
+                $view->set_param('exception', $this->getInnerException($a_exception != null ? $a_exception->getPrevious() : null));
+            }
+        }
+
 		if ($this->is_http_code($a_code)) {
 			$view->set_response_code($a_code);
 		} else {
@@ -297,6 +303,22 @@ class ErrorController extends Controller {
 		return $view;
 		
 	}
+
+	private function getInnerException($exception) {
+	    if ($exception == null) {
+	        return null;
+        }
+
+	    $data = [];
+        $data['code'] = $exception->getCode();
+        $data['message'] = $exception->getMessage();
+        $data['file'] = $exception->getFile();
+        $data['line'] = $exception->getLine();
+        $data['trace'] = $exception->getTrace();
+        $data['exception'] = $this->getInnerException($exception->getPrevious());
+
+	    return $data;
+    }
 
     /**
      * Get the appropriate method for a status code
