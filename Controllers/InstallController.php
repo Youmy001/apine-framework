@@ -106,6 +106,8 @@ class InstallController extends Controller {
 		if (file_exists($this->project . '/.htaccess') && file_exists($this->project . '/config.ini')) {
 			apine_internal_redirect('/home');
 		}
+
+        $htaccess_parent = str_replace($_SERVER['DOCUMENT_ROOT'], '', $this->parent);
 		
 		if (!file_exists($this->project . '/.htaccess')) {
 			// Load .htaccess templace
@@ -142,7 +144,7 @@ class InstallController extends Controller {
 			
 			//include $this->parent . '/Installation/locales.php';
 
-            $view = new InstallView("Install APIne Framework", $this->parent . '/Views/install_view.html', $this->parent . '/Views/install_layout.html');
+            $view = new InstallView("Install APIne Framework", $this->parent . '/Views/install_view', $this->parent . '/Views/install_layout');
 
 			$view->set_param('timezones', $locations);
 			$view->set_param('locales', $this->locales);
