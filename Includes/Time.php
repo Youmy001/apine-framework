@@ -1,9 +1,10 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: youmy
- * Date: 16/09/27
- * Time: 20:41
+ * Compute the total execution time of the application
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @license MIT
+ * @copyright 2015-2017 Tommy Teasdale
  */
 function apine_execution_time () {
 

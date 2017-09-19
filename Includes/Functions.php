@@ -1,4 +1,11 @@
 <?php
+/**
+ * Custom utility functions
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
+ * @license MIT
+ * @copyright 2016-2017 Tommy Teasdale
+ */
 
 /**
  * A split method that supports unicode characters

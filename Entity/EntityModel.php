@@ -3,7 +3,7 @@
  * Entity data mapper and basic entity class declaration
  * 
  * @license MIT
- * @copyright 2015 Tommy Teasdale
+ * @copyright 2015-2017 Tommy Teasdale
  */
 namespace Apine\Entity;
 

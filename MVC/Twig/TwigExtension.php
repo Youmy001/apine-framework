@@ -1,4 +1,10 @@
 <?php
+/**
+ * Custom Twig Extension
+ *
+ * @licence MIT
+ * @copyright 2016-2017 Tommy Teasdale
+ */
 namespace Apine\MVC\Twig;
 
 use Apine\MVC\HTMLView;

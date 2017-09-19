@@ -1,4 +1,10 @@
 <?php
+/**
+ * Abstraction of the output of a file
+ *
+ * @license MIT
+ * @copyright 2015-2017 Tommy Teasdale
+ */
 namespace Apine\MVC;
 
 use Apine\File\File;

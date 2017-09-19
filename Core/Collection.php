@@ -1,14 +1,13 @@
 <?php
 /**
- * Liste Collection
- * This file contains the Liste collection Class
+ * Collection
+ * This file contains the Collection Class
  * 
  * @license MIT
- * @copyright 2015 Tommy Teasdale
+ * @copyright 2015-2017 Tommy Teasdale
  */
 namespace Apine\Core;
 
-use Apine\Exception\GenericException;
 use Exception;
 
 /**
@@ -18,6 +17,7 @@ use Exception;
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\Core
+ * @deprecated
  */
 final class Collection implements \IteratorAggregate {
 
@@ -34,7 +34,7 @@ final class Collection implements \IteratorAggregate {
 	 * @param mixed $a_item
 	 *        Item to add to the collection
 	 * @param string $a_key
-	 *        Predifined key of the item into the collection. It is
+	 *        Predefined key of the item into the collection. It is
 	 *        possible to override existing values, so it is
 	 *        recommended to not specify a key at the insertion of a
 	 *        new item.

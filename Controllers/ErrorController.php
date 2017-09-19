@@ -265,20 +265,16 @@ class ErrorController extends Controller {
 
         if (Request::is_api_call() || Request::is_ajax()) {
             $view = new JSONView();
+            $view->set_param('request', Request::get()['request']);
         } else {
             $viewClass = new ReflectionClass(Application::get_instance()->get_default_view());
             $view = $viewClass->newInstance();
+            $view->set_title($a_message);
+            $view->set_view('error');
         }
 
         $view->set_param('code', $a_code);
         $view->set_param('message', $a_message);
-
-        if (Request::is_api_call() || Request::is_ajax()) {
-            $view->set_param('request', Request::get()['request']);
-        } else {
-            $view->set_title($a_message);
-            $view->set_view('error');
-        }
 
         if ($a_exception !== null && !is_array($a_exception)) {
             $view->set_param('file', $a_exception->getFile());

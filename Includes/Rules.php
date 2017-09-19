@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: youmy
- * Date: 16/09/27
- * Time: 20:23
+ * Custom rules for TinyTemplate
+ *
+ * @license MIT
+ * @copyright 2015-2017 Tommy Teasdale
  */
 use TinyTemplate\Engine;
 use TinyTemplate\Rule;

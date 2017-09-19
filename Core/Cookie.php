@@ -4,7 +4,7 @@
  * This script contains an helper to read and write cookies
  *
  * @license MIT
- * @copyright 2015 Tommy Teasdale
+ * @copyright 2015-2017 Tommy Teasdale
  */
 namespace Apine\Core;
 

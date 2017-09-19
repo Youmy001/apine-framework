@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: youmy
- * Date: 16/09/13
- * Time: 17:25
+ * Overloading feature for older Entities
+ *
+ * @license MIT
+ * @copyright 2016-2017 Tommy Teasdale
  */
 
 namespace Apine\Entity;

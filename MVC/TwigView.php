@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * Integration of Twig in APIne
+ * This script contains the representation of a view
+ * implementing the Twig Template Engine
+ *
+ * @license MIT
+ * @copyright 2016-2017 Tommy Teasdale
+ */
 namespace Apine\MVC;
 
 use Apine\Application\Application;
@@ -114,10 +121,10 @@ class TwigView extends View {
                 $this->view = "$a_view.html";
                 $this->view_path = "$path/views/";
             } else {
-                if (file_exists($location . "Views/$a_view.twig")) {
+                if (file_exists($location . "/Views/$a_view.twig")) {
                     $this->view = "$a_view.twig";
                     $this->view_path = "$location/Views/";
-                } else if (file_exists($location . "Views/$a_view.html")) {
+                } else if (file_exists($location . "/Views/$a_view.html")) {
                     $this->view = "$a_view.html";
                     $this->view_path = "$location/Views/";
                 } else {
@@ -196,7 +203,7 @@ class TwigView extends View {
             $this->content();
         }
 
-        print $this->content();
+        print $this->content;
         
     }
     

@@ -4,7 +4,7 @@
  * This script contains a class that draws a pagination navigation
  *
  * @license MIT
- * @copyright 2015 Tommy Teasdale
+ * @copyright 2015-2017 Tommy Teasdale
  */
 namespace Apine\MVC;
 
@@ -14,6 +14,7 @@ namespace Apine\MVC;
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\MVC
+ * @deprecated
  */
 class Pagination {
 

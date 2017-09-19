@@ -2,9 +2,10 @@
 namespace Apine\Entity;
 /**
  * Entity interface declaration.
- * 
+ *
+ * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @license MIT
- * @copyright 2015 Tommy Teasdale
+ * @copyright 2015-2017 Tommy Teasdale
  * @package Apine\Entity
  */
 interface EntityInterface {

@@ -1,10 +1,10 @@
 <?php
 /**
- * Liste Collection Iterator
- * This file contains an iterator for the Liste Collection
+ * Collection Iterator
+ * This file contains an iterator for the Collection class
  * 
  * @license MIT
- * @copyright 2015 Tommy Teasdale
+ * @copyright 2015-2017 Tommy Teasdale
  */
 namespace Apine\Core;
 
@@ -13,6 +13,7 @@ namespace Apine\Core;
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\Core
+ * @deprecated
  */
 final class CollectionIterator implements \Iterator {
 

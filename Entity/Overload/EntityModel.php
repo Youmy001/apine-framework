@@ -4,7 +4,7 @@
  * with method overloading capabilities.
  *
  * @license MIT
- * @copyright 2016 Tommy Teasdale
+ * @copyright 2016-2017 Tommy Teasdale
  */
 namespace Apine\Entity\Overload;
 

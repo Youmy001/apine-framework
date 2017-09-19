@@ -4,7 +4,7 @@
  * This script contains a custom exception handler
  *
  * @license MIT
- * @copyright 2015 Tommy Teasdale
+ * @copyright 2015-2017 Tommy Teasdale
  */
 namespace Apine\Exception;
 

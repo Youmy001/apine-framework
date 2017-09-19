@@ -3,7 +3,7 @@
  * This file contains the session management class for RESTful APIs
  * 
  * @license MIT
- * @copyright 2015 Tommy Teasdale
+ * @copyright 2015-2017 Tommy Teasdale
  */
 namespace Apine\Session;
 

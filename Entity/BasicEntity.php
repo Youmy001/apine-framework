@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Generic Entity
+ *
+ * @license MIT
+ * @copyright 2015-2017 Tommy Teasdale
+ */
 namespace Apine\Entity;
 
 use Apine\Core\Database;

@@ -30,6 +30,19 @@
 			margin-bottom: 0;
 			line-height: 40px;
 		}
+
+		.panel .alert.alert-block {
+			border-radius: 0px;
+		}
+
+		.panel .alert + .error {
+			margin-top: -20px;
+		}
+
+		.panel .panel-info {
+			border:none;
+			border-bottom: 1px solid #ddd;
+		}
 	</style>
 </head>
 <body>
@@ -43,6 +56,7 @@
 	</div>
 	
 	<script src="https://code.jquery.com/jquery-1.12.2.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
 	<script>
 	function InstallerViewModel () {
@@ -54,6 +68,7 @@
 		self.step_four_visible = ko.observable(false);
 		self.step_five_visible = ko.observable(false);
 		self.step_six_visible = ko.observable(false);
+		self.step_seven_visible = ko.observable(false);
 		self.step_finish_visible = ko.observable(false);
 		self.step_error_visible = ko.observable(false);
 		
@@ -64,15 +79,18 @@
 		self.db_host = ko.observable("");
 		self.db_type = ko.observable('mysql');
 		self.db_name = ko.observable("");
-		self.db_char = ko.observable('utf8');
+		self.db_char = ko.observable('utf8mb4');
 		self.db_user = ko.observable("");
 		self.db_pass = ko.observable("");
+
+
 		self.invalid_step_two = ko.observable(false);
+		self.invalid_step_four = ko.observable(false);
 		
 		self.loc_time = ko.observable();
 		self.loc_lang = ko.observable();
 		
-		self.email = ko.observable();
+		/*self.email = ko.observable();
 		self.email_host = ko.observable("");
 		self.email_port = ko.observable("");
 		self.email_prot = ko.observable("");
@@ -80,25 +98,62 @@
 		self.email_user = ko.observable("");
 		self.email_pass = ko.observable("");
 		self.email_name = ko.observable("");
-		self.email_addr = ko.observable("");
+		self.email_addr = ko.observable("");*/
 
-		self.generate = ko.observable();
+		self.user = ko.observable(0);
+		self.user_name = ko.observable("");
+		self.user_email = ko.observable("");
+		self.user_pass = ko.observable("");
+		self.user_pass2 = ko.observable("");
+		self.user_type = ko.observable(null);
+
+		self.add_composer = ko.observable(0);
+		self.generate_folders = ko.observable("1");
+		self.generate_files = ko.observable("0");
 		
-		self.email_auth_text = ko.computed(function() {
+		/*self.email_auth_text = ko.computed(function() {
 			return (self.email_auth() == 1) ? 'Yes' : 'No';
 		}, this);
 		
 		self.email_auth_bool = ko.computed(function() {
 			return (self.email_auth() == 1) ? true : false;
-		}, this);
+		}, this);*/
 
-		self.generate_text = ko.computed(function () {
-			return (self.generate() == 1) ? 'Yes' : 'No';
-		}, this);
+		self.user_create_text = ko.computed(function() {
+			return (self.user()) ? 'Yes' : 'No';
+		});
 
-		self.generate_bool = ko.computed(function () {
-			return (self.generate() == 1) ? true : false;
-		}, this);
+		self.user_type_text = ko.computed(function () {
+			switch(self.user_type()) {
+				case 10:
+					text = 'Deleted User';
+					break;
+				case 77:
+					text = 'Administrator';
+					break;
+				case 65:
+				default:
+					text = 'Normal User';
+			}
+
+			return text;
+		});
+
+		self.generate_folders_text = ko.computed(function () {
+			return (self.generate_folders() === "1") ? 'Yes' : 'No';
+		});
+
+		self.generate_folders_bool = ko.computed(function () {
+			return (self.generate_folders() === "1") ? true : false;
+		});
+
+		self.generate_files_text = ko.computed(function () {
+			return (self.generate_files() === "1") ? 'Yes' : 'No';
+		});
+
+		self.generate_files_bool = ko.computed(function () {
+			return (self.generate_files() === "1") ? true : false;
+		});
 		
 		self.show_step = function (step_number) {
 			self.step_zero_visible(false);
@@ -177,6 +232,7 @@
 				success: function (result) {
 					self.step_two_visible(false);
 					self.step_three_visible(true);
+					self.invalid_step_two(false);
 				 },
 				error: function () {
 					self.invalid_step_two(true);
@@ -187,12 +243,41 @@
 			});
 		};
 
+		self.validate_step_four = function (element) {
+			var return_value = true;
+
+			if (self.user() == 1) {
+				if (self.user_pass() !== self.user_pass2()) {
+					return_value = false;
+				}
+			}
+
+			if (return_value) {
+				self.step_four_visible(false);
+				self.step_five_visible(true);
+				self.invalid_step_four(false);
+			} else {
+				self.invalid_step_four(true);
+			}
+
+			$.ajax("/install/composer", {
+				type: "get",
+				success: function (result) {
+					self.add_composer(parseInt(result));
+				}
+			});
+
+			return false;
+		};
+
 		self.apply_settings = function () {
 			json_object = new Object();
 			app_object = new Object();
 			database_object = new Object();
 			locale_object = new Object();
-			email_object = new Object();
+			//email_object = new Object();
+			user_object = new Object();
+			generate_object = new Object();
 			
 			app_object.title = self.app_name();
 			app_object.author = self.app_auth();
@@ -213,7 +298,7 @@
 			locale_object.locale_cookie = 'no';
 			json_object.localization = locale_object;
 			
-			if (self.email() == 1) {
+			/* if (self.email() == 1) {
 				email_object.host = self.email_host();
 				email_object.port = self.email_port();
 				email_object.protocol = self.email_prot();
@@ -227,9 +312,18 @@
 				email_object.sender_name = self.email_name();
 				email_object.sender_address = self.email_addr();
 				json_object.mail = email_object();
+			}*/
+
+			if (self.user() == 1) {
+				user_object.username = self.user_name();
+				user_object.email = self.user_email();
+				user_object.type = self.user_type();
+				user_object.password = self.user_pass();
+				json_object.first_user = user_object;
 			}
 
-			json_object.generate = self.generate_bool();
+			json_object.generate_folders = self.generate_folders_bool();
+			json_object.generate_files = self.generate_files_bool();
 			
 			//console.log(JSON.stringify(json_object));
 			$.ajax("/install/apply_new_config", {

@@ -1,10 +1,10 @@
 <?php
 /**
  * Reference Controllers
- * This script contains an reference controler for MVC pattern implementation
+ * This script contains an reference controller for MVC pattern implementation
  *
  * @license MIT
- * @copyright 2015 Tommy Teasdale
+ * @copyright 2015-2017 Tommy Teasdale
  */
 namespace Apine\MVC;
 

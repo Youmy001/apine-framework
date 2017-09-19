@@ -4,7 +4,7 @@
  * Prepare and send an Email message via a mail server
  * 
  * @license MIT
- * @copyright 2015 Tommy Teasdale
+ * @copyright 2015-2017 Tommy Teasdale
  */
 namespace Apine\Email;
 

@@ -3,13 +3,13 @@
  * Basic Factory declaration.
  * 
  * @license MIT
- * @copyright 2015 Tommy Teasdale
+ * @copyright 2015-2017 Tommy Teasdale
  */
 namespace Apine\Entity;
 
 /**
  * This is the implementation of the factory
- * design patern.
+ * design pattern.
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\Entity

@@ -4,7 +4,7 @@
  * This script contains an helper to write internal URL
  *
  * @license MIT
- * @copyright 2015 Tommy Teasdale
+ * @copyright 2015-2017 Tommy Teasdale
  */
 namespace Apine\MVC;
 
@@ -15,7 +15,7 @@ use Apine\Application\Application as Application;
 
 /**
  * Internal URL Writer
- * Write URL from server's informations
+ * Write URL from server's information
  * 
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\MVC
