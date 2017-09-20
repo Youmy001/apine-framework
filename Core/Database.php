@@ -351,6 +351,34 @@ final class Database {
 	
 	}
 
+	public function beginTransaction() {
+	    $this->instance->beginTransaction();
+    }
+
+    public function rollback() {
+        $this->instance->rollBack();
+    }
+
+    public function commit() {
+        $this->instance->commit();
+    }
+
+    public function safeTransaction($function) {
+	    if (!is_callable($function)) {
+	        throw new \InvalidArgumentException();
+        }
+
+        $this->beginTransaction();
+
+	    try {
+	        $function();
+	        $this->commit();
+        } catch(\Exception $e) {
+	        $this->rollback();
+	        throw $e;
+        }
+    }
+
 	/**
 	 * Execute a previously prepared statement
 	 * 
