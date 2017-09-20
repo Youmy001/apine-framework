@@ -350,31 +350,74 @@ final class Database {
 		return key($this->Execute);
 	
 	}
-
-	public function beginTransaction() {
-	    $this->instance->beginTransaction();
+    
+    /**
+     * Initiates a transaction
+     *
+     * @throws DatabaseException If driver already in transaction or transactions are not supported
+     * @see PDO::beginTransaction()
+     */
+	public function open_transaction () {
+	    
+	    try {
+            $this->instance->beginTransaction();
+        } catch (\PDOException $e) {
+	        throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
+        }
+	    
     }
-
-    public function rollback() {
-        $this->instance->rollBack();
+    
+    /**
+     * Reverts a transaction then returns driver to autocommit mode
+     *
+     * @throws DatabaseException If driver not in transaction or transactions are not supported
+     */
+    public function rollback_transaction () {
+    
+        try {
+            $this->instance->rollBack();
+        } catch (\PDOException $e) {
+            throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
+        }
+        
     }
-
-    public function commit() {
-        $this->instance->commit();
+    
+    /**
+     * Commits a transaction then returns driver to autocommit mode
+     *
+     * @throws DatabaseException If driver not in transaction or transactions are not supported
+     * @see PDO::commit()
+     */
+    public function commit_transaction () {
+    
+        try {
+            $this->instance->commit();
+        } catch (\PDOException $e) {
+            throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
+        }
+        
     }
-
-    public function safeTransaction($function) {
+    
+    /**
+     * Execute multiple operation in a transaction
+     *
+     * @param callable $function
+     *        Function containing database operations to execute
+     * @throws \Exception
+     */
+    public function transaction ($function) {
+	    
 	    if (!is_callable($function)) {
 	        throw new \InvalidArgumentException();
         }
 
-        $this->beginTransaction();
+        $this->open_transaction();
 
 	    try {
-	        $function();
-	        $this->commit();
+            $function();
+            $this->commit_transaction();
         } catch(\Exception $e) {
-	        $this->rollback();
+	        $this->rollback_transaction();
 	        throw $e;
         }
     }
