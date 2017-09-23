@@ -8,6 +8,9 @@
  */
 namespace Apine\Translation;
 
+use Apine\Application\Application;
+use Apine\Core\Config;
+
 /**
  * Language Finder Tool
  * Manage multi-language configuration
@@ -18,7 +21,7 @@ namespace Apine\Translation;
 final class TranslationDirectory {
 	
 	/**
-	 * Availables languages for translations
+	 * Available languages for translations
 	 * 
 	 * @var TranslationLanguage[]
 	 */
@@ -44,29 +47,49 @@ final class TranslationDirectory {
 	 * 
 	 * @param string $a_directory
 	 */
-	public function __construct ($a_directory = 'resources/languages'){
-		
-		$this->directory = $a_directory . '/';
-		
-		if (is_null(self::$languages) && is_null(self::$translations)) {
-			self::$languages = array();
-			self::$translations = array();
-		}
-		
-		if(!isset(self::$languages[$this->directory])) {
-			
-			// Find and instantiate every languages
-			foreach (scandir($this->directory) as $file) {
-				if ($file != "." && $file != "..") {
-					$file_name = explode(".", $file);
-					$file_name = $file_name[0];
-					
-					if (is_file($this->directory . $file)) {
-						self::$languages[$this->directory][$file_name] = new TranslationLanguage($file_name, $this->directory . $file);
-					}
-				}
-			}
-		}
+    public function __construct ($a_directory = '') {
+    
+        if (is_null(self::$languages) && is_null(self::$translations)) {
+            self::$languages = array();
+            self::$translations = array();
+        }
+    
+        $config = Application::get_instance()->get_config();
+    
+        if (null === ($default_directory = $config->get('localization','locale_directory'))) {
+            $default_directory = 'resources/languages';
+        }
+    
+        $directory = (empty($a_directory)) ? $default_directory : $a_directory;
+        
+        if (strpos('/', $directory) === 0) {
+            $directory = '.' . $directory;
+        }
+    
+        $this->directory = $directory;
+    
+        if(!isset(self::$languages[$this->directory])) {
+    
+            if (preg_match('/[^\/]$/', $directory) === 1) {
+                $path = $directory . '/';
+            }
+        
+            // Find and instantiate every languages
+            foreach (scandir($directory) as $file) {
+                if ($file != "." && $file != "..") {
+                    $file_name = explode(".", $file);
+                    $file_name = $file_name[0];
+                
+                    if (is_file($path . $file)) {
+                        if ((preg_match('/^[a-z]{2}(_([a-zA-Z]{2}){1,2})?_[A-Z]{2}$/', $file_name) === 1) ||
+                            (preg_match('/^[a-z]{2}(-([a-zA-Z]{2}){1,2})?-[A-Z]{2}$/', $file_name) === 1)) {
+                            self::$languages[$this->directory][$file_name] = new TranslationLanguage($file_name,
+                                $path . $file);
+                        }
+                    }
+                }
+            }
+        }
 		
 	}
 	
@@ -77,7 +100,7 @@ final class TranslationDirectory {
 	 */
 	public function get_all_languages () {
 		
-		// Return a liste of every language
+		// Return a list of every language
 		return self::$languages[$this->directory];
 		
 	}
@@ -90,7 +113,7 @@ final class TranslationDirectory {
 	 */
 	public function get_language ($a_language_code) {
 		
-		// Return a language whose code maches the parameter
+		// Return a language whose code matches the parameter
 		return isset(self::$languages[$this->directory][$a_language_code]) ? self::$languages[$this->directory][$a_language_code] : null;
 		
 	}

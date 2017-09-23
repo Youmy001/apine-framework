@@ -1,0 +1,89 @@
+{% extends "layouts/default.twig" %}
+{% block contents %}
+<h1>About APIne Framework</h1>
+<p>APIne is a simple to use modular MVC Framework ready for the IoT (Internet of Things). It intends to be a general purpose framework and API providing session management, authentication, routing, and database abstraction without including useless tools.</p>
+<p>The most notable features include a complete session manager with basic users and permissions and a database abstraction layer that prevents you to manually write every queries.</p>
+
+<h2>Requirements</h2>
+<ul>
+    <li>PHP 5.4.0 or greater</li>
+    <li>MySQL 5</li>
+    <li>Apache 2.4</li>
+    <li>mod_rewrite</li>
+    <li>filter_module</li>
+</ul>
+<p>The project must be set in a virtual host that allows rewrites and .htaccess files for routes to work. PHP's user must have writing permissions on the project directory.</p>
+
+<div class="alert alert-info">If you are using another web server (nginx, lighttpd, ...) you must modify your server's config to replace the role of the .htaccess file.</div>
+
+<h2>Installation</h2>
+<p>APIne Framework is available as a Composer Package on Packagist as well as a standalone project.</p>
+<h3>With Composer</h3>
+<p>Add the following line to your composer.json file : <code>"youmy001/apine-framework": "~1.*"</code><br/>
+    Or enter this command : <code>$ composer require youmy001/apine-framework</code></p>
+
+<h3>Standalone</h3>
+<p>Clone this repository in your working directory : <code>$ git clone https://github.com/Youmy001/apine_framework.git</code></p>
+
+<h2>Quick Start a project</h2>
+<p>To quickly start a new project execute the assistant in a web browser located at <code>http://[domain_name_of_your_project]/apine-framework/install.php</code> if APIne is used standalone or <code>http://[domain_name_of_your_project]/vendor/youmy001/apine-framework/install.php</code> if it is used as a composer package, and follow the steps. The assistant will automatically generate a basic config, an empty locale, a .htaccess file, and a basic index.php and will automatically download the lastest version of Composer's binary if you are using the standalone version.</p>
+<p>The assistant will also try to import some tables essential for APIne's operation. Make sure you already created a database before launching the assistant and that the database is accessible from your project's perspective.</p>
+<p>If you run a standalone version of APIne's, install depedancies using this command after going through the assistant : <code>$ php composer.phar install</code>.</p>
+
+<h2>Manually Start a project</h2>
+<p>First of all, in order to use APIne Framwork, you must copy this file to the root of your project :</p>
+<ul>
+    <li>apine-framework/Installation/htacess_template.php</li>
+</ul>
+<p>Then replace the PHP tag by the path to APIne. If you are using APIne as a Composer package, this will be <code>/vendor/youmy001/apine-framework</code>. If you are using a standalone APIne, this will likely be <code>/apine-framework</code>. And rename the file <code>.htaccess</code>.</p>
+<p>Next, create a <code>index.php</code> file and add the following content in it:</p>
+<pre>require_once 'vendor/autoload.php'; // If APIne is a Composer package
+//require_once 'apine-framework/Autoloader.php'; // If APIne is standalone
+
+$loader = new Apine\Autoloader();
+$loader->register();
+
+$apine = new Apine\Application\Application();
+$apine->set_mode(APINE_MODE_DEVELOPMENT);
+$apine->run(APINE_RUNTIME_HYBRID);
+</pre>
+<p>Finally, you will need to create a file name <code>config.ini</code> that will contain various configuration information. Complete the following in your config file :</p>
+<pre>[application]
+	title = "Project Name"
+	author = "Author Name"
+	description = "Description"
+[database]
+	host = "localhost"
+	type = "mysql"
+	dbname = "projectdb"
+	charset = "utf8"
+	username = "root"
+	password = ""
+[localization]
+	timezone_default = "America/New_York"
+	locale_default = "en_US"
+	locale_detection = "yes"
+	locale_cookie = "no"
+[runtime]
+	token_lifespan = "600"
+	default_layout = "default"
+</pre>
+
+<h2>Learn More</h2>
+<p>Learn More at these links :</p>
+<ul>
+    <li><a href="https://github.com/Youmy001/apine-framework/wiki">Documentation</a></li>
+    <li><a href="https://github.com/Youmy001/apine-framework-example">Example Project</a></li>
+</ul>
+
+<h2>Support</h2>
+<p>Get support at these links :</p>
+<ul>
+    <li><a href="mailto:tteasdaleroads@gmail.com?subject=Support%20Request%20APIne%20Framework">Email Assistance</a></li>
+    <li><a href="https://github.com/Youmy001/apine-framework/issues">Issue Tracker</a></li>
+    <li><a href="https://github.com/Youmy001/apine-framework/wiki">Public Wiki</a></li>
+</ul>
+
+<h2>License</h2>
+<p>The APIne Framework is licensed under the MIT license. See the <a href="https://github.com/Youmy001/apine-framework/blob/master/LICENSE">LICENSE file</a> for more information.</p>
+{% endblock %}

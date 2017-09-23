@@ -11,7 +11,7 @@ use Apine\Application\Application;
 use Apine\Exception\GenericException;
 use Apine\MVC\APIActionsInterface;
 use Apine\MVC\Controller;
-use Apine\MVC\HTMLView;
+use Apine\MVC\TwigView;
 use Apine\MVC\JSONView;
 
 /**
@@ -29,7 +29,7 @@ class VersionController extends Controller implements APIActionsInterface {
      */
     public function index () {
 
-        $view = new HTMLView();
+        $view = new TwigView();
 		
 		$view->set_view('version');
 		$view->set_title('Version');

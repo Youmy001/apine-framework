@@ -122,8 +122,8 @@ final class Encryption {
 		
 		$time = microtime(true);
 		$micro = sprintf("%06d", ($time - floor($time)) * 1000000);
-		$date = new \DateTime(date('Y-m-d H:i:s.' . $micro, $time));
-		$milliseconds = $date->format("u");
+        $date = new \DateTime(date('Y-m-d H:i:s', $time));
+        $milliseconds = $date->format("u") . '.' . $micro;
 		
 		$cipher_string = hash('sha256', $milliseconds);
 		

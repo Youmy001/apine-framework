@@ -14,6 +14,7 @@ use Apine\Exception\DatabaseException;
 use Apine\Application\Application;
 use Apine\MVC\Controller;
 use Apine\MVC\InstallView;
+use Apine\Utility\Files;
 use \Exception;
 use RuntimeException;
 
@@ -298,7 +299,7 @@ class InstallController extends Controller {
 				
 				$generate_files = (int) $entries['generate_files'];
                 $generate_folders = (int) $entries['generate_folders'];
-				$user = $entries['user'];
+				$user = $entries['first_user'];
 				array_pop($entries);	// Remove the generate_files command from the end of the array
                 array_pop($entries);	// Remove the generate_folders command from the end of the array
                 
@@ -306,14 +307,18 @@ class InstallController extends Controller {
                     array_pop($entries);	// Remove the user object from the end of the array
                     $encryption_key = $hash = hash('md5', rand(1,100000) . '_' . rand(100001,200000));
                     $entries['runtime']['encryption_key'] = $encryption_key;
-                    $entries['runtime']['encryption_method'] = 'ssl';
+                }
+                
+                if ($generate_folders === 1) {
+                    $entries['localization']['locale_directory'] = 'resources/language';
+                } else {
+                    $entries['localization']['locale_directory'] = '.';
                 }
 				
 				$this->generate_config($entries);
 				
 				$this->import_database($entries['database']);
 				$this->import_routes();
-				//$this->move_files($generate);
                 $this->generate_htaccess();
                 
                 if ($generate_folders) {
@@ -325,6 +330,7 @@ class InstallController extends Controller {
                 }
                 
                 $this->install_composer();
+                $this->import_index();
 				
 				
                 $this->generate_locale($entries ['localization'] ['locale_default'], $entries ['application'] ['title'], $entries ['application'] ['author'], $entries ['application'] ['description'], (bool)$generate_folders);
@@ -372,9 +378,9 @@ class InstallController extends Controller {
 	public function add_composer () {
         
         if (!file_exists($this->project . '/composer.phar') && !strstr($this->parent, self::COMPOSER_LOCATION)) {
-            print 1;
+            die(1);
         } else {
-            print 0;
+            die(0);
         }
 	    
     }
@@ -408,6 +414,30 @@ class InstallController extends Controller {
             }
         
             chmod($this->project . '/composer.json', 0777);
+        }
+	    
+    }
+    
+    private function import_index () {
+    
+        $htaccess_parent = str_replace($_SERVER['DOCUMENT_ROOT'], '', $this->parent);
+    
+        if (!file_exists($this->project . '/index.php')) {
+            if (strstr($this->parent, self::COMPOSER_LOCATION)) {
+                $content = file_get_contents($this->parent . '/Installation/composer_empty_index.php');
+            } else {
+                $file_content = file_get_contents($this->parent . '/Installation/empty_index.php');
+                $content = str_replace('{apine}', $htaccess_parent, $file_content);
+            }
+            $index = fopen($this->project . '/index.php', 'x+');
+            $result = fwrite($index, $content);
+            fclose($index);
+        
+            if ($result === false) {
+                throw new Exception('Cannot move index script');
+            }
+        
+            chmod($this->project . '/index.php', 0777);
         }
 	    
     }
@@ -448,6 +478,8 @@ class InstallController extends Controller {
 	private function generate_htaccess () {
         
         try {
+            $htaccess_parent = str_replace($_SERVER['DOCUMENT_ROOT'], '', $this->parent); // Used in the template file
+            
             // Load .htaccess templace
             ob_start();
             include_once $this->parent . '/Installation/htaccess_template.php';
@@ -529,17 +561,18 @@ class InstallController extends Controller {
     
     private function generate_files () {
      
-	    $source_controllers_folder = $this->parent . '/Installation/app_example/controllers/';
-	    $destination_controllers_folder = $this->project . '/controllers/';
-    
-        $source_views_folder = $this->parent . '/Installation/app_example/views/';
-        $destination_views_folder = $this->project . '/views/';
+	    $source_routes = $this->parent . '/Installation/app_example/routes.json';
+	    $destination_routes = $this->project . '/routes.json';
+	    $source_controllers_folder = $this->parent . '/Installation/app_example/controllers';
+	    $destination_controllers_folder = $this->project . '/controllers';
+        $source_views_folder = $this->parent . '/Installation/app_example/views';
+        $destination_views_folder = $this->project . '/views';
 	    
-	    /*if (!file_exists()) {
-	       
-        }*/
+	    Files::recurse_copy($source_controllers_folder, $destination_controllers_folder, false);
+	    Files::recurse_copy($source_views_folder, $destination_views_folder, false);
 	    
-	    /* TODO Copy the files */
+	    copy($source_routes, $destination_routes);
+        chmod($destination_routes, 0777);
 	    
     }
 	
@@ -611,11 +644,11 @@ class InstallController extends Controller {
      *
      * @throws \Apine\Exception\GenericException
      */
-	private function generate_user ($user, $database, $encryption_key) {
-	    
-	    try {
+    private function generate_user ($user, $database, $encryption_key) {
+        
+        try {
             $database = new Database($database['type'], $database['host'], $database['dbname'], $database['username'], $database['password'], $database['charset']);
-            $request = $database->prepare("INSERT INTO `users` (`username`, `password`, `type`, `email`), (?, ?, ?, ?)");
+            $request = $database->prepare("INSERT INTO `apine_users` (`username`, `password`, `type`, `email`) VALUES (?, ?, ?, ?)");
             $iv = substr($encryption_key, 0, 16);
             
             $encrypt_password = openssl_encrypt($user['password'], 'AES128', $encryption_key, 0, $iv);
@@ -623,17 +656,30 @@ class InstallController extends Controller {
             $password = openssl_encrypt($password, 'AES128', $encryption_key, 0, $iv);
             $ciphered_password = hash('sha256', $password);
             
-            $result = $database->execute(array(
+            $database->execute(array(
                 $user['username'],
                 $ciphered_password,
-                $user['type'],
+                (int) $user['type'],
                 $user['email']
+            ), $request);
+            
+            if($user['type'] == 77) {
+                $group_id = 2;
+            } else {
+                $group_id = 1;
+            }
+            
+            $user_id = $database->last_insert_id();
+            $request = $database->prepare("INSERT INTO `apine_users_user_groups` (`user_id`, `group_id`) VALUES (?, ?)");
+            $database->execute(array(
+                $user_id,
+                $group_id
             ), $request);
             
         } catch (\Exception $e) {
             throw new GenericException($e->getMessage(), $e->getCode(), $e);
         }
-	    
+        
     }
 
     /**

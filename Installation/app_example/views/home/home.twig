@@ -1,0 +1,13 @@
+{% extends "layouts/default.twig" %}
+{% block contents %}
+<h1>APIne Framework</h1>
+<p class="lead">APIne is a simple to use modular MVC Framework ready for the IoT (Internet of Things). It intends to be a general purpose framework and API providing session management, authentication and database abstraction without including useless tools.</p>
+<p>Use this example project as a way to quickly start any new project.<br>This example shows simple views and session management.</p>
+
+{% if apine.user %}
+<p class="text-right">{{ apine.user.get_username() }} subscribed on {{ apine.user.get_register_date()|date_format('datehour') }}</p>
+<p class="text-right">{{ apine.user.get_username() }} visited this page {{ apine.user.get_property('access_nb') }} time(s).</p>
+
+<pre>{{ apine.user|json_encode(constant("JSON_PRETTY_PRINT")) }}</pre>
+{% endif %}
+{% endblock %}

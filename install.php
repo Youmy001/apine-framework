@@ -66,8 +66,6 @@ try {
 		
 		$maj_controller = ucfirst($controller) . 'Controller';
 		
-		print $maj_controller;
-		
 		if (class_exists('Apine\\Controllers\\System\\' . $maj_controller) && method_exists('Apine\\Controllers\\System\\' . $maj_controller, $action)) {
 			$return = 'Apine\\Controllers\\System\\' . $maj_controller;
 			$controller = new $return();

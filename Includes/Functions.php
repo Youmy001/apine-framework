@@ -114,16 +114,18 @@ function is_exec_available () {
 /**
  * Recursive file copy
  *
- * @param string $src
+ * @param string $source
  * 			Source directory
- * @param string $dst
+ * @param string $destination
  * 			Destination directory
+ * @param bool $overwrite
+ *          Overwrite existing files
  *
  * @see \Apine\Utility\Files::recurse_copy()
  */
-function recurse_copy ($src, $dst) {
+function recurse_copy ($source, $destination, $overwrite = true) {
 
-	\Apine\Utility\Files::recurse_copy($src, $dst);
+	\Apine\Utility\Files::recurse_copy($source, $destination, $overwrite);
 
 }
 

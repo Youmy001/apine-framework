@@ -8,7 +8,7 @@
 namespace Apine\Controllers\System;
 
 use Apine\MVC\Controller;
-use Apine\MVC\HTMLView;
+use Apine\MVC\TwigView;
 
 /**
  * Class HomeController
@@ -27,7 +27,7 @@ class HomeController extends Controller {
      */
 	public function index () {
 
-	    $view = new HTMLView();
+	    $view = new TwigView();
 
 		$view->set_title('Home');
 		$view->set_view('home');

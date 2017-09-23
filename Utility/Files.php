@@ -50,8 +50,14 @@ class Files
 	 *            Source directory
 	 * @param string $dst
 	 *            Destination directory
+     * @param boolean $overwrite
+     *            Overwrite existing files
 	 */
-	public static function recurse_copy ($src, $dst) {
+	public static function recurse_copy ($src, $dst, $overwrite = true) {
+	    
+	    if (!is_bool($overwrite)) {
+	        throw new \InvalidArgumentException();
+        }
 
 		$dir = opendir($src);
 		@mkdir($dst, 0777);
@@ -62,14 +68,17 @@ class Files
 				if (is_dir($src . '/' . $file)) {
 					recurse_copy($src . '/' . $file, $dst . '/' . $file);
 				} else {
-					copy($src . '/' . $file, $dst . '/' . $file);
-					chmod($dst . '/' . $file, 0777);
+				    if (file_exists($dst . '/' . $file) && !$overwrite) {
+				        continue;
+                    }
+                    
+                    copy($src . '/' . $file, $dst . '/' . $file);
+                    chmod($dst . '/' . $file, 0777);
 				}
 			}
 		}
 
 		closedir($dir);
-
 
 	}
 

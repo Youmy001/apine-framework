@@ -238,6 +238,7 @@
 							<!-- ko if: $root.generate_files_bool() -->
 							<ul>
 								<li>HomeController.php</li>
+								<li>RestoreController.php</li>
 								<li>SessionController.php</li>
 							</ul>
 							<!-- /ko -->
@@ -262,17 +263,40 @@
 						<li>views/
 							<!-- ko if: $root.generate_files_bool() -->
 							<ul>
-								<li>home.twig</li>
-								<li>login.twig</li>
-								<li>register.twig</li>
+								<li>home/
+									<ul>
+										<li>about.twig</li>
+										<li>home.twig</li>
+									</ul>
+								</li>
+								<li>
+									layouts/
+									<ul>
+										<li>default.twig</li>
+										<li>mail.twig</li>
+									</ul>
+								</li>
+								<li>
+									session/
+									<ul>
+										<li>login.twig</li>
+										<li>register.twig</li>
+										<li>restore.twig</li>
+										<li>restore_mail.twig</li>
+										<li>restore_token.twig</li>
+									</ul>
+								</li>
 							</ul>
 							<!-- /ko -->
 						</li>
 						<!-- /ko -->
 						<li>.htaccess</li>
 						<li>config.ini</li>
+						<!-- ko if: $root.add_composer == 1 -->
 						<li>composer.json</li>
 						<li>composer.phar</li>
+						<!-- /ko -->
+						<li>index.php</li>
 						<li>routes.json</li>
 						<!-- ko ifnot: $root.generate_folders_bool() -->
 						<li data-bind="text: $root.loc_lang() + '.json'"></li>
@@ -327,45 +351,22 @@
 				<dt>Default Locale</dt>
 				<dd data-bind="text: $root.loc_lang"></dd>
 			</dl>
-			<!--<div data-bind="if: $root.email() == 1">
-				<h4>Email Server :</h4>
-				<dl class="dl-horizontal">
-					<dt>Host</dt>
-					<dd data-bind="text: $root.email_host"></dd>
-					<dt>Port</dt>
-					<dd data-bind="text: $root.email_port"></dd>
-					<dt>Protocol</dt>
-					<dd data-bind="text: $root.email_prot"></dd>
-					<dt>SMTP Authentication</dt>
-					<dd data-bind="text: $root.email_auth_text"></dd>
-					<div data-bind="if: $root.email_auth_bool">
-						<dt>SMTP Username</dt>
-						<dd data-bind="text: $root.email_user"></dd>
-						<dt>SMTP Password</dt>
-						<dd>*****</dd>
-					</div>
-					<dt>Sender Name</dt>
-					<dd data-bind="text: $root.email_name"></dd>
-					<dt>Sender Address</dt>
-					<dd data-bind="text: $root.email_addr"></dd>
-				</dl>
-			</div>-->
 			<h4>Create First User</h4>
-				<dl class="dl-horizontal">
-					<!-- ko if: $root.user() == 1 -->
-					<dt>Username</dt>
-					<dd data-bind="text: $root.user_name"></dd>
-					<dt>Email Address</dt>
-					<dd data-bind="text: $root.user_email"></dd>
-					<dt>Password</dt>
-					<dd data-bind="text: $root.user_pass"></dd>
-					<dt>Type</dt>
-					<dd data-bind="text: $root.user_type_text"></dd>
-					<!-- /ko -->
-					<!-- ko ifnot: $root.user() == 1 -->
-					<dt>Create a user?</dt>
-					<dd>No</dd>
-					<!-- /ko -->
+			<dl class="dl-horizontal">
+				<!-- ko if: $root.user() == 1 -->
+				<dt>Username</dt>
+				<dd data-bind="text: $root.user_name"></dd>
+				<dt>Email Address</dt>
+				<dd data-bind="text: $root.user_email"></dd>
+				<dt>Password</dt>
+				<dd data-bind="text: $root.user_pass"></dd>
+				<dt>Type</dt>
+				<dd data-bind="text: $root.user_type_text"></dd>
+				<!-- /ko -->
+				<!-- ko ifnot: $root.user() == 1 -->
+				<dt>Create a user?</dt>
+				<dd>No</dd>
+				<!-- /ko -->
 				</dl>
 			<h4>Assets :</h4>
 			<dl class="dl-horizontal">
@@ -386,14 +387,20 @@
 	<div class="jumbotron">
 		<h1>Configuration Completed!!</h1>
 		<h2>Your installation of APIne Framework is ready to work.</h2>
+		<p>You can now start to develop your application on top of APIne Framework.</p>
 	</div>
 	<br/>
 
+	<!-- ko if: $root.add_composer == 1 -->
 	<p>You can now install Composer packages using the bundled composer binary with the following command :</p>
 	<p><code>$ php composer.phar install</code></p>
-	<p><strong>OR</strong></p>
-	<p>You can notify APIne not to expect to find Composer packages by adding this line before the run statement in <code>index.php</code>:</p>
-	<p><code>$apine->use_composer(false);</code></p>
+
+	<p>After that, you can check if everything works as expected. <a href="/home">Click here</a> to go the home of your project. You should see the name of your project on the page.</p>
+	<!-- /ko -->
+
+	<!-- ko ifnot: $root.add_composer == 1 -->
+	<p>You can start by checking if everything works as expected. <a href="/home">Click here</a> to go the home of your project. You should see the name of your project on the page.</p>
+	<!-- /ko -->
 </div>
 <div class="text-center" data-bind="with: step_error_visible">
 	<br/>
