@@ -21,13 +21,14 @@
 		"ext-hash": ">=1.0",
 		"ext-json": ">=1.4",
 		"ext-mbstring": ">=7.0",
-		"ext-mycrypt": ">=7.0",
+		"ext-mcrypt": ">=7.0",
 		"ext-PDO": ">=7.0",
 		"ext-pdo_mysql": ">=7.0",
 		"lib-openssl": ">=1.0.1",
 		"phpmailer/phpmailer": "^5.2",
 		"geoip/geoip": "~1.14",
-		"twig/twig": "^1.24"
+		"twig/twig": "^1.24",
+		"psr/http-message": "^1.0.1"
     },
     "autoload": {
     	"files" : [
