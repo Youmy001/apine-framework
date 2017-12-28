@@ -8,7 +8,7 @@
  * @copyright 2015 Tommy Teasdale
  */
 
-ini_set('display_errors', -1);
+ini_set('display_errors', 1);
 
 //require_once '../Autoloader.php';
 require_once __DIR__ . '/src/Autoloader.php';

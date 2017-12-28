@@ -9,6 +9,8 @@
 
 namespace Apine\Core;
 
+use Apine\Core\Http\ServerRequest;
+
 /**
  * Request Management Tool
  * Handle information from the request and user inputs
@@ -16,235 +18,85 @@ namespace Apine\Core;
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\Core
  */
-final class Request
+final class Request extends ServerRequest
 {
+    
     /**
      * Instance of the Request
      * Singleton Implementation
      *
      * @var Request
      */
-    private static $instance;
+    //private static $instance;
     
     /**
-     * Session Request Type
-     *
      * @var string
      */
-    private $request_type;
+    private $requestAction;
     
     /**
-     * Session Request Port
-     *
-     * @var string
+     * @var integer
      */
-    private $request_port;
-    
-    /**
-     * Is request from https protocol
-     *
-     * @var boolean
-     */
-    private $request_ssl;
-    
-    /**
-     * Get method inputs
-     *
-     * @var array
-     */
-    private $get;
-    
-    /**
-     * Post method inputs
-     *
-     * @var array
-     */
-    private $post;
-    
-    /**
-     * Uploaded files input information
-     *
-     * @var array
-     */
-    private $files;
-    
-    /**
-     * Raw Request Body
-     *
-     * @var string
-     */
-    private $request_body;
-    
-    /**
-     * Request information
-     *
-     * @var array
-     */
-    private $request;
-    
-    /**
-     * Server information
-     *
-     * @var array
-     */
-    private $server;
-    
-    /**
-     * Session information
-     *
-     * @var array
-     */
-    public $session;
-    
-    /**
-     * Session API Call
-     *
-     * @var boolean
-     */
-    private $api_call = false;
-    
-    /**
-     * Session AJAX Call
-     *
-     * @var boolean
-     */
-    private $is_ajax = false;
-    
-    /**
-     * Headers received
-     *
-     * @var string[]
-     */
-    private $request_headers;
-    
-    private $request_resource;
-    
-    private $request_locale;
+    private $requestType;
     
     /**
      * Construct the Request Management handler
      * Extract information from the request and clean user inputs
      */
-    private function __construct()
+    public function __construct()
     {
+        $gets = $_GET;
+        $posts = $_POST;
+        $cookies = $_COOKIE;
+        $files = $_FILES;
+        $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+        $headers = getallheaders();
+        $uri = self::getUriFromGlobals();
+        $body = file_get_contents('php://input');
+        $protocol = isset($_SERVER['SERVER_PROTOCOL']) ? str_replace('HTTP/', '', $_SERVER['SERVER_PROTOCOL']) : '1.1';
         
         $request_string = $_GET['apine-request'];
         $request_array = explode("/", $request_string);
         
-        if ($request_array[0] === 'api') {
-            $this->request_resource = substr($request_string, 3);
-            $this->api_call = true;
+        if ($request_array[1] === 'api') {
+            $this->requestAction = substr($request_string, 3);
+            $this->requestType = APINE_REQUEST_MACHINE;
         } else {
-            $results = array();
-            if (preg_match('([a-zA-Z]{2}(-[a-zA-Z]{2})?)', $request_array[0], $results)) {
-                $this->request_locale = $results[0];
-                $this->request_resource = substr($request_string, strlen($results[0]));
+            $this->requestType = APINE_REQUEST_USER;
+    
+            if ($request_string == '/') {
+                $this->requestAction = '/';
             } else {
-                if ($request_string == '/') {
-                    $this->request_resource = '/';
-                } else {
-                    $this->request_resource = $request_string;
-                }
+                $this->requestAction = $request_string;
             }
         }
-        
-        unset($_GET['apine-request']);
-        
-        $this->request_type = $_SERVER['REQUEST_METHOD'];
-        $this->request_port = $_SERVER['SERVER_PORT'];
-        $this->request_ssl = (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']));
-        $this->request_headers = apache_request_headers();
-        $this->request_body = file_get_contents('php://input');
-        $this->is_ajax = (isset($this->request_headers['X-Requested-With']) && $this->request_headers['X-Requested-With'] == 'XMLHttpRequest');
-        
-        $this->get = $_GET;
-        $this->post = $_POST;
-        $this->files = $_FILES;
-        $this->request = $_REQUEST;
-        $this->server = $_SERVER;
-        $this->session = &$_SESSION;
-        
-        foreach ($this->post as $key => $value) {
-            $this->post[$key] = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
-        }
-        
-        // Format Files Array
-        if (is_array($this->files) && !empty($this->files)) {
-            $file = array();
-            
-            foreach ($this->files as $item => $value) {
-                if (isset($value['name']) && is_array($value['name'])) {
-                    $file[$item] = self::formatFilesArray($value);
-                } else {
-                    $file[$item][] = $value;
-                }
-            }
-            
-            $this->files = $file;
-        }
-        
-    }
     
-    /**
-     * Singleton design pattern implementation
-     *
-     * @return Request
-     */
-    public static function getInstance()
-    {
+        unset($gets['apine-request']);
         
-        if (!isset(self::$instance)) {
-            self::$instance = new static();
-        }
+        parent::__construct($method, $uri, $headers, $body, $protocol, $_SERVER);
         
-        return self::$instance;
-    }
-    
-    /**
-     * Return the type of the current http request
-     *
-     * @return string
-     */
-    public static function getRequestType()
-    {
-        return self::getInstance()->request_type;
+        $request = $this
+            ->withCookieParams($cookies)
+            ->withQueryParams($gets)
+            ->withParsedBody($posts)
+            ->withUploadedFiles(self::formatFiles($files));
+        
+        return $request;
     }
     
     /**
      * Return the port used by the user in the current request
      *
-     * @return string
+     * @return integer
      */
-    public static function getRequestPort()
+    public function getPort() : integer
     {
-        return self::getInstance()->request_port;
+        return $this->getUri()->getPort();
     }
     
-    /**
-     * Return headers received from the current request
-     *
-     * @return string
-     */
-    public static function getRequestHeaders()
+    public function getAction() : string
     {
-        return self::getInstance()->request_headers;
-    }
-    
-    /**
-     * Return raw request body
-     *
-     * @return string
-     */
-    public static function getRequestBody()
-    {
-        return self::getInstance()->request_body;
-    }
-    
-    public static function getRequestResource()
-    {
-        
-        return self::getInstance()->request_resource;
-        
+        return $this->requestAction;
     }
     
     /**
@@ -314,9 +166,10 @@ final class Request
      *
      * @return boolean
      */
-    public static function isHttps()
+    public function isHttps() : bool
     {
-        return self::getInstance()->request_ssl;
+        $headers = $this->getServerParams();
+        return (isset($headers['HTTPS']) && !empty($headers['HTTPS']));
     }
     
     /**
@@ -324,15 +177,9 @@ final class Request
      *
      * @return boolean
      */
-    public static function isApiCall()
+    public function isApiCall() : bool
     {
-        $return = false;
-        
-        if (self::getInstance()->api_call == true) {
-            $return = true;
-        }
-        
-        return $return;
+        return ($this->requestType == APINE_REQUEST_MACHINE);
     }
     
     /**
@@ -340,142 +187,50 @@ final class Request
      *
      * @return boolean
      */
-    public static function isAjax()
+    public function isAjax() : bool
     {
-        return self::getInstance()->is_ajax;
+        $headers = $this->getServerParams();
+        return (isset($headers['X-Requested-With']) && $headers['X-Requested-With'] == 'XMLHttpRequest');
     }
     
     /**
-     * Returns weither the current http request is a GET request or not
+     * Returns whether the current http request is a GET request or not
      *
      * @return boolean
      */
-    public static function isGet()
+    public function isGet() : bool
     {
-        $return = false;
-        
-        if (self::getInstance()->request_type == "GET") {
-            $return = true;
-        }
-        
-        return $return;
+        return ($this->getMethod() == "GET");
     }
     
     /**
-     * Returns weither the current http request is a POST request or not
+     * Returns whether the current http request is a POST request or not
      *
      * @return boolean
      */
-    public static function isPost()
+    public function isPost() : bool
     {
-        $return = false;
-        
-        if (self::getInstance()->request_type == "POST") {
-            $return = true;
-        }
-        
-        return $return;
+        return ($this->getMethod() == "POST");
     }
     
     /**
-     * Returns weither the current http request is a PUT request or not
+     * Returns whether the current http request is a PUT request or not
      *
      * @return boolean
      */
-    public static function isPut()
+    public function isPut() : bool
     {
-        $return = false;
-        
-        if (self::getInstance()->request_type == "PUT") {
-            $return = true;
-        }
-        
-        return $return;
+        return ($this->getMethod() == "PUT");
     }
     
     /**
-     * Returns weither the current http request is a DELETE request or not
+     * Returns whether the current http request is a DELETE request or not
      *
      * @return boolean
      */
-    public static function isDelete()
+    public function isDelete()
     {
-        $return = false;
-        
-        if (self::getInstance()->request_type == "DELETE") {
-            $return = true;
-        }
-        
-        return $return;
+        return ($this->getMethod() == "DELETE");
     }
     
-    /**
-     * Return GET input
-     *
-     * @return array
-     */
-    public static function get()
-    {
-        return self::getInstance()->get;
-    }
-    
-    /**
-     * Return POST input
-     *
-     * @return array
-     */
-    public static function post()
-    {
-        return self::getInstance()->post;
-    }
-    
-    /**
-     * Return uploaded file input
-     *
-     * @return array
-     */
-    public static function files()
-    {
-        return self::getInstance()->files;
-    }
-    
-    /**
-     * Return Request information
-     *
-     * @return array
-     */
-    public static function request()
-    {
-        return self::getInstance()->request;
-    }
-    
-    /**
-     * Return server information
-     *
-     * @return array
-     */
-    public static function server()
-    {
-        return self::getInstance()->server;
-    }
-    
-    /**
-     * Reformat the $_FILES array to something more handy
-     *
-     * @param array $files
-     *
-     * @return array
-     */
-    private static function formatFilesArray(Array $files)
-    {
-        $result = array();
-        
-        foreach ($files as $key1 => $value1) {
-            foreach ($value1 as $key2 => $value2) {
-                $result[$key2][$key1] = $value2;
-            }
-        }
-        
-        return $result;
-    }
 }

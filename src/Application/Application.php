@@ -9,6 +9,7 @@
 
 namespace Apine\Application;
 
+use Apine\Core\Http\ServerRequest;
 use Apine\Core\JsonStore;
 use \Exception as Exception;
 use Apine\Core\Request as Request;
@@ -129,6 +130,8 @@ final class Application
         
         ini_set('include_path', $include_path);
         chdir($include_path);
+    
+        require_once 'vendor/autoload.php';
         
         if (!isset(self::$instance)) {
             self::$instance = &$this;
@@ -168,16 +171,25 @@ final class Application
     public function run()
     {
         //if (!strstr($this->apine_folder, 'vendor/youmy001')) {
-        require_once 'vendor/autoload.php';
+        //require_once 'vendor/autoload.php';
         //}
+        
+        $headers = getallheaders();
+        $isHttp = (isset($headers['HTTPS']) && !empty($headers['HTTPS']));
+        $request = $_GET['apine-request'];
+        $requestArray = explode("/", $request);
+        $isAPICall = ($requestArray[1] === 'api');
         
         /**
          * Main Execution
          */
         try {
             // Verify is the protocol is allowed
-            if (!Request::isHttps() && !extension_loaded('xdebug')) {
-                Routes::internalRedirect(Request::getRequestResource(), APINE_PROTOCOL_HTTPS)->draw();
+            if (!$isHttp && !extension_loaded('xdebug')) {
+                // Remove trailing slash
+                $uri = rtrim($_GET['apine_request']);
+                
+                Routes::internalRedirect($uri, APINE_PROTOCOL_HTTPS)->draw();
                 die();
             }
             
@@ -235,9 +247,27 @@ final class Application
                 }
             }
             
-            $request = Request::getRequestResource();
+            //$request = Request::getRequestResource();
+    
+            if ($requestArray[1] === 'api') {
+                $request = substr($request, 3);
+            }
+    
+            if ((isset($this->config->use_api) && $this->config->use_api === true) && $isAPICall) {
+                $router = new APIRouter();
+            } else {
+                if ($isAPICall) {
+                    throw new GenericException('RESTful API calls are not implemented', 501);
+                }
+        
+                if ((empty($request) || $request == '/')) {
+                    $request = '/index';
+                }
+        
+                $router = new WebRouter();
+            }
             
-            if ((isset($this->config->use_api) && $this->config->use_api === true) && Request::isApiCall()) {
+            /*if ((isset($this->config->use_api) && $this->config->use_api === true) && Request::isApiCall()) {
                 $router = new APIRouter();
             } else {
                 if (Request::isApiCall()) {
@@ -249,7 +279,7 @@ final class Application
                 }
                 
                 $router = new WebRouter();
-            }
+            }*/
             
             /*if (!Request::is_api_call()) {
                 if ($a_runtime == APINE_RUNTIME_API) {
@@ -297,7 +327,7 @@ final class Application
                 $view->draw();
             } catch (Exception $e2) {
                 var_dump($e2->getTraceAsString());
-                $protocol = (isset(Request::server()['SERVER_PROTOCOL']) ? Request::server()['SERVER_PROTOCOL'] : 'HTTP/1.0');
+                $protocol = (isset($headers['SERVER_PROTOCOL']) ? $headers['SERVER_PROTOCOL'] : 'HTTP/1.0');
                 header($protocol . ' 500 Internal Server Error');
                 die("Critical Error : " . $e->getMessage());
             }
@@ -308,7 +338,7 @@ final class Application
                 $view = $error->custom(500, $e->getMessage(), $e);
                 $view->draw();
             } catch (Exception $e2) {
-                $protocol = (isset(Request::server()['SERVER_PROTOCOL']) ? Request::server()['SERVER_PROTOCOL'] : 'HTTP/1.0');
+                $protocol = (isset($headers['SERVER_PROTOCOL']) ? $headers['SERVER_PROTOCOL'] : 'HTTP/1.0');
                 header($protocol . ' 500 Internal Server Error');
                 die("Critical Error : " . $e->getMessage());
             }
