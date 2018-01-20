@@ -299,7 +299,7 @@ class InstallController extends Controller {
 				
 				$generate_files = (int) $entries['generate_files'];
                 $generate_folders = (int) $entries['generate_folders'];
-				$user = $entries['first_user'];
+				$user = array_key_exists('first_user', $entries) ? $entries['first_user'] : null;
 				array_pop($entries);	// Remove the generate_files command from the end of the array
                 array_pop($entries);	// Remove the generate_folders command from the end of the array
                 
@@ -310,14 +310,17 @@ class InstallController extends Controller {
                 }
                 
                 if ($generate_folders === 1) {
-                    $entries['localization']['locale_directory'] = 'resources/language';
+                    $entries['localization']['locale_directory'] = 'resources/languages';
                 } else {
                     $entries['localization']['locale_directory'] = '.';
                 }
 				
 				$this->generate_config($entries);
 				
-				$this->import_database($entries['database']);
+				if ($entries['database']['type'] != "none") {
+					$this->import_database($entries['database']);
+				}
+				
 				$this->import_routes();
                 $this->generate_htaccess();
                 

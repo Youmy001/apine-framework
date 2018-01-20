@@ -217,30 +217,36 @@
 		};
 		
 		self.validate_step_two = function (element) {
-			json_array = new Object();
-			json_array.host = self.db_host();
-			json_array.type = self.db_type();
-			json_array.char = self.db_char();
-			json_array.name = self.db_name();
-			json_array.user = self.db_user();
-			json_array.pass = self.db_pass();
-	
-			//console.log(json_array);
-			$.ajax("/install/test_database", {
-				data: JSON.stringify(json_array),
-				type: "post", contentType: "application/json",
-				success: function (result) {
-					self.step_two_visible(false);
-					self.step_three_visible(true);
-					self.invalid_step_two(false);
-				 },
-				error: function () {
-					self.invalid_step_two(true);
-				},
-				fail: function () {
-					self.invalid_step_two(true);
-				}
-			});
+			if (self.db_type() != "none") {
+				json_array = new Object();
+				json_array.host = self.db_host();
+				json_array.type = self.db_type();
+				json_array.char = self.db_char();
+				json_array.name = self.db_name();
+				json_array.user = self.db_user();
+				json_array.pass = self.db_pass();
+		
+				//console.log(json_array);
+				$.ajax("/install/test_database", {
+					data: JSON.stringify(json_array),
+					type: "post", contentType: "application/json",
+					success: function (result) {
+						self.step_two_visible(false);
+						self.step_three_visible(true);
+						self.invalid_step_two(false);
+					 },
+					error: function () {
+						self.invalid_step_two(true);
+					},
+					fail: function () {
+						self.invalid_step_two(true);
+					}
+				});
+			} else {
+				self.step_two_visible(false);
+				self.step_three_visible(true);
+				self.invalid_step_two(false);
+			}
 		};
 
 		self.validate_step_four = function (element) {

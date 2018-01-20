@@ -64,30 +64,31 @@
 
 			<div class="form-group">
 				<label class="control-label">Database Type</label>
-				<select class="form-control" disabled data-bind="value: $root.db_type">
+				<select class="form-control" data-bind="value: $root.db_type">
 					<option value="mysql" selected>Relational - MySQL</option>
+					<option value="none" selected>None</option>
 				</select>
 			</div>
 			<div class="form-group">
 				<label class="control-label">Database Charset</label>
-				<input class="form-control" type="text" disabled data-bind="value: $root.db_char"/>
+				<input class="form-control" type="text" required data-bind="value: $root.db_char, attr: { required: $root.db_type() != 'none', disabled: $root.db_type() == 'none' }"/>
 			</div>
 			<div class="form-group">
 				<label class="control-label">Host</label>
-				<input class="form-control" type="text" required data-bind="value: $root.db_host"/>
+				<input class="form-control" type="text" required data-bind="value: $root.db_host, attr: { required: $root.db_type() != 'none', disabled: $root.db_type() == 'none' }"/>
 				<span class="help-block">Name or IP address of the server. If the database server is on the same machine as the HTTP server write "localhost" without the quotation marks.</span>
 			</div>
 			<div class="form-group">
 				<label class="control-label">Database Name</label>
-				<input class="form-control" type="text" required data-bind="value: $root.db_name" />
+				<input class="form-control" type="text" required data-bind="value: $root.db_name, attr: { required: $root.db_type() != 'none', disabled: $root.db_type() == 'none' }" />
 			</div>
 			<div class="form-group">
 				<label class="control-label">Database Username</label>
-				<input class="form-control" type="text" required data-bind="value: $root.db_user" />
+				<input class="form-control" type="text" required data-bind="value: $root.db_user, attr: { required: $root.db_type() != 'none', disabled: $root.db_type() == 'none' }" />
 			</div>
 			<div class="form-group">
 				<label class="control-label">Database Password</label>
-				<input class="form-control" type="password" data-bind="value: $root.db_pass" />
+				<input class="form-control" type="password" data-bind="value: $root.db_pass, attr: { required: $root.db_type() != 'none', disabled: $root.db_type() == 'none' }" />
 			</div>
 		</div>
 		<div class="panel-footer">

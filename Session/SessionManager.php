@@ -38,13 +38,15 @@ final class SessionManager {
 	 * Instantiation of the strategy
 	 */
 	private function __construct () {
-		
-		if (Apine\Core\Request::is_api_call()) {
-			$this->strategy = new APISession();
-		} else {
-			$this->strategy = new WebSession();
-		}
-		
+		if (Apine\Application\Config::get('database', 'type') != "none") {
+            if (Apine\Core\Request::is_api_call()) {
+                $this->strategy = new APISession();
+            } else {
+                $this->strategy = new WebSession();
+            }
+        } else {
+            $this->strategy = new FakeSession();
+        }
 	}
 	
 	/**
