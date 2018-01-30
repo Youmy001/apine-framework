@@ -54,6 +54,11 @@ final class Config
         }
     }
     
+    public function getPath () : string
+    {
+        return $this->path;
+    }
+    
     /**
      * @param $name
      *

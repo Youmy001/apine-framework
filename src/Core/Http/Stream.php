@@ -77,7 +77,7 @@ class Stream implements StreamInterface
      *
      * @param resource $streamSource
      */
-    public function __construct(resource $streamSource) {
+    public function __construct($streamSource) {
         
         $this->stream = $streamSource;
         

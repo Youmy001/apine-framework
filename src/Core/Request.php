@@ -55,21 +55,23 @@ final class Request extends ServerRequest
         $body = file_get_contents('php://input');
         $protocol = isset($_SERVER['SERVER_PROTOCOL']) ? str_replace('HTTP/', '', $_SERVER['SERVER_PROTOCOL']) : '1.1';
         
-        $request_string = $_GET['apine-request'];
-        $request_array = explode("/", $request_string);
+        $requestString = $_GET['apine-request'];
+        $requestArray = explode("/", $requestString);
         
-        if ($request_array[1] === 'api') {
-            $this->requestAction = substr($request_string, 3);
+        if ($requestArray[1] === 'api') {
+            $this->requestAction = substr($requestString, 3);
             $this->requestType = APINE_REQUEST_MACHINE;
         } else {
             $this->requestType = APINE_REQUEST_USER;
     
-            if ($request_string == '/') {
+            if ($requestString == '/') {
                 $this->requestAction = '/';
             } else {
-                $this->requestAction = $request_string;
+                $this->requestAction = $requestString;
             }
         }
+        
+        //$this->requestAction = ltrim($this->requestAction, '/\\');
     
         unset($gets['apine-request']);
         
@@ -104,20 +106,20 @@ final class Request extends ServerRequest
      *
      * @return array
      */
-    public static function getRequestParams()
+    public function getRequestParams()
     {
         $params = array();
-        $gets = self::getInstance()->get();
+        $gets = $this->getQueryParams();
         
         $params = array_merge($params, $gets);
         
-        if (self::getInstance()->api_call) { /* RESTful Call */
+        if ($this->requestType === APINE_REQUEST_MACHINE) { /* RESTful Call */
             // first of all, pull the GET vars
             if (isset($_SERVER['QUERY_STRING'])) {
                 mb_parse_str($_SERVER['QUERY_STRING'], $params);
             }
             
-            $body = self::getInstance()->request_body;
+            $body = $this->getBody();
             $content_type = false;
             if (isset($_SERVER['CONTENT_TYPE'])) {
                 $content_type = substr($_SERVER['CONTENT_TYPE'], 0, strpos($_SERVER['CONTENT_TYPE'], ';'));
@@ -149,14 +151,16 @@ final class Request extends ServerRequest
             }
         } else { /* Web App Call */
             // Add post arguments to args array
-            if (self::getInstance()->request_type == "POST") {
-                $params = array_merge($params, self::getInstance()->post);
+            if ($this->requestType == "POST") {
+                $params = array_merge($params, $this->getParsedBody());
             }
         }
         
-        if (!empty(self::getInstance()->files)) {
+        /*if (!empty(self::getInstance()->files)) {
             $params = array_merge($params, array("uploads" => self::getInstance()->files));
-        }
+        }*/
+        
+        $params = array_merge($params, $this->getUploadedFiles());
         
         return $params;
     }

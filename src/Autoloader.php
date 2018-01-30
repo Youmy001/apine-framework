@@ -38,7 +38,7 @@ final class Autoloader
         
         $this->addModule('Apine', $apine_folder);
         $this->addModule('Apine\Models', 'models');
-        $this->addModule('Apine\Controllers\User', 'controllers');
+        $this->addModule('Apine\Controllers', 'controllers');
         $this->addModule('Apine\Controllers\System', $apine_folder . '/Controllers');
     }
     

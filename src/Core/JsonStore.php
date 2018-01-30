@@ -12,38 +12,44 @@ namespace Apine\Core;
 
 class JsonStore
 {
-    private static $_instance;
+    private static $instance;
     
     /**
      * @var array
      */
     private $jsons;
     
-    private static function get_instance() : self
+    static function getInstance() : self
     {
-        if (!isset(self::$_instance)) {
-            self::$_instance = new static();
+        if (!isset(self::$instance)) {
+            self::$instance = new static();
         }
         
-        return self::$_instance;
+        return self::$instance;
     }
     
+    /**
+     * @param string $a_path
+     *
+     * @return mixed
+     * @throws \ErrorException
+     */
     static function &get(string $a_path)
     {
         if (file_exists($a_path)) {
             $real_path = realpath($a_path);
             
-            if (!isset(self::get_instance()->jsons[$real_path])) {
+            if (!isset(self::getInstance()->jsons[$real_path])) {
                 $json = json_decode(file_get_contents($real_path));
                 
                 if (json_last_error() !== JSON_ERROR_NONE) {
                     throw new \ErrorException('Invalid JSON');
                 }
                 
-                self::get_instance()->jsons[$real_path] = $json;
+                self::getInstance()->jsons[$real_path] = $json;
             }
             
-            return self::get_instance()->jsons[$real_path];
+            return self::getInstance()->jsons[$real_path];
         } else {
             throw new \ErrorException('File not found');
         }
@@ -51,7 +57,7 @@ class JsonStore
     
     function __destruct()
     {
-        foreach (self::get_instance()->jsons as $file_path => $content) {
+        foreach (self::getInstance()->jsons as $file_path => $content) {
             //print "Save file $file_path;";
         }
     }
