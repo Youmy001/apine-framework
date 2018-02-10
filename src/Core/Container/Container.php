@@ -40,8 +40,8 @@ class Container implements ContainerInterface
      *
      * @param string $id Identifier of the entry to look for.
      *
-     * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
-     * @throws ContainerExceptionInterface Error while retrieving the entry.
+     * @throws ContainerNotFoundException  No entry was found for **this** identifier.
+     * @throws ContainerException Error while retrieving the entry.
      * @return mixed Entry.
      */
     public function get($id)

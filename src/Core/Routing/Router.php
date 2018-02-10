@@ -17,8 +17,6 @@ use Apine\Core\Config;
 use Apine\Core\Container\Container;
 use Apine\Core\Http\Response;
 use Apine\Core\JsonStore;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Apine\Exception\GenericException;
 
@@ -60,8 +58,6 @@ class Router implements RouterInterface
      * @param Container $container
      *
      * @throws GenericException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     public function __construct(Container &$container)
     {
@@ -115,8 +111,6 @@ class Router implements RouterInterface
     /**
      * @return ResponseInterface
      * @throws \Exception
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     private function execute() : ResponseInterface
     {
@@ -167,8 +161,6 @@ class Router implements RouterInterface
      *
      * @return ResponseInterface
      * @throws \Exception
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     public function run(Route $route, Request $request) : ResponseInterface
     {
@@ -191,8 +183,6 @@ class Router implements RouterInterface
      *
      * @return ResponseInterface
      * @throws \Exception
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     public function dispatch(Request $request) : ResponseInterface
     {
@@ -205,9 +195,7 @@ class Router implements RouterInterface
     }
     
     /**
-     * @throws \ErrorException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws \Exception
      */
     private function loadRoutes ()
     {

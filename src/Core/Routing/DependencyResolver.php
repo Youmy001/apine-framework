@@ -11,9 +11,9 @@ namespace Apine\Core\Routing;
 
 
 use Apine\Core\Container\Container;
+use Apine\Core\Container\ContainerException;
+use Apine\Core\Container\ContainerNotFoundException;
 use Apine\Core\Request;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 class DependencyResolver
 {
@@ -72,8 +72,8 @@ class DependencyResolver
      * @param array     $arguments
      *
      * @return array
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws ContainerException
+     * @throws ContainerNotFoundException
      */
     public static function mapConstructorArguments(Container $container, array $arguments)
     {
@@ -112,8 +112,8 @@ class DependencyResolver
      * @param Parameter   $parameter
      *
      * @return mixed|null
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws ContainerException
+     * @throws ContainerNotFoundException
      */
     public static function getContainerServiceForParam(Container $container, Parameter $parameter)
     {
