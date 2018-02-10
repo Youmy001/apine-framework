@@ -4,8 +4,9 @@
  * This script contains an helper to handle request information
  *
  * @license MIT
- * @copyright 2015 Tommy Teasdale
+ * @copyright 2018 Tommy Teasdale
  */
+declare(strict_types=1);
 
 namespace Apine\Core;
 
@@ -59,7 +60,7 @@ final class Request extends ServerRequest
         $requestArray = explode("/", $requestString);
         
         if ($requestArray[1] === 'api') {
-            $this->requestAction = substr($requestString, 3);
+            $this->requestAction = substr($requestString, 4);
             $this->requestType = APINE_REQUEST_MACHINE;
         } else {
             $this->requestType = APINE_REQUEST_USER;
@@ -77,13 +78,10 @@ final class Request extends ServerRequest
         
         parent::__construct($method, $uri, $headers, $body, $protocol, $_SERVER);
         
-        $request = $this
-            ->withCookieParams($cookies)
-            ->withQueryParams($gets)
-            ->withParsedBody($posts)
-            ->withUploadedFiles(self::formatFiles($files));
-        
-        return $request;
+        $this->cookieParams = $cookies;
+        $this->queryParams = $gets;
+        $this->parsedBody = $posts;
+        $this->uploadedFiles = self::formatFiles($files);
     }
     
     /**

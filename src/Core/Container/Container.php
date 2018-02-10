@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: youmy
- * Date: 15/01/18
- * Time: 12:32 AM
+ * Container
+ *
+ * @license MIT
+ * @copyright 2018 Tommy Teasdale
  */
 declare(strict_types=1);
 
@@ -15,9 +15,9 @@ use Psr\Container\NotFoundExceptionInterface;
 
 class Container implements ContainerInterface
 {
-    private $entries = array();
+    protected $entries = array();
     
-    private $instantiatedEntries = array();
+    protected $instantiatedEntries = array();
     
     /**
      * Adds an entry to the container with an identifier

@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: youmy
- * Date: 29/09/17
- * Time: 2:39 AM
+ * ServerRequest
+ *
+ * @license MIT
+ * @copyright 2018 Tommy Teasdale
  */
 
 namespace Apine\Core\Http;
@@ -14,17 +14,17 @@ use Psr\Http\Message\UriInterface;
 
 class ServerRequest extends Request implements ServerRequestInterface
 {
-    private $attributes = [];
+    protected $attributes = [];
     
-    private $cookieParams = [];
+    protected $cookieParams = [];
     
-    private $parsedBody;
+    protected $parsedBody;
     
-    private $queryParams = [];
+    protected $queryParams = [];
     
-    private $serverParams = [];
+    protected $serverParams = [];
     
-    private $uploadedFiles = [];
+    protected $uploadedFiles = [];
     
     public function __construct(
         string $method,

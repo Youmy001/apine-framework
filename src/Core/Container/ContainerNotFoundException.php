@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: youmy
- * Date: 07/01/18
- * Time: 11:31 PM
+ * ContainerNotFoundException
+ *
+ * @license MIT
+ * @copyright 2018 Tommy Teasdale
  */
 
 namespace Apine\Core\Container;

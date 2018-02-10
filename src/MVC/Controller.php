@@ -10,6 +10,7 @@
 namespace Apine\MVC;
 
 use Apine\Core\Request as Request;
+use Psr\Container\ContainerInterface;
 
 /**
  * Basic Controller
@@ -20,4 +21,5 @@ use Apine\Core\Request as Request;
  */
 abstract class Controller
 {
+
 }

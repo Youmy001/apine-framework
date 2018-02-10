@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Apine\Core;
 
 use Apine\Application\Application;
+use Apine\Application\ServiceProvider;
 use Apine\Exception\DatabaseException;
 use Apine\Exception\GenericException;
 
@@ -81,7 +82,8 @@ final class Database
     ) {
         try {
             if ((!is_null($db_type) && !is_null($db_host) && !is_null($db_name)) || !isset(self::$apine_instance)) {
-                $config = Application::getInstance()->getConfig();
+                //$config = Application::getInstance()->getConfig();
+                $config = ServiceProvider::getInstance()->get(Config::class);
                 $db_port = '3306';
                 
                 if (!(!is_null($db_type) && !is_null($db_host) && !is_null($db_name))) {

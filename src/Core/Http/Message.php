@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: youmy
- * Date: 29/09/17
- * Time: 2:28 AM
+ * Message
+ *
+ * @license MIT
+ * @copyright 2018 Tommy Teasdale
  */
 
 namespace Apine\Core\Http;

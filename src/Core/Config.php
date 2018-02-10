@@ -77,4 +77,9 @@ final class Config
     {
         $this->settings->settings->$name = $value;
     }
+    
+    public function __isset(string $name) : bool
+    {
+        return isset($this->settings->settings->$name);
+    }
 }
