@@ -65,9 +65,7 @@ class Container implements ContainerInterface
             
         } catch (\Exception $e) {
             throw new ContainerException(
-                sprintf('Error while trying to retrieve the entry "%s"', $id),
-                null,
-                $e
+                sprintf('Error while trying to retrieve the entry "%s"', $id)
             );
         }
     }

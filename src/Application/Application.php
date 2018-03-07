@@ -14,6 +14,7 @@ use Apine\Core\Container\Container;
 use Apine\Core\Database as BasicDatabase;
 use Apine\Core\Database\Database;
 use Apine\Core\Database\Connection;
+use Apine\Core\Error\ErrorHandler;
 use Apine\Core\JsonStore;
 use Apine\Core\Routing\ResourcesContainer;
 use Apine\Core\Routing\Router;
@@ -83,10 +84,13 @@ final class Application
      */
     public function __construct()
     {
-    
+        ErrorHandler::set();
+        $this->serviceProvider = ServiceProvider::getInstance();
+        $this->apiResources = new ResourcesContainer();
+        
         try {
-            ini_set('display_errors', '0');
-            error_reporting(E_ERROR);
+            /*ini_set('display_errors', '0');
+            error_reporting(E_ERROR);*/
     
             $server_root = $_SERVER['DOCUMENT_ROOT'];
             $this->apine_folder = realpath(dirname(__FILE__) . '/..'); // The path to the framework itself
@@ -121,13 +125,9 @@ final class Application
                 throw new GenericException('Framework Installation Not Completed', 503);
             }
     
-            if (!strstr($this->apine_folder, 'vendor/youmy001')) {
-                require_once 'vendor/autoload.php';
-            }
-    
-            $this->serviceProvider = ServiceProvider::getInstance();
+            //$this->serviceProvider = ServiceProvider::getInstance();
             //$this->apiResources = new Container();
-            $this->apiResources = new ResourcesContainer();
+            //$this->apiResources = new ResourcesContainer();
         } catch (GenericException $e) {
             $headers = getallheaders();
             $protocol = (isset($headers['SERVER_PROTOCOL']) ? $headers['SERVER_PROTOCOL'] : 'HTTP/1.0');
@@ -174,9 +174,6 @@ final class Application
      */
     public function run()
     {
-        //if (!strstr($this->apine_folder, 'vendor/youmy001')) {
-        //require_once 'vendor/autoload.php';
-        //}
         $config = null;
         $headers = getallheaders();
         $isHttp = (isset($headers['HTTPS']) && !empty($headers['HTTPS']));
@@ -222,7 +219,7 @@ final class Application
             });
             
             $this->serviceProvider->register(Request::class, function () {
-                return new Request();
+                return Request::createFromGlobals();
             });
             
             $this->serviceProvider->register(Connection::class, function () use ($config) {
