@@ -34,13 +34,22 @@ class ErrorHandler
     public static function handleException(\Throwable $e)
     {
         // TODO Add manipulation to print out error
-        print $e->getMessage();
-        print '<br/>';
-        print $e->getTraceAsString();
+        $trace = explode("\n", $e->getTraceAsString());
+        
+        $result = $e->getMessage() . "<br/><br/>";
+        
+        foreach ($trace as $step) {
+            $result .= $step;
+            $result .= '<br/>';
+        }
+        
+        die($result);
     }
     
     public static function set()
     {
+        self::unset();
+        
         error_reporting(E_ALL);
         set_error_handler([self::class, 'handleError'], E_ALL);
         set_exception_handler([self::class, 'handleException']);
