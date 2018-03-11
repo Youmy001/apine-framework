@@ -75,7 +75,7 @@ final class Route
      * @throws \Exception
      * @throws \ReflectionException
      */
-    public function __construct(string $method, string $uri, string $controller, string $action, array $parameters, bool $isAPI = false)
+    public function __construct(string $method, string $uri, string $controller, string $action, array $parameters = [], bool $isAPI = false)
     {
         if (!class_exists($controller) || !is_subclass_of($controller, Controller::class) || !method_exists($controller, $action)) {
             throw new \Exception('Controller or method not found');
@@ -100,11 +100,11 @@ final class Route
      */
     private function parseParameters(array $definitions)
     {
-        preg_match_all('/\{(.*?)\}/', $this->uri, $matches);
+        preg_match_all('/\{(.+?)\}/', $this->uri, $matches);
         
         return array_map(function ($match) use ($definitions) {
             $match = trim($match, '?');
-            $parameter = new ParameterDefinition($match, '(.*?)');
+            $parameter = new ParameterDefinition($match, '(.+?)');
             
             foreach ($definitions as $definition) {
                 if (!isset($definition['name']) || !isset($definition['regex'])) {

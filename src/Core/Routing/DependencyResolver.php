@@ -13,31 +13,31 @@ namespace Apine\Core\Routing;
 use Apine\Core\Container\Container;
 use Apine\Core\Container\ContainerException;
 use Apine\Core\Container\ContainerNotFoundException;
-use Apine\Core\Request;
+use Psr\Http\Message\ServerRequestInterface as ServerRequest;
 
 class DependencyResolver
 {
     /**
-     * @param Request $request
+     * @param ServerRequest $request
      * @param Route $route
      *
      * @return array
      */
-    public static function mapParametersForRequest (Request $request, Route $route)
+    public static function mapParametersForRequest (ServerRequest $request, Route $route)
     {
-        return ($request->isApiCall() && $route->isAPIRoute) ? self::resolveAPIParameters($request) : self::resolveWebParameters($request, $route);
+        return ((substr($request->getUri()->getPath(), 0 , 4) === '/api') && $route->isAPIRoute) ? self::resolveAPIParameters($request) : self::resolveWebParameters($request, $route);
     }
     
     /**
-     * @param Request $request
+     * @param ServerRequest  $request
      * @param Route $route
      *
      * @return array
      */
-    public static function resolveWebParameters (Request $request, Route $route)
+    public static function resolveWebParameters (ServerRequest $request, Route $route)
     {
         $parameters = [];
-        $requestString = $request->getAction();
+        $requestString = $request->getUri()->getPath();
     
         // Compose the regular expression from the uri and the parameter definitions
         $regex = '/^' . str_ireplace('/', '\\/', $route->uri) . '$/';
@@ -58,11 +58,11 @@ class DependencyResolver
     }
     
     /**
-     * @param Request $request
+     * @param ServerRequest $request
      *
      * @return array
      */
-    public static function resolveAPIParameters (Request $request)
+    public static function resolveAPIParameters (ServerRequest $request)
     {
         return $request->getQueryParams();
     }

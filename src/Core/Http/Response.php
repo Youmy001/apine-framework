@@ -21,6 +21,7 @@ class Response extends Message implements ResponseInterface
         100 => 'Continue',
         101 => 'Switching Protocols',
         102 => 'Processing',
+        103 => 'Early Hints',
         200 => 'OK',
         201 => 'Created',
         202 => 'Accepted',
@@ -30,6 +31,7 @@ class Response extends Message implements ResponseInterface
         206 => 'Partial Content',
         207 => 'Multi-status',
         208 => 'Already Reported',
+        226 => 'IM Used',
         300 => 'Multiple Choices',
         301 => 'Moved Permanently',
         302 => 'Found',
@@ -38,6 +40,7 @@ class Response extends Message implements ResponseInterface
         305 => 'Use Proxy',
         306 => 'Switch Proxy',
         307 => 'Temporary Redirect',
+        308 => 'Permanent Redirect',
         400 => 'Bad Request',
         401 => 'Unauthorized',
         402 => 'Payment Required',
@@ -57,6 +60,7 @@ class Response extends Message implements ResponseInterface
         416 => 'Requested range not satisfiable',
         417 => 'Expectation Failed',
         418 => 'I\'m a teapot',
+        421 => 'Misdirected Request',
         422 => 'Unprocessable Entity',
         423 => 'Locked',
         424 => 'Failed Dependency',
@@ -75,6 +79,7 @@ class Response extends Message implements ResponseInterface
         506 => 'Variant Also Negotiates',
         507 => 'Insufficient Storage',
         508 => 'Loop Detected',
+        510 => 'Not Extended',
         511 => 'Network Authentication Required',
     ];
     
@@ -142,10 +147,19 @@ class Response extends Message implements ResponseInterface
     public function withStatus($code, $reasonPhrase = '')
     {
         $newResponse = clone $this;
+        
+        if (!is_integer($code) || $code < 100 || $code > 599) {
+            throw new \InvalidArgumentException('Invalid HTTP status code');
+        }
+        
         $newResponse->statusCode = (int) $code;
         
-        if (empty($reasonPhrase) && isset(self::$statusCodes[$this->statusCode])) {
-            $reasonPhrase = self::$statusCodes[$this->statusCode];
+        if (empty($reasonPhrase) && isset(self::$statusCodes[$code])) {
+            $reasonPhrase = self::$statusCodes[$code];
+        }
+        
+        if (empty($reasonPhrase)) {
+            throw new \InvalidArgumentException('A reason phrase must be supplied for this status code');
         }
         
         $newResponse->reasonPhrase = (string) $reasonPhrase;

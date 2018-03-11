@@ -42,10 +42,13 @@ class UploadedFile implements UploadedFileInterface
     
     private $moved = false;
     
-    public function __construct($resource, int $size, int $errorStatus, $clientFilename = null, $clientMediaType = null)
+    private $sapi = false;
+    
+    public function __construct($resource, int $size, int $errorStatus, $clientFilename = null, $clientMediaType = null, $sapi = false)
     {
         $this->size = $size;
         $this->error = $errorStatus;
+        $this->sapi = false;
         $this->setClientFilename($clientFilename);
         $this->setClientMediaType($clientMediaType);
         
@@ -159,9 +162,9 @@ class UploadedFile implements UploadedFileInterface
             throw new \InvalidArgumentException("The specified path is invalid");
         }
         
-        try {
+        /*try {
             if ($this->file) {
-                $moved = (php_sapi_name() == 'cli')
+                $this->moved = (php_sapi_name() == 'cli')
                     ? rename($this->file, $targetPath)
                     : move_uploaded_file($this->file, $targetPath);
             } else {
@@ -181,7 +184,35 @@ class UploadedFile implements UploadedFileInterface
             }
         } catch (\Throwable $e) {
             throw $e;
+        }*/
+        
+        if ($this->stream) {
+            try {
+                $newfile = new Stream(fopen($targetPath, 'w'));
+    
+                while (!$this->stream->eof()) {
+                    if (!$newfile->write($this->stream->read(8192))) {
+                        break;
+                    }
+                }
+            } catch (\Throwable $e) {
+                throw new \RuntimeException(sprintf("File %1s could not be moved to %2s", $this->file, $targetPath));
+            }
+        } else if ($this->sapi) {
+            if (!is_uploaded_file($this->file)) {
+                throw new \RuntimeException(sprintf('%s is not a valid uploaded file', $this->file));
+            }
+            
+            if(!move_uploaded_file($this->file, $targetPath)) {
+                throw new \RuntimeException(sprintf("File %1s could not be moved to %2s", $this->file, $targetPath));
+            }
+        } else {
+            if(!rename($this->file, $targetPath)) {
+                throw new \RuntimeException(sprintf("File %1s could not be moved to %2s", $this->file, $targetPath));
+            }
         }
+        
+        $this->moved = true;
     }
     
     /**

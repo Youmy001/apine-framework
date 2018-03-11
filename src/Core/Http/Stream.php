@@ -31,24 +31,24 @@ class Stream implements StreamInterface
     private $size;
     
     /**
-     * @var bool
+     * @var array
      */
-    private $isSeekable = false;
+    private $meta;
     
     /**
      * @var bool
      */
-    private $isReadable = false;
+    //private $seekable = false;
     
     /**
      * @var bool
      */
-    private $isWritable = false;
+    //private $readable = false;
     
     /**
-     * @var string
+     * @var bool
      */
-    private $uri;
+    //private $writable = false;
     
     /**
      * Readable flags of files and streams.
@@ -56,7 +56,7 @@ class Stream implements StreamInterface
      * @see http://php.net/manual/en/function.fopen.php
      * @var array
      */
-    private $readableArray = [
+    private $readableModes = [
         'r', 'r+', 'w+', 'a+', 'x+', 'c+', 'rb', 'w+b', 'r+b',
         'x+b', 'c+b', 'rt', 'w+t', 'r+t', 'x+t', 'c+t'
     ];
@@ -67,7 +67,7 @@ class Stream implements StreamInterface
      * @see http://php.net/manual/en/function.fopen.php
      * @var array
      */
-    private $writableArray = [
+    private $writableModes = [
         'w', 'w+', 'rw', 'r+', 'x+', 'c+', 'wb', 'w+b', 'r+b',
         'x+b', 'c+b', 'w+t', 'r+t', 'x+t', 'c+t', 'a', 'a+'
     ];
@@ -76,16 +76,21 @@ class Stream implements StreamInterface
      * Stream constructor.
      *
      * @param resource $streamSource
+     *
+     * @throws \InvalidArgumentException If the stream source is not a resource
      */
     public function __construct($streamSource) {
         
+        if (!is_resource($streamSource)) {
+            throw new \InvalidArgumentException('Stream source is not a resource');
+        }
+        
         $this->stream = $streamSource;
         
-        $metaData = stream_get_meta_data($this->stream);
-        $this->isSeekable = $metaData['seekable'];
-        $this->isReadable = array_search($metaData['mode'], $this->readableArray);
-        $this->isWritable = array_search($metaData['mode'], $this->writableArray);
-        $this->uri = $metaData['uri'];
+        $this->meta = stream_get_meta_data($this->stream);
+        //$this->seekable = $this->meta['seekable'];
+        //$this->readable = array_search($this->meta['mode'], $this->readableArray);
+        //$this->writable = array_search($this->meta['mode'], $this->writableArray);
         
     }
     
@@ -110,7 +115,6 @@ class Stream implements StreamInterface
      */
     public function __toString() : string
     {
-        // TODO: Implement __toString() method.
         try {
             $this->rewind();
             return $this->getContents();
@@ -144,12 +148,12 @@ class Stream implements StreamInterface
         $result = isset($this->stream) ? $this->stream : null;
         
         if (!is_null($result)) {
-            unset($this->stream);
+            $this->stream = null;
             $this->size = null;
-            $this->uri = null;
-            $this->isReadable = false;
-            $this->isSeekable = false;
-            $this->isWritable = false;
+            $this->meta = null;
+            /*$this->readable = false;
+            $this->seekable = false;
+            $this->writable = false;*/
         }
         
         return $result;
@@ -168,9 +172,6 @@ class Stream implements StreamInterface
         }
         
         if (is_null($this->size)) {
-            if ($this->uri) {
-                clearstatcache(true, $this->uri);
-            }
             
             $stats = fstat($this->stream);
             
@@ -224,7 +225,7 @@ class Stream implements StreamInterface
      */
     public function isSeekable()
     {
-        return $this->isSeekable;
+        return $this->meta['seekable'];
     }
     
     /**
@@ -235,8 +236,9 @@ class Stream implements StreamInterface
      * @param int $offset Stream offset
      * @param int $whence Specifies how the cursor position will be calculated
      *     based on the seek offset. Valid values are identical to the built-in
-     *     PHP $whence values for `fseek()`.  SEEK_SET: Set position equal to
-     *     offset bytes SEEK_CUR: Set position to current location plus offset
+     *     PHP $whence values for `fseek()`.
+     *     SEEK_SET: Set position equal to offset bytes
+     *     SEEK_CUR: Set position to current location plus offset
      *     SEEK_END: Set position to end-of-stream plus offset.
      *
      * @throws \RuntimeException on failure.
@@ -247,12 +249,12 @@ class Stream implements StreamInterface
             throw new \RuntimeException('Stream is detached');
         }
     
-        if (!$this->isSeekable) {
+        if (!$this->isSeekable()) {
             throw new \RuntimeException('Stream is not seekable');
         }
         
         if (fseek($this->stream, $offset, $whence) === -1) {
-            throw new \RuntimeException('Cannot seek to position' . $offset . ' with whence ' . var_export($whence, true));
+            throw new \RuntimeException('Cannot seek to position ' . $offset . ' with whence ' . var_export($whence, true));
         }
     }
     
@@ -269,7 +271,7 @@ class Stream implements StreamInterface
     {
         try {
             $this->seek(0);
-        } catch (\Exception $e) {
+        } catch (\RuntimeException $e) {
             throw $e;
         }
     }
@@ -281,7 +283,17 @@ class Stream implements StreamInterface
      */
     public function isWritable()
     {
-        return $this->isWritable;
+        //return $this->isWritable;
+        $writable = false;
+        
+        foreach ($this->writableModes as $mode) {
+            if($mode === $this->meta['mode']) {
+                $writable = true;
+                break;
+            }
+        }
+        
+        return $writable;
     }
     
     /**
@@ -290,6 +302,7 @@ class Stream implements StreamInterface
      * @param string $string The string that is to be written.
      *
      * @return int Returns the number of bytes written to the stream.
+     * @throws \InvalidArgumentException if input is not string
      * @throws \RuntimeException on failure.
      */
     public function write($string)
@@ -298,12 +311,12 @@ class Stream implements StreamInterface
             throw new \RuntimeException('Stream is detached');
         }
     
-        if (!$this->isWritable) {
+        if (!$this->isWritable()) {
             throw new \RuntimeException('Stream is not writable');
         }
         
         if (!is_string($string)) {
-            throw new \RuntimeException('String parameter must be of String type');
+            throw new \InvalidArgumentException('Argument must be of type string');
         }
         
         $this->size = null; // Size changes after writing
@@ -323,7 +336,17 @@ class Stream implements StreamInterface
      */
     public function isReadable()
     {
-        return $this->isReadable;
+        //return $this->isReadable;
+        $readable = false;
+        
+        foreach ($this->readableModes as $mode) {
+            if ($mode === $this->meta['mode']) {
+                $readable = true;
+                break;
+            }
+        }
+        
+        return $readable;
     }
     
     /**
@@ -335,6 +358,7 @@ class Stream implements StreamInterface
      *
      * @return string Returns the data read from the stream, or an empty string
      *     if no bytes are available.
+     * @throws \InvalidArgumentException if the length is not a positive integer
      * @throws \RuntimeException if an error occurs.
      */
     public function read($length)
@@ -343,16 +367,16 @@ class Stream implements StreamInterface
             throw new \RuntimeException('Stream is detached');
         }
     
-        if (!$this->isReadable) {
+        if (!$this->isReadable()) {
             throw new \RuntimeException('Stream is not readable');
         }
         
         if (!is_integer($length)) {
-            throw new \RuntimeException('Length is not an integer');
+            throw new \InvalidArgumentException('Length is not an integer');
         }
     
         if ($length < 0) {
-            throw new \RuntimeException('Length cannot be negative');
+            throw new \InvalidArgumentException('Length cannot be negative');
         }
         
         if ($length === 0) {
@@ -381,9 +405,7 @@ class Stream implements StreamInterface
             throw new \RuntimeException('Stream is detached');
         }
         
-        $contents = stream_get_contents($this->stream);
-        
-        if ($contents === false) {
+        if (!$this->isReadable() || ($contents = stream_get_contents($this->stream)) === false) {
             throw new \RuntimeException('Cannot read the content of stream');
         }
         
@@ -409,12 +431,10 @@ class Stream implements StreamInterface
             return null;
         }
         
-        $metadata = stream_get_meta_data($this->stream);
-        
         if (!is_null($key)) {
-            return isset($metadata[$key]) ? $metadata[$key] : null;
+            return isset($this->meta[$key]) ? $this->meta[$key] : null;
         } else {
-            return $metadata;
+            return $this->meta;
         }
     }
 }

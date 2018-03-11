@@ -146,7 +146,13 @@ abstract class Message implements MessageInterface
      */
     public function getHeaderLine($name)
     {
-        return implode(', ', $this->getHeader($name));
+        $value = $this->getHeader($name);
+        
+        if (is_array($value)) {
+            return implode(', ', $this->getHeader($name));
+        } else {
+            return $value;
+        }
     }
     
     /**
@@ -166,6 +172,11 @@ abstract class Message implements MessageInterface
     public function withHeader($name, $value)
     {
         $newMessage = clone $this;
+    
+        /*if (!is_array($value)) {
+            $value = [$value];
+        }*/
+        
         $newMessage->headers[strtolower($name)] = [
             'name' => $name,
             'value' => $value
@@ -248,7 +259,7 @@ abstract class Message implements MessageInterface
     public function getBody()
     {
         if (!$this->body) {
-            $stream = fopen('php://temp', 'r+');
+            $stream = fopen('php://memory', 'r+');
             $this->body = new Stream($stream);
         }
         

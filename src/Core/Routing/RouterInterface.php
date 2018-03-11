@@ -8,7 +8,8 @@
 
 namespace Apine\Core\Routing;
 
-use Apine\Core\Request;
+//use Apine\Core\Request;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface;
 
 /**

@@ -10,6 +10,10 @@ declare(strict_types=1);
 
 namespace Apine\Core\Error;
 
+use Apine\Core\Http\Response;
+use Apine\Core\Http\Stream;
+use Apine\Exception\GenericException;
+
 
 /**
  * Class ErrorHandler
@@ -22,6 +26,8 @@ namespace Apine\Core\Error;
  */
 class ErrorHandler
 {
+    private static $reportingLevel = 0;
+    
     public static function handleError(int $errorNumber, string $errorString = null, string $errorFile = null, int $errorLine = null) : bool
     {
         $exception = new \RuntimeException($errorString, $errorNumber);
@@ -33,22 +39,61 @@ class ErrorHandler
     
     public static function handleException(\Throwable $e)
     {
-        // TODO Add manipulation to print out error
-        $trace = explode("\n", $e->getTraceAsString());
+        $response = new Response(500);
+        $response = $response->withAddedHeader('Content-Type', 'text/plain');
         
-        $result = $e->getMessage() . "<br/><br/>";
+        if ($e instanceof GenericException) {
+            $response = $response->withStatus($e->getCode());
+        }
+    
+        $result = $e->getMessage() . "\n\r";
         
-        foreach ($trace as $step) {
-            $result .= $step;
-            $result .= '<br/>';
+        if (self::$reportingLevel === 1) {
+            $trace = explode("\n", $e->getTraceAsString());
+    
+            foreach ($trace as $step) {
+                $result .= "\n";
+                $result .= $step;
+            }
+        }
+    
+        $content = new Stream(fopen('php://memory', 'r+'));
+        $content->write($result);
+        
+        $response = $response->withBody($content);
+        
+        /* Send Headers */
+        if (!headers_sent()) {
+            header(sprintf(
+                'HTTP/%s %s %s',
+                $response->getProtocolVersion(),
+                $response->getStatusCode(),
+                $response->getReasonPhrase()
+            ));
+            
+            foreach ($response->getHeaders() as $name => $values) {
+                if (is_array($values)) {
+                    $values = implode(", ", $values);
+                }
+    
+                header(sprintf('%s: %s', $name, $values), false);
+            }
         }
         
-        die($result);
+        // Then send body
+        $body = $response->getBody();
+        
+        if ($body->isSeekable()) {
+            $body->rewind();
+        }
+        
+        print $body->getContents();
     }
     
-    public static function set()
+    public static function set(int $reportLevel = 0)
     {
         self::unset();
+        self::$reportingLevel = $reportLevel;
         
         error_reporting(E_ALL);
         set_error_handler([self::class, 'handleError'], E_ALL);

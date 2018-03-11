@@ -23,6 +23,10 @@ class Uri implements UriInterface
     
     private $userInfo;
     
+    private $username;
+    
+    private $password;
+    
     private $host;
     
     private $port;
@@ -34,19 +38,19 @@ class Uri implements UriInterface
     private $fragment;
     
     private static $defaultPorts = [
-        'http'  => 80,
-        'https' => 443,
-        'ftp' => 21,
-        'ftps' => 22,
+        'http'   => 80,
+        'https'  => 443,
+        'ftp'    => 21,
+        'ftps'   => 22,
         'gopher' => 70,
-        'nntp' => 119,
-        'news' => 119,
+        'nntp'   => 119,
+        'news'   => 119,
         'telnet' => 23,
         'tn3270' => 23,
-        'imap' => 143,
-        'pop' => 110,
-        'ldap' => 389,
-        'smtp' => 465
+        'imap'   => 143,
+        'pop'    => 110,
+        'ldap'   => 389,
+        'smtp'   => 465
     ];
     
     public function __construct(string $uri = '')
@@ -94,11 +98,11 @@ class Uri implements UriInterface
     {
         $authority = $this->host;
         
-        if ($this->userInfo !== '') {
-            $authority = $this->userInfo . '@' . $authority;
+        if ('' !== ($userInfo = $this->getUserInfo())) {
+            $authority = $userInfo . '@' . $authority;
         }
         
-        if (!is_null($this->port)) {
+        if ($this->port && !self::isStandardSchemePort($this->port, $this->scheme)) {
             $authority .= ':' . $this->port;
         }
         
@@ -119,7 +123,17 @@ class Uri implements UriInterface
      */
     public function getUserInfo()
     {
-        return $this->userInfo;
+        $userInfo = '';
+        
+        if ($this->username) {
+            $userInfo .= $this->username;
+            
+            if ($this->password) {
+                $userInfo .= ':' . $this->password;
+            }
+        }
+        
+        return $userInfo;
     }
     
     /**
@@ -235,11 +249,13 @@ class Uri implements UriInterface
     public function withScheme($scheme)
     {
         if (!is_string($scheme)) {
-            $scheme = '';
+            throw new \InvalidArgumentException('Uri scheme must be a string');
         }
         
+        $scheme = str_replace('://', '', strtolower($scheme));
+        
         if ($scheme != '' && !isset(self::$defaultPorts[$scheme])) {
-            throw new \InvalidArgumentException('Invalid of unsupported scheme ' . $scheme);
+            throw new \InvalidArgumentException('Invalid or unsupported scheme ' . $scheme);
         }
         
         if ($scheme === $this->scheme) {
@@ -248,6 +264,7 @@ class Uri implements UriInterface
         
         $newUri = clone $this;
         $newUri->scheme = $scheme;
+        
         return $newUri;
     }
     
@@ -266,18 +283,10 @@ class Uri implements UriInterface
      */
     public function withUserInfo($user, $password = null)
     {
-        $info = $user;
-        
-        if (!is_null($password) && $password != '') {
-            $info .= ':' . $password;
-        }
-        
-        if ($this->userInfo === $info) {
-            return $this;
-        }
-        
         $newUri = clone $this;
-        $newUri->userInfo = $info;
+        $newUri->username = $user;
+        $newUri->password = $password;
+        
         return $newUri;
     }
     
@@ -296,6 +305,8 @@ class Uri implements UriInterface
     {
         if (!is_string($host) || empty($host)) {
             $host = '';
+        } else if ($host !== '' && !$this->validateHost($host)) {
+            throw new \InvalidArgumentException(sprintf("Invalid Hostname %s",$host));
         }
         
         if ($host === $this->host) {
@@ -304,6 +315,7 @@ class Uri implements UriInterface
         
         $newUri = clone $this;
         $newUri->host = $host;
+        
         return $newUri;
     }
     
@@ -325,9 +337,9 @@ class Uri implements UriInterface
     public function withPort($port = null)
     {
         if (!$this->validatePort($port)) {
-            throw new \InvalidArgumentException('Invalid Port Number');
+            throw new \InvalidArgumentException(sprintf('Invalid Port Number %s', $port));
         }
-    
+        
         if (is_null($port) && !empty($this->scheme)) {
             $port = self::$defaultPorts[$this->scheme];
         }
@@ -338,6 +350,7 @@ class Uri implements UriInterface
         
         $newUri = clone $this;
         $newUri->port = $port;
+        
         return $newUri;
     }
     
@@ -362,10 +375,14 @@ class Uri implements UriInterface
      */
     public function withPath($path)
     {
-        if($path === null) {
+        if ($path === null) {
             $path = '';
         } else {
             $path = $this->sanitizeUriString($path);
+            
+            if (!empty($this->host) && $path[0] !== '/') {
+                throw new \InvalidArgumentException(sprintf('Invalid Path %s', $path));
+            }
         }
         
         if ($this->path === $path) {
@@ -374,6 +391,7 @@ class Uri implements UriInterface
         
         $newUri = clone $this;
         $newUri->path = $path;
+        
         return $newUri;
     }
     
@@ -392,18 +410,19 @@ class Uri implements UriInterface
      */
     public function withQuery($query)
     {
-        if($query === null) {
+        if ($query === null) {
             $query = '';
         } else {
             $query = $this->sanitizeUriString($query);
         }
-    
-        if ($this->path === $query) {
+        
+        if ($this->query === $query) {
             return $this;
         }
-    
+        
         $newUri = clone $this;
-        $newUri->path = $query;
+        $newUri->query = $query;
+        
         return $newUri;
     }
     
@@ -421,18 +440,19 @@ class Uri implements UriInterface
      */
     public function withFragment($fragment)
     {
-        if($fragment === null) {
+        if ($fragment === null) {
             $fragment = '';
         } else {
             $fragment = $this->sanitizeUriString($fragment);
         }
-    
-        if ($this->path === $fragment) {
+        
+        if ($this->fragment === $fragment) {
             return $this;
         }
-    
+        
         $newUri = clone $this;
-        $newUri->path = $fragment;
+        $newUri->fragment = $fragment;
+        
         return $newUri;
     }
     
@@ -468,58 +488,101 @@ class Uri implements UriInterface
         );
     }
     
-    private function applyUriParts (array $parts)
+    private function applyUriParts(array $parts)
     {
-        $this->scheme = isset($parts['scheme']) ? $parts['scheme'] : '';
-        $this->host = isset($parts['host']) ? strtolower($parts['host']) : '';
-        $this->userInfo = isset($parts['user']) ? $parts['user'] : '';
-    
-        $this->port = (isset($parts['port']) && $this->validatePort($parts['port'])) ? (int) $parts['port'] : null;
+        $this->scheme = isset($parts['scheme']) ? $parts['scheme'] : null;
+        $this->host = (isset($parts['host']) && $this->validateHost($parts['host'])) ? $parts['host'] : null;
+        $this->username = isset($parts['user']) ? $parts['user'] : null;
+        $this->password = isset($parts['pass']) ? $parts['pass'] : null;
+        
+        $this->port = (isset($parts['port']) && $this->validatePort($parts['port'])) ? (int)$parts['port'] : null;
         
         if (is_null($this->port) && !empty($this->scheme)) {
             $this->port = self::$defaultPorts[$this->scheme];
         }
-    
-        $this->path = isset($parts['path']) ? $this->sanitizeUriString($parts['path']) : '';
-        $this->query = isset($parts['query']) ? $this->sanitizeUriString($parts['query']) : '';
-        $this->fragment = isset($parts['fragment']) ? $this->sanitizeUriString($parts['fragment']) : '';
-    
-        if (isset($parts['pass'])) {
-            $this->userInfo .= ':' . $parts['pass'];
-        }
+        
+        $this->path = isset($parts['path']) ? $this->sanitizeUriString($parts['path']) : null;
+        $this->query = isset($parts['query']) ? $this->sanitizeUriString($parts['query']) : null;
+        $this->fragment = isset($parts['fragment']) ? $this->sanitizeUriString($parts['fragment']) : null;
     }
     
-    private function assembleUri ($scheme, $authority, $path, $query, $fragment) : string
+    private function assembleUri($scheme, $authority, $path, $query, $fragment): string
     {
         $uri = '';
-    
-        if ($scheme !== '') {
+        
+        if (!empty($scheme)) {
             $uri = $scheme . ':';
         }
-    
-        if ($authority != '' || $scheme === 'file') {
+        
+        if (!empty($authority) || $scheme === 'file') {
             $uri .= '//' . $authority;
         }
-    
+        
         $uri .= $path;
-    
-        if ($query != '') {
+        
+        if (!empty($query)) {
             $uri .= '?' . $query;
         }
-    
-        if ($fragment != '') {
+        
+        if (!empty($fragment)) {
             $uri .= '#' . $fragment;
         }
-    
+        
         return $uri;
     }
     
-    private function validatePort (int $port) : bool
+    /**
+     * Validates the format of a host name
+     *
+     * A host name can be either an IP address or a domain name. It
+     * is a string of no more than 255 bytes (ASCII characters) divided in domain labels
+     * of no more than 63 bytes separated by by ".". Parts may start with either a digit of a letter.
+     * The only characters allowed in the labels are alphanumerics plus "-".
+     *
+     * The syntax allows percent-encoded octets in order to represent non-ASCII characters.
+     *
+     * @param string $host
+     *
+     * @return bool
+     * @see https://tools.ietf.org/html/rfc1123
+     * @see https://tools.ietf.org/html/rfc3986#section-3.2.2
+     */
+    private function validateHost(string $host): bool
     {
-        return ($port < 1 || $port > 65535);
+        //$regex = '/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{1,63})\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]{1,63}[A-Za-z0-9])$/';
+        
+        $regex = '/^(([a-zA-Z0-9\%]|[a-zA-Z0-9\%][a-zA-Z0-9\-\%]{1,63})\.)*([A-Za-z0-9\%]|[A-Za-z0-9\%][A-Za-z0-9\-\%]{1,63}[A-Za-z0-9\%])$/';
+        
+        return (preg_match($regex, rawurlencode($host)) === 1) && strlen(rawurlencode($host)) <= 255;
     }
     
-    private function sanitizeUriString (string $string) : string
+    /**
+     * Validate the port number
+     * Returns false if port number is below 1 and over 65535
+     *
+     * @param int $port
+     *
+     * @return bool
+     */
+    private function validatePort(int $port): bool
+    {
+        return !($port < 1 || $port > 65535);
+    }
+    
+    /**
+     * Verify the port number is standard for the scheme
+     *
+     * @param int    $port
+     * @param string $scheme
+     *
+     * @return bool
+     */
+    public static function isStandardSchemePort(int $port, string $scheme): bool
+    {
+        return (!empty($scheme) && self::$defaultPorts[$scheme] === $port);
+    }
+    
+    private function sanitizeUriString(string $string): string
     {
         return preg_replace_callback(
             "/(?:[^a-zA-Z0-9_\-\.~!\$&\\'\(\)\*\+,;=%:@\/]++|%(?![A-Fa-f0-9]{2}))/",

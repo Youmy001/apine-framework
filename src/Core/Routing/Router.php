@@ -12,18 +12,18 @@ namespace Apine\Core\Routing;
 
 use \ReflectionClass;
 use \ReflectionMethod;
-use Apine\Core\Request;
 use Apine\Core\Config;
 use Apine\Core\Container\Container;
 use Apine\Core\Http\Response;
 use Apine\Core\JsonStore;
-use Psr\Http\Message\ResponseInterface;
 use Apine\Exception\GenericException;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class Router implements RouterInterface
 {
     /**
-     * @var Request
+     * @var ServerRequestInterface
      */
     private $request;
     
@@ -83,15 +83,20 @@ class Router implements RouterInterface
     /**
      * Find the best matching controller and action for the request
      *
-     * @param Request $request
+     * @param ServerRequestInterface $request
      * @return Route|null
      *
      * @throws \Exception If route not found
      */
-    public function find (Request $request) : Route
+    public function find (ServerRequestInterface $request) : Route
     {
-        $requestString = $request->getAction();
+        $requestString = $request->getUri()->getPath();
         $requestMethod = $request->getMethod();
+        
+        /* Strip the REST call marker from the path*/
+        if (substr($requestString, 0 , 4) === '/api') {
+            $requestString = substr($requestString, 4);
+        }
         
         foreach ($this->routes as $route) {
             if ($route->match($requestString, $requestMethod)) {
@@ -102,7 +107,7 @@ class Router implements RouterInterface
         }
         
         if (null === $this->current) {
-            throw new GenericException(sprintf("Route for request %s not found", $requestString), 404);
+            throw new GenericException(sprintf("Route for request %s not found", $request->getUri()->getPath()), 404);
         }
         
         return $this->current;
@@ -124,9 +129,6 @@ class Router implements RouterInterface
             
             $method = $reflection->getMethod($route->action);
             $requestParams = DependencyResolver::mapParametersForRequest($request, $route);
-            $request = $request->withQueryParams($requestParams);
-            $container->register(Request::class, $request);
-            $_GET = array_merge($_GET, $requestParams);
             
             /* Execution of the user code
              *
@@ -156,20 +158,27 @@ class Router implements RouterInterface
     }
     
     /**
-     * @param Route         $route
-     * @param Request       $request
+     * @param Route $route
+     * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
      * @throws \Exception
      */
-    public function run(Route $route, Request $request) : ResponseInterface
+    public function run(Route $route, ServerRequestInterface $request) : ResponseInterface
     {
         try {
             $this->current = $route;
             $this->request = $request;
             
-            if (!$this->current->match($request->getAction(), $request->getMethod())) {
-                throw new \Exception(sprintf("Route does not match request %s", $request->getAction()), 404);
+            $requestString = $request->getUri()->getPath();
+    
+            /* Strip the REST call marker from the path*/
+            if (substr($requestString, 0 , 4) === '/api') {
+                $requestString = substr($requestString, 4);
+            }
+            
+            if (!$this->current->match($requestString, $request->getMethod())) {
+                throw new \Exception(sprintf("Route does not match request %s", $request->getUri()->getPath()), 404);
             }
             
             return $this->execute();
@@ -179,12 +188,12 @@ class Router implements RouterInterface
     }
     
     /**
-     * @param Request $request
+     * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
      * @throws \Exception
      */
-    public function dispatch(Request $request) : ResponseInterface
+    public function dispatch(ServerRequestInterface $request) : ResponseInterface
     {
         try {
             $this->find($request);
