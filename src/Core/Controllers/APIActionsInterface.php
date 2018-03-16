@@ -3,17 +3,19 @@
  * Interface for API Actions
  *
  * @license MIT
- * @copyright 2015 Tommy Teasdale
+ * @copyright 2015-18 Tommy Teasdale
  */
 
-namespace Apine\MVC;
+namespace Apine\Core\Controllers;
+
+use Apine\Core\Views\View;
 
 /**
  * API Actions Interface
  * Interface for mandatory actions in API controllers
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
- * @package Apine\MVC
+ * @package Apine\Core\Controllers
  */
 interface APIActionsInterface
 {

@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Apine\Core\Routing;
 
-use Apine\MVC\Controller;
+use Apine\Core\Controllers\Controller;
 
 /**
  * Basic representation of a route

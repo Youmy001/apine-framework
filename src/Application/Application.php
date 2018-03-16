@@ -19,10 +19,13 @@ use Apine\Core\JsonStore;
 use Apine\Core\Routing\ResourcesContainer;
 use Apine\Core\Routing\Router;
 use Apine\Core\Http\Request;
+use Apine\Core\Http\Response;
+use Apine\Core\Http\Stream;
 use Apine\Core\Config;
 use Apine\Exception\GenericException;
 use Apine\Controllers\System as Controllers;
 use Apine\Utility\Routes;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Apine Application
@@ -105,7 +108,8 @@ final class Application
                 throw new GenericException('Critical Error: Framework Installation Not Completed', 503);
             }
         } catch (\Exception $e) {
-            ErrorHandler::handleException($e);
+            //ErrorHandler::handleException($e);
+            $this->outputException($e);
             die();
         }
         
@@ -234,17 +238,68 @@ final class Application
             $router = new Router($this->serviceProvider);
             $route = $router->find($request);
             $response = $router->run($route, $request);
-    
-    
-            // Draw the output is a view is returned
-            if (!is_null($view) && is_a($view, 'Apine\MVC\View')) {
-                $view->draw();
-            } else {
-                throw new GenericException('Empty Apine View', 488);
-            }
+            
+            $this->output($response);
         } catch (\Throwable $e) {
-            ErrorHandler::handleException($e);
+            //ErrorHandler::handleException($e);
+            $this->outputException($e);
         }
+    }
+    
+    public function output(ResponseInterface $response)
+    {
+        if (!headers_sent()) {
+            header(sprintf(
+                'HTTP/%s %s %s',
+                $response->getProtocolVersion(),
+                $response->getStatusCode(),
+                $response->getReasonPhrase()
+            ));
+        
+            foreach ($response->getHeaders() as $name => $values) {
+                if (is_array($values)) {
+                    $values = implode(", ", $values);
+                }
+            
+                header(sprintf('%s: %s', $name, $values), false);
+            }
+        }
+        
+        $body = $response->getBody();
+    
+        if ($body->isSeekable()) {
+            $body->rewind();
+        }
+    
+        print $body->getContents();
+    }
+    
+    public function outputException(\Throwable $e)
+    {
+        $response = new Response(500);
+        $response = $response->withAddedHeader('Content-Type', 'text/plain');
+    
+        if ($e instanceof GenericException) {
+            $response = $response->withStatus($e->getCode());
+        }
+    
+        $result = $e->getMessage() . "\n\r";
+    
+        if (ErrorHandler::$reportingLevel === 1) {
+            $trace = explode("\n", $e->getTraceAsString());
+        
+            foreach ($trace as $step) {
+                $result .= "\n";
+                $result .= $step;
+            }
+        }
+    
+        $content = new Stream(fopen('php://memory', 'r+'));
+        $content->write($result);
+    
+        $response = $response->withBody($content);
+        
+        $this->output($response);
     }
     
     public function registerService($className, $service)

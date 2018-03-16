@@ -7,15 +7,15 @@
  * @copyright 2015 Tommy Teasdale
  */
 
-namespace Apine\MVC;
+declare(strict_types=1);
 
-use Apine\Core\Request as Request;
-use Apine\Application\Translator as Translator;
-use Apine\Application\Application as Application;
+namespace Apine\Core\Utility;
+
+use Apine\Core\Http\Request;
 
 /**
  * Internal URL Writer
- * Write URL from server's informations
+ * Write URL from server's information
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\MVC
@@ -35,21 +35,26 @@ final class URLHelper
      *
      * @var string
      */
-    private $server_app_root;
+    private $authority;
     
     /**
      * Main Server's Domain Name
      *
      * @var string
      */
-    private $server_main_root;
+    private $mainAuthority;
     
     /**
      * Path of the current session
      *
      * @var string
      */
-    private $session_path;
+    private $path;
+    
+    /**
+     * @var \Psr\Http\Message\UriInterface
+     */
+    private $uri;
     
     /**
      * Construct the URL Writer helper
@@ -57,35 +62,20 @@ final class URLHelper
      */
     private function __construct()
     {
-        // Set server address
-        $this->server_app_root = Request::server()['SERVER_NAME'];
-        $ar_domain = explode('.', Request::server()['SERVER_NAME']);
-        
-        if (count($ar_domain) >= 3) {
-            $start = strlen($ar_domain[0]) + 1;
-            $this->server_main_root = substr(Request::server()['SERVER_NAME'], $start);
+        $request = Request::createFromGlobals();
+    
+        $hostArray = explode('.', $request->getUri()->getAuthority());
+    
+        if (count($hostArray) >= 3) {
+            $start = strlen($hostArray[0]) + 1;
+            $this->mainAuthority = substr($request->getUri()->getAuthority(), $start);
         } else {
-            $this->server_main_root = Request::server()['SERVER_NAME'];
+            $this->mainAuthority = $request->getUri()->getAuthority();
         }
         
-        if ((!Request::isHttps() && Request::getRequestPort() != 80) || (Request::isHttps() && Request::getRequestPort() != 443)) {
-            $this->server_app_root .= ":" . Request::getRequestPort();
-            $this->server_main_root .= ":" . Request::getRequestPort();
-        }
-        
-        if (isset(Request::request()['request'])) {
-            $ar_path = explode('/', Request::request()['request']);
-            array_shift($ar_path);
-            $this->session_path = implode('/', $ar_path);
-        } else {
-            $this->session_path = '';
-        }
-        
-        $webroot = Application::getInstance()->getWebroot();
-        if (!is_null($webroot) && !empty($webroot)) {
-            $this->server_app_root .= "/" . $webroot;
-            $this->server_main_root .= "/" . $webroot;
-        }
+        $this->authority = $request->getUri()->getAuthority();
+        $this->path = $request->getUri()->getPath();
+        $this->uri = $request->getUri();
     }
     
     /**
@@ -112,13 +102,6 @@ final class URLHelper
      */
     private static function protocol($param)
     {
-        /*$application = Application::get_instance();
-        
-        if (!$application->get_use_https()) {
-            $protocol = 'http://';
-        } else if ($application->get_secure_session() && SessionManager::is_logged_in()) {
-            $protocol = 'https://';
-        } else {*/
         switch ($param) {
             case 0:
                 $protocol = 'http://';
@@ -129,8 +112,6 @@ final class URLHelper
                 $protocol = 'https://';
                 break;
         }
-        
-        //}
         
         return $protocol;
     }
@@ -149,7 +130,7 @@ final class URLHelper
      */
     private static function writeUrl($base, $path, $protocol)
     {
-        if (isset(Request::get()['language'])) {
+        /*if (isset(Request::get()['language'])) {
             if (Request::get()['language'] == Translator::language()->code || Request::get()['language'] == Translator::language()->code_short) {
                 $language = Request::get()['language'];
             } else {
@@ -157,14 +138,14 @@ final class URLHelper
             }
             
             return self::protocol($protocol) . $base . '/' . $language . '/' . $path;
-        } else {
+        } else {*/
             return self::protocol($protocol) . $base . '/' . $path;
-        }
+        //}
     }
     
     public static function resource($path)
     {
-        return self::protocol(APINE_PROTOCOL_DEFAULT) . self::getInstance()->server_app_root . '/' . $path;
+        return self::protocol(APINE_PROTOCOL_DEFAULT) . self::getInstance()->authority . '/' . $path;
     }
     
     /**
@@ -179,11 +160,11 @@ final class URLHelper
      */
     public static function path($path, $protocol = APINE_PROTOCOL_DEFAULT)
     {
-        return self::writeUrl(self::getInstance()->server_app_root, $path, $protocol);
+        return self::writeUrl(self::getInstance()->authority, $path, $protocol);
     }
     
     /**
-     * Retrieve the http path to a ressource relative to site's main
+     * Retrieve the http path to a resource relative to site's main
      * domains's root
      *
      * @param string  $path
@@ -195,11 +176,11 @@ final class URLHelper
      */
     public static function mainPath($path, $protocol = APINE_PROTOCOL_DEFAULT)
     {
-        return self::writeUrl(self::getInstance()->server_main_root, $path, $protocol);
+        return self::writeUrl(self::getInstance()->mainAuthority, $path, $protocol);
     }
     
     /**
-     * Retrieve the http path to a ressource relative to current
+     * Retrieve the http path to a resource relative to current
      * ressource
      *
      * @param string  $path
@@ -211,7 +192,7 @@ final class URLHelper
      */
     public static function relativePath($path, $protocol = APINE_PROTOCOL_DEFAULT)
     {
-        return self::writeUrl(self::getInstance()->server_app_root, self::getInstance()->session_path . '/' . $path,
+        return self::writeUrl(self::getInstance()->authority, self::getInstance()->path . '/' . $path,
             $protocol);
     }
     
@@ -224,6 +205,6 @@ final class URLHelper
      */
     public static function getCurrentPath($protocol = APINE_PROTOCOL_DEFAULT)
     {
-        return self::writeUrl(self::getInstance()->server_app_root, self::getInstance()->session_path, $protocol);
+        return self::writeUrl(self::getInstance()->authority, self::getInstance()->path, $protocol);
     }
 }

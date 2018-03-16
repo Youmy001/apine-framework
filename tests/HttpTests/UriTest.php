@@ -137,7 +137,7 @@ class UriTest extends TestCase
     
     public function testWithHostInvalidHost()
     {
-        $invalid_host = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bb';
+        $invalid_host = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bb';
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid Hostname ' . $invalid_host);
         $uri = $this->uriFactory()->withHost($invalid_host);

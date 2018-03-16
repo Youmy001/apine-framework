@@ -10,7 +10,6 @@ namespace Apine\Core\Http;
 
 
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
 class Request extends Message implements ServerRequestInterface
@@ -41,11 +40,6 @@ class Request extends Message implements ServerRequestInterface
     protected $serverParams = [];
     
     protected $uploadedFiles = [];
-    
-    /**
-     * @var string
-     */
-    private $requestAction;
     
     /**
      * @var integer
@@ -90,7 +84,7 @@ class Request extends Message implements ServerRequestInterface
         $this->updateQueryParamsFromUri();
     }
     
-    public static function createFromGlobals () : ServerRequestInterface
+    public static function createFromGlobals () : Request
     {
         $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
         $headers = getallheaders();
@@ -579,7 +573,6 @@ class Request extends Message implements ServerRequestInterface
      */
     public function isHttps() : bool
     {
-        $headers = $this->getServerParams();
         return ($this->hasHeader('HTTPS'));
     }
     
@@ -600,7 +593,6 @@ class Request extends Message implements ServerRequestInterface
      */
     public function isAjax() : bool
     {
-        $headers = $this->getServerParams();
         return ($this->hasHeader('X-Requested-With') && $this->getHeaderLine('X-Requested-With') == 'XMLHttpRequest');
     }
     

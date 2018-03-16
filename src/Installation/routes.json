@@ -1,9 +1,0 @@
-{
-	"/index": {
-		"GET": {
-			"args": false,
-			"controller": "home",
-			"action": "index"
-		}
-	}
-}

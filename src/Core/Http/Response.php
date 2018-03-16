@@ -16,6 +16,7 @@ class Response extends Message implements ResponseInterface
 {
     /**
      * @var array
+     * @see https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
      */
     private static $statusCodes = [
         100 => 'Continue',

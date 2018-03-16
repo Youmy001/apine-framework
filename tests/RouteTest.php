@@ -8,7 +8,7 @@
 declare(strict_types=1);
 
 
-use Apine\MVC\Controller;
+use Apine\Core\Controllers\Controller;
 use Apine\Core\Routing\Parameter;
 use Apine\Core\Routing\ParameterDefinition;
 use Apine\Core\Routing\Route;

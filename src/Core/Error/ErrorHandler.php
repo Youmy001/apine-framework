@@ -5,8 +5,8 @@
  * @license MIT
  * @copyright 2018 Tommy Teasdale
  */
-declare(strict_types=1);
 
+declare(strict_types=1);
 
 namespace Apine\Core\Error;
 
@@ -26,7 +26,7 @@ use Apine\Exception\GenericException;
  */
 class ErrorHandler
 {
-    private static $reportingLevel = 0;
+    public static $reportingLevel = 0;
     
     public static function handleError(int $errorNumber, string $errorString = null, string $errorFile = null, int $errorLine = null) : bool
     {

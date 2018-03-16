@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Apine\Core\Routing;
 
 
+use Apine\Core\Views\View;
 use \ReflectionClass;
 use \ReflectionMethod;
 use Apine\Core\Config;
@@ -145,15 +146,18 @@ class Router implements RouterInterface
             
             $parameters = DependencyResolver::mapActionArguments($container, $requestParams, $route->actionParameters);
             
-            $result = $method->invokeArgs($controller, $parameters);
+            $response = $method->invokeArgs($controller, $parameters);
             
-            $headers = getallheaders();
-            $protocol = (isset($headers['SERVER_PROTOCOL']) ? $headers['SERVER_PROTOCOL'] : 'HTTP/1.0');
-            $response = new Response(200);
-            // TODO Insert view in the response
-            return $response->withProtocolVersion($protocol);
+            if ($response instanceof View) {
+                $response = $response();
+            }
+    
+            if (!($response instanceof ResponseInterface)) {
+                throw new \RuntimeException(sprintf('%s::%s must return an instance of %s or %s', $route->controller, $route->action, ResponseInterface::class, View::class));
+            }
+            return $response;
         } catch (\Exception $e) {
-            throw new $e;
+            throw $e;
         }
     }
     

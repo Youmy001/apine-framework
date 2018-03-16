@@ -1,16 +1,18 @@
 <?php
 
-namespace Apine\MVC;
+declare(strict_types=1);
+
+namespace Apine\Core\Views;
 
 use Apine\Application\Application;
 use Apine\MVC\HTMLView;
 use Apine\Session\SessionManager;
 use Apine\Application\Config;
 use Apine\Application\Translator;
-use Apine\MVC\URLHelper;
+use Apine\Core\Utility\URLHelper;
 use Twig_Extension;
 
-class TwigExtension extends Twig_Extension implements \Twig_Extension_GlobalsInterface
+class TwigExtension extends Twig_Extension
 {
     public function getName()
     {
@@ -20,7 +22,7 @@ class TwigExtension extends Twig_Extension implements \Twig_Extension_GlobalsInt
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('config', function ($a_section, $a_default = '') {
+            /*new \Twig_SimpleFunction('config', function ($a_section, $a_default = '') {
                 try {
                     $config = Application::getInstance()->getConfig();
                     $sections = explode('.', $a_section);
@@ -48,7 +50,7 @@ class TwigExtension extends Twig_Extension implements \Twig_Extension_GlobalsInt
                 }
                 
                 return '';
-            }),
+            }),*/
             new \Twig_SimpleFunction('execution_time', function () {
                 return apine_execution_time();
             }),
@@ -95,7 +97,7 @@ class TwigExtension extends Twig_Extension implements \Twig_Extension_GlobalsInt
             }),
             new \Twig_SimpleFilter('resource', function ($path) {
                 return URLHelper::resource($path);
-            }),
+            })/*,
             new \Twig_SimpleFilter('date_format', function ($date, $format) {
                 $locale = Translator::getInstance()->translation()->get_locale();
                 
@@ -109,7 +111,7 @@ class TwigExtension extends Twig_Extension implements \Twig_Extension_GlobalsInt
                 
                 return $locale->format_date($date, $format);
                 
-            })
+            })*/
         );
     }
 }
