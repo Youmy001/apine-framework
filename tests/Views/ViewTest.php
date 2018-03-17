@@ -23,7 +23,7 @@ class ViewTest extends TestCase
         $this->object = $this->getMockForAbstractClass(View::class);
     }
     
-    public function test__invoke()
+    public function test_respond()
     {
         $this->assertInstanceOf(\Psr\Http\Message\ResponseInterface::class, ($this->object)());
     }
@@ -37,7 +37,15 @@ class ViewTest extends TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testSetStatusCodeInvalidCode()
+    public function testSetStatusCodeTooSmall()
+    {
+        $this->object->setStatusCode(80);
+    }
+    
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testSetStatusCodeTooLarge()
     {
         $this->object->setStatusCode(8080);
     }

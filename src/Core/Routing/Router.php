@@ -149,7 +149,7 @@ class Router implements RouterInterface
             $response = $method->invokeArgs($controller, $parameters);
             
             if ($response instanceof View) {
-                $response = $response();
+                $response = $response->respond();
             }
     
             if (!($response instanceof ResponseInterface)) {

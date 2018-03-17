@@ -46,7 +46,7 @@ class RedirectionView extends View
         return new static($uri->withPath($path), $code);
     }
     
-    public function __invoke(): ResponseInterface
+    public function respond(): ResponseInterface
     {
         $response = new Response($this->statusCode);
     

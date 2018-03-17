@@ -38,7 +38,7 @@ class PHPView extends View
         $this->setStatusCode($code);
     }
     
-    public function __invoke(): ResponseInterface
+    public function respond(): ResponseInterface
     {
     
         $response = new Response($this->statusCode);

@@ -43,7 +43,7 @@ class HTMLView extends View
         $this->setFile($template);
     }
     
-    public function __invoke(): ResponseInterface
+    public function respond(): ResponseInterface
     {
         $response = new Response($this->statusCode);
     

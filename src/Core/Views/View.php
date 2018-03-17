@@ -36,7 +36,7 @@ abstract class View
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    abstract public function __invoke() : ResponseInterface;
+    abstract public function respond() : ResponseInterface;
     
     /**
      * Set HTTP status code to return

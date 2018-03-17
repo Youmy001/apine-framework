@@ -42,7 +42,7 @@ class FileView extends View
         $this->setFile($file);
     }
     
-    public function __invoke(): ResponseInterface
+    public function respond(): ResponseInterface
     {
         $response = new Response($this->statusCode);
     

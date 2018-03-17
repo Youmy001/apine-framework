@@ -33,7 +33,7 @@ class JSONView extends View
         $this->addHeader('Content-type', 'application/json');
     }
     
-    public function __invoke(): ResponseInterface
+    public function respond(): ResponseInterface
     {
         $response = new Response($this->statusCode);
         $options = 0;
