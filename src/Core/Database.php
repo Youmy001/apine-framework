@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Apine\Core;
 
-use Apine\Application\Application;
 use Apine\Application\ServiceProvider;
 use Apine\Exception\DatabaseException;
 use Apine\Exception\GenericException;
@@ -53,7 +52,7 @@ final class Database
      *
      * @var boolean
      */
-    private $_isExecute;
+    private $isExecute = false;
     
     /**
      * Database class' constructor
@@ -135,14 +134,14 @@ final class Database
      * @throws DatabaseException If unable to execute query
      * @return array Matching rows
      */
-    public function select($query)
+    public function select(string $query) : array
     {
         $arResult = array();
         
         try {
             $result = $this->instance->query($query);
             
-            if ($result) {
+            if ($result !== false) {
                 $arResult = $result->fetchAll(\PDO::FETCH_ASSOC);
                 $result->closeCursor();
                 $result = null;
@@ -160,22 +159,22 @@ final class Database
      *
      * @param string   $table_name
      *        Name of the table in which insert the row
-     * @param string[] $ar_values
+     * @param array<string,mixed> $ar_values
      *        Field names and values to include in the row
      *
      * @throws \Apine\Exception\DatabaseException If cannot execute insertion query
-     * @return string Id of the newly inserted row
+     * @return int Id of the newly inserted row
      */
-    public function insert($table_name, $ar_values)
+    public function insert(string $table_name, array $ar_values) : int
     {
         $fields = array_keys($ar_values);
         $values = array_values($ar_values);
         $new_values = array();
         
         // Quote string values
-        foreach ($values as $val) {
+        foreach ($values as $value) {
             
-            if (is_string($val)) {
+            /*if (is_string($val)) {
                 $val = $this->quote($val);
             } else {
                 if (is_null($val)) {
@@ -189,9 +188,17 @@ final class Database
                         }
                     }
                 }
+            }*/
+    
+            if (is_string($value) && !is_numeric($value)) {
+                $value = $this->quote($value);
+            } else if (is_bool($value)) {
+                $value = ($value === true) ? 'TRUE' : 'FALSE';
+            } else if (is_null($value)) {
+                $value = 'NULL';
             }
             
-            $new_values[] = $val;
+            $new_values[] = $value;
         }
         
         // Create query
@@ -220,24 +227,24 @@ final class Database
      *
      * @param string   $table_name
      *        Name of the table in which modify rows
-     * @param string[] $ar_values
+     * @param array<string,mixed> $ar_values
      *        Field names and values to modify on rows
-     * @param string[] $ar_conditions
+     * @param array<string,mixed> $ar_conditions
      *        Field names and values to match desired rows - Used to
      *        define the "WHERE" SQL statement
      *
      * @throws DatabaseException If cannot execute update query
      * @throws GenericException
      */
-    public function update($table_name, $ar_values, $ar_conditions)
+    public function update(string $table_name, array $ar_values, array $ar_conditions) : void
     {
         $new_values = array();
         $ar_where = array();
         
         // Quote string values
-        foreach ($ar_values as $field => $val) {
+        foreach ($ar_values as $field => $value) {
             
-            if (is_string($val)) {
+            /*if (is_string($val)) {
                 $val = $this->quote($val);
             } else {
                 if (is_null($val)) {
@@ -251,19 +258,27 @@ final class Database
                         }
                     }
                 }
+            }*/
+    
+            if (is_string($value) && !is_numeric($value)) {
+                $value = $this->quote($value);
+            } else if (is_bool($value)) {
+                $value = ($value === true) ? 'TRUE' : 'FALSE';
+            } else if (is_null($value)) {
+                $value = 'NULL';
             }
             
-            $new_values[] = "$field = $val";
+            $new_values[] = "$field = $value";
         }
         
         // Quote Conditions values
-        foreach ($ar_conditions as $field => $val) {
+        foreach ($ar_conditions as $field => $value) {
             
-            if (is_string($val) && !is_numeric($val)) {
-                $val = $this->quote($val);
+            if (is_string($value) && !is_numeric($value)) {
+                $value = $this->quote($value);
             }
             
-            $ar_where[] = "$field = $val";
+            $ar_where[] = "$field = $value";
         }
         
         // Create query
@@ -290,7 +305,7 @@ final class Database
      *
      * @param string   $table_name
      *        Name of the table in which delete rows
-     * @param string[] $ar_conditions
+     * @param array<string,mixed> $ar_conditions
      *        Field names and values to match desired rows - Used to
      *        define the "WHERE" SQL statement
      *
@@ -361,7 +376,7 @@ final class Database
     public function prepare($statement, $driver_options = array())
     {
         // Returns statement's index for later access
-        $this->_isExecute = true;
+        $this->isExecute = true;
         $this->Execute[] = $this->instance->prepare($statement, $driver_options);
         end($this->Execute);
         
@@ -382,7 +397,7 @@ final class Database
     public function execute($input_parameters = array(), $index = null)
     {
         // When no index is passed, executes the oldest statement
-        if ($this->_isExecute) {
+        if ($this->isExecute) {
             $arResult = array();
             
             if ($index == null) {
@@ -424,9 +439,9 @@ final class Database
      * Close a previously prepared PDO statement
      *
      * @param integer $index
-     *        Identifier of the PDO tatement
+     *        Identifier of the PDO statement
      */
-    public function closeCursor($index = null)
+    public function closeCursor($index = null) : void
     {
         // If not index is passed, deletes the oldest statement
         if ($index == null) {
@@ -439,12 +454,12 @@ final class Database
         }*/
         
         if (count($this->Execute) > 0) {
-            $this->Execute[$index] = null;
+            //$this->Execute[$index] = null;
             unset($this->Execute[$index]);
         }
         
         if (count($this->Execute) == 0) {
-            $this->_isExecute = false;
+            $this->isExecute = false;
         }
     }
     
@@ -455,12 +470,12 @@ final class Database
      *        Name of the sequence object from which the ID should be
      *        returned.
      *
-     * @return integer
+     * @return mixed
      * @see PDO::lastInsertID()
      */
     public function last_insert_id($name = null)
     {
-        return $this->instance->lastInsertId($name);
+        return (null !== $name) ? $this->instance->lastInsertId($name) : $this->instance->lastInsertId();
     }
     
     /**
@@ -483,13 +498,13 @@ final class Database
     {
         if (count($this->Execute) > 0) {
             foreach ($this->Execute as $id => $statement) {
-                $this->Execute[$id] = null;
+                //$this->Execute[$id] = null;
                 unset($this->Execute[$id]);
             }
         }
         
         if ($this->instance !== self::$apine_instance) {
-            $this->instance = null;
+            unset($this->instance);
         }
     }
 }

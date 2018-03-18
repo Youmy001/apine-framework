@@ -4,7 +4,7 @@
  * This script contains an helper to read and write cookies
  *
  * @license MIT
- * @copyright 2015 Tommy Teasdale
+ * @copyright 2015-18 Tommy Teasdale
  */
 declare(strict_types=1);
 
@@ -22,17 +22,17 @@ final class Cookie
     /**
      * Get cookie by name
      *
-     * @param string $cookie_name
+     * @param string $cookie
      *
-     * @throws \ErrorException
+     * @throws \InvalidArgumentException
      * @return string
      */
-    public static function get(string $cookie_name)
+    public static function get(string $cookie) : string
     {
-        if (isset($_COOKIE[$cookie_name])) {
-            return $_COOKIE[$cookie_name];
+        if (isset($_COOKIE[$cookie])) {
+            return $_COOKIE[$cookie];
         } else {
-            throw new \ErrorException();
+            throw new \InvalidArgumentException(sprintf('Cookie %s not found', $cookie));
         }
     }
     
@@ -42,16 +42,12 @@ final class Cookie
      * @param string  $cookie_name
      * @param string  $value
      * @param integer $expiration_time
-     *        Expiration date in miliseconds
+     *        Expiration date in milliseconds
      *
      * @return boolean
      */
     public static function set(string $cookie_name, string $value, int $expiration_time = 0) : bool
     {
-        if ($expiration_time == 0) {
-            return setcookie($cookie_name, $value, null, '/');
-        } else {
-            return setcookie($cookie_name, $value, $expiration_time, '/');
-        }
+        return setcookie($cookie_name, $value, $expiration_time, '/');
     }
 }

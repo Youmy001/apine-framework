@@ -54,7 +54,7 @@ final class Autoloader
      *
      * @return void
      */
-    public function addModule(string $prefix, string $base_dir, bool $prepend = false)
+    public function addModule(string $prefix, string $base_dir, bool $prepend = false) : void
     {
         // normalize namespace prefix
         $prefix = trim($prefix, '\\') . '\\';
@@ -89,7 +89,7 @@ final class Autoloader
      *
      * @return boolean
      */
-    static function loadModule(string $module_name) : bool
+    /*static function loadModule(string $module_name) : bool
     {
         // Verify if the module actually exists
         if (is_dir('modules/' . $module_name . '/')) {
@@ -98,9 +98,11 @@ final class Autoloader
             // Load the autoloader if it exists.
             // Load recursively the directory if not.
             if (file_exists($dir . 'Autoloader.php')) {
+                /** @noinspection PhpIncludeInspection * /
                 require $dir . 'Autoloader.php';
             } else {
                 if (file_exists($dir . 'autoloader.php')) {
+                    /** @noinspection PhpIncludeInspection * /
                     require $dir . 'autoloader.php';
                 } else {
                     $files = self::getFolderFiles($dir);
@@ -108,7 +110,7 @@ final class Autoloader
                     try {
                         foreach ($files as $file) {
                             if (file_extension($file) === "php") {
-                                /** @noinspection PhpIncludeInspection */
+                                /** @noinspection PhpIncludeInspection * /
                                 require_once $file;
                             }
                         }
@@ -132,9 +134,9 @@ final class Autoloader
         }
         
         return false;
-    }
+    }*/
     
-    public function register()
+    public function register() : void
     {
         spl_autoload_register(array($this, 'loadClass'));
     }
@@ -243,7 +245,7 @@ final class Autoloader
      *
      * @return mixed[] List of all files in a directory
      */
-    private static function getFolderFiles(string $directory, bool $root = true) : array
+    /*private static function getFolderFiles(string $directory, bool $root = true) : array
     {
         $array = array();
         
@@ -301,7 +303,7 @@ final class Autoloader
         }
         
         return $array;
-    }
+    }*/
     
     /**
      * Load recursively all files in a directory and its sub-directories
@@ -309,13 +311,13 @@ final class Autoloader
      * @param string $a_folder
      *            Path to the directory from the include path
      */
-    private function loadFolderFiles(string $a_folder)
+    private function loadFolderFiles(string $a_folder) : void
     {
         $files = glob($a_folder . '*');
         
         foreach ($files as $item) {
             if (is_dir($item)) {
-                self::loadFolderFiles($item . "/");
+                $this->loadFolderFiles($item . "/");
             }
         }
         

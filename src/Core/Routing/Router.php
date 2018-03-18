@@ -85,7 +85,7 @@ class Router implements RouterInterface
      * Find the best matching controller and action for the request
      *
      * @param ServerRequestInterface $request
-     * @return Route|null
+     * @return Route
      *
      * @throws \Exception If route not found
      */

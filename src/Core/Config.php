@@ -60,7 +60,7 @@ final class Config
     }
     
     /**
-     * @param $name
+     * @param string $name
      *
      * @return mixed
      */
@@ -70,10 +70,10 @@ final class Config
     }
     
     /**
-     * @param $name
-     * @param $value
+     * @param string $name
+     * @param mixed $value
      */
-    public function __set(string $name, $value)
+    public function __set(string $name, $value) : void
     {
         $this->settings->settings->$name = $value;
     }

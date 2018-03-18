@@ -49,6 +49,9 @@ final class Application
      */
     private $apineFolder;
     
+    /**
+     * @var string
+     */
     private $includePath;
     
     /**
@@ -57,14 +60,6 @@ final class Application
      * @var boolean
      */
     private $debug = false;
-    
-    /**
-     * Path to the APIne Application from the webroot
-     *
-     * @var string $webroot
-     * @deprecated
-     */
-    private $webroot = '';
     
     /**
      * @var ServiceProvider
@@ -116,21 +111,9 @@ final class Application
     }
     
     /**
-     * Set the path to the application from the root for the virtual server
-     * The application tries by default to guess it.
-     *
-     * @param string $a_webroot
-     * @deprecated
-     */
-    public function setWebroot($a_webroot = '')
-    {
-        $this->webroot = $a_webroot;
-    }
-    
-    /**
      * Run the application
      */
-    public function run()
+    public function run() : void
     {
         $config = null;
         $headers = getallheaders();
@@ -164,19 +147,19 @@ final class Application
             }
     
             /* Define the default services */
-            $this->serviceProvider->register(Config::class, function () use ($config) {
+            $this->serviceProvider->register(Config::class, function () use ($config) : Config {
                 return $config;
             });
     
-            $this->serviceProvider->register(JsonStore::class, function () {
+            $this->serviceProvider->register(JsonStore::class, function () : JsonStore {
                 return JsonStore::getInstance();
             });
     
-            $this->serviceProvider->register(Request::class, function () {
+            $this->serviceProvider->register(Request::class, function () : Request {
                 return Request::createFromGlobals();
             });
     
-            $this->serviceProvider->register(Connection::class, function () use ($config) {
+            $this->serviceProvider->register(Connection::class, function () use ($config) : Connection {
                 return new Connection(
                     $config->database->type,
                     $config->database->host,
@@ -187,13 +170,13 @@ final class Application
                 );
             });
     
-            $this->serviceProvider->register(Database::class, function () {
+            $this->serviceProvider->register(Database::class, function () : Database {
                 $connection = $this->serviceProvider->get(Connection::class);
         
                 return new Database($connection);
             });
     
-            $this->serviceProvider->register(BasicDatabase::class, function () use ($config) {
+            $this->serviceProvider->register(BasicDatabase::class, function () use ($config) : BasicDatabase {
                 return new BasicDatabase(
                     $config->database->type,
                     $config->database->host,
@@ -232,8 +215,6 @@ final class Application
     
             $this->registerService('apiResources', $this->apiResources);
     
-            //$router = new Router($this->serviceProvider, $config);
-            //$request = $this->serviceProvider->get(Request::class);
             $request = Request::createFromGlobals();
             $router = new Router($this->serviceProvider);
             $route = $router->find($request);
@@ -241,12 +222,11 @@ final class Application
             
             $this->output($response);
         } catch (\Throwable $e) {
-            //ErrorHandler::handleException($e);
             $this->outputException($e);
         }
     }
     
-    public function output(ResponseInterface $response)
+    public function output(ResponseInterface $response) : void
     {
         if (!headers_sent()) {
             header(sprintf(
@@ -274,7 +254,7 @@ final class Application
         print $body->getContents();
     }
     
-    public function outputException(\Throwable $e)
+    public function outputException(\Throwable $e) : void
     {
         $response = new Response(500);
         $response = $response->withAddedHeader('Content-Type', 'text/plain');
@@ -302,7 +282,11 @@ final class Application
         $this->output($response);
     }
     
-    public function registerService($className, $service)
+    /**
+     * @param string $className
+     * @param callable|object $service
+     */
+    public function registerService(string $className, $service) : void
     {
         $this->serviceProvider->register($className, $service);
     }
@@ -311,12 +295,12 @@ final class Application
      * Register a controller for use as a resource
      * in the context of the RESTful API
      *
-     * @param $name
-     * @param $className
+     * @param string $name
+     * @param string $className
      *
      * @throws \Exception If the controller does not implements the APIActionsInterface
      */
-    public function registerResource($name, $className)
+    public function registerResource(string $name, string $className) : void
     {
         $this->apiResources->register($name, $className);
     }
@@ -324,21 +308,10 @@ final class Application
     /**
      * Return the current mode
      *
-     * @return int
+     * @return bool
      */
-    public function isDebugMode()
+    public function isDebugMode() : bool
     {
         return $this->debug;
-    }
-    
-    /**
-     * Return the path to the root of the host
-     *
-     * @return string
-     * @deprecated
-     */
-    public function getWebroot()
-    {
-        return $this->webroot;
     }
 }

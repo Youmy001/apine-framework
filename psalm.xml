@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<psalm
+    totallyTyped="false"
+>
+    <projectFiles>
+        <directory name="src"/>
+        <ignoreFiles>
+            <file name="src/Application/Translator.php"/>
+            <file name="src/Autoloader.php"/>
+            <directory name="src/Controllers"/>
+            <directory name="src/Core/Database"/>
+            <file name="src/Core/Encryption.php"/>
+
+        </ignoreFiles>
+    </projectFiles>
+
+    <issueHandlers>
+
+        <LessSpecificReturnType errorLevel="info" />
+
+        <!-- level 3 issues - slightly lazy code writing, but provably low false-negatives -->
+
+        <DeprecatedMethod errorLevel="info" />
+
+        <MissingClosureReturnType errorLevel="info" />
+        <MissingReturnType errorLevel="info" />
+        <MissingPropertyType errorLevel="info" />
+        <InvalidDocblock errorLevel="info" />
+        <MisplacedRequiredParam errorLevel="info" />
+
+        <PropertyNotSetInConstructor errorLevel="info" />
+        <MissingConstructor errorLevel="info" />
+        <MissingClosureParamType errorLevel="info" />
+        <MissingParamType errorLevel="info" />
+
+        <DocblockTypeContradiction errorLevel="info" />
+        <RedundantConditionGivenDocblockType errorLevel="info" />
+
+        <UnresolvableInclude errorLevel="info" />
+
+        <!-- level 4 issues - points to possible deficiencies in logic, higher false-positives -->
+
+        <MoreSpecificReturnType errorLevel="info" />
+        <TypeCoercion errorLevel="info" />
+        <RedundantCondition errorLevel="info" />
+
+        <PossiblyFalseArgument errorLevel="info" />
+        <PossiblyFalsePropertyAssignmentValue errorLevel="info" />
+        <PossiblyFalseReference errorLevel="info" />
+        <PossiblyInvalidArgument errorLevel="info" />
+        <PossiblyInvalidArrayAccess errorLevel="info" />
+        <PossiblyInvalidArrayAssignment errorLevel="info" />
+        <PossiblyInvalidMethodCall errorLevel="info" />
+        <PossiblyInvalidPropertyAssignment errorLevel="info" />
+        <PossiblyInvalidPropertyAssignmentValue errorLevel="info" />
+        <PossiblyInvalidPropertyFetch errorLevel="info" />
+        <PossiblyNullArgument errorLevel="info" />
+        <PossiblyNullArrayAccess errorLevel="info" />
+        <PossiblyNullArrayAssignment errorLevel="info" />
+        <PossiblyNullArrayOffset errorLevel="info" />
+        <PossiblyNullFunctionCall errorLevel="info" />
+        <PossiblyNullIterator errorLevel="info" />
+        <PossiblyNullOperand errorLevel="info" />
+        <PossiblyNullPropertyAssignment errorLevel="info" />
+        <PossiblyNullPropertyAssignmentValue errorLevel="info" />
+        <PossiblyNullPropertyFetch errorLevel="info" />
+        <PossiblyNullReference errorLevel="info" />
+        <PossiblyUndefinedGlobalVariable errorLevel="info" />
+        <PossiblyUndefinedVariable errorLevel="info" />
+        <PossiblyUndefinedMethod errorLevel="info" />
+
+        <!-- level 5 issues - should be avoided at mosts costs... -->
+
+        <ForbiddenCode errorLevel="info" />
+        <ImplicitToStringCast errorLevel="info" />
+        <InvalidScalarArgument errorLevel="info" />
+        <InvalidToString errorLevel="info" />
+        <MethodSignatureMismatch errorLevel="info" />
+        <NoInterfaceProperties errorLevel="info" />
+        <TooManyArguments errorLevel="info" />
+        <TypeDoesNotContainType errorLevel="info" />
+        <TypeDoesNotContainNull errorLevel="info" />
+    </issueHandlers>
+</psalm>

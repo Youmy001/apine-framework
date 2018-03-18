@@ -26,9 +26,20 @@ use Apine\Exception\GenericException;
  */
 class ErrorHandler
 {
+    /**
+     * @var int
+     */
     public static $reportingLevel = 0;
     
-    public static function handleError(int $errorNumber, string $errorString = null, string $errorFile = null, int $errorLine = null) : bool
+    /**
+     * @param int         $errorNumber
+     * @param string      $errorString
+     * @param string|null $errorFile
+     * @param int|null    $errorLine
+     *
+     * @throws \RuntimeException
+     */
+    public static function handleError(int $errorNumber, string $errorString = '', string $errorFile = null, int $errorLine = null) : void
     {
         $exception = new \RuntimeException($errorString, $errorNumber);
         //$exception->file = $errorFile;
@@ -37,7 +48,10 @@ class ErrorHandler
         throw $exception;
     }
     
-    public static function handleException(\Throwable $e)
+    /**
+     * @param \Throwable $e
+     */
+    public static function handleException(\Throwable $e) : void
     {
         $response = new Response(500);
         $response = $response->withAddedHeader('Content-Type', 'text/plain');
@@ -90,7 +104,10 @@ class ErrorHandler
         print $body->getContents();
     }
     
-    public static function set(int $reportLevel = 0)
+    /**
+     * @param int $reportLevel
+     */
+    public static function set(int $reportLevel = 0) : void
     {
         self::unset();
         self::$reportingLevel = $reportLevel;
@@ -100,9 +117,10 @@ class ErrorHandler
         set_exception_handler([self::class, 'handleException']);
     }
     
-    public static function unset()
+    
+    public static function unset() : void
     {
-        error_reporting(ini_get('error_reporting'));
+        error_reporting((int) ini_get('error_reporting'));
         restore_error_handler();
         restore_exception_handler();
     }

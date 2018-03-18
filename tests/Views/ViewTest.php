@@ -25,7 +25,7 @@ class ViewTest extends TestCase
     
     public function test_respond()
     {
-        $this->assertInstanceOf(\Psr\Http\Message\ResponseInterface::class, ($this->object)());
+        $this->assertInstanceOf(\Psr\Http\Message\ResponseInterface::class, $this->object->respond());
     }
     
     public function testSetStatusCode()

@@ -36,10 +36,11 @@ class ContainerTest extends TestCase
     
     public function testGetError()
     {
+        $str = 'cat';
         $this->expectException(ContainerException::class);
     
         $container = new Container();
-        $container->register(StubClass::class, function($str){return new $str();});
+        $container->register(StubClass::class, function() use ($str) {return new $str();});
         $container->get(StubClass::class);
     }
     

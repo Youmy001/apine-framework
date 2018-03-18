@@ -15,8 +15,14 @@ use Psr\Container\NotFoundExceptionInterface;
 
 class Container implements ContainerInterface
 {
+    /**
+     * @var array
+     */
     protected $entries = array();
     
+    /**
+     * @var array
+     */
     protected $instantiatedEntries = array();
     
     /**
@@ -27,7 +33,7 @@ class Container implements ContainerInterface
      * @param mixed $id
      * @param mixed $value
      */
-    public function register ($id, $value)
+    public function register ($id, $value) : void
     {
         unset($this->instantiatedEntries[$id]);
         unset($this->entries[$id]);
@@ -63,7 +69,7 @@ class Container implements ContainerInterface
                 return $this->entries[$id];
             }
             
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw new ContainerException(
                 sprintf('Error while trying to retrieve the entry "%s"', $id)
             );
