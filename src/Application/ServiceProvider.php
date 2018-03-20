@@ -1,10 +1,12 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: youmy
- * Date: 07/01/18
- * Time: 11:14 PM
+ * Service Provider
+ *
+ * @license MIT
+ * @copyright 2018 Tommy Teasdale
  */
+
+declare(strict_types=1);
 
 namespace Apine\Application;
 

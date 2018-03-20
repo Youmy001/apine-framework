@@ -18,7 +18,10 @@ namespace Apine\Core\Container;
  */
 class Component
 {
-    private $id;
+    /**
+     * @var string
+     */
+    private $name;
     
     /**
      * @var mixed
@@ -38,27 +41,43 @@ class Component
     /**
      * Component constructor.
      *
-     * @param string $id
+     * @param string $name
      * @param mixed|callable|object $content
      * @param bool $factory
      */
-    public function __construct(string $id, $content, bool $factory = false)
+    public function __construct(string $name, $content, bool $factory = false)
     {
-        $this->id = $id;
+        if (true === $factory && (!is_callable($content) || !($content instanceof \Closure))) {
+            throw new \RuntimeException('A factory must be a callable');
+        }
+        
+        $this->name = $name;
         $this->content = $content;
         $this->factory = $factory;
     }
     
+    /**
+     * @return bool
+     */
     public function isFactory() : bool
     {
         return $this->factory;
     }
     
-    public function getId() : string
+    /**
+     * @return string
+     */
+    public function getName() : string
     {
-        return $this->id;
+        return $this->name;
     }
     
+    /**
+     * @param string $type
+     *
+     * @return bool
+     * @throws \Throwable
+     */
     public function hasType(string $type) : bool
     {
         $value = $this->invoke();
@@ -72,21 +91,27 @@ class Component
     
     /**
      * @return mixed
+     * @throws \Throwable   If an error occurs while reading
+     *                      the content of the component
      */
     public function invoke()
     {
-        if (!$this->factory) {
-            if (null === $this->computed) {
-                if (is_callable($this->content)) {
-                    $this->computed = ($this->content)();
-                } else {
-                    $this->computed = $this->content;
+        try {
+            if (!$this->factory) {
+                if (null === $this->computed) {
+                    if (is_callable($this->content)) {
+                        $this->computed = ($this->content)();
+                    } else {
+                        $this->computed = $this->content;
+                    }
                 }
+        
+                return $this->computed;
+            } else {
+                return ($this->content)();
             }
-            
-            return $this->computed;
-        } else {
-            return ($this->content)();
+        } catch (\Throwable $e) {
+            throw $e;
         }
     }
 }

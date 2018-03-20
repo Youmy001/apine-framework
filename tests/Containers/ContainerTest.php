@@ -15,6 +15,22 @@ use PHPUnit\Framework\TestCase;
 
 class ContainerTest extends TestCase
 {
+    public function testRegister()
+    {
+        $container = new Container();
+        $container->register(StubClass::class, function(){return new StubClass();});
+        
+        $this->assertAttributeNotEmpty('entries', $container);
+    }
+    
+    public function testRegisterReplacesOldValue()
+    {
+        $container = new Container();
+        $container->register('containee', function(){return new StubClass();});
+        $this->assertInstanceOf(StubClass::class, $container->get('containee'));
+        $container->register('containee', function(){return new StubClassTwo();});
+        $this->assertInstanceOf(StubClassTwo::class, $container->get('containee'));
+    }
     
     public function testGet()
     {
@@ -22,6 +38,14 @@ class ContainerTest extends TestCase
         $container->register(StubClass::class, function(){return new StubClass();});
         
         $this->assertInstanceOf(StubClass::class, $container->get(StubClass::class));
+    }
+    
+    public function testGetNameDifferentFromType()
+    {
+        $container = new Container();
+        $container->register('containee', function(){return new StubClass();});
+    
+        $this->assertInstanceOf(StubClass::class, $container->get('containee'));
     }
     
     public function testGetNotFound()

@@ -72,20 +72,27 @@ class Container implements ContainerInterface
      */
     public function has($id) : bool
     {
-        return (null !== $this->find($id));
+        try {
+            return (null !== $this->find($id));
+        } catch (\Throwable $e) {
+            // If an error occurs it is because the closure
+            // of the content of the component
+            return true;
+        }
     }
     
     /**
      * @param string $id
      *
      * @return Component|null
+     * @throws \Throwable
      */
     private function find(string $id) : ?Component
     {
         $result = null;
         
         foreach ($this->entries as $component) {
-            if (($id === $component->getId()) || $component->hasType($id)) {
+            if (($id === $component->getName()) || $component->hasType($id)) {
                 $result = $component;
                 break;
             }
@@ -94,10 +101,13 @@ class Container implements ContainerInterface
         return $result;
     }
     
+    /**
+     * @param string $id
+     */
     public function remove(string $id) : void
     {
         foreach ($this->entries as $key => $value) {
-            if ($value->getId() === $id) {
+            if ($value->getName() === $id) {
                 unset($this->entries[$key]);
             }
         }
