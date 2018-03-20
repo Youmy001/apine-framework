@@ -22,8 +22,8 @@ class ResourcesContainer extends Container
     {
         $array = array();
         
-        foreach ($this->entries as $name => $value) {
-            $array[$name] = $this->get($name);
+        foreach ($this->entries as $value) {
+            $array[$value->getId()] = $value->invoke();
         }
         
         return $array;

@@ -21,7 +21,6 @@ use Exception;
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\Core
- * @deprecated
  */
 final class Collection implements \IteratorAggregate
 {

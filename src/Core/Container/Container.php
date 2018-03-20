@@ -16,29 +16,24 @@ use Psr\Container\NotFoundExceptionInterface;
 class Container implements ContainerInterface
 {
     /**
-     * @var array
+     * @var Component[]
      */
-    protected $entries = array();
-    
-    /**
-     * @var array
-     */
-    protected $instantiatedEntries = array();
+    protected $entries = [];
     
     /**
      * Adds an entry to the container with an identifier
      *
      * Doing so will override any entry with the same identifier
      *
-     * @param mixed $id
+     * @param string $id
      * @param mixed $value
+     * @param bool $factory
      */
-    public function register ($id, $value) : void
+    public function register (string $id, $value, bool $factory = false) : void
     {
-        unset($this->instantiatedEntries[$id]);
-        unset($this->entries[$id]);
+        $this->remove($id);
         
-        $this->entries[$id] = $value;
+        $this->entries[] = new Component($id, $value, $factory);
     }
     
     /**
@@ -57,18 +52,7 @@ class Container implements ContainerInterface
         }
         
         try {
-            /*return $this->services[$id];*/
-            if (is_callable($this->entries[$id])) {
-                if (!isset($this->instantiatedEntries[$id])) {
-                    $entry = $this->entries[$id];
-                    $this->instantiatedEntries[$id] = $entry();
-                }
-                
-                return $this->instantiatedEntries[$id];
-            } else {
-                return $this->entries[$id];
-            }
-            
+            return $this->find($id)->invoke();
         } catch (\Throwable $e) {
             throw new ContainerException(
                 sprintf('Error while trying to retrieve the entry "%s"', $id)
@@ -88,6 +72,34 @@ class Container implements ContainerInterface
      */
     public function has($id) : bool
     {
-        return (isset($this->entries[$id]));
+        return (null !== $this->find($id));
+    }
+    
+    /**
+     * @param string $id
+     *
+     * @return Component|null
+     */
+    private function find(string $id) : ?Component
+    {
+        $result = null;
+        
+        foreach ($this->entries as $component) {
+            if (($id === $component->getId()) || $component->hasType($id)) {
+                $result = $component;
+                break;
+            }
+        }
+        
+        return $result;
+    }
+    
+    public function remove(string $id) : void
+    {
+        foreach ($this->entries as $key => $value) {
+            if ($value->getId() === $id) {
+                unset($this->entries[$key]);
+            }
+        }
     }
 }

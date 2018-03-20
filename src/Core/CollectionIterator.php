@@ -14,7 +14,6 @@ namespace Apine\Core;
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\Core
- * @deprecated
  */
 final class CollectionIterator implements \Iterator
 {

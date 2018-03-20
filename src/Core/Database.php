@@ -69,6 +69,7 @@ final class Database
      * @param boolean $db_override Replace the default database
      *
      * @throws DatabaseException If cannot connect to database server
+     * @throws GenericException If cannot load the config
      */
     public function __construct(
         string $db_type = null,
@@ -82,7 +83,7 @@ final class Database
         try {
             if ((!is_null($db_type) && !is_null($db_host) && !is_null($db_name)) || !isset(self::$apine_instance)) {
                 //$config = Application::getInstance()->getConfig();
-                $config = ServiceProvider::getInstance()->get(Config::class);
+                $config = new Config('settings.json');
                 $db_port = '3306';
                 
                 if (!(!is_null($db_type) && !is_null($db_host) && !is_null($db_name))) {

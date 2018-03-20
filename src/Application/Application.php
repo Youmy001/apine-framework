@@ -11,20 +11,17 @@ declare(strict_types=1);
 namespace Apine\Application;
 
 use Apine\Core\Container\Container;
-use Apine\Core\Database as BasicDatabase;
-use Apine\Core\Database\Database;
-use Apine\Core\Database\Connection;
 use Apine\Core\Error\ErrorHandler;
-use Apine\Core\JsonStore;
+use Apine\Core\Http\Uri;
 use Apine\Core\Routing\ResourcesContainer;
 use Apine\Core\Routing\Router;
 use Apine\Core\Http\Request;
 use Apine\Core\Http\Response;
 use Apine\Core\Http\Stream;
 use Apine\Core\Config;
+use Apine\Core\Utility\URLHelper;
+use Apine\Core\Views\RedirectionView;
 use Apine\Exception\GenericException;
-use Apine\Controllers\System as Controllers;
-use Apine\Utility\Routes;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -62,9 +59,9 @@ final class Application
     private $debug = false;
     
     /**
-     * @var ServiceProvider
+     * @var Container
      */
-    private $serviceProvider;
+    private $services;
     
     /**
      * @var Container
@@ -76,30 +73,15 @@ final class Application
      */
     public function __construct(string $projectDirectory = null)
     {
-        ErrorHandler::set(1);
-        $this->serviceProvider = ServiceProvider::getInstance();
-        $this->apiResources = new ResourcesContainer();
-        
         try {
-            $documentRoot = $_SERVER['DOCUMENT_ROOT'];
-            $this->apineFolder = realpath(dirname(__FILE__) . '/..'); // The path to the framework itself
+            $this->setPaths($projectDirectory);
             
-            if (null === $projectDirectory) {
-                $directory = $documentRoot;
-                
-                while (!file_exists($directory . '/composer.json')) {
-                    $directory = dirname($directory);
-                }
-                
-                $projectDirectory = $directory;
-            }
-    
-            $this->includePath = $projectDirectory;
-            set_include_path($this->includePath);
-            chdir($this->includePath);
-    
+            ErrorHandler::set(1);
+            $this->services= ServiceProvider::registerDefaultServices();
+            $this->apiResources = new ResourcesContainer();
+            
             // Verify if the minimum file dependencies are fulfilled
-            if (!file_exists($documentRoot . '/.htaccess') || !file_exists('settings.json')) {
+            if (!file_exists($documentRoot = $_SERVER['DOCUMENT_ROOT'] . '/.htaccess') || !file_exists('settings.json')) {
                 throw new GenericException('Critical Error: Framework Installation Not Completed', 503);
             }
         } catch (\Exception $e) {
@@ -108,6 +90,26 @@ final class Application
             die();
         }
         
+    }
+    
+    private function setPaths(string $projectDirectory = null) : void
+    {
+        $documentRoot = $_SERVER['DOCUMENT_ROOT'];
+        $this->apineFolder = realpath(dirname(__FILE__) . '/..'); // The path to the framework itself
+        
+        if (null === $projectDirectory) {
+            $directory = $documentRoot;
+        
+            while (!file_exists($directory . '/composer.json')) {
+                $directory = dirname($directory);
+            }
+        
+            $projectDirectory = $directory;
+        }
+    
+        $this->includePath = $projectDirectory;
+        set_include_path($this->includePath);
+        chdir($this->includePath);
     }
     
     /**
@@ -131,8 +133,9 @@ final class Application
                 // Remove trailing slash
                 $uri = rtrim($_GET['apine_request']);
         
-                Routes::internalRedirect($uri, APINE_PROTOCOL_HTTPS)->draw();
-                die();
+                
+                $redirection = new RedirectionView(new Uri(URLHelper::path($uri, APINE_PROTOCOL_HTTPS)), 301);
+                $this->output($redirection->respond());
             }
     
             $config = new Config('settings.json');
@@ -145,47 +148,6 @@ final class Application
                     ErrorHandler::set(1);
                 }
             }
-    
-            /* Define the default services */
-            $this->serviceProvider->register(Config::class, function () use ($config) : Config {
-                return $config;
-            });
-    
-            $this->serviceProvider->register(JsonStore::class, function () : JsonStore {
-                return JsonStore::getInstance();
-            });
-    
-            $this->serviceProvider->register(Request::class, function () : Request {
-                return Request::createFromGlobals();
-            });
-    
-            $this->serviceProvider->register(Connection::class, function () use ($config) : Connection {
-                return new Connection(
-                    $config->database->type,
-                    $config->database->host,
-                    $config->database->dbname,
-                    $config->database->username,
-                    $config->database->password,
-                    $config->database->charset
-                );
-            });
-    
-            $this->serviceProvider->register(Database::class, function () : Database {
-                $connection = $this->serviceProvider->get(Connection::class);
-        
-                return new Database($connection);
-            });
-    
-            $this->serviceProvider->register(BasicDatabase::class, function () use ($config) : BasicDatabase {
-                return new BasicDatabase(
-                    $config->database->type,
-                    $config->database->host,
-                    $config->database->dbname,
-                    $config->database->username,
-                    $config->database->password,
-                    $config->database->charset
-                );
-            });
     
             // Find a timezone for the user
             // using geoip library and its local database
@@ -216,7 +178,7 @@ final class Application
             $this->registerService('apiResources', $this->apiResources);
     
             $request = Request::createFromGlobals();
-            $router = new Router($this->serviceProvider);
+            $router = new Router($this->services);
             $route = $router->find($request);
             $response = $router->run($route, $request);
             
@@ -252,6 +214,7 @@ final class Application
         }
     
         print $body->getContents();
+        die;
     }
     
     public function outputException(\Throwable $e) : void
@@ -288,7 +251,7 @@ final class Application
      */
     public function registerService(string $className, $service) : void
     {
-        $this->serviceProvider->register($className, $service);
+        $this->services->register($className, $service);
     }
     
     /**

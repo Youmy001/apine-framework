@@ -8,34 +8,69 @@
 
 namespace Apine\Application;
 
+use Apine\Core\Config;
+use Apine\Core\Database as BasicDatabase;
+use Apine\Core\Http\Response;
+use Apine\Core\JsonStore;
 use Apine\Core\Container\Container;
+use Apine\Core\Database\Connection;
+use Apine\Core\Database\Database;
 use Apine\Core\Http\Request;
 
-final class ServiceProvider extends Container
+final class ServiceProvider
 {
-    /**
-     * @var ServiceProvider
-     */
-    private static $instance;
-    
-    private function __construct()
+    public static function registerDefaultServices() : Container
     {
-        //$this->registerDefaultServices();
-    }
+        $container = new Container();
     
-    public static function getInstance() : ServiceProvider
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new static();
-        }
-    
-        return self::$instance;
-    }
-    
-    public function registerDefaultServices() : void
-    {
-        $this->register(Request::class, function() : void {
-            $request = Request::createFromGlobals();
+        $container->register(Config::class, function () : Config {
+            return new Config('settings.json');
         });
+    
+        $container->register(JsonStore::class, function () : JsonStore {
+            return JsonStore::getInstance();
+        });
+    
+        $container->register(Request::class, function () : Request {
+            return Request::createFromGlobals();
+        });
+    
+        $container->register(Response::class, function () : Response {
+            return new Response();
+        }, true);
+    
+        $container->register(Connection::class, function () use ($container) : Connection {
+            $config = $container->get(Config::class);
+            
+            return new Connection(
+                $config->database->type,
+                $config->database->host,
+                $config->database->dbname,
+                $config->database->username,
+                $config->database->password,
+                $config->database->charset
+            );
+        });
+    
+        $container->register(Database::class, function () use ($container) : Database {
+            $connection = $container->get(Connection::class);
+        
+            return new Database($connection);
+        });
+    
+        $container->register(BasicDatabase::class, function () use ($container) : BasicDatabase {
+            $config = $container->get(Config::class);
+            
+            return new BasicDatabase(
+                $config->database->type,
+                $config->database->host,
+                $config->database->dbname,
+                $config->database->username,
+                $config->database->password,
+                $config->database->charset
+            );
+        });
+        
+        return $container;
     }
 }
