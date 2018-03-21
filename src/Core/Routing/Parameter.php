@@ -33,6 +33,7 @@ class Parameter
             case 'array':
             case 'bool':
             case 'null':
+            case 'resource':
             case '':
                 return true;
             default:

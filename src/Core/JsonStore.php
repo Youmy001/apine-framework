@@ -58,7 +58,21 @@ class JsonStore
     function __destruct()
     {
         foreach (self::getInstance()->jsons as $file_path => $content) {
-            //print "Save file $file_path;";
+            $string = json_encode($content, JSON_PRETTY_PRINT);
+    
+            try {
+                if (false !== $string) {
+                    $resource = fopen($file_path, 'c+');
+                    fwrite($resource, $string);
+                    fclose($resource);
+                } else {
+                    throw new \RuntimeException(sprintf("Cannot convert content of file %s to valid JSON", $file_path));
+                }
+            } catch (\RuntimeException $e) {
+                throw $e;
+            } catch (\Throwable $e) {
+                throw new \RuntimeException(sprintf("An error occured while attempting to write to %s", $file_path));
+            }
         }
     }
 }

@@ -87,6 +87,13 @@ class DependencyResolver
         return $parameters;
     }
     
+    /**
+     * @param Container $container
+     * @param array     $queryParams Query Arguments from the request
+     * @param array     $arguments   Arguments from the controller action
+     *
+     * @return array
+     */
     public static function mapActionArguments(Container $container, array $queryParams, array $arguments)
     {
         $parameters = array();
