@@ -86,7 +86,7 @@ class RouteTest extends TestCase
         $this->assertAttributeEquals($action, 'action', $route);
         $this->assertEquals(
             [
-                new ParameterDefinition('input', '(.+?)')
+                new ParameterDefinition('input', '([^\/]+?)')
             ],
             $route->parameters
         );
@@ -160,6 +160,18 @@ class RouteTest extends TestCase
         $this->assertTrue($routeFour->match('/test/as/15', 'POST'));
         $this->assertFalse($routeFour->match('/test/テスト/15', 'POST'));
         $this->assertFalse($routeFour->match('/test/as/no', 'POST'));
+    }
+    
+    public function testMatchDefinitionHasFewerParameterThanPathParts()
+    {
+        $route = new Route(
+            'GET',
+            '/{input}',
+            TestController::class,
+            'inputTest'
+        );
+        
+        $this->assertFalse($route->match('/test/as/15','GET'));
     }
 }
 

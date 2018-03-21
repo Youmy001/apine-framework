@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Apine\Core\Routing;
 
 use Apine\Core\Controllers\Controller;
+use Psr\Http\Server\MiddlewareInterface;
 
 /**
  * Basic representation of a route
@@ -104,7 +105,7 @@ final class Route
         
         return array_map(function ($match) use ($definitions) {
             $match = trim($match, '?');
-            $parameter = new ParameterDefinition($match, '(.+?)');
+            $parameter = new ParameterDefinition($match, '([^\/]+?)');
             
             foreach ($definitions as $definition) {
                 if (!isset($definition['name']) || !isset($definition['regex'])) {
