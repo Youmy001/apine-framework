@@ -55,6 +55,11 @@ class JsonStore
         }
     }
     
+    /**
+     * JsonStore destructor
+     *
+     * Save the content of opened files at the end of the execution
+     */
     function __destruct()
     {
         foreach (self::getInstance()->jsons as $file_path => $content) {

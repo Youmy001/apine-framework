@@ -161,7 +161,7 @@ final class Application
                 if (isset($record)) {
                     $timezone = get_time_zone($record->country_code, ($record->region != '') ? $record->region : 0);
                 } else {
-                    if (!is_null($config->localization->defaults->timezone)) {
+                    if (isset($config->localization->defaults->timezone)) {
                         $timezone = $config->localization->defaults->timezone;
                     } else {
                         $timezone = 'America/New_York';

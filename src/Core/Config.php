@@ -37,7 +37,7 @@ final class Config
     private $settings;
     
     /**
-     * Construct the Conguration Reader handler
+     * Construct the Configuration Reader handler
      * Extract string from the configuration file
      *
      * @param string $a_path

@@ -25,19 +25,15 @@ final class ServiceProvider
     {
         $container = new Container();
     
-        $container->register(Config::class, function () : Config {
+        $container->register('config', function () : Config {
             return new Config('settings.json');
         });
     
-        $container->register(JsonStore::class, function () : JsonStore {
-            return JsonStore::getInstance();
-        });
-    
-        $container->register(Request::class, function () : Request {
+        $container->register('request', function () : Request {
             return Request::createFromGlobals();
         });
     
-        $container->register(Response::class, function () : Response {
+        $container->register('response', function () : Response {
             return new Response();
         }, true);
     
