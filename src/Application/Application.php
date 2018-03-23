@@ -6,6 +6,7 @@
  * @license MIT
  * @copyright 2015 Tommy Teasdale
  */
+
 declare(strict_types=1);
 
 namespace Apine\Application;
@@ -52,13 +53,6 @@ final class Application
     private $includePath;
     
     /**
-     * Debug mode
-     *
-     * @var boolean
-     */
-    private $debug = false;
-    
-    /**
      * @var Container
      */
     private $services;
@@ -85,13 +79,18 @@ final class Application
                 throw new GenericException('Critical Error: Framework Installation Not Completed', 503);
             }
         } catch (\Exception $e) {
-            //ErrorHandler::handleException($e);
             $this->outputException($e);
             die();
         }
         
     }
     
+    /**
+     * Move the include path to the project's root
+     * rather than the server's root
+     *
+     * @param string|null $projectDirectory
+     */
     private function setPaths(string $projectDirectory = null) : void
     {
         $documentRoot = $_SERVER['DOCUMENT_ROOT'];
@@ -120,9 +119,6 @@ final class Application
         $config = null;
         $headers = getallheaders();
         $isHttp = (isset($headers['HTTPS']) && !empty($headers['HTTPS']));
-        $request = $_GET['apine-request'];
-        $requestArray = explode("/", $request);
-        $isAPICall = ($requestArray[1] === 'api');
         
         /**
          * Main Execution
@@ -131,8 +127,7 @@ final class Application
             // Verify is the protocol is allowed
             if (!$isHttp && !extension_loaded('xdebug')) {
                 // Remove trailing slash
-                $uri = rtrim($_GET['apine_request']);
-        
+                $uri = rtrim($_SERVER['REQUEST_URI']);
                 
                 $redirection = new RedirectionView(new Uri(URLHelper::path($uri, APINE_PROTOCOL_HTTPS)), 301);
                 $this->output($redirection->respond());
@@ -144,7 +139,6 @@ final class Application
             if ($config->debug !== null) {
                 $bool = $config->debug;
                 if (is_bool($bool) && $bool === true) {
-                    $this->debug = true;
                     ErrorHandler::set(1);
                 }
             }
@@ -188,6 +182,11 @@ final class Application
         }
     }
     
+    /**
+     * Output a response to the client
+     *
+     * @param \Psr\Http\Message\ResponseInterface $response
+     */
     public function output(ResponseInterface $response) : void
     {
         if (!headers_sent()) {
@@ -217,6 +216,11 @@ final class Application
         die;
     }
     
+    /**
+     * Output a caught exception to the client
+     *
+     * @param \Throwable $e
+     */
     public function outputException(\Throwable $e) : void
     {
         $response = new Response(500);
@@ -266,15 +270,5 @@ final class Application
     public function registerResource(string $name, string $className) : void
     {
         $this->apiResources->register($name, $className);
-    }
-    
-    /**
-     * Return the current mode
-     *
-     * @return bool
-     */
-    public function isDebugMode() : bool
-    {
-        return $this->debug;
     }
 }
