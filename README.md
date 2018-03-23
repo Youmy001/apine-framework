@@ -10,8 +10,8 @@ APIne already implements a comprehensive session manager, a basic yet effective 
 ## Requirements
 
 For APIne 2:
-* PHP 7.0 or greater with the PDO extension
-* MySQL 5.6 or MariaDB 10.1
+* PHP 7.2 or greater with the PDO extension
+* MySQL 5.6 or MariaDB 10.1 or greater
 * Apache 2.4 with mod_rewrite
 
 For APIne 1.1:
@@ -41,7 +41,7 @@ Then checkout to the branch of the latest stable release: `git checkout 1.1.x`.
 
 ## Quick Start a Project
 
-To quickly start a new project execute the assistant in a web browser located at `http://[domain_name_of_your_project]/apine-framework/install.php` if APIne is used standalone or `http://[domain_name_of_your_project]/vendor/youmy001/apine-framework/install.php` if it is used as a composer package, and follow the steps. The assistant will automatically generate a basic config, an empty locale, a .htaccess file, and a basic index.php and will automatically download the lastest version of Composer's binary if you are using the standalone version.
+To quickly start a new project execute the assistant in a web browser located at `http://[domain_name_of_your_project]/apine-framework/install.php` if APIne is used standalone or `http://[domain_name_of_your_project]/vendor/youmy001/apine-framework/install.php` if it is used as a composer package, and follow the steps. The assistant will automatically generate a basic config, an empty locale, a .htaccess file, and a basic index.php and will automatically download the latest version of Composer's binary if you are using the standalone version.
 
 The assistant will also try to import some tables essential for APIne's operation. Make sure you already created a database before launching the assistant and that the database is accessible from your project's perspective.
 
@@ -49,7 +49,7 @@ If you run a standalone version of APIne's, install depedancies using this comma
 
 ## Manually Start a Project
 
-First of all, in order to use APIne Framwork, you must copy this file to the root of your project :
+First of all, in order to use APIne Framework, you must copy this file to the root of your project :
 
 - apine-framework/Installation/htacess_template.php
 
