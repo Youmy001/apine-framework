@@ -6,8 +6,9 @@
  * @copyright 2018 Tommy Teasdale
  */
 
-namespace Apine\Core\Http;
+declare(strict_types=1);
 
+namespace Apine\Core\Http;
 
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;

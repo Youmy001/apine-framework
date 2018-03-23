@@ -6,6 +6,8 @@
  * @copyright 2018 Tommy Teasdale
  */
 
+declare(strict_types=1);
+
 namespace Apine\Core\Http;
 
 
@@ -62,6 +64,56 @@ class Uri implements UriInterface
         }
         
         $this->applyUriParts($uriParts);
+    }
+    
+    /**
+     * Obtain an instance of UriInterface populated with values from $_SERVER.
+     *
+     * @return UriInterface
+     */
+    public static function createFromGlobals() : UriInterface
+    {
+        $uri_string = (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : '';
+        $hasQuery = false;
+        
+        
+        if (isset($_SERVER['HTTP_HOST'])) {
+            $uri_string .= $_SERVER['HTTP_HOST'];
+        } else {
+            if (isset($_SERVER['SERVER_NAME'])) {
+                $uri_string .= $_SERVER['SERVER_NAME'];
+            } else if (isset($_SERVER['SERVER_ADDR'])) {
+                $uri_string .= $_SERVER['SERVER_ADDR'];
+            }
+            
+            if (isset($_SERVER['SERVER_PORT'])) {
+                $uri_string .= ':' . $_SERVER['SERVER_PORT'];
+            }
+        }
+        
+        if (isset($_SERVER['REQUEST_URI'])) {
+            $requestParts = explode('?', $_SERVER['REQUEST_URI'],2);
+            
+            //$uri_string = implode('/', [$uri_string, $requestParts[0]]);
+            
+            if ($requestParts[0] !== "/") {
+                //$uri_string = implode('/', [$uri_string, $requestParts[0]]);
+                $uri_string .= $requestParts[0];
+            } else {
+                $uri_string = implode('', [$uri_string, $requestParts[0]]);
+            }
+            
+            if (isset($requestParts[1])) {
+                $hasQuery = true;
+                $uri_string = implode('?', [$uri_string, $requestParts[1]]);
+            }
+        }
+        
+        if (!$hasQuery && isset($_SERVER['QUERY_STRING'])) {
+            $uri_string = implode('?', [$uri_string, $_SERVER['QUERY_STRING']]);
+        }
+        
+        return new static($uri_string);
     }
     
     /**
