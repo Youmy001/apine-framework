@@ -46,11 +46,6 @@ class UploadedFileTest extends TestCase
     }
     
     /**
-     * @covers UploadedFile::getClientFilename()
-     * @covers UploadedFile::getClientMediaType()
-     * @covers UploadedFile::getError()
-     * @covers UploadedFile::getSize()
-     *
      * @return UploadedFile
      */
     public function testConstructor() : UploadedFile
@@ -71,8 +66,104 @@ class UploadedFileTest extends TestCase
         return $uploadedFile;
     }
     
+    public function testConstructorFromResource()
+    {
+        $resource = fopen('php://memory', 'r+');
+        
+        $uploadedFile = new UploadedFile(
+            $resource,
+            0,
+            0
+        );
+    
+        $this->assertEquals(null, $uploadedFile->getClientFilename());
+        $this->assertEquals(null, $uploadedFile->getClientMediaType());
+        $this->assertEquals(0, $uploadedFile->getSize());
+        $this->assertEquals(0, $uploadedFile->getError());
+    }
+    
+    public function testConstructorFromStream() : UploadedFile
+    {
+        $resource = fopen('php://memory', 'r+');
+        $stream = new Stream($resource);
+        
+        $uploadedFile = new UploadedFile(
+            $stream,
+            0,
+            0
+        );
+        
+        $this->assertEquals(null, $uploadedFile->getClientFilename());
+        $this->assertEquals(null, $uploadedFile->getClientMediaType());
+        $this->assertEquals(0, $uploadedFile->getSize());
+        $this->assertEquals(0, $uploadedFile->getError());
+        
+        return $uploadedFile;
+    }
+    
+    public function testConstructorFromSAPI() : UploadedFile
+    {
+        $uploadedFile = new UploadedFile(
+            self::$filename,
+            12,
+            0,
+            'uploaded.txt',
+            'text/plain',
+            true
+        );
+    
+        $this->assertAttributeEquals(true, 'sapi', $uploadedFile);
+        
+        return $uploadedFile;
+    }
+    
     /**
-     * @covers UploadedFile::getStream()
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Invalid resource provided
+     */
+    public function testConstructorInvalidResource()
+    {
+        $uploadedFile = new UploadedFile(
+            false,
+            0,
+            0
+        );
+    }
+    
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Uploaded file filename must be string
+     */
+    public function testConstructorInvalidFilenameType()
+    {
+        $resource = fopen('php://memory', 'r+');
+        
+        $uploadedFile = new UploadedFile(
+            $resource,
+            0,
+            0,
+            false
+        );
+    }
+    
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Uploaded file media type must be string
+     */
+    public function testConstructorInvalidMediaType()
+    {
+        $resource = fopen('php://memory', 'r+');
+        
+        $uploadedFile = new UploadedFile(
+            $resource,
+            0,
+            0,
+            null,
+            false
+        );
+    }
+    
+    /**
      * @depends testConstructor
      * @param UploadedFile $uploadedFile
      */
@@ -82,7 +173,23 @@ class UploadedFileTest extends TestCase
     }
     
     /**
-     * @covers UploadedFile::moveTo()
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Cannot retrieve stream due to upload error
+     */
+    public function testGetStreamOnInvalidUpload()
+    {
+        $resource = fopen('php://memory', 'r+');
+    
+        $uploadedFile = new UploadedFile(
+            $resource,
+            0,
+            1
+        );
+    
+        $uploadedFile->getStream();
+    }
+    
+    /**
      * @depends testConstructor
      * @param UploadedFile $uploadedFile
      *
@@ -96,9 +203,9 @@ class UploadedFileTest extends TestCase
     }
     
     /**
-     * @covers UploadedFile::moveTo()
      * @depends testConstructor
      * @param UploadedFile $uploadedFile
+     * @return UploadedFile
      */
     public function testMoveTo(UploadedFile $uploadedFile)
     {
@@ -114,7 +221,39 @@ class UploadedFileTest extends TestCase
     }
     
     /**
-     * @covers UploadedFile::moveTo()
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The specified path is invalid
+     */
+    public function testMoveToInvalidTarget()
+    {
+        $resource = fopen('php://memory', 'r+');
+    
+        $uploadedFile = new UploadedFile(
+            $resource,
+            0,
+            0
+        );
+        
+        $uploadedFile->moveTo(false);
+    }
+    
+    /**
+     * @depends testConstructorFromStream
+     * @param UploadedFile $uploadedFile
+     */
+    public function testMoveToStream(UploadedFile $uploadedFile)
+    {
+        $newName = './' . uniqid('test-');
+        $uploadedFile->moveTo($newName);
+        
+        
+        $this->assertFileExists($newName);
+    
+        unlink($newName);
+        self::createTestFile();
+    }
+    
+    /**
      * @depends testMoveTo
      * @param UploadedFile $uploadedFile
      * @expectedException \RuntimeException
@@ -127,8 +266,6 @@ class UploadedFileTest extends TestCase
     }
     
     /**
-     * @covers UploadedFile::moveTo()
-     * @uses UploadedFile::getStream()
      * @depends testMoveTo
      *
      * @param UploadedFile $uploadedFile

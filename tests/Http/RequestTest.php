@@ -29,32 +29,38 @@ class RequestTest extends TestCase
         );
     }
     
+    private function requestStringUriFactory() : Request
+    {
+        return new Request(
+          'GET',
+          'https://example.com'
+        );
+    }
+    
     public function testAddsHostHeader()
     {
         $request = $this->requestFactory();
         $this->assertEquals('example.com', $request->getHeaderLine('Host'));
     }
     
-    /**
-     * @covers Request::getRequestTarget()
-     */
     public function testGetRequestTarget()
     {
         $this->assertEquals('/test/23?test=123', $this->requestFactory()->getRequestTarget());
     }
     
-    /**
-     * @covers Request::withRequestTarget()
-     */
     public function testWithRequestTarget()
     {
         $request = $this->requestFactory()->withRequestTarget('/giza?page=123');
         $this->assertEquals('/giza?page=123', $request->getRequestTarget());
     }
     
+    public function testGetRequestTargetEmpty()
+    {
+        $request = $this->requestStringUriFactory();
+        $this->assertEquals('/', $request->getRequestTarget());
+    }
+    
     /**
-     * @covers Request::withRequestTarget()
-     *
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Invalid target provided. Request targets may not contain whitespaces.
      */
@@ -63,26 +69,17 @@ class RequestTest extends TestCase
         $this->requestFactory()->withRequestTarget('/trest asdfas');
     }
     
-    /**
-     * @covers Request::getMethod()
-     */
     public function testGetMethod()
     {
         $this->assertEquals('GET', $this->requestFactory()->getMethod());
     }
     
-    /**
-     * @covers Request::withMethod()
-     */
     public function testWithMethod()
     {
         $request = $this->requestFactory()->withMethod('POST');
         $this->assertEquals('POST', $request->getMethod());
     }
     
-    /**
-     * @covers Request::getUri()
-     */
     public function testGetUri()
     {
         $uri = $this->requestFactory()->getUri();
@@ -90,9 +87,6 @@ class RequestTest extends TestCase
         $this->assertEquals('example.com', $uri->getHost());
     }
     
-    /**
-     * @covers Request::withUri()
-     */
     public function testWithUri()
     {
         $uri = new Uri('https://google.ca');
@@ -101,25 +95,16 @@ class RequestTest extends TestCase
         $this->assertEquals($uri, $request->getUri());
     }
     
-    /**
-     * @covers Request::getServerParams()
-     */
     public function testGetServerParams()
     {
         $this->assertEquals($_SERVER, $this->requestFactory()->getServerParams());
     }
     
-    /**
-     * @covers Request::getCookieParams()
-     */
     public function testGetCookieParams()
     {
         $this->assertEquals([], $this->requestFactory()->getCookieParams());
     }
     
-    /**
-     * @covers Request::withCookieParams()
-     */
     public function testWithCookieParams()
     {
         $array = ['cookie' => 'value'];

@@ -116,12 +116,8 @@ class Stream implements StreamInterface
      */
     public function __toString() : string
     {
-        try {
-            $this->rewind();
-            return $this->getContents();
-        } catch (\Exception $e) {
-            return '';
-        }
+        $this->rewind();
+        return $this->getContents();
     }
     
     /**

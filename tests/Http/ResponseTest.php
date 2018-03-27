@@ -43,17 +43,26 @@ class ResponseTest extends TestCase
         $this->assertAttributeEquals($body, 'body', $response);
     }
     
-    /**
-     * @covers Response::getStatusCode()
-     */
+    public function testConstructorCustomReason()
+    {
+        $reason = 'Custom Reason';
+        
+        $response = new Response(
+            401,
+            [],
+            null,
+            '1.1',
+            $reason
+        );
+        
+        $this->assertAttributeEquals($reason, 'reasonPhrase', $response);
+    }
+    
     public function testGetStatusCode()
     {
         $this->assertEquals(200, (new Response())->getStatusCode());
     }
     
-    /**
-     * @covers Response::withStatus()
-     */
     public function testWithStatus()
     {
         $response = (new Response())->withStatus(404);
@@ -61,8 +70,6 @@ class ResponseTest extends TestCase
     }
     
     /**
-     * @covers Response::withStatus()
-     *
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Invalid HTTP status code
      */
@@ -73,8 +80,6 @@ class ResponseTest extends TestCase
     }
     
     /**
-     * @covers Response::withStatus()
-     *
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage A reason phrase must be supplied for this status code
      */
@@ -84,9 +89,6 @@ class ResponseTest extends TestCase
         $response->withStatus(419); // 419 is not standard thus requires a reason to be supplied
     }
     
-    /**
-     * @covers Response::getReasonPhrase()
-     */
     public function testGetReasonPhrase()
     {
         $response = new Response();

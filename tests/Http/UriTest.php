@@ -47,6 +47,15 @@ class UriTest extends TestCase
      * Tests
      */
     
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessageRegExp /Unable to parse URI : /
+     */
+    public function testConstructorInvalidUri()
+    {
+        $uri = new Uri('http://:80');
+    }
+    
     public function testGetScheme()
     {
         $this->assertEquals('https', $this->uriFactory()->getScheme());
@@ -74,6 +83,14 @@ class UriTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $uri = $this->uriFactory()->withScheme(450);
+    }
+    
+    public function testWithSchemeSameScheme()
+    {
+        $uri = $this->uriFactory();
+        $uriScheme = $uri->withScheme('https');
+        
+        $this->assertSame($uri, $uriScheme);
     }
     
     public function testGetAuthority()
@@ -135,12 +152,32 @@ class UriTest extends TestCase
         $this->assertAttributeEquals('vocalvideo.net', 'host', $uri);
     }
     
+    public function testWithHostEmptyHost()
+    {
+        $uri = $this->uriFactory()->withHost('');
+        $this->assertAttributeEquals('', 'host', $uri);
+    }
+    
+    public function testWithHostHostIsNotString()
+    {
+        $uri = $this->uriFactory()->withHost(null);
+        $this->assertAttributeEquals('', 'host', $uri);
+    }
+    
     public function testWithHostInvalidHost()
     {
         $invalid_host = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bb';
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid Hostname ' . $invalid_host);
         $uri = $this->uriFactory()->withHost($invalid_host);
+    }
+    
+    public function testWithHostSameHost()
+    {
+        $uri = $this->uriFactory();
+        $uriSameHost = $uri->withHost('example.com');
+        
+        $this->assertSame($uri, $uriSameHost);
     }
     
     public function testGetPort()
@@ -176,6 +213,20 @@ class UriTest extends TestCase
         $uri = $this->uriFactory()->withPort($bad_port);
     }
     
+    public function testWithPortNull()
+    {
+        $uri = $this->uriNotStandardPortFactory()->withPort();
+        $this->assertAttributeEquals(443, 'port', $uri);
+    }
+    
+    public function testWithPortSamePort()
+    {
+        $uri = $this->uriFactory();
+        $uriSamePort = $uri->withPort(443);
+        
+        $this->assertSame($uri, $uriSamePort);
+    }
+    
     public function testGetPath()
     {
         $this->assertEquals('/test/as/15', $this->uriFactory()->getPath());
@@ -195,6 +246,21 @@ class UriTest extends TestCase
         $uri = $this->uriFactory()->withPath($invalid_path);
     }
     
+    public function testWithPathNull()
+    {
+        $uri = $this->uriFactory()->withPath(null);
+        
+        $this->assertAttributeEquals('', 'path', $uri);
+    }
+    
+    public function testWithPathSamePath()
+    {
+        $uri = $this->uriFactory();
+        $uriSamePath = $uri->withPath('/test/as/15');
+        
+        $this->assertSame($uri, $uriSamePath);
+    }
+    
     public function testGetQuery()
     {
         $this->assertEquals('as=15', $this->uriQueryStringFragmentFactory()->getQuery());
@@ -206,6 +272,20 @@ class UriTest extends TestCase
         $this->assertAttributeEquals('as=15&other=something', 'query', $uri);
     }
     
+    public function testWithQueryNull()
+    {
+        $uri = $this->uriQueryStringFragmentFactory()->withQuery(null);
+        $this->assertAttributeEquals('', 'query', $uri);
+    }
+    
+    public function testWithQuerySameQuery()
+    {
+        $uri = $this->uriQueryStringFragmentFactory();
+        $uriSameQuery = $uri->withQuery('as=15');
+        
+        $this->assertSame($uri, $uriSameQuery);
+    }
+    
     public function testGetFragment()
     {
         $this->assertEquals('fragment', $this->uriQueryStringFragmentFactory()->getFragment());
@@ -215,6 +295,19 @@ class UriTest extends TestCase
     {
         $uri = $this->uriFactory()->withFragment('something');
         $this->assertAttributeEquals('something', 'fragment', $uri);
+    }
+    
+    public function testWithFragmentNull()
+    {
+        $uri = $this->uriQueryStringFragmentFactory()->withFragment(null);
+        $this->assertAttributeEquals('', 'fragment', $uri);
+    }
+    
+    public function testWithFragmentSameFragment()
+    {
+        $uri = $this->uriQueryStringFragmentFactory();
+        $uriSameFragment = $uri->withFragment('fragment');
+        $this->assertSame($uri, $uriSameFragment);
     }
     
     public function test__toString()

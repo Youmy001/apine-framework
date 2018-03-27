@@ -100,7 +100,7 @@ class Response extends Message implements ResponseInterface
         array $headers = [],
         $body = null,
         string $protocolVersion = '1.1',
-        $reason = null
+        string $reason = null
     ) {
         $this->statusCode = $status;
         $this->headers = $headers;

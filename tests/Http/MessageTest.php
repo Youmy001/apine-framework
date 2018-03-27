@@ -26,7 +26,6 @@ class MessageTest extends TestCase
     }
     
     /**
-     * @covers Message::withProtocolVersion()
      * @return Message
      */
     public function testWithProtocolVersion()
@@ -38,7 +37,6 @@ class MessageTest extends TestCase
     }
     
     /**
-     * @covers Message::getProtocolVersion()
      * @depends testWithProtocolVersion
      *
      * @param Message $message
@@ -49,7 +47,6 @@ class MessageTest extends TestCase
     }
     
     /**
-     * @covers Message::withHeader()
      * @return Message
      */
     public function testWithHeader()
@@ -61,7 +58,6 @@ class MessageTest extends TestCase
     }
     
     /**
-     * @covers Message::getHeaders()
      * @depends testWithHeader
      *
      * @param Message $message
@@ -72,7 +68,6 @@ class MessageTest extends TestCase
     }
     
     /**
-     * @covers Message::hasHeader()
      * @depends testWithHeader
      *
      * @param Message $message
@@ -83,7 +78,6 @@ class MessageTest extends TestCase
     }
     
     /**
-     * @covers Message::getHeader()
      * @depends testWithHeader
      *
      * @param Message $message
@@ -94,7 +88,16 @@ class MessageTest extends TestCase
     }
     
     /**
-     * @covers Message::getHeaderLine()
+     * @depends testWithHeader
+     *
+     * @param Message $message
+     */
+    public function testGetHeaderNotSet(Message $message)
+    {
+        $this->assertEquals([], $message->getHeader('Fake-Header'));
+    }
+    
+    /**
      * @depends testWithHeader
      *
      * @param Message $message
@@ -105,10 +108,10 @@ class MessageTest extends TestCase
     }
     
     /**
-     * @covers Message::withAddedHeader()
      * @depends testWithHeader
      *
      * @param Message $message
+     * @return Message
      */
     public function testWithAddedHeader(Message $message)
     {
@@ -116,11 +119,13 @@ class MessageTest extends TestCase
         $this->assertEquals(true, $new->hasHeader('Accept-Language'));
         $this->assertEquals(true, $new->hasHeader('Content-Type'));
         
+        $new = $new->withAddedHeader('Content-Type', 'text/html');
+        $this->assertEquals(true, $new->hasHeader('Content-Type'));
+        
         return $new;
     }
     
     /**
-     * @covers Message::withoutHeader()
      * @depends testWithAddedHeader
      *
      * @param Message $message
@@ -134,8 +139,6 @@ class MessageTest extends TestCase
     }
     
     /**
-     * @covers Message::withBody()
-     *
      * @return Message
      */
     public function testWithBody()
@@ -150,7 +153,6 @@ class MessageTest extends TestCase
     }
     
     /**
-     * @covers Message::getBody()
      * @depends testWithBody
      *
      * @param Message $message

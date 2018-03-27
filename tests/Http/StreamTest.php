@@ -47,9 +47,6 @@ class StreamTest extends TestCase
         $stream = new Stream('fakefile');
     }
     
-    /**
-     * @covers Stream::getMetadata()
-     */
     public function testGetMetaData()
     {
         $stream = $this->streamReadOnlyFactory();
@@ -58,33 +55,29 @@ class StreamTest extends TestCase
         $this->assertInternalType('array', $stream->getMetadata());
     }
     
-    /**
-     * @covers Stream::isWritable()
-     */
+    public function testGetMetaDataOnDetachedStream()
+    {
+        $stream = $this->streamReadOnlyFactory();
+        $stream->detach();
+        
+        $this->assertNull($stream->getMetadata());
+    }
+    
     public function testIsWritable()
     {
         $this->assertEquals(true, $this->streamFactory()->isWritable());
     }
     
-    /**
-     * @covers Stream::isSeekable()
-     */
     public function testIsSeekable()
     {
         $this->assertEquals(true, $this->streamFactory()->isSeekable());
     }
     
-    /**
-     * @covers Stream::isReadable()
-     */
     public function testIsReadable()
     {
         $this->assertEquals(true, $this->streamFactory()->isReadable());
     }
     
-    /**
-     * @covers Stream::close()
-     */
     public function testClose()
     {
         $stream = $this->streamFactory();
@@ -93,9 +86,6 @@ class StreamTest extends TestCase
         $this->assertAttributeEquals(null, 'stream', $stream);
     }
     
-    /**
-     * @covers Stream::detach()
-     */
     public function testDetach()
     {
         $stream = $this->streamFactory();
@@ -108,17 +98,19 @@ class StreamTest extends TestCase
         $this->assertInternalType('resource', $resource);
     }
     
-    /**
-     * @covers Stream::getSize()
-     */
     public function testGetSize()
     {
         $this->assertEquals(strlen('Test of PSR-7 Streams'), $this->streamFactory()->getSize());
     }
     
-    /**
-     * @covers Stream::seek()
-     */
+    public function testGetSizeOnDetachedStream()
+    {
+        $stream = $this->streamFactory();
+        $stream->detach();
+        
+        $this->assertNull($stream->getSize());
+    }
+    
     public function testSeek()
     {
         $stream = $this->streamFactory();
@@ -127,8 +119,6 @@ class StreamTest extends TestCase
     }
     
     /**
-     * @covers Stream::seek()
-     *
      * @expectedException \RuntimeException
      * @expectedExceptionMessageRegExp /Cannot seek to position (\d+) with whence (\d{1})/
      */
@@ -139,8 +129,6 @@ class StreamTest extends TestCase
     }
     
     /**
-     * @covers Stream::seek()
-     *
      * @expectedException \RuntimeException
      * @expectedExceptionMessage Stream is detached
      */
@@ -152,9 +140,6 @@ class StreamTest extends TestCase
         $stream->seek(10);
     }
     
-    /**
-     * @covers Stream::tell()
-     */
     public function testTell()
     {
         // The pointer is at the end of the stream because I write some content in it
@@ -162,8 +147,6 @@ class StreamTest extends TestCase
     }
     
     /**
-     * @covers Stream::tell()
-     *
      * @expectedException \RuntimeException
      * @expectedExceptionMessage Stream is detached
      */
@@ -175,9 +158,6 @@ class StreamTest extends TestCase
         $position = $stream->tell();
     }
     
-    /**
-     * @covers Stream::rewind()
-     */
     public function testRewind()
     {
         $stream = $this->streamFactory();
@@ -185,9 +165,6 @@ class StreamTest extends TestCase
         $this->assertEquals(0, $stream->tell());
     }
     
-    /**
-     * @covers Stream::read()
-     */
     public function testRead()
     {
         $stream = $this->streamFactory();
@@ -196,9 +173,15 @@ class StreamTest extends TestCase
         $this->assertEquals('Test', $stream->read(4));
     }
     
+    public function testReadLengthZero()
+    {
+        $stream = $this->streamFactory();
+        $stream->rewind();
+        
+        $this->assertEmpty($stream->read(0));
+    }
+    
     /**
-     * @covers Stream::read()
-     *
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Length is not an integer
      */
@@ -209,8 +192,6 @@ class StreamTest extends TestCase
     }
     
     /**
-     * @covers Stream::read()
-     *
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Length cannot be negative
      */
@@ -221,8 +202,6 @@ class StreamTest extends TestCase
     }
     
     /**
-     * @covers Stream::read()
-     *
      * @expectedException \RuntimeException
      * @expectedExceptionMessage Stream is not readable
      */
@@ -233,8 +212,6 @@ class StreamTest extends TestCase
     }
     
     /**
-     * @covers Stream::read()
-     *
      * @expectedException \RuntimeException
      * @expectedExceptionMessage Stream is detached
      */
@@ -245,9 +222,6 @@ class StreamTest extends TestCase
         $stream->read(4);
     }
     
-    /**
-     * @covers Stream::getContents()
-     */
     public function testGetContents()
     {
         $stream = $this->streamFactory();
@@ -256,8 +230,6 @@ class StreamTest extends TestCase
     }
     
     /**
-     * @covers Stream::getContents()
-     *
      * @expectedException \RuntimeException
      * @expectedExceptionMessage Cannot read the content of stream
      */
@@ -268,8 +240,6 @@ class StreamTest extends TestCase
     }
     
     /**
-     * @covers Stream::getContents()
-     *
      * @expectedException \RuntimeException
      * @expectedExceptionMessage Stream is detached
      */
@@ -281,9 +251,6 @@ class StreamTest extends TestCase
         $contents = $stream->getContents();
     }
     
-    /**
-     * @covers Stream::eof()
-     */
     public function testEOF()
     {
         $stream = $this->streamReadOnlyFactory();
@@ -295,8 +262,6 @@ class StreamTest extends TestCase
     }
     
     /**
-     * @covers Stream::eof()
-     *
      * @expectedException \RuntimeException
      * @expectedExceptionMessage Stream is detached
      */
@@ -308,9 +273,6 @@ class StreamTest extends TestCase
         $eof = $stream->eof();
     }
     
-    /**
-     * @covers Stream::write()
-     */
     public function testWrite()
     {
         $stream = $this->streamFactory();
@@ -319,8 +281,6 @@ class StreamTest extends TestCase
     }
     
     /**
-     * @covers Stream::write()
-     *
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Argument must be of type string
      */
@@ -331,8 +291,6 @@ class StreamTest extends TestCase
     }
     
     /**
-     * @covers Stream::write()
-     *
      * @expectedException \RuntimeException
      * @expectedExceptionMessage Stream is not writable
      */
@@ -343,8 +301,6 @@ class StreamTest extends TestCase
     }
     
     /**
-     * @covers Stream::write()
-     *
      * @expectedException \RuntimeException
      * @expectedExceptionMessage Stream is detached
      */
@@ -355,9 +311,6 @@ class StreamTest extends TestCase
         $stream->write('1234');
     }
     
-    /**
-     * @covers Stream::getContents()
-     */
     public function test__toString()
     {
         $this->assertEquals('Test of PSR-7 Streams', (string)$this->streamFactory());

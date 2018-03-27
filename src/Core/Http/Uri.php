@@ -23,8 +23,6 @@ class Uri implements UriInterface
     
     private $scheme;
     
-    private $userInfo;
-    
     private $username;
     
     private $password;
@@ -353,7 +351,7 @@ class Uri implements UriInterface
      * @return static A new instance with the specified host.
      * @throws \InvalidArgumentException for invalid hostnames.
      */
-    public function withHost($host)
+    public function withHost($host = null)
     {
         if (!is_string($host) || empty($host)) {
             $host = '';
@@ -388,12 +386,12 @@ class Uri implements UriInterface
      */
     public function withPort($port = null)
     {
-        if (!$this->validatePort($port)) {
-            throw new \InvalidArgumentException(sprintf('Invalid Port Number %s', $port));
-        }
-        
         if (is_null($port) && !empty($this->scheme)) {
             $port = self::$defaultPorts[$this->scheme];
+        }
+        
+        if (!$this->validatePort($port)) {
+            throw new \InvalidArgumentException(sprintf('Invalid Port Number %s', $port));
         }
         
         if ($port === $this->port) {
@@ -425,7 +423,7 @@ class Uri implements UriInterface
      * @return static A new instance with the specified path.
      * @throws \InvalidArgumentException for invalid paths.
      */
-    public function withPath($path)
+    public function withPath($path = null)
     {
         if ($path === null) {
             $path = '';
@@ -460,7 +458,7 @@ class Uri implements UriInterface
      * @return static A new instance with the specified query string.
      * @throws \InvalidArgumentException for invalid query strings.
      */
-    public function withQuery($query)
+    public function withQuery($query = null)
     {
         if ($query === null) {
             $query = '';
@@ -490,7 +488,7 @@ class Uri implements UriInterface
      *
      * @return static A new instance with the specified fragment.
      */
-    public function withFragment($fragment)
+    public function withFragment($fragment = null)
     {
         if ($fragment === null) {
             $fragment = '';

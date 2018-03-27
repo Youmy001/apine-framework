@@ -50,7 +50,7 @@ class UploadedFile implements UploadedFileInterface
     {
         $this->size = $size;
         $this->error = $errorStatus;
-        $this->sapi = false;
+        $this->sapi = $sapi;
         $this->setClientFilename($clientFilename);
         $this->setClientMediaType($clientMediaType);
         

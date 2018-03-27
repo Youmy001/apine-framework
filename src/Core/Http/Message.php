@@ -286,7 +286,7 @@ abstract class Message implements MessageInterface
         return $newMessage;
     }
     
-    protected function setBody($body = '')
+    protected function setBody($body = null)
     {
         $stream = null;
         
@@ -295,7 +295,7 @@ abstract class Message implements MessageInterface
             case 'integer':
             case 'double':
             case 'boolean':
-                $resource = fopen('php://temp', 'r+');
+                $resource = fopen('php://memory', 'r+');
                 if ($body !== '') {
                     fwrite($resource, $body);
                     fseek($resource, 0);
@@ -311,7 +311,7 @@ abstract class Message implements MessageInterface
                 }
                 break;
             case 'NULL':
-                $stream = new Stream(fopen('php://temp', 'r+'));
+                $stream = new Stream(fopen('php://memory', 'r+'));
         }
         
         if (is_null($stream)) {
