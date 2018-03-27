@@ -64,7 +64,7 @@ class ContainerTest extends TestCase
         $this->expectException(ContainerException::class);
     
         $container = new Container();
-        $container->register(StubClass::class, function() use ($str) {return new $str();});
+        $container->register(StubClass::class, function() use ($str) {return new $str();}, true);
         $container->get(StubClass::class);
     }
     

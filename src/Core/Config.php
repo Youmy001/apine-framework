@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Apine\Core;
 
 use Apine\Exception\GenericException;
-use Apine\Utility\Files;
+use Apine\Core\Json\JsonStore;
 
 /**
  * Configuration Reader
@@ -42,7 +42,7 @@ final class Config
      *
      * @param string $a_path
      *
-     * @throws GenericException If file not found
+     * @throws \Exception If file not found
      */
     public function __construct(string $a_path)
     {

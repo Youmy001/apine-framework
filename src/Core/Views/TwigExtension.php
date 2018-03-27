@@ -19,6 +19,11 @@ class TwigExtension extends Twig_Extension
         return 'apine';
     }
     
+    public function getGlobals()
+    {
+    
+    }
+    
     public function getFunctions()
     {
         return array(

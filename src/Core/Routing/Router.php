@@ -9,14 +9,13 @@ declare(strict_types=1);
 
 namespace Apine\Core\Routing;
 
-
 use Apine\Core\Views\View;
 use \ReflectionClass;
 use \ReflectionMethod;
 use Apine\Core\Config;
 use Apine\Core\Container\Container;
 use Apine\Core\Http\Response;
-use Apine\Core\JsonStore;
+use Apine\Core\Json\JsonStore;
 use Apine\Exception\GenericException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

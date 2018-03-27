@@ -72,25 +72,20 @@ class Container implements ContainerInterface
      */
     public function has($id) : bool
     {
-        try {
-            return (null !== $this->find($id));
-        } catch (\Throwable $e) {
-            // If an error occurs it is because the closure
-            // of the content of the component
-            return true;
-        }
+        return (null !== $this->find($id));
     }
     
     /**
      * @param string $id
      *
      * @return Component|null
+     *
      * @throws \Throwable
      */
     private function find(string $id) : ?Component
     {
         $result = null;
-        
+    
         foreach ($this->entries as $component) {
             if (($id === $component->getName()) || $component->hasType($id)) {
                 $result = $component;
