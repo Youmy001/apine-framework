@@ -57,7 +57,7 @@ class Router implements RouterInterface
      *
      * @param Container $container
      *
-     * @throws GenericException
+     * @throws \Exception
      */
     public function __construct(Container &$container)
     {
@@ -77,7 +77,7 @@ class Router implements RouterInterface
                 $this->loadRoutes();
             }
         } catch (\Exception $e) {
-            throw new GenericException($e->getMessage(), $e->getCode(), $e);
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
     
