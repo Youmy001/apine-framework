@@ -73,11 +73,6 @@ final class Application
             ErrorHandler::set(1);
             $this->services= ServiceProvider::registerDefaultServices();
             $this->apiResources = new ResourcesContainer();
-            
-            // Verify if the minimum file dependencies are fulfilled
-            if (!file_exists($documentRoot = $_SERVER['DOCUMENT_ROOT'] . '/.htaccess') || !file_exists('settings.json')) {
-                throw new GenericException('Critical Error: Framework Installation Not Completed', 503);
-            }
         } catch (\Exception $e) {
             $this->outputException($e);
             die();
@@ -133,7 +128,7 @@ final class Application
                 $this->output($redirection->respond());
             }
     
-            $config = new Config('settings.json');
+            $config = new Config('config/error.json');
     
             // Make sure application runs with a valid execution mode
             if ($config->debug !== null) {

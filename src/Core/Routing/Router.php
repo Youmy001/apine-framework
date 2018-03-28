@@ -64,12 +64,13 @@ class Router implements RouterInterface
         $this->container = $container;
     
         try {
-            $config = $container->get(Config::class);
+            $config = new Config('config/router.json');
             $request = $_GET['apine-request'];
             $requestArray = explode("/", $request);
             $isAPICall = ($requestArray[1] === 'api');
         
-            if ((isset($config->use_api) && $config->use_api === true) && $isAPICall) {
+            //if ((isset($config->use_api) && $config->use_api === true) && $isAPICall) {
+            if ($config->serve->api === true && $isAPICall) {
                 $resources = $container->get('apiResources');
                 $this->loadResources($resources);
             } else {
@@ -211,9 +212,7 @@ class Router implements RouterInterface
      */
     private function loadRoutes ()
     {
-        $config = $this->container->get(Config::class);
-        $routes = JsonStore::get($config->getPath())->routes;
-        $routes = json_decode(json_encode($routes), true);
+        $routes = json_decode(file_get_contents('config/routes.json'), true);
         
         array_walk($routes, function ($definitions, $pattern) {
             $this->routes = array_merge(

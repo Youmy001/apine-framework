@@ -64,9 +64,9 @@ final class Config
      *
      * @return mixed
      */
-    public function &__get(string $name)
+    public function __get(string $name)
     {
-        return $this->settings->settings->$name;
+        return $this->settings->$name;
     }
     
     /**
@@ -75,11 +75,11 @@ final class Config
      */
     public function __set(string $name, $value) : void
     {
-        $this->settings->settings->$name = $value;
+        $this->settings->$name = $value;
     }
     
     public function __isset(string $name) : bool
     {
-        return isset($this->settings->settings->$name);
+        return isset($this->settings->$name);
     }
 }

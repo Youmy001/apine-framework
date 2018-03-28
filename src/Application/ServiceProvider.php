@@ -25,10 +25,6 @@ final class ServiceProvider
     {
         $container = new Container();
     
-        $container->register('config', function () : Config {
-            return new Config('settings.json');
-        });
-    
         $container->register('request', function () : Request {
             return Request::createFromGlobals();
         });
@@ -38,15 +34,15 @@ final class ServiceProvider
         }, true);
     
         $container->register(Connection::class, function () use ($container) : Connection {
-            $config = $container->get(Config::class);
+            $config = new Config('config/database.json');
             
             return new Connection(
-                $config->database->type,
-                $config->database->host,
-                $config->database->dbname,
-                $config->database->username,
-                $config->database->password,
-                $config->database->charset
+                $config->type,
+                $config->host,
+                $config->dbname,
+                $config->username,
+                $config->password,
+                $config->charset
             );
         });
     
@@ -57,15 +53,15 @@ final class ServiceProvider
         });
     
         $container->register(BasicDatabase::class, function () use ($container) : BasicDatabase {
-            $config = $container->get(Config::class);
+            $config = new Config('config/database.json');
             
             return new BasicDatabase(
-                $config->database->type,
-                $config->database->host,
-                $config->database->dbname,
-                $config->database->username,
-                $config->database->password,
-                $config->database->charset
+                $config->type,
+                $config->host,
+                $config->dbname,
+                $config->username,
+                $config->password,
+                $config->charset
             );
         });
         

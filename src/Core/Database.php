@@ -69,7 +69,7 @@ final class Database
      * @param boolean $db_override Replace the default database
      *
      * @throws DatabaseException If cannot connect to database server
-     * @throws GenericException If cannot load the config
+     * @throws \Exception If cannot load the config
      */
     public function __construct(
         string $db_type = null,
@@ -82,12 +82,11 @@ final class Database
     ) {
         try {
             if ((!is_null($db_type) && !is_null($db_host) && !is_null($db_name)) || !isset(self::$apine_instance)) {
-                //$config = Application::getInstance()->getConfig();
-                $config = new Config('settings.json');
+                $config = new Config('config/database.json');
                 $db_port = '3306';
                 
                 if (!(!is_null($db_type) && !is_null($db_host) && !is_null($db_name))) {
-                    $db_host = $config->database->host;
+                    $db_host = $config->host;
                 }
                 
                 // Split Host string to extract the port
@@ -104,9 +103,9 @@ final class Database
                 if (!is_null($db_type) && !is_null($db_host) && !is_null($db_name)) {
                     $db_dns = $db_type . ':host=' . $db_host . ';dbname=' . $db_name . ';port=' . $db_port . ';charset=' . $db_charset;
                 } else {
-                    $db_dns = $config->database->type . ':host=' . $db_host . ';dbname=' . $config->database->dbname . ';port=' . $db_port . ';charset=' . $config->database->charset;
-                    $db_user = $config->database->username;
-                    $db_password = $config->database->password;
+                    $db_dns = $config->type . ':host=' . $db_host . ';dbname=' . $config->dbname . ';port=' . $db_port . ';charset=' . $config->charset;
+                    $db_user = $config->username;
+                    $db_password = $config->password;
                 }
                 
                 
