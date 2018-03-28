@@ -55,7 +55,7 @@ class HTMLView extends View
             $loader = new Twig_Loader_Filesystem($this->filePath);
             $twig = new Twig_Environment($loader, array(
                 'cache'       => 'views/_cache',
-                'auto-reload' => true,
+                'auto_reload' => true,
                 'debug'       => ((bool)ErrorHandler::$reportingLevel)
             ));
             $twig->addExtension(new TwigExtension());
