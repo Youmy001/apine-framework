@@ -135,6 +135,8 @@ final class Application
                 $bool = $config->debug;
                 if (is_bool($bool) && $bool === true) {
                     ErrorHandler::set(1);
+                } else {
+                    ErrorHandler::set(0);
                 }
             }
     
