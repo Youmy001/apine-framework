@@ -71,7 +71,7 @@ class Uri implements UriInterface
      */
     public static function createFromGlobals() : UriInterface
     {
-        $uri_string = (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : '';
+        $uri_string = (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
         $hasQuery = false;
         
         
