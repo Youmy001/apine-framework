@@ -241,7 +241,7 @@ final class Collection implements \IteratorAggregate {
 	 */
 	public function length () {
 
-		return sizeof($this->items);
+		return $this->items != null ? sizeof($this->items) : 0;
 	
 	} 
 
