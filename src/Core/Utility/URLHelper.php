@@ -103,13 +103,15 @@ final class URLHelper
     private static function protocol($param)
     {
         switch ($param) {
-            case 0:
+            case APINE_PROTOCOL_HTTP:
                 $protocol = 'http://';
                 break;
-            case 1:
-            case 2:
-            default:
+            case APINE_PROTOCOL_HTTPS:
                 $protocol = 'https://';
+                break;
+            case APINE_PROTOCOL_DEFAULT:
+            default:
+                $protocol = self::getInstance()->uri->getScheme();
                 break;
         }
         
