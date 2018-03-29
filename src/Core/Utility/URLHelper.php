@@ -12,6 +12,9 @@ declare(strict_types=1);
 namespace Apine\Core\Utility;
 
 use Apine\Core\Http\Request;
+use const Apine\Core\PROTOCOL_HTTP;
+use const Apine\Core\PROTOCOL_HTTPS;
+use const Apine\Core\PROTOCOL_DEFAULT;
 
 /**
  * Internal URL Writer
@@ -103,13 +106,13 @@ final class URLHelper
     private static function protocol($param)
     {
         switch ($param) {
-            case APINE_PROTOCOL_HTTP:
+            case PROTOCOL_HTTP:
                 $protocol = 'http://';
                 break;
-            case APINE_PROTOCOL_HTTPS:
+            case PROTOCOL_HTTPS:
                 $protocol = 'https://';
                 break;
-            case APINE_PROTOCOL_DEFAULT:
+            case PROTOCOL_DEFAULT:
             default:
                 $protocol = self::getInstance()->uri->getScheme() . '://';
                 break;
@@ -147,7 +150,7 @@ final class URLHelper
     
     public static function resource($path)
     {
-        return self::protocol(APINE_PROTOCOL_DEFAULT) . self::getInstance()->authority . '/' . $path;
+        return self::protocol(PROTOCOL_DEFAULT) . self::getInstance()->authority . '/' . $path;
     }
     
     /**
@@ -160,7 +163,7 @@ final class URLHelper
      *
      * @return string
      */
-    public static function path($path, $protocol = APINE_PROTOCOL_DEFAULT)
+    public static function path($path, $protocol = PROTOCOL_DEFAULT)
     {
         return self::writeUrl(self::getInstance()->authority, $path, $protocol);
     }
@@ -176,7 +179,7 @@ final class URLHelper
      *
      * @return string
      */
-    public static function mainPath($path, $protocol = APINE_PROTOCOL_DEFAULT)
+    public static function mainPath($path, $protocol = PROTOCOL_DEFAULT)
     {
         return self::writeUrl(self::getInstance()->mainAuthority, $path, $protocol);
     }
@@ -192,7 +195,7 @@ final class URLHelper
      *
      * @return string
      */
-    public static function relativePath($path, $protocol = APINE_PROTOCOL_DEFAULT)
+    public static function relativePath($path, $protocol = PROTOCOL_DEFAULT)
     {
         return self::writeUrl(self::getInstance()->authority, self::getInstance()->path . '/' . $path,
             $protocol);
@@ -205,7 +208,7 @@ final class URLHelper
      *
      * @return string
      */
-    public static function getCurrentPath($protocol = APINE_PROTOCOL_DEFAULT)
+    public static function getCurrentPath($protocol = PROTOCOL_DEFAULT)
     {
         return self::writeUrl(self::getInstance()->authority, self::getInstance()->path, $protocol);
     }

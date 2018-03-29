@@ -6,7 +6,7 @@
  * Time: 14:51
  */
 
-namespace Apine\Utility;
+namespace Apine\Core\Utility;
 
 
 class Files

@@ -12,11 +12,9 @@ namespace Apine;
 
 //use \Exception;
 
-require_once __DIR__ . '/Includes/Constants.php';
-require_once __DIR__ . '/Includes/Functions.php';
-require_once __DIR__ . '/Includes/Time.php';
-
-apine_execution_time();
+//require_once __DIR__ . '/Includes/Constants.php';
+require_once __DIR__ . '/Core/Constants.php';
+require_once __DIR__ . '/Core/Utility/Functions.php';
 
 /**
  * Module Files Loading Tool

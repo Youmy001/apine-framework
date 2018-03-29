@@ -6,7 +6,7 @@
  * Time: 14:46
  */
 
-namespace Apine\Utility;
+namespace Apine\Core\Utility;
 
 
 class Types

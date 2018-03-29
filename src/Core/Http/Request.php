@@ -12,6 +12,8 @@ namespace Apine\Core\Http;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
+use const Apine\Core\REQUEST_USER;
+use const Apine\Core\REQUEST_MACHINE;
 
 class Request extends Message implements ServerRequestInterface
 {
@@ -106,9 +108,9 @@ class Request extends Message implements ServerRequestInterface
             $requestArray = explode("/", $requestString);
         
             if ($requestArray[1] === 'api') {
-                $type = APINE_REQUEST_MACHINE;
+                $type = REQUEST_MACHINE;
             } else {
-                $type = APINE_REQUEST_USER;
+                $type = REQUEST_USER;
             }
         
             unset($gets['apine-request']);
@@ -540,7 +542,7 @@ class Request extends Message implements ServerRequestInterface
      */
     public function isAPICall() : bool
     {
-        return ($this->requestType === APINE_REQUEST_MACHINE);
+        return ($this->requestType === REQUEST_MACHINE);
     }
     
     /**

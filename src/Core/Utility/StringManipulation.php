@@ -6,7 +6,7 @@
  * Time: 14:37
  */
 
-namespace Apine\Utility;
+namespace Apine\Core\Utility;
 
 
 class StringManipulation

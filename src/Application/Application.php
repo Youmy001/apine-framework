@@ -24,6 +24,7 @@ use Apine\Core\Config;
 use Apine\Core\Utility\URLHelper;
 use Apine\Core\Views\RedirectionView;
 use Psr\Http\Message\ResponseInterface;
+use function Apine\Core\Utility\executionTime;
 
 /**
  * Apine Application
@@ -68,6 +69,7 @@ final class Application
     public function __construct(string $projectDirectory = null)
     {
         try {
+            executionTime();
             $this->setPaths($projectDirectory);
             
             ErrorHandler::set(1);

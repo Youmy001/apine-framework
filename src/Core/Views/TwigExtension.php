@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Apine\Core\Views;
 
-use Apine\Application\Application;
-use Apine\MVC\HTMLView;
-use Apine\Session\SessionManager;
-use Apine\Application\Config;
-use Apine\Application\Translator;
 use Apine\Core\Utility\URLHelper;
 use Twig_Extension;
+use function Apine\Core\Utility\executionTime;
+use const Apine\Core\PROTOCOL_DEFAULT;
+use const Apine\Core\PROTOCOL_HTTP;
+use const Apine\Core\PROTOCOL_HTTPS;
 
 class TwigExtension extends Twig_Extension
 {
@@ -57,19 +56,19 @@ class TwigExtension extends Twig_Extension
                 return '';
             }),*/
             new \Twig_SimpleFunction('execution_time', function () {
-                return apine_execution_time();
+                return executionTime();
             }),
             new \Twig_SimpleFunction('path', function ($path, $protocol = 'default') {
                 switch ($protocol) {
                     case 'http':
-                        $protocol = APINE_PROTOCOL_HTTP;
+                        $protocol = PROTOCOL_HTTP;
                         break;
                     case 'https':
-                        $protocol = APINE_PROTOCOL_HTTPS;
+                        $protocol = PROTOCOL_HTTPS;
                         break;
                     case 'default':
                     default:
-                        $protocol = APINE_PROTOCOL_DEFAULT;
+                        $protocol = PROTOCOL_DEFAULT;
                         break;
                 }
                 
@@ -87,14 +86,14 @@ class TwigExtension extends Twig_Extension
             new \Twig_SimpleFilter('path', function ($path, $protocol = 'default') {
                 switch ($protocol) {
                     case 'http':
-                        $protocol = APINE_PROTOCOL_HTTP;
+                        $protocol = PROTOCOL_HTTP;
                         break;
                     case 'https':
-                        $protocol = APINE_PROTOCOL_HTTPS;
+                        $protocol = PROTOCOL_HTTPS;
                         break;
                     case 'default':
                     default:
-                        $protocol = APINE_PROTOCOL_DEFAULT;
+                        $protocol = PROTOCOL_DEFAULT;
                         break;
                 }
                 
