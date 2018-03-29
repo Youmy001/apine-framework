@@ -8,8 +8,9 @@
 
 namespace Apine\Core;
 
-use Apine\File\File;
-use Apine\Exception\GenericException;
+use Apine\Application\Application;
+use Apine\Core\Config;
+use RuntimeException;
 
 /**
  * Verifies version numbers for modules
@@ -30,48 +31,24 @@ final class Version
     
     private $application;
     
-    public function __construct($framework_version, $application_version = null)
+    public function __construct()
     {
-        if (empty($application_version)) {
-            if (is_file('VERSION')) {
-                $file = new File('VERSION', true);
-                $application_version = $file->content();
+        try {
+            if (!self::validate(Application::$version)) {
+                throw new RuntimeException('Invalid Framework Version Number');
             } else {
-                $application_version = $framework_version;
+                $this->framework = Application::$version;
             }
-        }
-        
-        if (self::validate($framework_version) && self::validate($application_version)) {
-            $this->application = $application_version;
-            $this->framework = $framework_version;
-        } else {
-            throw new GenericException('Invalid Version Numbers', 500);
-        }
-    }
+            
+            $config = new Config('config/application');
+            
+            if (!self::validate($config->version)) {
+                throw new RuntimeException('Invalid Application Version Number');
+            }
     
-    /**
-     * Check a module version number
-     *
-     * @param string $module_name Name of the module
-     *
-     * @return string
-     */
-    public static function module($module_name)
-    {
-        if (is_file('modules/' . $module_name . '/VERSION')) {
-            $file = new File('modules/' . $module_name . '/VERSION', true);
-            $version = $file->content();
-        } else {
-            if (is_file($module_name . '/VERSION')) {
-                $file = new File($module_name . '/VERSION', true);
-                $version = $file->content();
-            }
-        }
-        
-        if (isset($version) && self::validate($version)) {
-            return $version;
-        } else {
-            return self::application();
+            $this->application = $config->version;
+        } catch (\Exception $e) {
+            return;
         }
     }
     

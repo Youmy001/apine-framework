@@ -111,7 +111,7 @@ final class URLHelper
                 break;
             case APINE_PROTOCOL_DEFAULT:
             default:
-                $protocol = self::getInstance()->uri->getScheme();
+                $protocol = self::getInstance()->uri->getScheme() . '://';
                 break;
         }
         
@@ -183,7 +183,7 @@ final class URLHelper
     
     /**
      * Retrieve the http path to a resource relative to current
-     * ressource
+     * resource
      *
      * @param string  $path
      *        String to append

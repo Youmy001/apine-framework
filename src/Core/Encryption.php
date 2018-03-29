@@ -10,7 +10,8 @@ declare(strict_types=1);
 
 namespace Apine\Core;
 
-use Apine\Application\Application;
+use Apine\Core\Json\JsonStore;
+use Apine\Core\Json\JsonStoreFileNotFoundException;
 
 /**
  * Encryption Tools
@@ -22,65 +23,100 @@ use Apine\Application\Application;
 final class Encryption
 {
     /**
+     * @var Encryption
+     */
+    private static $instance;
+    
+    /**
+     * @var string
+     */
+    private $key;
+    
+    /**
+     * Encryption constructor.
+     *
+     * @throws \Exception
+     */
+    private function __construct()
+    {
+        try {
+            $json = JsonStore::get('config/encryption.json');
+            $this->key = $json->key;
+        } catch (JsonStoreFileNotFoundException $e) {
+            $newKey = self::generateKey();
+            $array = [];
+            $array['key'] = $newKey;
+    
+            JsonStore::set('config/encryption.json', $array);
+    
+            $this->key = $newKey;
+        } catch (\RuntimeException $e) {
+            throw new \RuntimeException('Impossible to load the encryption config');
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+    
+    /**
+     * @return Encryption
+     * @throws \Exception
+     */
+    public static function getInstance() : self
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = new static();
+        }
+    
+        return self::$instance;
+    }
+    
+    /**
      * Encrypt a string against the encryption string
      *
-     * @param string $origin_string
+     * @param string $source
      *
      * @return string
      */
-    public static function encrypt(string $origin_string) : string
+    public static function encrypt(string $source) : string
     {
-        $config = Application::getInstance()->getConfig();
+        $key = self::getInstance()->key;
+    
+        $iv = substr($key, 0, 16);
+        $encrypted = openssl_encrypt(
+            $source,
+            'AES128',
+            $key,
+            0,
+            $iv
+        );
         
-        if (!$config->encryption->key) {
-            self::generateKey();
-        }
-        
-        if ($config->encryption->method !== 'ssl') {
-            $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
-            $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-            $encrypted_string = mcrypt_encrypt(MCRYPT_BLOWFISH, $config->encryption->key,
-                utf8_encode($origin_string), MCRYPT_MODE_ECB, $iv);
-        } else {
-            $iv = substr($config->encryption->key, 0, 16);
-            $encrypted_string = openssl_encrypt($origin_string, 'AES128',
-                $config->encryption->key, 0, $iv);
-        }
-        
-        return $encrypted_string;
+        return $encrypted;
     }
     
     /**
      * Decrypt a string from the encryption string
      *
-     * @param string $encrypted_string
+     * @param string $source
      *
      * @return string
      */
-    public static function decrypt(string $encrypted_string) : string
+    public static function decrypt(string $source) : string
     {
-        $config = Application::getInstance()->getConfig();
+        $key = self::getInstance()->key;
+    
+        $iv = substr($key, 0, 16);
+        $decrypted = openssl_decrypt(
+            $source,
+            'AES128',
+            $key,
+            0,
+            $iv
+        );
         
-        if (!$config->encryption->key) {
-            self::generateKey();
-        }
-        
-        if ($config->encryption->method !== 'ssl') {
-            $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
-            $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-            $decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, $config->encryption->key,
-                $encrypted_string, MCRYPT_MODE_ECB, $iv);
-        } else {
-            $iv = substr($config->encryption->key, 0, 16);
-            $decrypted_string = openssl_decrypt($encrypted_string, 'AES128',
-                $config->encryption->key, 0, $iv);
-        }
-        
-        return $decrypted_string;
-        
+        return $decrypted;
     }
     
-    private static function generateKey()
+    /*private static function generateKey()
     {
         $config = Application::getInstance()->getConfig();
         $hash = hash('md5', rand(1, 100000) . '_' . rand(100001, 200000));
@@ -89,6 +125,11 @@ final class Encryption
             'key' => $hash,
             'method' => 'ssl'
         ];
+    }*/
+    
+    private static function generateKey() : string
+    {
+        return hash('md5', rand(1, 100000) . '_' . rand(100001, 200000));
     }
     
     /**
