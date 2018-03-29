@@ -110,7 +110,7 @@ abstract class EntityModel implements EntityInterface {
 			}
 		}
 
-		if (sizeof($this->modified_fields) > 0) {
+		if ($this->modified_fields != null && sizeof($this->modified_fields) > 0) {
 			foreach ($this->modified_fields as $key => $values) {
 				$this->modified_fields[$key] = false;
 			}
@@ -333,7 +333,7 @@ abstract class EntityModel implements EntityInterface {
 				}
 			}
 
-			if (sizeof($new_dbf) > 0) {
+			if ($new_dbf != null && sizeof($new_dbf) > 0) {
 				$this->entity_id = $this->database->insert($this->table_name, $new_dbf);
 			}
 
