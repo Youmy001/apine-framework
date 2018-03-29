@@ -98,7 +98,7 @@ class JsonStore
      */
     private static function write(string $path, $content)
     {
-        $resource = fopen($path, 'c+');
+        $resource = fopen($path, 'w+');
         fwrite($resource, (string) $content);
         fclose($resource);
     }
