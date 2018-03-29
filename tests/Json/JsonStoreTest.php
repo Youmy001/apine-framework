@@ -127,4 +127,20 @@ class JsonStoreTest extends TestCase
         $this->assertFileExists(self::$invalidFileName);
         $this->assertFileExists('./generatedFile');
     }
+    
+    /**
+     * @depends testWrite
+     */
+    public function testWriteValidJsonAfterWriting()
+    {
+        $this->store->get(self::$jsonFileName);
+        $this->store->get(self::$invalidFileName);
+        $this->store->get('./generatedFile');
+    
+        $this->store->__destruct();
+        
+        $this->assertNotFalse(json_decode(file_get_contents(self::$jsonFileName)));
+        $this->assertNotFalse(json_decode(file_get_contents(self::$invalidFileName)));
+        $this->assertNotFalse(json_decode(file_get_contents('./generatedFile')));
+    }
 }
