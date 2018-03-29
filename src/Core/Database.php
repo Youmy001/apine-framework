@@ -10,9 +10,7 @@ declare(strict_types=1);
 
 namespace Apine\Core;
 
-use Apine\Application\ServiceProvider;
-use Apine\Exception\DatabaseException;
-use Apine\Exception\GenericException;
+use Apine\Core\Error\DatabaseException;
 
 /**
  * Database Access Tools
@@ -234,7 +232,7 @@ final class Database
      *        define the "WHERE" SQL statement
      *
      * @throws DatabaseException If cannot execute update query
-     * @throws GenericException
+     * @throws \Exception
      */
     public function update(string $table_name, array $ar_values, array $ar_conditions) : void
     {
@@ -292,7 +290,7 @@ final class Database
             if (count($ar_values) > 0) {
                 $this->instance->exec($query);
             } else {
-                throw new GenericException('Missing Values', 500);
+                throw new \Exception('Missing Values', 500);
             }
         } catch (\PDOException $e) {
             throw new DatabaseException($e->getMessage(), 500, $e);

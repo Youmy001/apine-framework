@@ -193,7 +193,7 @@ class UploadedFileTest extends TestCase
      * @depends testConstructor
      * @param UploadedFile $uploadedFile
      *
-     * @expectedException \RuntimeException
+     * @expectedException \ErrorException
      * @expectedExceptionMessageRegExp /No such file or directory/
      */
     public function testMoveToCannotWrite(UploadedFile $uploadedFile)

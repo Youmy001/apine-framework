@@ -4,16 +4,16 @@
  * This script contains a custom exception handler
  *
  * @license MIT
- * @copyright 2015 Tommy Teasdale
+ * @copyright 2018 Tommy Teasdale
  */
 
-namespace Apine\Exception;
+namespace Apine\Core\Error;
 
 /**
  * Custom implementation of the PDO exception handler
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
- * @package Apine\Exception
+ * @package Apine\Core\Error
  */
 class DatabaseException extends \PDOException
 {

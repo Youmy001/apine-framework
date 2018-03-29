@@ -9,7 +9,6 @@
 
 namespace Apine\Translation;
 
-use Apine\Exception\GenericException;
 use Apine\Utility\Files;
 
 /**
@@ -48,7 +47,7 @@ final class Translation
      *
      * @param TranslationLanguage $a_language
      *
-     * @throws GenericException If the file is inexistant or invalid
+     * @throws \Exception If the file is nonexistent or invalid
      */
     public function __construct(TranslationLanguage $a_language)
     {
@@ -57,10 +56,10 @@ final class Translation
         
         if (file_exists($this->language->file_path)) {
             if (Files::fileExtension($this->language->file_path) != "json") {
-                throw new GenericException("Invalid File");
+                throw new \Exception("Invalid File");
             }
         } else {
-            throw new GenericException("Inexistant File");
+            throw new \Exception("Nonexistent File");
         }
     }
     

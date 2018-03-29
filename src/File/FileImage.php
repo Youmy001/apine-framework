@@ -10,7 +10,6 @@
 namespace Apine\File;
 
 use \Exception;
-use Apine\Exception\GenericException;
 
 /**
  * Image File Resource Handler
@@ -83,7 +82,7 @@ final class FileImage extends File
         try {
             parent::__construct($a_path);
             $this->load();
-        } catch (GenericException $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }
@@ -91,12 +90,12 @@ final class FileImage extends File
     /**
      * Load Image resource
      *
-     * @throws GenericException
+     * @throws Exception
      */
     private function load()
     {
         if (!$this->isValidImage()) {
-            throw new GenericException("Invalid file format (" . $this->path . ")");
+            throw new Exception("Invalid file format (" . $this->path . ")");
         }
         
         if ($this->type() == "image/jpeg" || $this->type() == "image/jpg") {
@@ -118,11 +117,11 @@ final class FileImage extends File
      * @param string $a_path
      *
      * @return FileImage
-     * @throws GenericException ApineFileImage can't handle empty files
+     * @throws Exception ApineFileImage can't handle empty files
      */
     public static function create($a_path)
     {
-        throw new GenericException('ApineFileImage cannot handle empty image files');
+        throw new Exception('ApineFileImage cannot handle empty image files');
     }
     
     
@@ -177,7 +176,7 @@ final class FileImage extends File
      * @param <string|float> $a_ratio
      *        Desired height/width ratio
      *
-     * @throws GenericException
+     * @throws Exception
      */
     public function crop_to_ratio($a_ratio)
     {
@@ -236,7 +235,7 @@ final class FileImage extends File
                 
             }
         } else {
-            throw new GenericException("Can't modify images in read-only mode");
+            throw new Exception("Can't modify images in read-only mode");
         }
     }
     
@@ -254,14 +253,14 @@ final class FileImage extends File
      *        Vertical Position of the cropped image inside the
      *        original image from the upp-left corner.
      *
-     * @throws GenericException
+     * @throws Exception
      */
     public function crop($n_width, $n_height, $x, $y)
     {
         if (!$this->readonly) {
             
             if (($n_width + $x) > $this->width() || ($n_height + $y) > $this->height()) {
-                throw new GenericException("Invalid cropping dimensions");
+                throw new Exception("Invalid cropping dimensions");
             }
             
             $new_image = imagecreatetruecolor($n_width, $n_height);
@@ -271,7 +270,7 @@ final class FileImage extends File
                 $this->write($new_image);
             }
         } else {
-            throw new GenericException("Can't modify images in read-only mode");
+            throw new Exception("Can't modify images in read-only mode");
         }
     }
     
@@ -281,9 +280,9 @@ final class FileImage extends File
      * @param integer $n_width
      *        Desired width in pixels
      * @param integer $n_height
-     *        Desired heigth in pixels
+     *        Desired height in pixels
      *
-     * @throws GenericException
+     * @throws Exception
      */
     public function resize($n_width, $n_height)
     {
@@ -296,7 +295,7 @@ final class FileImage extends File
                 $this->write($new_image);
             }
         } else {
-            throw new GenericException("Can't modify images in read-only mode");
+            throw new Exception("Can't modify images in read-only mode");
         }
     }
     
@@ -315,7 +314,7 @@ final class FileImage extends File
      * @param string  $arg4 [optional]
      *        See the php manual for a list of optional arguments.
      *
-     * @throws GenericException
+     * @throws Exception
      * @link http://www.php.net/manual/en/function.imagefilter.php
      */
     public function filter($filtertype, $arg1 = null, $arg2 = null, $arg3 = null, $arg4 = null)
@@ -324,18 +323,18 @@ final class FileImage extends File
             imagefilter($this->image, $filtertype, $arg1, $arg2, $arg3, $arg4);
             $this->write($this->image);
         } else {
-            throw new GenericException("Can't modify images in read-only mode");
+            throw new Exception("Can't modify images in read-only mode");
         }
     }
     
     /**
-     * Flips the image follwing given mode
+     * Flips the image following given mode
      *
      * @param integer $mode
      *        Flip mode. See php manual for a list of available Flip
      *        modes.
      *
-     * @throws GenericException
+     * @throws Exception
      * @link http://php.net/manual/en/function.imageflip.php
      */
     public function flip($mode)
@@ -344,7 +343,7 @@ final class FileImage extends File
             imageflip($this->image, $mode);
             $this->write($this->image);
         } else {
-            throw new GenericException("Can't modify images in read-only mode");
+            throw new Exception("Can't modify images in read-only mode");
         }
     }
     
@@ -362,12 +361,12 @@ final class FileImage extends File
      * @param Resource $a_image Modified Image Resource Stream
      * @param null     $useless Seriously, don't try to put anything here. It won't have any effect
      *
-     * @throws GenericException
+     * @throws Exception
      */
     public function write($a_image = null, $useless = null)
     {
         if (!$this->isValidImage()) {
-            throw new GenericException("Invalid file format (" . $this->path . ")");
+            throw new Exception("Invalid file format (" . $this->path . ")");
         }
         
         if (!$this->readonly) {
@@ -381,7 +380,7 @@ final class FileImage extends File
                         if (($this->type() == "image/GIF") || ($this->type() == "image/gif")) {
                             imagegif($a_image, $this->path);
                         } else {
-                            throw new GenericException('Invalid file format');
+                            throw new Exception('Invalid file format');
                         }
                     }
                 }
@@ -402,7 +401,7 @@ final class FileImage extends File
             $this->width = null;
             $this->height = null;
         } else {
-            throw new GenericException("Can't open images in read-only mode");
+            throw new Exception("Can't open images in read-only mode");
         }
     }
 }

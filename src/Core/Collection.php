@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Apine\Core;
 
-use Apine\Exception\GenericException;
 use Apine\Entity\EntityModel;
 use Exception;
 

@@ -13,6 +13,7 @@ namespace Apine\Application;
 
 use Apine\Core\Container\Container;
 use Apine\Core\Error\ErrorHandler;
+use Apine\Core\Error\Http\HttpException;
 use Apine\Core\Http\Uri;
 use Apine\Core\Routing\ResourcesContainer;
 use Apine\Core\Routing\Router;
@@ -22,7 +23,6 @@ use Apine\Core\Http\Stream;
 use Apine\Core\Config;
 use Apine\Core\Utility\URLHelper;
 use Apine\Core\Views\RedirectionView;
-use Apine\Exception\GenericException;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -223,7 +223,7 @@ final class Application
         $response = new Response(500);
         $response = $response->withAddedHeader('Content-Type', 'text/plain');
     
-        if ($e instanceof GenericException) {
+        if ($e instanceof HttpException) {
             $response = $response->withStatus($e->getCode());
         }
     

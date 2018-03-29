@@ -10,9 +10,9 @@ declare(strict_types=1);
 
 namespace Apine\Core\Error;
 
+use Apine\Core\Error\Http\HttpException;
 use Apine\Core\Http\Response;
 use Apine\Core\Http\Stream;
-use Apine\Exception\GenericException;
 
 
 /**
@@ -37,15 +37,11 @@ class ErrorHandler
      * @param string|null $errorFile
      * @param int|null    $errorLine
      *
-     * @throws \RuntimeException
+     * @throws \Exception
      */
     public static function handleError(int $errorNumber, string $errorString = '', string $errorFile = null, int $errorLine = null) : void
     {
-        $exception = new \RuntimeException($errorString, $errorNumber);
-        //$exception->file = $errorFile;
-        //$exception->line = $errorLine;
-        
-        throw $exception;
+        throw new \ErrorException($errorString, $errorNumber, $errorNumber, $errorFile, $errorLine);
     }
     
     /**
@@ -56,7 +52,7 @@ class ErrorHandler
         $response = new Response(500);
         $response = $response->withAddedHeader('Content-Type', 'text/plain');
         
-        if ($e instanceof GenericException) {
+        if ($e instanceof HttpException) {
             $response = $response->withStatus($e->getCode());
         }
     

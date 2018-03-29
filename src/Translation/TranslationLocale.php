@@ -62,7 +62,7 @@ final class TranslationLocale
      *
      * @param TranslationLanguage $a_language
      *
-     * @throws GenericException If the file is inexistant or invalid
+     * @throws \Exception If the file is nonexistent or invalid
      */
     public function __construct(TranslationLanguage $a_language)
     {
@@ -93,10 +93,10 @@ final class TranslationLocale
                 
                 $this->locale_entries = $array;
             } else {
-                throw new GenericException("Invalid File");
+                throw new \Exception("Invalid File");
             }
         } else {
-            throw new GenericException("Inexistant File");
+            throw new \Exception("Nonexistent File");
         }
     }
     
@@ -134,13 +134,13 @@ final class TranslationLocale
      * @param int|string $a_timestamp
      * @param string     $pattern According to http://php.net/manual/en/function.strftime.php
      *
-     * @throws GenericException
+     * @throws \Exception
      * @return string
      */
     public function format_date($a_timestamp, $pattern = null)
     {
         if (!is_numeric($a_timestamp) && !Types::isTimestamp($a_timestamp)) {
-            throw new GenericException('Invalid Timestamp', 500);
+            throw new \Exception('Invalid Timestamp');
         } else {
             if (!is_numeric($a_timestamp)) {
                 $a_timestamp = strtotime($a_timestamp);

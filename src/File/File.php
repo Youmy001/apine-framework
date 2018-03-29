@@ -10,7 +10,6 @@
 namespace Apine\File;
 
 use \Exception;
-use Apine\Exception\GenericException;
 use Apine\Utility\Files;
 
 /**
@@ -78,13 +77,13 @@ class File
     {
         try {
             if (!is_file($a_path) && !$a_new) {
-                throw new GenericException('File not found');
+                throw new Exception('File not found');
             } else {
                 if ($a_new == true) {
                     $this->file = fopen($a_path, "x+");
                     
                     if (!$this->file) {
-                        throw new GenericException('Could not create file');
+                        throw new Exception('Could not create file');
                     }
                     
                     $this->path = $a_path;
@@ -94,7 +93,7 @@ class File
                 } else {
                     
                     if (filesize($a_path) == 0) {
-                        throw new GenericException('Empty file');
+                        throw new Exception('Empty file');
                     }
                     
                     // Open File
@@ -110,8 +109,6 @@ class File
                     $this->location = substr($this->path, 0, strripos($a_path, "/") + 1);
                 }
             }
-        } catch (GenericException $e) {
-            throw $e;
         } catch (Exception $e) {
             throw $e;
         }
@@ -123,6 +120,7 @@ class File
      * @param string $a_path
      *
      * @return File
+     * @throws \Exception
      */
     public static function create($a_path)
     {
@@ -174,7 +172,7 @@ class File
         } elseif (!strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             $filename = escapeshellcmd($this->path);
             $mime = shell_exec("file -b --mime-type '" . $filename . "'");
-        } elseif (Files::is_exec_available()) {
+        } elseif (Files::isExecAvailable()) {
             $filename = escapeshellcmd($this->path);
             $mime = exec("file -b --mime-type '" . $filename . "'");
         }
@@ -183,7 +181,7 @@ class File
     }
     
     /**
-     * Get file's extention
+     * Get file's extension
      *
      * @return string
      */
@@ -201,17 +199,7 @@ class File
     }
     
     /**
-     * Alias of ApineFile::extension()
-     *
-     * @return string
-     */
-    final public function extention()
-    {
-        return $this->extension();
-    }
-    
-    /**
-     * Access file nane
+     * Access file name
      *
      * @param string $a_name
      *
@@ -221,11 +209,11 @@ class File
     {
         if (!is_null($a_name)) {
             if (!strpos($this->name, ".")) {
-                $this->name = $a_name . $this->extention();
+                $this->name = $a_name . $this->extension();
             } else {
                 $dot_pos = strpos($a_name, ".");
                 $name = substr($a_name, 0, $dot_pos + 1);
-                $this->name = $name . $this->extention();
+                $this->name = $name . $this->extension();
             }
         }
         
@@ -335,7 +323,7 @@ class File
      *
      * @param string $a_copy_path
      *
-     * @throws GenericException
+     * @throws Exception
      * @return boolean
      */
     final public function copy($a_copy_path)
@@ -343,7 +331,7 @@ class File
         if (!$this->readonly) {
             
             if (is_null($a_copy_path)) {
-                throw new GenericException('Invalid Path');
+                throw new Exception('Invalid Path');
             }
             
             if (stripos($a_copy_path, '/') !== false) {
@@ -381,14 +369,14 @@ class File
      *
      * @param string $a_file_name
      *
-     * @throws GenericException
+     * @throws Exception
      * @return boolean
      */
     final public function rename($a_file_name)
     {
         if (!$this->readonly) {
             if (stripos($a_file_name, '/') !== false) {
-                throw new GenericException('Invalid File name');
+                throw new Exception('Invalid File name');
             }
             
             $directory = substr($this->path, 0, strripos($this->path, '/') + 1);
@@ -428,7 +416,7 @@ class File
     
     /**
      * Remove file from disk.
-     * This action literaly erases the ressource from the hard drive.
+     * This action literally erases the resource from the hard drive.
      */
     final public function delete()
     {
@@ -442,7 +430,7 @@ class File
      */
     public function __destruct()
     {
-        // Close ressource
+        // Close resource
         fclose($this->file);
     }
 }

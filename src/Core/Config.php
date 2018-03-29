@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Apine\Core;
 
-use Apine\Exception\GenericException;
 use Apine\Core\Json\JsonStore;
 
 /**
@@ -50,7 +49,7 @@ final class Config
             $this->path = $a_path;
             $this->settings = JsonStore::get($a_path);
         } catch (\Exception $e) {
-            throw new GenericException("Config file not found.", 500, $e);
+            throw new \Exception("Config file not found.", 500, $e);
         }
     }
     

@@ -9,14 +9,12 @@ declare(strict_types=1);
 
 namespace Apine\Core\Routing;
 
+use Apine\Core\Error\Http\NotFoundException;
 use Apine\Core\Views\View;
 use \ReflectionClass;
 use \ReflectionMethod;
 use Apine\Core\Config;
 use Apine\Core\Container\Container;
-use Apine\Core\Http\Response;
-use Apine\Core\Json\JsonStore;
-use Apine\Exception\GenericException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -108,7 +106,7 @@ class Router implements RouterInterface
         }
         
         if (null === $this->current) {
-            throw new GenericException(sprintf("Route for request %s not found", $request->getUri()->getPath()), 404);
+            throw new NotFoundException(sprintf("Route for request %s not found", $request->getUri()->getPath()));
         }
         
         return $this->current;

@@ -24,7 +24,6 @@
 		"ext-PDO": ">=7.2",
 		"ext-pdo_mysql": ">=7.2",
 		"lib-openssl": ">=1.0.1",
-		"phpmailer/phpmailer": "^5.2",
 		"geoip/geoip": "~1.14",
 		"twig/twig": "^2.0",
 		"psr/http-message": "^1.0.1",
