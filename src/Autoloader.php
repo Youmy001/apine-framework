@@ -10,15 +10,16 @@ declare(strict_types=1);
 
 namespace Apine;
 
-//use \Exception;
+use function Apine\Core\Utility\fileExtension;
 
-//require_once __DIR__ . '/Includes/Constants.php';
 require_once __DIR__ . '/Core/Constants.php';
 require_once __DIR__ . '/Core/Utility/Functions.php';
 
 /**
- * Module Files Loading Tool
- * Tools to load files in batches from various locations in the project's directory
+ * Class Autoloader
+ *
+ * PSR-4 compatible Autoloader for the code
+ * of the user building an app with the framework
  */
 final class Autoloader
 {
@@ -32,12 +33,8 @@ final class Autoloader
     
     public function __construct()
     {
-        $apine_folder = __DIR__;
-        
-        $this->addModule('Apine', $apine_folder);
-        $this->addModule('Apine\Models', 'models');
-        $this->addModule('Apine\Controllers', 'controllers');
-        $this->addModule('Apine\Controllers\System', $apine_folder . '/Controllers');
+        $this->addNamespace('Apine\Models', 'models');
+        $this->addNamespace('Apine\Controllers', 'controllers');
     }
     
     /**
@@ -52,7 +49,7 @@ final class Autoloader
      *
      * @return void
      */
-    public function addModule(string $prefix, string $base_dir, bool $prepend = false) : void
+    public function addNamespace(string $prefix, string $base_dir, bool $prepend = false) : void
     {
         // normalize namespace prefix
         $prefix = trim($prefix, '\\') . '\\';
@@ -72,67 +69,6 @@ final class Autoloader
             array_push($this->prefixes[$prefix], $base_dir);
         }
     }
-    
-    /**
-     * Loads all files recursively of a user defined module in the modules/ directory
-     * By default this autoloader reserves the namespace Apine\Modules for anything in the /modules
-     * directory.
-     * An autoloader.php may be used to register classes in that directory. The autoloader.php file
-     * should either add a namespace to this autoloader in the following fashion :
-     *     $autoloader->add_module('Custom\Namespace', __DIR__);
-     * Or contain a spl_autoload_register function.
-     *
-     * @param string $module_name
-     *            Name of the folder of the module
-     *
-     * @return boolean
-     */
-    /*static function loadModule(string $module_name) : bool
-    {
-        // Verify if the module actually exists
-        if (is_dir('modules/' . $module_name . '/')) {
-            $dir = 'modules/' . $module_name . '/';
-            
-            // Load the autoloader if it exists.
-            // Load recursively the directory if not.
-            if (file_exists($dir . 'Autoloader.php')) {
-                /** @noinspection PhpIncludeInspection * /
-                require $dir . 'Autoloader.php';
-            } else {
-                if (file_exists($dir . 'autoloader.php')) {
-                    /** @noinspection PhpIncludeInspection * /
-                    require $dir . 'autoloader.php';
-                } else {
-                    $files = self::getFolderFiles($dir);
-                    
-                    try {
-                        foreach ($files as $file) {
-                            if (file_extension($file) === "php") {
-                                /** @noinspection PhpIncludeInspection * /
-                                require_once $file;
-                            }
-                        }
-                        
-                        return true;
-                    } catch (\Exception $e) {
-                        return false;
-                    }
-                }
-            }
-        } else {
-            if (is_file('modules/' . $module_name)) {
-                if (file_extension('modules/' . $module_name) === "php") {
-                    require_once 'modules/' . $module_name;
-                }
-                
-                return true;
-            } else {
-                return false;
-            }
-        }
-        
-        return false;
-    }*/
     
     public function register() : void
     {
@@ -234,76 +170,6 @@ final class Autoloader
     }
     
     /**
-     * Returns a recursive list of all files in a directory and its sub-directories
-     *
-     * @param string  $directory
-     *            Path to the directory from the include path
-     * @param boolean $root
-     *            Whether the directory is the base folder for the recursive parser.
-     *
-     * @return mixed[] List of all files in a directory
-     */
-    /*private static function getFolderFiles(string $directory, bool $root = true) : array
-    {
-        $array = array();
-        
-        if (is_dir($directory)) {
-            
-            if (!$root) {
-                
-                // Extract directories and files
-                $a_dir = array();
-                $a_file = array();
-                
-                foreach (scandir($directory) as $file) {
-                    if ($file != "." && $file != "..") {
-                        if (is_dir($directory . $file . '/')) {
-                            $a_dir[] = $directory . $file;
-                        } else {
-                            $a_file[] = $directory . $file;
-                        }
-                    }
-                }
-                
-                // Run sub-directories first
-                foreach ($a_dir as $file) {
-                    if ($file != "." && $file != "..") {
-                        $directory_array = self::getFolderFiles($file . '/', false);
-                        
-                        foreach ($directory_array as $directory_file) {
-                            $array[] = $directory_file;
-                        }
-                    }
-                }
-                
-                // Then files
-                foreach ($a_file as $file) {
-                    $array[] = $file;
-                }
-            } else {
-                
-                foreach (scandir($directory) as $file) {
-                    if ($file != "." && $file != "..") {
-                        if (is_dir($directory . $file . '/')) {
-                            $directory_array = self::getFolderFiles($directory . $file . '/', false);
-                            
-                            foreach ($directory_array as $directory_file) {
-                                $array[] = $directory_file;
-                            }
-                        } else {
-                            $array[] = $directory . $file;
-                        }
-                    }
-                }
-            }
-        } else {
-            return null;
-        }
-        
-        return $array;
-    }*/
-    
-    /**
      * Load recursively all files in a directory and its sub-directories
      *
      * @param string $a_folder
@@ -320,7 +186,7 @@ final class Autoloader
         }
         
         foreach ($files as $item) {
-            if (!is_dir($item) && file_extension($item) == 'php') {
+            if (!is_dir($item) && fileExtension($item) == 'php') {
                 require_once $item;
             }
         }
