@@ -11,9 +11,6 @@ declare(strict_types=1);
 
 namespace Apine\Core;
 
-use Apine\Entity\EntityModel;
-use Exception;
-
 /**
  * Collection
  * Traversable collection that mimics an array while providing easy to use features
@@ -21,7 +18,7 @@ use Exception;
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\Core
  */
-final class Collection implements \IteratorAggregate
+class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     /**
      * Object array
@@ -38,92 +35,61 @@ final class Collection implements \IteratorAggregate
     /**
      * Add an item to the collection
      *
-     * @param mixed  $a_item
+     * @param mixed      $item
      *        Item to add to the collection
-     * @param string|int $a_key
-     *        Predifined key of the item into the collection. It is
+     * @param string|int $key
+     *        Predefined key of the item into the collection. It is
      *        possible to override existing values, so it is
      *        recommended to not specify a key at the insertion of a
      *        new item.
      *
-     * @throws Exception If cannot insert item into the collection
-     * @return string|int|boolean
+     * @return string|int
      */
-    public function addItem($a_item, $a_key = null)
+    public function set($item, $key = null)
     {
-        try {
-            
-            // Add the item to the collection
-            if (is_null($a_key)) {
-                $this->items[] = $a_item;
-            } else {
-                $this->items[$a_key] = $a_item;
-            }
-            
-            // Retrieve and return the key
-            return array_search($a_item, $this->items, true);
-        } catch (Exception $e) {
-            return false;
+        // Add the item to the collection
+        if (is_null($key)) {
+            $this->items[] = $item;
+        } else {
+            $this->items[$key] = $item;
         }
+        
+        // Retrieve and return the key
+        return array_search($item, $this->items, true);
     }
     
     /**
      * Remove an item from the collection
      *
-     * @param string $a_key
+     * @param string|int $key
      *        Key of the item to remove
      *
-     * @throws Exception If cannot remove item from the collection
-     * @return boolean
+     * @throws \RuntimeException If index not found
      */
-    public function removeItem(string $a_key) : bool
+    public function remove($key)
     {
-        try {
-            
-            if ($this->length() > 0) {
-                
-                if ($this->keyExists($a_key)) {
-                    unset($this->items[$a_key]);
-                } else {
-                    throw new Exception();
-                }
-                
-            } else {
-                throw new Exception();
-            }
-            
-            return true;
-        } catch (Exception $e) {
-            return false;
+        if ($this->has($key)) {
+            unset($this->items[$key]);
+        } else {
+            throw new \RuntimeException(sprintf("Index %s was not found in the collection", $key));
         }
     }
     
     /**
      * Fetch an item from the collection
      *
-     * @param string $a_key
+     * @param string|int $key
      *        Key of the item to fetch
      *
-     * @throws Exception If cannot fetch the item from the collection
-     * @return mixed|boolean
+     * @return mixed|null
      */
-    public function getItem($a_key)
+    public function get($key)
     {
-        try {
-            
-            if ($this->length() == 0) {
-                throw new Exception();
-            }
-            
-            if ($this->keyExists($a_key)) {
-                return $this->items[$a_key];
-            } else {
-                throw new Exception();
-            }
-            
-        } catch (Exception $e) {
-            return false;
+        if ($this->has($key)) {
+            return $this->items[$key];
         }
+        
+        return null;
     }
     
     /**
@@ -131,18 +97,9 @@ final class Collection implements \IteratorAggregate
      *
      * @return mixed
      */
-    public function getAll()
+    public function all()
     {
-        try {
-            
-            if ($this->length() == 0) {
-                throw new Exception();
-            }
-            
-            return $this->items;
-        } catch (Exception $e) {
-            return array();
-        }
+        return $this->items;
     }
     
     /**
@@ -150,18 +107,9 @@ final class Collection implements \IteratorAggregate
      *
      * @return mixed
      */
-    public function getFirst()
+    public function first()
     {
-        try {
-            
-            if ($this->length() == 0) {
-                throw new Exception();
-            }
-            
-            return reset($this->items);
-        } catch (Exception $e) {
-            return false;
-        }
+        return reset($this->items);
     }
     
     /**
@@ -169,56 +117,30 @@ final class Collection implements \IteratorAggregate
      *
      * @return mixed
      */
-    public function getLast()
+    public function last()
     {
-        try {
-            
-            if ($this->length() == 0) {
-                throw new Exception();
-            }
-            
-            return end($this->items);
-        } catch (Exception $e) {
-            return false;
-        }
+        return end($this->items);
     }
     
     /**
      * Add multiple items at once.
      *
-     * @param array $a_items
+     * @param array $items
      */
-    public function injectItems(array $a_items) : void
+    public function inject(array $items): void
     {
-        if (!empty($a_items)) {
-            $this->items = array_merge($this->items, $a_items);
+        //$this->items = array_merge($this->items, $items);
+        foreach ($items as $key => $value) {
+            $this->set($value, $key);
         }
     }
     
     /**
      * Sort item from the collection in reverse order
-     *
-     * @return boolean
      */
-    public function reverse() : bool
+    public function reverse()
     {
-        try {
-            $this->items = array_reverse($this->items);
-            
-            return true;
-        } catch (Exception $e) {
-            return false;
-        }
-    }
-    
-    /**
-     * Sort items from collection by key
-     *
-     * @return boolean
-     */
-    public function ksort() : bool
-    {
-        return ksort($this->items);
+        $this->items = array_reverse($this->items);
     }
     
     /**
@@ -226,23 +148,20 @@ final class Collection implements \IteratorAggregate
      *
      * @return array
      */
-    public function keys() : array
+    public function keys(): array
     {
-        if ($this->items != null && $this->length() != 0) {
-            return array_keys($this->items);
-        } else {
-            return array();
-        }
+        return array_keys($this->items);
     }
     
     /**
      * Count all items in the collection
      *
-     * @return integer
+     * @link http://php.net/manual/en/countable.count.php
+     * @return int
      */
-    public function length() : int
+    public function count(): int
     {
-        return sizeof($this->items);
+        return count($this->items);
     }
     
     /**
@@ -253,71 +172,80 @@ final class Collection implements \IteratorAggregate
      *
      * @return boolean
      */
-    public function keyExists($a_key) : bool
+    public function has($a_key): bool
     {
-        try {
-            
-            if ($this->length() == 0) {
-                throw new Exception();
-            }
-            
-            return (isset($this->items[$a_key]));
-        } catch (Exception $e) {
-            return false;
-        }
+        return (isset($this->items[$a_key]));
+    }
+    
+    public function clear()
+    {
+        $this->items = [];
     }
     
     /**
-     * Verify if value exists in the collection
-     * Although it is possible to use this method with
-     * EntityModel, the serial validation may give
-     * unreliable results depending on your implementation
-     * of the entity, thus we do not recommend it.
+     * Get collection iterator
      *
-     * @param mixed $a_value
-     *        Value to verify
-     *
-     * @return boolean
+     * @return \ArrayIterator
      */
-    public function valueExists($a_value)
+    public function getIterator() : \ArrayIterator
     {
-        try {
-            if ($this->length() == 0) {
-                return false;
-            }
-            
-            if (is_object($a_value) && ($a_value instanceof EntityModel)
-            ) {
-                $a_value->getId();
-            }
-            
-            $serial_value = serialize($a_value);
-            
-            // Cycle through every items in the collection
-            foreach ($this->items as $key => $item) {
-                if (is_object($item) && ($a_value instanceof EntityModel)
-                ) {
-                    $item->get_id();
-                }
-                
-                if ($serial_value === serialize($item)) {
-                    return true;
-                }
-            }
-            
-            return false;
-        } catch (Exception $e) {
-            return false;
-        }
+        return new \ArrayIterator($this->items);
     }
     
     /**
-     * Get Collection iterator (non-PHPdoc)
+     * Whether a offset exists
      *
-     * @see IteratorAggregate::getIterator()
+     * @link http://php.net/manual/en/arrayaccess.offsetexists.php
+     *
+     * @param string|int $offset An offset to check for.
+     *
+     * @return bool true on success or false on failure.
      */
-    public function getIterator() : \Traversable
+    public function offsetExists($offset): bool
     {
-        return new CollectionIterator(clone $this);
+        return $this->has($offset);
+    }
+    
+    /**
+     * Offset to retrieve
+     *
+     * @link http://php.net/manual/en/arrayaccess.offsetget.php
+     *
+     * @param string|int $offset The offset to retrieve.
+     *
+     * @return mixed Can return all value types.
+     */
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+    
+    /**
+     * Offset to set
+     *
+     * @link http://php.net/manual/en/arrayaccess.offsetset.php
+     *
+     * @param string|int    $offset The offset to assign the value to.
+     * @param mixed         $value  The value to set.
+     *
+     * @return void
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->set($value, $offset);
+    }
+    
+    /**
+     * Offset to unset
+     *
+     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
+     *
+     * @param string|int $offset The offset to unset.
+     *
+     * @return void
+     */
+    public function offsetUnset($offset)
+    {
+        $this->remove($offset);
     }
 }

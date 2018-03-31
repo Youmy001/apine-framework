@@ -1,6 +1,6 @@
 <?php
 /**
- * ${NAME}
+ * Constants
  *
  * @license MIT
  * @copyright 2018 Tommy Teasdale
