@@ -183,9 +183,9 @@ final class Database {
 		}
 		
 		// Create query
-		$query = "INSERT into $table_name (";
-		$query .= join(',', $fields);
-		$query .= ') values (';
+		$query = "INSERT into `$table_name` (`";
+		$query .= join('`,`', $fields);
+		$query .= '`) values (';
 		$query .= join(',', $new_values) . ')';
 		
 		//print $query;
@@ -247,11 +247,11 @@ final class Database {
 				$val = $this->quote($val);
 			}
 			
-			$ar_where[] = "$field = $val";
+			$ar_where[] = "`$field` = $val";
 		}
 		
 		// Create query
-		$query = "UPDATE $table_name SET ";
+		$query = "UPDATE `$table_name` SET ";
 		$query .= join(' , ', $new_values);
 		$query .= ' WHERE ' . join(' AND ', $ar_where);
 		
@@ -292,11 +292,11 @@ final class Database {
 				$val = $this->quote($val);
 			}
 			
-			$ar_where[] = "$field = $val";
+			$ar_where[] = "`$field` = $val";
 		}
 		
 		// Create query
-		$query = "DELETE FROM $table_name WHERE " . join(' AND ', $ar_where);
+		$query = "DELETE FROM `$table_name` WHERE " . join(' AND ', $ar_where);
 		
 		try {
 			$success = $this->instance->exec($query);
