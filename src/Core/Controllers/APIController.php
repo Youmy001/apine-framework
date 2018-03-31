@@ -16,7 +16,7 @@ namespace Apine\Core\Controllers;
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
  * @package Apine\Core\Controllers
  */
-abstract class APIController extends Controller implements APIActionsInterface
+abstract class APIController extends Controller
 {
 
 }

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Apine\Core\Utility;
 
+use Apine\Core\Http\Factories\UriFactory;
 use Apine\Core\Http\Request;
 use const Apine\Core\PROTOCOL_HTTP;
 use const Apine\Core\PROTOCOL_HTTPS;
@@ -65,20 +66,20 @@ final class URLHelper
      */
     private function __construct()
     {
-        $request = Request::createFromGlobals();
+        $uri = (new UriFactory())->createUriFromArray($_SERVER);
     
-        $hostArray = explode('.', $request->getUri()->getAuthority());
+        $hostArray = explode('.', $uri->getAuthority());
     
         if (count($hostArray) >= 3) {
             $start = strlen($hostArray[0]) + 1;
-            $this->mainAuthority = substr($request->getUri()->getAuthority(), $start);
+            $this->mainAuthority = substr($uri->getAuthority(), $start);
         } else {
-            $this->mainAuthority = $request->getUri()->getAuthority();
+            $this->mainAuthority = $uri->getAuthority();
         }
         
-        $this->authority = $request->getUri()->getAuthority();
-        $this->path = $request->getUri()->getPath();
-        $this->uri = $request->getUri();
+        $this->authority = $uri->getAuthority();
+        $this->path = $uri->getPath();
+        $this->uri = $uri;
     }
     
     /**

@@ -12,12 +12,15 @@ namespace Apine\Application;
 
 use Apine\Core\Config;
 use Apine\Core\Database as BasicDatabase;
-use Apine\Core\Http\Response;
-use Apine\Core\JsonStore;
+use Apine\Core\Http\Factories\RequestFactory;
+use Apine\Core\Http\Factories\ResponseFactory;
+use Apine\Core\Http\Factories\UriFactory;
 use Apine\Core\Container\Container;
 use Apine\Core\Database\Connection;
 use Apine\Core\Database\Database;
-use Apine\Core\Http\Request;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UriInterface;
 
 final class ServiceProvider
 {
@@ -25,12 +28,24 @@ final class ServiceProvider
     {
         $container = new Container();
     
-        $container->register('request', function () : Request {
-            return Request::createFromGlobals();
-        });
+        $container->register('request', function () : ServerRequestInterface {
+            return (new RequestFactory())->createServerRequestFromGlobals(
+                $_SERVER,
+                $_GET,
+                $_POST,
+                $_FILES,
+                $_COOKIE,
+                getallheaders(),
+                file_get_contents('php://input')
+            );
+        }, true);
     
-        $container->register('response', function () : Response {
-            return new Response();
+        $container->register('response', function () : ResponseInterface {
+            return (new ResponseFactory())->createResponse();
+        }, true);
+        
+        $container->register('uri', function () : UriInterface {
+            return (new UriFactory())->createUriFromArray($_SERVER);
         }, true);
     
         $container->register(Connection::class, function () use ($container) : Connection {

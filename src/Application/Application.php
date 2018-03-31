@@ -14,6 +14,7 @@ namespace Apine\Application;
 use Apine\Core\Container\Container;
 use Apine\Core\Error\ErrorHandler;
 use Apine\Core\Error\Http\HttpException;
+use Apine\Core\Http\Factories\RequestFactory;
 use Apine\Core\Http\Uri;
 use Apine\Core\Routing\ResourcesContainer;
 use Apine\Core\Routing\Router;
@@ -24,6 +25,9 @@ use Apine\Core\Config;
 use Apine\Core\Utility\URLHelper;
 use Apine\Core\Views\RedirectionView;
 use Psr\Http\Message\ResponseInterface;
+
+use const Apine\Core\PROTOCOL_HTTPS;
+
 use function Apine\Core\Utility\executionTime;
 
 /**
@@ -126,7 +130,7 @@ final class Application
                 // Remove trailing slash
                 $uri = rtrim($_SERVER['REQUEST_URI']);
                 
-                $redirection = new RedirectionView(new Uri(URLHelper::path($uri, APINE_PROTOCOL_HTTPS)), 301);
+                $redirection = new RedirectionView(new Uri(URLHelper::path($uri, PROTOCOL_HTTPS)), 301);
                 $this->output($redirection->respond());
             }
     
@@ -170,7 +174,7 @@ final class Application
     
             $this->registerService('apiResources', $this->apiResources);
     
-            $request = Request::createFromGlobals();
+            $request = $this->services->get('request');
             $router = new Router($this->services);
             $route = $router->find($request);
             $response = $router->run($route, $request);

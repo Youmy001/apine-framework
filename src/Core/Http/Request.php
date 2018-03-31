@@ -12,7 +12,6 @@ namespace Apine\Core\Http;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
-use const Apine\Core\REQUEST_USER;
 use const Apine\Core\REQUEST_MACHINE;
 
 class Request extends Message implements ServerRequestInterface
@@ -45,11 +44,6 @@ class Request extends Message implements ServerRequestInterface
     protected $uploadedFiles = [];
     
     /**
-     * @var integer
-     */
-    private $requestType;
-    
-    /**
      * Request constructor.
      *
      * @param string        $method
@@ -57,6 +51,7 @@ class Request extends Message implements ServerRequestInterface
      * @param array         $headers
      * @param null          $body
      * @param string        $protocol
+     * @param array         $serverParams
      */
     public function __construct (
         string  $method,
@@ -85,46 +80,6 @@ class Request extends Message implements ServerRequestInterface
         
         $this->updateHeadersFromUri();
         $this->updateQueryParamsFromUri();
-    }
-    
-    /**
-     * Obtain an instance of ServerRequestInterface created
-     * from the values of PHP's super arrays
-     *
-     * @return ServerRequestInterface
-     */
-    public static function createFromGlobals () : Request
-    {
-        $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
-        $headers = getallheaders();
-        $uri = Uri::createFromGlobals();
-        $body = file_get_contents('php://input');
-        $protocol = isset($_SERVER['SERVER_PROTOCOL']) ? str_replace('HTTP/', '', $_SERVER['SERVER_PROTOCOL']) : '1.1';
-        
-        $gets = $_GET;
-    
-        if (isset($gets['apine-request'])) {
-            $requestString = $gets['apine-request'];
-            $requestArray = explode("/", $requestString);
-        
-            if ($requestArray[1] === 'api') {
-                $type = REQUEST_MACHINE;
-            } else {
-                $type = REQUEST_USER;
-            }
-        
-            unset($gets['apine-request']);
-        }
-        
-        $request = (new static($method, $uri, $headers, $body, $protocol, $_SERVER))
-            ->withCookieParams($_COOKIE)
-            ->withQueryParams($gets)
-            ->withParsedBody($_POST)
-            ->withUploadedFiles(self::formatFiles($_FILES));
-        
-        $request->requestType = $type;
-        
-        return $request;
     }
     
     /**
@@ -542,7 +497,7 @@ class Request extends Message implements ServerRequestInterface
      */
     public function isAPICall() : bool
     {
-        return ($this->requestType === REQUEST_MACHINE);
+        return ($this->getAttribute('type') === REQUEST_MACHINE);
     }
     
     /**
@@ -593,54 +548,6 @@ class Request extends Message implements ServerRequestInterface
     public function isDelete()
     {
         return ($this->getMethod() == "DELETE");
-    }
-    
-    protected static function formatFiles(array $files) : array
-    {
-        $normalized = [];
-        
-        foreach ($files as $key => $value) {
-            if (is_array($value) && isset($value['name'])) {
-                $normalized[$key] = self::createUploadedFile($value);
-            } else if (is_array($value)) {
-                $normalized[$key] = self::formatFiles($value);
-            } else {
-                throw new \InvalidArgumentException('Invalid files specification');
-            }
-            
-        }
-        
-        return $normalized;
-    }
-    
-    protected static function createUploadedFile (array $value)
-    {
-        if (is_array($value['name'])) {
-            $normalized = [];
-            $files = $value['name'];
-            
-            foreach (array_keys($files['name']) as $key) {
-                $values = [
-                    'tmp_name' => $files['tmp_name'][$key],
-                    'size' => $files['size'][$key],
-                    'error' => $files['error'][$key],
-                    'name' => $files['name'][$key],
-                    'type' => $files['type'][$key]
-                ];
-                
-                $normalized[$key] = self::createUploadedFile($values);
-            }
-            
-            return $files;
-        } else {
-            return new UploadedFile(
-                $value['tmp_name'],
-                (int)$value['size'],
-                (int)$value['error'],
-                $value['name'],
-                $value['type']
-            );
-        }
     }
     
     /**

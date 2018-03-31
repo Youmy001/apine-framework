@@ -13,6 +13,8 @@ namespace Apine\Core\Http;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 
+use const \UPLOAD_ERR_OK;
+
 class UploadedFile implements UploadedFileInterface
 {
     /**
@@ -46,7 +48,7 @@ class UploadedFile implements UploadedFileInterface
     
     private $sapi = false;
     
-    public function __construct($resource, int $size, int $errorStatus, $clientFilename = null, $clientMediaType = null, $sapi = false)
+    public function __construct($resource, int $size, int $errorStatus = UPLOAD_ERR_OK, $clientFilename = null, $clientMediaType = null, $sapi = false)
     {
         $this->size = $size;
         $this->error = $errorStatus;

@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Apine\Core\Views;
 
+use Apine\Core\Http\Factories\UriFactory;
 use Apine\Core\Http\Request;
 use Apine\Core\Http\Response;
 use Psr\Http\Message\ResponseInterface;
@@ -41,8 +42,7 @@ class RedirectionView extends View
     
     public static function createFromPath(string $path, int $code = 301) : RedirectionView
     {
-        $request = Request::createFromGlobals();
-        $uri = $request->getUri();
+        $uri = (new UriFactory())->createUriFromArray($_SERVER);
         return new static($uri->withPath($path), $code);
     }
     
