@@ -82,4 +82,13 @@ class ParameterTest extends TestCase
         $parameter = new Parameter('string', 'value');
         $this->assertEquals('value', $parameter->getName());
     }
+    
+    public function testGetDefaultValue()
+    {
+        $parameter = new Parameter('string', 'value');
+        $this->assertNull($parameter->getDefaultValue());
+        
+        $parameter = new Parameter('string', 'value', 'default');
+        $this->assertEquals('default', $parameter->getDefaultValue());
+    }
 }

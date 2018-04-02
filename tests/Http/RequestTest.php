@@ -236,11 +236,6 @@ class RequestTest extends TestCase
         $this->assertTrue($request->isHttps());
     }
     
-    public function testIsAPICall()
-    {
-        $this->assertFalse($this->requestFactory()->isAPICall());
-    }
-    
     public function testIsAjax()
     {
         $this->assertFalse($this->requestFactory()->isAjax());

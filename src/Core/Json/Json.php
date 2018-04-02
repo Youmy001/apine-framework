@@ -72,7 +72,7 @@ class Json
     
     public function __toString() : string
     {
-        $string = json_encode($this->data, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
+        $string = json_encode($this->data, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
     
         return $string;
     }

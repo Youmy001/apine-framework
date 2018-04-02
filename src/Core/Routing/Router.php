@@ -26,6 +26,11 @@ class Router implements RouterInterface
     private $request;
     
     /**
+     * @var Config
+     */
+    private $config;
+    
+    /**
      * @var Route[]
      */
     private $routes = [];
@@ -62,16 +67,13 @@ class Router implements RouterInterface
         $this->container = $container;
     
         try {
-            $config = new Config('config/router.json');
-            $request = $_GET['apine-request'];
-            $requestArray = explode("/", $request);
-            $isAPICall = ($requestArray[1] === 'api');
-        
-            //if ((isset($config->use_api) && $config->use_api === true) && $isAPICall) {
-            if ($config->serve->api === true && $isAPICall) {
-                $resources = $container->get('apiResources');
-                $this->loadResources($resources);
-            } else {
+            $this->config = new Config('config/router.json');
+            
+            if ($this->config->serve->api === true) {
+                $this->loadAPIRoutes();
+            }
+            
+            if ($this->config->serve->web === true)  {
                 $this->loadRoutes();
             }
         } catch (\Exception $e) {
@@ -91,11 +93,6 @@ class Router implements RouterInterface
     {
         $requestString = $request->getUri()->getPath();
         $requestMethod = $request->getMethod();
-        
-        /* Strip the REST call marker from the path*/
-        if (substr($requestString, 0 , 4) === '/api') {
-            $requestString = substr($requestString, 4);
-        }
         
         foreach ($this->routes as $route) {
             if ($route->match($requestString, $requestMethod)) {
@@ -173,11 +170,6 @@ class Router implements RouterInterface
             $this->request = $request;
             
             $requestString = $request->getUri()->getPath();
-    
-            /* Strip the REST call marker from the path*/
-            if (substr($requestString, 0 , 4) === '/api') {
-                $requestString = substr($requestString, 4);
-            }
             
             if (!$this->current->match($requestString, $request->getMethod())) {
                 throw new \Exception(sprintf("Route does not match request %s", $request->getUri()->getPath()), 404);
@@ -210,9 +202,12 @@ class Router implements RouterInterface
      */
     private function loadRoutes ()
     {
-        $routes = json_decode(file_get_contents('config/routes.json'), true);
+        $routes = json_decode(file_get_contents('config/routes/web.json'), true);
+        $prefix = $this->config->prefixes->web;
         
-        array_walk($routes, function ($definitions, $pattern) {
+        array_walk($routes, function ($definitions, $pattern) use ($prefix) {
+            
+            $pattern = $this->appendPrefix($pattern, $prefix);
             $this->routes = array_merge(
                 $this->routes,
                 array_map(function($method, $definition) use ($pattern) {
@@ -232,36 +227,53 @@ class Router implements RouterInterface
         });
     }
     
-    /**
-     * @param ResourcesContainer $resources
-     *
-     * @throws \ReflectionException
-     */
-    private function loadResources(ResourcesContainer $resources)
+    private function loadAPIRoutes()
     {
-        foreach ($resources->toArray() as $name => $class) {
-            $reflection = new ReflectionClass($class);
+        $routes = json_decode(file_get_contents('config/routes/api.json'), true);
+        $prefix = $this->config->prefixes->api;
+        
+        array_walk($routes, function($definitions, $pattern) use ($prefix, &$computed) {
+            $pattern = $this->appendPrefix($pattern, $prefix);
+            $class= $definitions['controller'];
+            $reflection = new ReflectionClass($definitions['controller']);
+            unset($definitions['controller']);
             
             $this->routes = array_merge(
                 $this->routes,
                 array_map(
-                    function (ReflectionMethod $method) use ($name, $class) {
+                    function(ReflectionMethod $method) use ($pattern, $class, $prefix, $definitions) {
+                        $requestMethod = strtoupper($method->getName());
+                        $parameters = [];
+                        
+                        if (isset($definitions[$requestMethod]['parameters'])) {
+                            $parameters = $definitions[$requestMethod]['parameters'];
+                        }
+                        
                         return new Route(
-                            strtoupper($method->getName()),
-                            '/' . $name,
+                            $requestMethod,
+                            $pattern,
                             $class,
                             $method->getName(),
-                            [],
+                            $parameters,
                             true
                         );
                     }, array_filter(
                         $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
-                        function ( ReflectionMethod $method) {
+                        function (ReflectionMethod $method) {
                             return in_array(strtoupper($method->getName()), self::$verbs, true);
                         }
                     )
                 )
             );
+        });
+    }
+    
+    private function appendPrefix(string $pattern, string $prefix = "") : string
+    {
+        if (!empty($prefix)) {
+            $pattern = "/$prefix" . $pattern;
         }
+        
+        return $pattern;
     }
 }

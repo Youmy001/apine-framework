@@ -12,7 +12,6 @@ namespace Apine\Core\Http;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
-use const Apine\Core\REQUEST_MACHINE;
 
 class Request extends Message implements ServerRequestInterface
 {
@@ -488,16 +487,6 @@ class Request extends Message implements ServerRequestInterface
     public function isHttps() : bool
     {
         return ($this->hasHeader('HTTPS'));
-    }
-    
-    /**
-     * Checks if the request is made to the API
-     *
-     * @return boolean
-     */
-    public function isAPICall() : bool
-    {
-        return ($this->getAttribute('type') === REQUEST_MACHINE);
     }
     
     /**

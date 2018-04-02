@@ -16,12 +16,16 @@ class Parameter
     
     private $name;
     
+    private $default;
+    
     public function __construct(
         string $type,
-        string $name
+        string $name,
+        $default = null
     ) {
         $this->type = $type;
         $this->name = $name;
+        $this->default = $default;
     }
     
     public function isBuiltIn() : bool
@@ -49,5 +53,10 @@ class Parameter
     public function getName() : string
     {
         return $this->name;
+    }
+    
+    public function getDefaultValue()
+    {
+        return $this->default;
     }
 }

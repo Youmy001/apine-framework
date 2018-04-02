@@ -92,18 +92,7 @@ class RequestFactory
         
         $protocol = isset($server['SERVER_PROTOCOL']) ? str_replace('HTTP/', '', $server['SERVER_PROTOCOL']) : '1.1';
     
-        if (isset($get['apine-request'])) {
-            $requestString = $get['apine-request'];
-            $requestArray = explode("/", $requestString);
-        
-            if ($requestArray[1] === 'api') {
-                $type = REQUEST_MACHINE;
-            } else {
-                $type = REQUEST_USER;
-            }
-        
-            unset($get['apine-request']);
-        }
+        unset($get['apine-request']);
         
         $request = new Request(
             $method,
@@ -118,8 +107,7 @@ class RequestFactory
             ->withCookieParams($cookies)
             ->withQueryParams($get)
             ->withParsedBody($post)
-            ->withUploadedFiles(self::formatFiles($files))
-            ->withAttribute('type', $type);
+            ->withUploadedFiles(self::formatFiles($files));
     }
     
     private static function formatFiles(array $files) : array

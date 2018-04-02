@@ -16,6 +16,8 @@ class ParameterDefinition
     
     public $pattern;
     
+    public $optional = false;
+    
     public function __construct($name, $pattern)
     {
         $this->name = $name;

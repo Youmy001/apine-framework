@@ -101,27 +101,21 @@ final class Route
      */
     private function parseParameters(array $definitions)
     {
-        preg_match_all('/\{(.+?)\}/', $this->uri, $matches);
+        preg_match_all('/\{(\??)(.+?)\}/', $this->uri, $matches, PREG_SET_ORDER);
         
         return array_map(function ($match) use ($definitions) {
-            $match = trim($match, '?');
-            $parameter = new ParameterDefinition($match, '([^\/]+?)');
+            $parameter = new ParameterDefinition($match[2], '([^\/]+?)');
             
-            foreach ($definitions as $definition) {
-                if (!isset($definition['name']) || !isset($definition['regex'])) {
-                    throw new \Exception(
-                        sprintf('Definition of parameter "%s" in route "%s" is incomplete', $match, $this->uri)
-                    );
-                }
-                
-                if ($definition['name'] === $match) {
-                    $parameter->pattern = $definition['regex'];
-                    break;
-                }
+            if (isset($definitions[$match[2]])) {
+                $parameter->pattern = $definitions[$match[2]];
+            }
+            
+            if ($match[1] === '?') {
+                $parameter->optional = true;
             }
             
             return $parameter;
-        }, $matches[1]);
+        }, $matches);
     }
     
     /**
@@ -135,7 +129,8 @@ final class Route
         $reflection = new \ReflectionMethod($this->controller, $this->action);
         
         return array_map(function (\ReflectionParameter $parameter) {
-            return new Parameter((string) $parameter->getType(), $parameter->getName());
+            $default = $parameter->isDefaultValueAvailable() ? $parameter->getDefaultValue() : null;
+            return new Parameter((string) $parameter->getType(), $parameter->getName(), $default);
         }, $reflection->getParameters());
     }
     
@@ -156,7 +151,11 @@ final class Route
         $regex = '/^' . str_ireplace('/', '\\/', $this->uri) . '$/';
         
         array_walk($this->parameters, function (ParameterDefinition $parameter) use (&$regex) {
-            $regex = str_ireplace('{' . $parameter->name . '}', $parameter->pattern, $regex);
+            if ($parameter->optional) {
+                $regex = str_ireplace('\/{?' . $parameter->name . '}', '(\/?' . $parameter->pattern . ')?', $regex);
+            } else {
+                $regex = str_ireplace('{' . $parameter->name . '}', $parameter->pattern, $regex);
+            }
         });
         
         // Compare with the string

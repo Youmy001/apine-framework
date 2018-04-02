@@ -25,7 +25,10 @@ class DependencyResolver
      */
     public static function mapParametersForRequest (ServerRequest $request, Route $route)
     {
-        return ((substr($request->getUri()->getPath(), 0 , 4) === '/api') && $route->isAPIRoute) ? self::resolveAPIParameters($request) : self::resolveWebParameters($request, $route);
+        return array_merge(
+            $request->getQueryParams(),
+            self::resolveParameters($request, $route)
+        );
     }
     
     /**
@@ -34,7 +37,7 @@ class DependencyResolver
      *
      * @return array
      */
-    public static function resolveWebParameters (ServerRequest $request, Route $route)
+    public static function resolveParameters (ServerRequest $request, Route $route)
     {
         $parameters = [];
         $requestString = $request->getUri()->getPath();
@@ -43,28 +46,31 @@ class DependencyResolver
         $regex = '/^' . str_ireplace('/', '\\/', $route->uri) . '$/';
     
         array_walk($route->parameters, function (ParameterDefinition $parameter) use (&$regex) {
-            $regex = str_ireplace('{' . $parameter->name . '}', $parameter->pattern, $regex);
+            //$regex = str_ireplace('{' . $parameter->name . '}', $parameter->pattern, $regex);
+            if($parameter->optional) {
+                $regex = str_ireplace('\/{?' . $parameter->name . '}', '(\/?' . $parameter->pattern . ')?', $regex);
+            } else {
+                $regex = str_ireplace('{' . $parameter->name . '}', $parameter->pattern, $regex);
+            }
         });
     
         $results = preg_match($regex, $requestString, $matches);
     
         if ($results === 1) {
             foreach ($route->parameters as $key => $parameter) {
-                $parameters[$parameter->name] = $matches[$key+1];
+                if ($parameter->optional) {
+                    $index = $key+2;
+                } else {
+                    $index = $key+1;
+                }
+                
+                if (isset($matches[$index])) {
+                    $parameters[$parameter->name] = $matches[$index];
+                }
             }
         }
     
         return $parameters;
-    }
-    
-    /**
-     * @param ServerRequest $request
-     *
-     * @return array
-     */
-    public static function resolveAPIParameters (ServerRequest $request)
-    {
-        return $request->getQueryParams();
     }
     
     /**
@@ -80,7 +86,8 @@ class DependencyResolver
         $parameters = array();
         
         foreach ($arguments as $arg) {
-            $parameter = new Parameter((string) $arg->getType(), (string) $arg->getName());
+            $default = $arg->isDefaultValueAvailable() ? $arg->getDefaultValue() : null;
+            $parameter = new Parameter((string) $arg->getType(), (string) $arg->getName(), $default);
             $parameters[] = self::getContainerServiceForParam($container, $parameter);
         }
         
@@ -107,7 +114,13 @@ class DependencyResolver
                     $parameters[] = $queryParams[$param->getName()];
                 }
             } else {
-                $parameters[] = self::getContainerServiceForParam($container, $param);
+                $service = self::getContainerServiceForParam($container, $param);
+                
+                if (null !== $service) {
+                    $parameters[] = $service;
+                } else if ($param->getDefaultValue() !== null) {
+                    $parameters[] = $param->getDefaultValue();
+                }
             }
         });
         

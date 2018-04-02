@@ -18,6 +18,7 @@ use Apine\Core\Routing\Parameter;
 use Apine\Core\Routing\Route;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
+use Apine\Core\Json\Json;
 
 class DependencyResolverTest extends TestCase
 {
@@ -33,6 +34,18 @@ class DependencyResolverTest extends TestCase
         ));
     }
     
+    private static function requestOptionalFactory ()
+    {
+        return (new Request(
+            'GET',
+            new Uri('https://example.com/test/156?home=cat'),
+            [],
+            null,
+            '1.1',
+            $_SERVER
+        ));
+    }
+    
     private static function routeFactory()
     {
         return new Route(
@@ -40,6 +53,16 @@ class DependencyResolverTest extends TestCase
             '/{input}',
             TestDependencyController::class,
             'inputTest'
+        );
+    }
+    
+    private static function routeOptionalFactory()
+    {
+        return new Route(
+            'GET',
+            '/{first}/{?second}',
+            TestDependencyController::class,
+            'inputTestTwo'
         );
     }
     
@@ -58,23 +81,24 @@ class DependencyResolverTest extends TestCase
         return $container;
     }
     
-    public function testResolveWebParameters()
+    public function testResolveParameters()
     {
         $request = self::requestFactory();
         $route = self::routeFactory();
     
-        $parameters = DependencyResolver::resolveWebParameters($request, $route);
+        $parameters = DependencyResolver::resolveParameters($request, $route);
         $this->assertInternalType('array', $parameters);
         $this->assertArrayHasKey('input', $parameters);
     }
     
-    public function testResolveAPIParameters()
+    public function testResolveParametersOptionalParameter()
     {
-        $request = self::requestFactory();
-        
-        $parameters = DependencyResolver::resolveAPIParameters($request);
+        $request = self::requestOptionalFactory();
+        $route = self::routeOptionalFactory();
+    
+        $parameters = DependencyResolver::resolveParameters($request, $route);
         $this->assertInternalType('array', $parameters);
-        $this->assertArrayHasKey('home', $parameters);
+        $this->assertArrayHasKey('second', $parameters);
     }
     
     public function testMapParametersForRequest()
@@ -92,7 +116,8 @@ class DependencyResolverTest extends TestCase
         $container = self::containerFactory();
         $parameter = new Parameter(
             Request::class,
-            'request'
+            'request',
+            null
         );
         
         $this->assertInstanceOf(
@@ -106,7 +131,8 @@ class DependencyResolverTest extends TestCase
         $container = self::containerFactory();
         $parameter = new Parameter(
             DOMDocument::class,
-            'document'
+            'document',
+            null
         );
     
         $this->assertNull(
@@ -137,10 +163,21 @@ class DependencyResolverTest extends TestCase
         $map = DependencyResolver::mapActionArguments($container, $requestParams, $route->actionParameters);
         $this->assertInternalType('array', $map);
     }
+    
+    public function testMapActionArgumentsOptionalParameter()
+    {
+        $container = self::containerFactory();
+        $route = self::routeOptionalFactory();
+        $request = self::requestOptionalFactory();
+    
+        $requestParams = DependencyResolver::mapParametersForRequest($request, $route);
+        $map = DependencyResolver::mapActionArguments($container, $requestParams, $route->actionParameters);
+        $this->assertInternalType('array', $map);
+    }
 }
 
 class TestDependencyController extends Controller {
     public function __construct(RequestInterface $request, Config $config) {}
     public function inputTest(int $input){}
-    public function inputTestTwo(string $first, int $second){}
+    public function inputTestTwo(string $first, Json $second, RequestInterface $request, $cat = 'Merlin'){}
 }

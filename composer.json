@@ -37,9 +37,7 @@
     "autoload": {
 		"files": [
 			"src/Autoloader.php"
-		]
-	},
-	"autoload-dev": {
+		],
 		"psr-4": {
 			"Apine\\": "src/"
 		}

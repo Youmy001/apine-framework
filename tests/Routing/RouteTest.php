@@ -50,10 +50,7 @@ class RouteTest extends TestCase
         $controller = TestController::class;
         $action = "inputTest";
         $parameters = [
-            [
-                'name' => 'input',
-                'regex' => '([0-9]+)'
-            ]
+            'input' => '([0-9]+)'
         ];
     
         $route = new Route($method, $pattern, $controller, $action, $parameters);
@@ -92,10 +89,23 @@ class RouteTest extends TestCase
         );
         $this->assertEquals(
             [
-                new Parameter('int', 'input')
+                new Parameter('int', 'input', null)
             ],
             $route->actionParameters
         );
+    }
+    
+    public function testConstructorParseOptionalParameter()
+    {
+        $method = "GET";
+        $pattern = "/test/{?input}";
+        $controller = TestController::class;
+        $action = "inputTest";
+        
+        $route = new Route($method, $pattern, $controller, $action);
+        
+        $parameter = $route->parameters[0];
+        $this->assertTrue($parameter->optional);
     }
     
     public function testMatch()
@@ -112,10 +122,7 @@ class RouteTest extends TestCase
             TestController::class,
             'inputTest',
             [
-                [
-                    'name' => 'input',
-                    'regex' => '([0-9]+)'
-                ]
+                'input' => '([0-9]+)'
             ]
         );
         $routeThree = new Route(
@@ -130,14 +137,8 @@ class RouteTest extends TestCase
             TestController::class,
             'inputTestTwo',
             [
-                [
-                    'name' => 'first',
-                    'regex' => '(\w+)'
-                ],
-                [
-                    'name' => 'second',
-                    'regex' => '([0-9])+'
-                ]
+                'first' => '(\w+)',
+                'second' => '([0-9])+'
             ]
         );
         
@@ -173,11 +174,25 @@ class RouteTest extends TestCase
         
         $this->assertFalse($route->match('/test/as/15','GET'));
     }
+    
+    public function testMatchDefinitionHasOptionalParameter()
+    {
+        $route = new Route(
+            'GET',
+            '/test/{first}/{?second}',
+            TestController::class,
+            'inputTestTwo'
+        );
+        
+        $this->assertTrue($route->match('/test/param/15', 'GET'));
+        $this->assertTrue($route->match('/test/param', 'GET'));
+    }
 }
 
 class TestController extends Controller {
     public function inputTest(int $input){}
     public function inputTestTwo(string $first, int $second){}
+    public function inputTestThree(string $first, int $second = 2){}
 }
 
 class NotController{}

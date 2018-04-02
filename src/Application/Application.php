@@ -14,11 +14,8 @@ namespace Apine\Application;
 use Apine\Core\Container\Container;
 use Apine\Core\Error\ErrorHandler;
 use Apine\Core\Error\Http\HttpException;
-use Apine\Core\Http\Factories\RequestFactory;
 use Apine\Core\Http\Uri;
-use Apine\Core\Routing\ResourcesContainer;
 use Apine\Core\Routing\Router;
-use Apine\Core\Http\Request;
 use Apine\Core\Http\Response;
 use Apine\Core\Http\Stream;
 use Apine\Core\Config;
@@ -63,11 +60,6 @@ final class Application
     private $services;
     
     /**
-     * @var Container
-     */
-    private $apiResources;
-    
-    /**
      * Application constructor.
      */
     public function __construct(string $projectDirectory = null)
@@ -78,7 +70,6 @@ final class Application
             
             ErrorHandler::set(1);
             $this->services= ServiceProvider::registerDefaultServices();
-            $this->apiResources = new ResourcesContainer();
         } catch (\Exception $e) {
             $this->outputException($e);
             die();
@@ -172,8 +163,6 @@ final class Application
                 }
             }
     
-            $this->registerService('apiResources', $this->apiResources);
-    
             $request = $this->services->get('request');
             $router = new Router($this->services);
             $route = $router->find($request);
@@ -254,24 +243,10 @@ final class Application
     
     /**
      * @param string $className
-     * @param callable|object $service
+     * @param callable|mixed $service
      */
     public function registerService(string $className, $service) : void
     {
         $this->services->register($className, $service);
-    }
-    
-    /**
-     * Register a controller for use as a resource
-     * in the context of the RESTful API
-     *
-     * @param string $name
-     * @param string $className
-     *
-     * @throws \Exception If the controller does not implements the APIActionsInterface
-     */
-    public function registerResource(string $name, string $className) : void
-    {
-        $this->apiResources->register($name, $className);
     }
 }
