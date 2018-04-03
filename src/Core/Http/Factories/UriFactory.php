@@ -44,7 +44,7 @@ class UriFactory
      */
     public function createUriFromArray(array $server) : UriInterface
     {
-        if (!isset($server['HTTP_HOST']) && !isset($server['SERVER_NAME'])) {
+        if (!isset($server['HTTP_HOST']) && !isset($server['SERVER_NAME']) && !isset($server['SERVER_ADDR'])) {
             throw new \InvalidArgumentException("Cannot determine URI from array");
         }
         

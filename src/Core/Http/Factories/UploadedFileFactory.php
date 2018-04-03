@@ -58,4 +58,43 @@ class UploadedFileFactory
             $clientMediaType
         );
     }
+    
+    /**
+     * @param array $files Typically $_FILES
+     *
+     * @return UploadedFileInterface[]
+     */
+    public function createUploadedFileFromArray(array $files) : array
+    {
+        $normalized = [];
+        $uploadedFiles = [];
+        
+        foreach ($files as $index => $info) {
+            $input = [];
+            foreach ($info as $key => $valueArray) {
+                if (is_array($valueArray)) { // file input multiple
+                    foreach ($valueArray as $i => $value) {
+                        $input[$i][$key] = $value;
+                    }
+                } else { // single file input
+                    $input[] = $info;
+                    break;
+                }
+            }
+            
+            $normalized = array_merge($normalized, $input);
+        }
+        
+        foreach ($normalized as $info) {
+            $uploadedFiles[] = $this->createUploadedFile(
+                $info['tmp_name'],
+                (int) $info['size'],
+                (int) $info['error'],
+                $info['name'],
+                $info['type']
+            );
+        }
+        
+        return $uploadedFiles;
+    }
 }
