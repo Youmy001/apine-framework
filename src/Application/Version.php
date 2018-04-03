@@ -6,7 +6,7 @@
  * @copyright 2016 Tommy Teasdale
  */
 
-namespace Apine\Core;
+namespace Apine\Application;
 
 use Apine\Application\Application;
 use Apine\Core\Config;
@@ -16,7 +16,7 @@ use RuntimeException;
  * Verifies version numbers for modules
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
- * @package Apine\Core
+ * @package Apine\Application
  */
 final class Version
 {
