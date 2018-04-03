@@ -137,32 +137,6 @@ final class Application
                 }
             }
     
-            // Find a timezone for the user
-            // using geoip library and its local database
-            if (function_exists('geoip_open')) {
-                $gi = geoip_open($this->apineFolder . DIRECTORY_SEPARATOR . "Includes" . DIRECTORY_SEPARATOR . "GeoLiteCity.dat",
-                    GEOIP_STANDARD);
-                $record = GeoIP_record_by_addr($gi, $_SERVER['REMOTE_ADDR']);
-                //$record = geoip_record_by_addr($gi, "24.230.215.89");
-                //var_dump($record);
-        
-                if (isset($record)) {
-                    $timezone = get_time_zone($record->country_code, ($record->region != '') ? $record->region : 0);
-                } else {
-                    if (isset($config->localization->defaults->timezone)) {
-                        $timezone = $config->localization->defaults->timezone;
-                    } else {
-                        $timezone = 'America/New_York';
-                    }
-                }
-        
-                date_default_timezone_set($timezone);
-            } else {
-                if (!is_null($config->localization->defaults->timezone)) {
-                    date_default_timezone_set($config->localization->defaults->timezone);
-                }
-            }
-    
             $request = $this->services->get('request');
             $router = new Router($this->services);
             $route = $router->find($request);
