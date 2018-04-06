@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Apine\Core;
 
+use Apine\Core\Json\Json;
 use Apine\Core\Json\JsonStore;
 
 /**
@@ -31,7 +32,7 @@ final class Config
     /**
      * Setting strings for the file
      *
-     * @var object
+     * @var Json
      */
     private $settings;
     
