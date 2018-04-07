@@ -305,7 +305,7 @@ class User extends EntityModel {
 		$request = $database->prepare('SELECT `id`, `name`, `value` FROM `apine_user_properties` WHERE `user_id` = ? ORDER BY `name` ASC');
 		$data = $database->execute(array($this->get_id()), $request);
 		
-		if ($data != null && count($data) > 0) {
+		if ($data !== null && count($data) > 0) {
 			foreach ($data as $item) {
 				$this->properties[$item['name']] = new Property($item['id']);
 			}
@@ -329,7 +329,7 @@ class User extends EntityModel {
 			}
 		}
 		
-		if (count($this->properties) > 0) {
+		if ($this->properties !== null && count($this->properties) > 0) {
 			foreach ($this->properties as $item) {
 				if ($item->get_user() === null) {
 					$item->set_user($this->get_id());
