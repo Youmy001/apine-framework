@@ -19,7 +19,8 @@
 		"phpmailer/phpmailer": "^5.2",
 		"geoip/geoip": "~1.14",
 		"binarmorker/tinytemplate": ">=1.1",
-		"twig/twig": "^1.24"
+		"twig/twig": "^1.24",
+		"phpseclib/mcrypt_compat": "^1.0"
     },
     "autoload": {
     	"files" : [
