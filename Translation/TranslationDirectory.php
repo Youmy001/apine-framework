@@ -46,6 +46,7 @@ final class TranslationDirectory {
 	 * Finding available language from language files
 	 * 
 	 * @param string $a_directory
+     * @throws \InvalidArgumentException If the directory is not found
 	 */
     public function __construct ($a_directory = '') {
     
@@ -64,6 +65,10 @@ final class TranslationDirectory {
         
         if (strpos('/', $directory) === 0) {
             $directory = '.' . $directory;
+        }
+        
+        if (!is_dir($directory)) {
+            throw new \InvalidArgumentException(sprintf("Locale directory %s not found.", $directory));
         }
     
         $this->directory = $directory;

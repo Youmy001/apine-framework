@@ -226,6 +226,15 @@ class TwigView extends View {
         $twig->addExtension(new TwigExtension());   // Load Apine Extension
         $template = null;
 		$language = Translator::language();
+        $language_array = array();
+		
+		if (!is_null($language)) {
+		    $language_array = array(
+                'code' => $language->code,
+                'short' => $language->code_short,
+                'name' => Translator::translation()->get("language","name")
+            );
+        }
 		
 		// Array of Apine values useful in views
         $apine_array = array(
@@ -233,11 +242,7 @@ class TwigView extends View {
 			'mode' => Application::get_instance()->get_mode(),
 			'https' => Application::get_instance()->get_use_https(),
 			'secure' => Application::get_instance()->get_secure_session(),
-			'language' => array(
-				'code' => $language->code,
-				'short' => $language->code_short,
-				'name' => Translator::translation()->get("language","name")
-			),
+			'language' => $language_array,
 			'user' => (SessionManager::get_user()) ? SessionManager::get_user() : null,
 			'version' => array(
 				'framework' => Application::get_instance()->get_version()->framework(),

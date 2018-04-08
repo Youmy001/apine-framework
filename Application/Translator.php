@@ -39,7 +39,10 @@ final class Translator {
 	 */
 	private $language;
 	
-	/**
+	private function __construct() {
+    }
+    
+    /**
 	 * Singleton design pattern implementation
 	 * @return Translator
 	 */
@@ -61,48 +64,57 @@ final class Translator {
 	 */
 	public static function set_language ($a_lang_code = null) {
 		
-		$directory = new TranslationDirectory();
-		//$request = Apine\Core\Request::get_instance();
-		$request_get = Request::get();
-		//$config = new ApineConfig('config.ini');
-		
-		if (is_null($a_lang_code)) {
-			if (Config::get('localization', 'locale_detection') == "yes") {
-				if (!isset($request_get['language'])) {
-					$language = self::cookie_best();
-					
-					if (!$language) {
-						$language = self::user_agent_best();
-					}
-				} else {
-					$language = self::request_best();
-				}
-				
-				if (!$language) {
-					$language = Config::get('localization', 'locale_default');
-				}
-
-				self::get_instance()->language = $directory->get_translation($language);
-			} else {
-				if (isset($request_get['language'])) {
-					$language = self::request_best();
-				} else {
-					$language = Config::get('localization', 'locale_default');
-				}
-				
-				self::get_instance()->language = $directory->get_translation($language);
-			}
-		} else {
-			if ($directory->is_exist_language($a_lang_code)) {
-				self::get_instance()->language = $directory->get_translation($a_lang_code);
-			} else {
-				self::get_instance()->language = $directory->get_translation(Config::get('localization', 'locale_default'));
-			}
-		}
-		
-		$code = str_replace('-', '_', self::get_instance()->language->get_language()->code);
-		setlocale(LC_ALL, $code . '.UTF8', $code, self::get_instance()->language->get_language()->code_short);
-	
+	    try {
+            $directory = new TranslationDirectory();
+            //$request = Apine\Core\Request::get_instance();
+            $request_get = Request::get();
+            //$config = new ApineConfig('config.ini');
+        
+            if (is_null($a_lang_code)) {
+                if (Config::get('localization', 'locale_detection') == "yes") {
+                    if (!isset($request_get['language'])) {
+                        $language = self::cookie_best();
+                    
+                        if (!$language) {
+                            $language = self::user_agent_best();
+                        }
+                    } else {
+                        $language = self::request_best();
+                    }
+                
+                    if (!$language) {
+                        $language = Config::get('localization', 'locale_default');
+                    }
+                
+                    self::get_instance()->language = $directory->get_translation($language);
+                } else {
+                    if (isset($request_get['language'])) {
+                        $language = self::request_best();
+                    } else {
+                        $language = Config::get('localization', 'locale_default');
+                    }
+                
+                    self::get_instance()->language = $directory->get_translation($language);
+                }
+            } else {
+                if ($directory->is_exist_language($a_lang_code)) {
+                    self::get_instance()->language = $directory->get_translation($a_lang_code);
+                } else {
+                    self::get_instance()->language = $directory->get_translation(Config::get('localization',
+                        'locale_default'));
+                }
+            }
+        
+            if (!is_null(self::get_instance()->language)) {
+                $code = str_replace('-', '_', self::get_instance()->language->get_language()->code);
+                setlocale(LC_ALL, $code . '.UTF8', $code, self::get_instance()->language->get_language()->code_short);
+            }
+        } catch (\InvalidArgumentException $e) {
+	        $config = Config::get_config();
+	        if (isset($config['localization'])) {
+	            throw $e;
+            }
+        }
 	}
 	
 	/**
@@ -194,7 +206,7 @@ final class Translator {
 			self::set_language();
 		}
 	
-		return self::get_instance()->language->parse($a_prefix, $a_key, $a_pattern);
+		return !(is_null(self::get_instance()->language)) ? self::get_instance()->language->parse($a_prefix, $a_key, $a_pattern) : '';
 	
 	}
 	
@@ -209,7 +221,7 @@ final class Translator {
 			self::set_language();
 		}
 	
-		return self::get_instance()->language->get_language();
+		return !(is_null(self::get_instance()->language)) ? self::get_instance()->language->get_language() : null;
 	
 	}
 	
@@ -224,7 +236,7 @@ final class Translator {
 			self::set_language();
 		}
 	
-		return self::get_instance()->language;
+		return !(is_null(self::get_instance()->language)) ? self::get_instance()->language : null;
 	
 	}
 	
