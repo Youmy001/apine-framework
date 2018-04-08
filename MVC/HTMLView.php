@@ -244,7 +244,7 @@ final class HTMLView extends View {
 	
 		$output = "";
 		
-		if (count($metatags) > 0) {
+		if (is_array($metatags) && count($metatags) > 0) {
 			foreach ($metatags as $value) {
 				$output .= $value . "\r\n";
 			}
@@ -264,7 +264,7 @@ final class HTMLView extends View {
 		
 		$output = "";
 
-		if (count($scripts)>0) {
+		if (is_array($scripts) && count($scripts)>0) {
 			foreach ($scripts as $value) {
 				$output .= "<script src=\"$value\"></script>";
 			}
@@ -284,7 +284,7 @@ final class HTMLView extends View {
 		
 		$output = "";
 		
-		if (count($styles)>0) {
+		if (is_array($styles) && count($styles)>0) {
 			foreach ($styles as $value) {
 				$output .= "<link href=\"$value\" rel=\"stylesheet\" />";
 			}

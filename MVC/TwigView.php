@@ -243,6 +243,7 @@ class TwigView extends View {
 			'https' => Application::get_instance()->get_use_https(),
 			'secure' => Application::get_instance()->get_secure_session(),
 			'language' => $language_array,
+            'current' => URLHelper::get_current_path(),
 			'user' => (SessionManager::get_user()) ? SessionManager::get_user() : null,
 			'version' => array(
 				'framework' => Application::get_instance()->get_version()->framework(),
