@@ -59,6 +59,8 @@ class TwigExtension extends Twig_Extension
                 return executionTime();
             }),
             new \Twig_SimpleFunction('path', function ($path, $protocol = 'default') {
+                $helper = new URLHelper();
+                
                 switch ($protocol) {
                     case 'http':
                         $protocol = PROTOCOL_HTTP;
@@ -72,10 +74,11 @@ class TwigExtension extends Twig_Extension
                         break;
                 }
                 
-                return URLHelper::path($path, $protocol);
+                return $helper->path($path, $protocol);
             }),
             new \Twig_SimpleFunction('resource', function ($path) {
-                return URLHelper::resource($path);
+                $helper = new URLHelper();
+                return $helper->resource($path);
             })
         );
     }
@@ -84,6 +87,8 @@ class TwigExtension extends Twig_Extension
     {
         return array(
             new \Twig_SimpleFilter('path', function ($path, $protocol = 'default') {
+                $helper = new URLHelper();
+                
                 switch ($protocol) {
                     case 'http':
                         $protocol = PROTOCOL_HTTP;
@@ -97,10 +102,11 @@ class TwigExtension extends Twig_Extension
                         break;
                 }
                 
-                return URLHelper::path($path, $protocol);
+                return $helper->path($path, $protocol);
             }),
             new \Twig_SimpleFilter('resource', function ($path) {
-                return URLHelper::resource($path);
+                $helper = new URLHelper();
+                return $helper->resource($path);
             })/*,
             new \Twig_SimpleFilter('date_format', function ($date, $format) {
                 $locale = Translator::getInstance()->translation()->get_locale();

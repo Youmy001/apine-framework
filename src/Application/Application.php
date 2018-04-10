@@ -119,9 +119,10 @@ final class Application
             // Verify is the protocol is allowed
             if (!$isHttp && !extension_loaded('xdebug')) {
                 // Remove trailing slash
+                $helper = new URLHelper();
                 $uri = rtrim($_SERVER['REQUEST_URI']);
                 
-                $redirection = new RedirectionView(new Uri(URLHelper::path($uri, PROTOCOL_HTTPS)), 301);
+                $redirection = new RedirectionView(new Uri($helper->path($uri, PROTOCOL_HTTPS)), 301);
                 $this->output($redirection->respond());
             }
     
