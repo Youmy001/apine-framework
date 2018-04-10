@@ -17,7 +17,7 @@ namespace Apine\Core\Json;
 class Json
 {
     /**
-     * @var object
+     * @var \StdClass
      */
     private $data;
     

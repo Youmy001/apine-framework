@@ -10,8 +10,9 @@ declare(strict_types=1);
 
 namespace Apine\Core;
 
-use Apine\Core\Json\JsonStore;
-use Apine\Core\Json\JsonStoreFileNotFoundException;
+use const E_USER_WARNING;
+use function openssl_decrypt, openssl_encrypt, openssl_random_pseudo_bytes;
+use function base64_encode, hash, substr, trigger_error;
 
 /**
  * Encryption Tools
@@ -23,11 +24,6 @@ use Apine\Core\Json\JsonStoreFileNotFoundException;
 final class Encryption
 {
     /**
-     * @var Encryption
-     */
-    private static $instance;
-    
-    /**
      * @var string
      */
     private $key;
@@ -37,37 +33,26 @@ final class Encryption
      *
      * @throws \Exception
      */
-    private function __construct()
+    public function __construct()
     {
         try {
-            $json = JsonStore::get('config/encryption.json');
-            $this->key = $json->key;
-        } catch (JsonStoreFileNotFoundException $e) {
-            $newKey = self::generateKey();
-            $array = [];
-            $array['key'] = $newKey;
+            $config = new Config('config/encryption.json');
     
-            JsonStore::set('config/encryption.json', $array);
-    
-            $this->key = $newKey;
+            if (isset($config->key)) {
+                $this->key = $config->key;
+            } else {
+                $newKey = self::generateKey();
+        
+                $config->key = $newKey;
+                $config->save();
+        
+                $this->key = $newKey;
+            }
         } catch (\RuntimeException $e) {
             throw new \RuntimeException('Impossible to load the encryption config');
         } catch (\Exception $e) {
             throw $e;
         }
-    }
-    
-    /**
-     * @return Encryption
-     * @throws \Exception
-     */
-    public static function getInstance() : self
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new static();
-        }
-    
-        return self::$instance;
     }
     
     /**
@@ -77,9 +62,9 @@ final class Encryption
      *
      * @return string
      */
-    public static function encrypt(string $source) : string
+    public function encrypt(string $source) : string
     {
-        $key = self::getInstance()->key;
+        $key = $this->key;
     
         $iv = substr($key, 0, 16);
         $encrypted = openssl_encrypt(
@@ -100,9 +85,9 @@ final class Encryption
      *
      * @return string
      */
-    public static function decrypt(string $source) : string
+    public function decrypt(string $source) : string
     {
-        $key = self::getInstance()->key;
+        $key = $this->key;
     
         $iv = substr($key, 0, 16);
         $decrypted = openssl_decrypt(
@@ -116,20 +101,16 @@ final class Encryption
         return $decrypted;
     }
     
-    /*private static function generateKey()
+    public function generateKey() : string
     {
-        $config = Application::getInstance()->getConfig();
-        $hash = hash('md5', rand(1, 100000) . '_' . rand(100001, 200000));
+        $strong = false;
+        $bytes = openssl_random_pseudo_bytes(256,$strong);
         
-        $config->encryption = [
-            'key' => $hash,
-            'method' => 'ssl'
-        ];
-    }*/
-    
-    private static function generateKey() : string
-    {
-        return hash('md5', rand(1, 100000) . '_' . rand(100001, 200000));
+        if (false === $strong) {
+            trigger_error('The random bytes were not generated with a cryptographically secure algorithm safe for usage with passwords.', E_USER_WARNING);
+        }
+        
+        return hash('sha256', $bytes);
     }
     
     /**
@@ -139,11 +120,11 @@ final class Encryption
      *
      * @return string
      */
-    public static function hashPassword(string $clear_password) : string
+    public function hashPassword(string $clear_password) : string
     {
-        $encrypt_password = self::encrypt($clear_password);
+        $encrypt_password = $this->encrypt($clear_password);
         $password = $clear_password . $encrypt_password;
-        $password = self::encrypt($password);
+        $password = $this->encrypt($password);
         $ciphered_password = hash('sha256', $password);
         
         return $ciphered_password;
@@ -158,11 +139,11 @@ final class Encryption
      *
      * @return string
      */
-    public static function hashUserToken(string $a_username, string $a_clear_password, string $a_date) : string
+    public function hashUserToken(string $a_username, string $a_clear_password, string $a_date) : string
     {
-        $encrypt_pass = self::encrypt($a_clear_password);
-        $encrypt_user = self::encrypt($a_username . $encrypt_pass . $a_date);
-        $token = self::encrypt($encrypt_pass . $encrypt_user);
+        $encrypt_pass = $this->encrypt($a_clear_password);
+        $encrypt_user = $this->encrypt($a_username . $encrypt_pass . $a_date);
+        $token = $this->encrypt($encrypt_pass . $encrypt_user);
         $cipher_token = hash('sha256', base64_encode($token));
         
         return $cipher_token;
@@ -173,16 +154,9 @@ final class Encryption
      *
      * @return string
      */
-    public static function token() : string
+    public function token() : string
     {
-        $time = microtime(true);
-        $micro = sprintf("%06d", ($time - floor($time)) * 1000000);
-        $date = new \DateTime(date('Y-m-d H:i:s.' . $micro, $time));
-        $milliseconds = $date->format("u");
-        
-        $cipher_string = hash('sha256', $milliseconds);
-        
-        return $cipher_string;
+        return $this->generateKey();
     }
     
     /**
@@ -192,7 +166,7 @@ final class Encryption
      *
      * @return string
      */
-    public static function md5($string) : string
+    public function md5($string) : string
     {
         return hash('md5', $string);
     }

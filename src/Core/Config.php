@@ -4,14 +4,13 @@
  * This script contains an helper to read configuration files
  *
  * @license MIT
- * @copyright 2015 Tommy Teasdale
+ * @copyright 2018 Tommy Teasdale
  */
 declare(strict_types=1);
 
 namespace Apine\Core;
 
 use Apine\Core\Json\Json;
-use Apine\Core\Json\JsonStore;
 
 /**
  * Configuration Reader
@@ -40,23 +39,17 @@ final class Config
      * Construct the Configuration Reader handler
      * Extract string from the configuration file
      *
-     * @param string $a_path
-     *
-     * @throws \Exception If file not found
+     * @param string $path
      */
-    public function __construct(string $a_path)
+    public function __construct(string $path)
     {
-        try {
-            $this->path = $a_path;
-            $this->settings = JsonStore::get($a_path);
-        } catch (\Exception $e) {
-            throw new \Exception("Config file not found.", 500, $e);
-        }
-    }
+        $this->path = $path;
     
-    public function getPath () : string
-    {
-        return $this->path;
+        if (file_exists($path)) {
+            $this->settings = new Json(file_get_contents($path));
+        } else {
+            $this->settings = new Json(null);
+        }
     }
     
     /**
@@ -81,5 +74,17 @@ final class Config
     public function __isset(string $name) : bool
     {
         return isset($this->settings->$name);
+    }
+    
+    public function getPath () : string
+    {
+        return $this->path;
+    }
+    
+    public function save()
+    {
+        $resource = fopen($this->path, 'w+');
+        fwrite($resource, (string) $this->settings);
+        fclose($resource);
     }
 }
