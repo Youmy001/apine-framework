@@ -12,10 +12,10 @@ declare(strict_types=1);
 namespace Apine\Core\Utility;
 
 use Apine\Core\Http\Factories\UriFactory;
-use Apine\Core\Http\Request;
 use const Apine\Core\PROTOCOL_HTTP;
 use const Apine\Core\PROTOCOL_HTTPS;
 use const Apine\Core\PROTOCOL_DEFAULT;
+use function strlen, explode, substr, count, ltrim;
 
 /**
  * Internal URL Writer
@@ -26,14 +26,6 @@ use const Apine\Core\PROTOCOL_DEFAULT;
  */
 final class URLHelper
 {
-    /**
-     * Instance of the URL Writer
-     * Singleton Implementation
-     *
-     * @var URLHelper
-     */
-    private static $instance;
-    
     /**
      * Server Domain Name
      *
@@ -63,10 +55,16 @@ final class URLHelper
     /**
      * Construct the URL Writer helper
      * Extract string from server configuration
+     *
+     * @param array|null $server Array compatible with $_SERVER
      */
-    private function __construct()
+    public function __construct(array $server = null)
     {
-        $uri = (new UriFactory())->createUriFromArray($_SERVER);
+        if (null === $server) {
+            $server = $_SERVER;
+        }
+        
+        $uri = (new UriFactory())->createUriFromArray($server);
     
         $hostArray = explode('.', $uri->getAuthority());
     
@@ -83,28 +81,13 @@ final class URLHelper
     }
     
     /**
-     * Singleton design pattern implementation
-     *
-     * @static
-     * @return URLHelper
-     */
-    public static function getInstance()
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new static();
-        }
-        
-        return self::$instance;
-    }
-    
-    /**
      * Select protocol to use
      *
      * @param integer $param
      *
      * @return string
      */
-    private static function protocol($param)
+    private function protocol(int $param) : string
     {
         switch ($param) {
             case PROTOCOL_HTTP:
@@ -115,7 +98,7 @@ final class URLHelper
                 break;
             case PROTOCOL_DEFAULT:
             default:
-                $protocol = self::getInstance()->uri->getScheme() . '://';
+                $protocol = $this->uri->getScheme() . '://';
                 break;
         }
         
@@ -134,7 +117,7 @@ final class URLHelper
      *
      * @return string
      */
-    private static function writeUrl($base, $path, $protocol)
+    private function writeUrl(string $base, string $path, int $protocol) : string
     {
         /*if (isset(Request::get()['language'])) {
             if (Request::get()['language'] == Translator::language()->code || Request::get()['language'] == Translator::language()->code_short) {
@@ -145,13 +128,13 @@ final class URLHelper
             
             return self::protocol($protocol) . $base . '/' . $language . '/' . $path;
         } else {*/
-            return self::protocol($protocol) . $base . '/' . $path;
+            return $this->protocol($protocol) . $base . '/' . ltrim($path, '/');
         //}
     }
     
-    public static function resource($path)
+    public function resource(string $path) : string
     {
-        return self::protocol(PROTOCOL_DEFAULT) . self::getInstance()->authority . '/' . $path;
+        return $this->protocol(PROTOCOL_DEFAULT) . $this->authority . '/' . $path;
     }
     
     /**
@@ -164,9 +147,9 @@ final class URLHelper
      *
      * @return string
      */
-    public static function path($path, $protocol = PROTOCOL_DEFAULT)
+    public function path(string $path, int $protocol = PROTOCOL_DEFAULT) : string
     {
-        return self::writeUrl(self::getInstance()->authority, $path, $protocol);
+        return $this->writeUrl($this->authority, $path, $protocol);
     }
     
     /**
@@ -180,9 +163,9 @@ final class URLHelper
      *
      * @return string
      */
-    public static function mainPath($path, $protocol = PROTOCOL_DEFAULT)
+    public function mainPath(string $path, int $protocol = PROTOCOL_DEFAULT) : string
     {
-        return self::writeUrl(self::getInstance()->mainAuthority, $path, $protocol);
+        return $this->writeUrl($this->mainAuthority, $path, $protocol);
     }
     
     /**
@@ -196,9 +179,9 @@ final class URLHelper
      *
      * @return string
      */
-    public static function relativePath($path, $protocol = PROTOCOL_DEFAULT)
+    public function relativePath(string $path, int $protocol = PROTOCOL_DEFAULT) : string
     {
-        return self::writeUrl(self::getInstance()->authority, self::getInstance()->path . '/' . $path,
+        return $this->writeUrl($this->authority, $this->path . '/' . $path,
             $protocol);
     }
     
@@ -209,8 +192,8 @@ final class URLHelper
      *
      * @return string
      */
-    public static function getCurrentPath($protocol = PROTOCOL_DEFAULT)
+    public function getCurrentPath(int $protocol = PROTOCOL_DEFAULT) : string
     {
-        return self::writeUrl(self::getInstance()->authority, self::getInstance()->path, $protocol);
+        return self::writeUrl($this->authority, $this->path, $protocol);
     }
 }
