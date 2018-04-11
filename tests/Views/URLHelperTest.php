@@ -8,7 +8,7 @@
 declare(strict_types=1);
 
 
-use Apine\Core\Utility\URLHelper;
+use Apine\Core\Views\URLHelper;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UriInterface;
 use const \Apine\Core\PROTOCOL_HTTP;

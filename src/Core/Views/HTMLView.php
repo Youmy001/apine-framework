@@ -13,7 +13,7 @@ namespace Apine\Core\Views;
 use Apine\Core\Error\ErrorHandler;
 use Apine\Core\Http\Response;
 use Apine\Core\Http\Stream;
-use Apine\Core\Views\Twig\TwigExtension;
+use Apine\Core\Views\Twig\ExtensionLoader;
 use Psr\Http\Message\ResponseInterface;
 use Twig_Environment;
 use Twig_Loader_Filesystem;
@@ -59,7 +59,9 @@ class HTMLView extends View
                 'auto_reload' => true,
                 'debug'       => ((bool)ErrorHandler::$reportingLevel)
             ));
-            $twig->addExtension(new TwigExtension());
+            
+            $loader = new ExtensionLoader($twig);
+            $loader->addFromConfig('config/twig.json');
             
             $template = $twig->loadTemplate($this->file);
             $content = $template->render($this->attributes);
