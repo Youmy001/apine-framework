@@ -4,12 +4,12 @@
  * This script contains an helper to write internal URL
  *
  * @license MIT
- * @copyright 2015 Tommy Teasdale
+ * @copyright 2018 Tommy Teasdale
  */
 
 declare(strict_types=1);
 
-namespace Apine\Core\Utility;
+namespace Apine\Core\Views;
 
 use Apine\Core\Http\Factories\UriFactory;
 use const Apine\Core\PROTOCOL_HTTP;
@@ -22,7 +22,7 @@ use function strlen, explode, substr, count, ltrim;
  * Write URL from server's information
  *
  * @author Tommy Teasdale <tteasdaleroads@gmail.com>
- * @package Apine\MVC
+ * @package Apine\Views
  */
 final class URLHelper
 {

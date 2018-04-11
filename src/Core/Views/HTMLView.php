@@ -13,6 +13,7 @@ namespace Apine\Core\Views;
 use Apine\Core\Error\ErrorHandler;
 use Apine\Core\Http\Response;
 use Apine\Core\Http\Stream;
+use Apine\Core\Views\Twig\TwigExtension;
 use Psr\Http\Message\ResponseInterface;
 use Twig_Environment;
 use Twig_Loader_Filesystem;

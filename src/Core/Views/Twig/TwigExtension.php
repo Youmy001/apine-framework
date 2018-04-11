@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Apine\Core\Views;
+namespace Apine\Core\Views\Twig;
 
-use Apine\Core\Utility\URLHelper;
+use Apine\Core\Views\URLHelper;
 use Twig_Extension;
-use function Apine\Core\Utility\executionTime;
 use const Apine\Core\PROTOCOL_DEFAULT;
 use const Apine\Core\PROTOCOL_HTTP;
 use const Apine\Core\PROTOCOL_HTTPS;
+use function Apine\Core\Utility\executionTime;
 
 class TwigExtension extends Twig_Extension
 {
@@ -26,35 +26,6 @@ class TwigExtension extends Twig_Extension
     public function getFunctions()
     {
         return array(
-            /*new \Twig_SimpleFunction('config', function ($a_section, $a_default = '') {
-                try {
-                    $config = Application::getInstance()->getConfig();
-                    $sections = explode('.', $a_section);
-                    $value = $config;
-                    
-                    foreach ($sections as $section) {
-                        $value = $value->$section;
-                    }
-                    
-                    if (empty($value)) {
-                        $value = $a_default;
-                    }
-                } catch (\Exception $e) {
-                    $value = $a_default;
-                }
-                
-                return $value;
-            }),
-            new \Twig_SimpleFunction('translate', function ($section, $key) {
-                //return Translator::translate($section, $key);
-                try {
-                
-                } catch (\Exception $e) {
-                
-                }
-                
-                return '';
-            }),*/
             new \Twig_SimpleFunction('execution_time', function () {
                 return executionTime();
             }),
@@ -107,21 +78,7 @@ class TwigExtension extends Twig_Extension
             new \Twig_SimpleFilter('resource', function ($path) {
                 $helper = new URLHelper();
                 return $helper->resource($path);
-            })/*,
-            new \Twig_SimpleFilter('date_format', function ($date, $format) {
-                $locale = Translator::getInstance()->translation()->get_locale();
-                
-                if (is_a($date, '\DateTime')) {
-                    $date = $date->getTimestamp();
-                } else {
-                    if (!is_timestamp($date)) {
-                        $date = strtotime($date);
-                    }
-                }
-                
-                return $locale->format_date($date, $format);
-                
-            })*/
+            })
         );
     }
 }
