@@ -28,8 +28,9 @@ class JSONView extends View
     
     public function __construct(array $data = [], bool $prettify = false)
     {
-        $this->attributes = $data;
         $this->prettify = $prettify;
+        
+        $this->setAttributes($data);
         $this->addHeader('Content-type', 'application/json');
     }
     
@@ -37,11 +38,12 @@ class JSONView extends View
     {
         $response = new Response($this->statusCode);
         $options = 0;
-        $json = json_encode($this->attributes, $options);
     
         if (true === $this->prettify){
             $options |= JSON_PRETTY_PRINT;
         }
+    
+        $json = json_encode($this->getAttributes(), $options);
     
         foreach ($this->headers as $header) {
             $response = $response->withHeader($header['name'], $header['value']);

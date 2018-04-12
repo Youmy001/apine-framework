@@ -45,7 +45,7 @@ class PHPView extends View
         
         if (!is_null($this->file)) {
             $body = new Stream(fopen('php://memory', 'r+'));
-            $body->write($this->generate($this->file, $this->attributes));
+            $body->write($this::generate($this->file, $this->attributes));
             $response = $response->withBody($body);
         }
         
@@ -58,9 +58,7 @@ class PHPView extends View
     
     public function setFile(string $path)
     {
-        if (file_exists("views/$path.php")) {
-            $path = "views/$path.php";
-        } else if (file_exists("$path.php")) {
+        if (file_exists("$path.php")) {
             $path = "$path.php";
         } else {
             throw new \InvalidArgumentException('File not found');
@@ -69,14 +67,14 @@ class PHPView extends View
         $this->file = $path;
     }
     
-    private function generate (string $layoutFile, array $layoutAttributes) : string
+    private static function generate (string $layoutFile, array $layoutAttributes) : string
     {
         try {
             extract($layoutAttributes);
             unset($layoutAttributes);
         
             ob_start();
-            eval("unset(\$layoutFile, \$this); include_once('".$layoutFile."');");
+            eval("unset(\$layoutFile); include_once('".$layoutFile."');");
             $content = ob_get_contents();
             ob_end_clean();
             

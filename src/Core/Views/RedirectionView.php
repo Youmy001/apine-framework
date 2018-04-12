@@ -40,9 +40,13 @@ class RedirectionView extends View
         $this->statusCode = $code;
     }
     
-    public static function createFromPath(string $path, int $code = 301) : RedirectionView
+    public static function createFromPath(string $path, int $code = 301, array $server = null) : RedirectionView
     {
-        $uri = (new UriFactory())->createUriFromArray($_SERVER);
+        if (null === $server) {
+            $server = $_SERVER;
+        }
+        
+        $uri = (new UriFactory())->createUriFromArray($server);
         return new static($uri->withPath($path), $code);
     }
     

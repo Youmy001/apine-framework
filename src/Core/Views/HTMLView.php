@@ -33,9 +33,9 @@ class HTMLView extends View
      *
      * @var string
      */
-    private $file;
+    protected $file;
     
-    private $filePath;
+    protected $filePath;
     
     public function __construct(string $template, array $data = [], int $code = 200)
     {
@@ -76,26 +76,12 @@ class HTMLView extends View
     
     public function setFile(string $path)
     {
-        $location = realpath(dirname(__FILE__) . '/../..'); // The path to the framework itself
-    
-        if (file_exists("views/$path.twig")) {
-            $filePath = realpath("views");
-            $file = "$path.twig";
-        } else if (file_exists("$location/Views/$path.twig")){
-            $filePath = "$location/Views";
-            $file = "$path.twig";
-        } else if (file_exists("$path.twig")) {
-            $filePath = $location;
-            $file = "$path.twig";
-        } else if (file_exists("views/$path.html")) {
-            $filePath = realpath("views");
-            $file = "$path.html";
-        } else if (file_exists("$location/Views/$path.html")){
-            $filePath = realpath("$location/Views");
-            $file = "$path.html";
+        if (file_exists("$path.twig")) {
+            $filePath = realpath(dirname("$path.twig"));
+            $file = basename("$path.twig");
         } else if (file_exists("$path.html")) {
-            $filePath = $location;
-            $file = "$path.html";
+            $filePath = realpath(dirname("$path.html"));
+            $file = basename("$path.html");
         } else {
             throw new \InvalidArgumentException('File not found');
         }
