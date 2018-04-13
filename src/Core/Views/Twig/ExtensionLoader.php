@@ -32,7 +32,7 @@ class ExtensionLoader
         if (!isset($config->extensions)) {
             $config->extensions = [
                 UriExtension::class,
-                ExcecutionTimeExtension::class
+                ExecutionTimeExtension::class
             ];
             $config->save();
         } else {
