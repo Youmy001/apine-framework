@@ -310,7 +310,7 @@ class InstallController extends Controller {
                 }
                 
                 if ($generate_folders === 1) {
-                    $entries['localization']['locale_directory'] = 'resources/language';
+                    $entries['localization']['locale_directory'] = 'resources/languages';
                 } else {
                     $entries['localization']['locale_directory'] = '.';
                 }

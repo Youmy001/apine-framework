@@ -23,12 +23,12 @@ APIne Framework is available as a Composer Package on Packagist as well as a sta
 
 ### With Composer
 
-Add the following line to your composer.json file : `"youmy001/apine-framework": ^1.1.3"`.
+Add the following line to your composer.json file : `"youmy001/apine-framework": ^1.2"`.
 Or enter this command : `$ composer require youmy001/apine-framework`.
 
 ### Standalone
 
-Clone this repository in your working directory : `$ git clone https://github.com/Youmy001/apine_framework.git`. Then checkout to the branch of the latest stable release: `git checkout 1.1.x`.
+Clone this repository in your working directory : `$ git clone https://github.com/Youmy001/apine_framework.git`. Then checkout to the branch of the latest stable release: `git checkout 1.2.x`.
 
 ## Quick Start a Project
 
@@ -61,24 +61,27 @@ Next, create a `index.php` file and add the following content in it:
 Finally, you will need to create a file name `config.ini` that will contain various configuration information. Complete the following in your config file :
 
     [application]
-    title = "Project Name"
-    author = "Author Name"
-    description = "Description"
+    	title = "Project Name"
+    	author = "Author Name"
+    	description = "Description"
     [database]
-    host = "localhost"
-    type = "mysql"
-    dbname = "projectdb"
-    charset = "utf8"
-    username = "root"
-    password = ""
+    	host = "localhost"
+    	type = "mysql"
+    	dbname = "projectdb"
+    	charset = "utf8"
+    	username = "root"
+    	password = ""
     [localization]
-    timezone_default = "America/New_York"
-    locale_default = "en_US"
-    locale_detection = "yes"
-    locale_cookie = "no"
+    	timezone_default = "America/New_York"
+    	locale_default = "en_US"
+    	locale_detection = "yes"
+    	locale_cookie = "no"
+    	locale_directory = "resources/languages"
     [runtime]
-    token_lifespan = "600"
-    default_layout = "default"
+    	token_lifespan = "600"
+    	default_layout = "default"
+    [entity]
+    	adjust_timestamp = "yes"
 
 ## Learn More
 

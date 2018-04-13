@@ -6,24 +6,22 @@
 
 <h2>Requirements</h2>
 <ul>
-    <li>PHP 5.4.0 or greater</li>
-    <li>MySQL 5</li>
-    <li>Apache 2.4</li>
-    <li>mod_rewrite</li>
-    <li>filter_module</li>
+    <li>PHP 5.6.0 or greater</li>
+    <li>MySQL 5.6 or MariaDB 10.1 or greater</li>
+    <li>Apache 2.4 with mod_rewrite active</li>
 </ul>
-<p>The project must be set in a virtual host that allows rewrites and .htaccess files for routes to work. PHP's user must have writing permissions on the project directory.</p>
+    <p>The project using APIne must be installed at the root of a host that must include the instruction <code>AllowOverride FileInfo Options Indexes</code> for the default settings. PHP's user must also have writing permissions on the project directory.</p>
 
-<div class="alert alert-info">If you are using another web server (nginx, lighttpd, ...) you must modify your server's config to replace the role of the .htaccess file.</div>
+<div class="alert alert-info">APIne does not officially support any other HTTP server (nginx, lighttpd, ...). If you are using one of those you might need modify your server's configuration.</div>
 
 <h2>Installation</h2>
 <p>APIne Framework is available as a Composer Package on Packagist as well as a standalone project.</p>
 <h3>With Composer</h3>
-<p>Add the following line to your composer.json file : <code>"youmy001/apine-framework": "~1.*"</code><br/>
+<p>Add the following line to your composer.json file : <code>"youmy001/apine-framework": "^1.2"</code><br/>
     Or enter this command : <code>$ composer require youmy001/apine-framework</code></p>
 
 <h3>Standalone</h3>
-<p>Clone this repository in your working directory : <code>$ git clone https://github.com/Youmy001/apine_framework.git</code></p>
+    <p>Clone this repository in your working directory : <code>$ git clone https://github.com/Youmy001/apine_framework.git</code>. Then checkout to the branch of the latest stable release: <code>git checkout 1.2.x</code>.</p>
 
 <h2>Quick Start a project</h2>
 <p>To quickly start a new project execute the assistant in a web browser located at <code>http://[domain_name_of_your_project]/apine-framework/install.php</code> if APIne is used standalone or <code>http://[domain_name_of_your_project]/vendor/youmy001/apine-framework/install.php</code> if it is used as a composer package, and follow the steps. The assistant will automatically generate a basic config, an empty locale, a .htaccess file, and a basic index.php and will automatically download the lastest version of Composer's binary if you are using the standalone version.</p>
@@ -64,9 +62,12 @@ $apine->run(APINE_RUNTIME_HYBRID);
 	locale_default = "en_US"
 	locale_detection = "yes"
 	locale_cookie = "no"
+    locale_directory = "resources/languages"
 [runtime]
 	token_lifespan = "600"
 	default_layout = "default"
+[entity]
+    adjust_timestamp = "yes"
 </pre>
 
 <h2>Learn More</h2>
