@@ -7,6 +7,7 @@
  */
 namespace Apine\MVC\Twig;
 
+use Apine\Core\Cookie;
 use Apine\MVC\HTMLView;
 use Apine\Session\SessionManager;
 use Apine\Application\Config;
@@ -23,6 +24,9 @@ class TwigExtension extends Twig_Extension implements \Twig_Extension_GlobalsInt
 
     public function getFunctions() {
         return array(
+            new \Twig_SimpleFunction('cookie', function ($name) {
+                return Cookie::get($name);
+            }),
         	new \Twig_SimpleFunction('config', function ($section, $key) {
         		return Config::get($section, $key);
 			}),
@@ -79,7 +83,7 @@ class TwigExtension extends Twig_Extension implements \Twig_Extension_GlobalsInt
 			new \Twig_SimpleFilter('date_format', function ($date, $format) {
 				$locale = Translator::get_instance()->translation()->get_locale();
 				
-				if (is_a($date, '\DateTime')) {
+				if ($date instanceof \DateTime) {
 					$date = $date->getTimestamp();
 				} else if (!is_timestamp($date)) {
 					$date = strtotime($date);
