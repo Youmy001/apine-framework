@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Apine\Core\Views;
 
+use Apine\Core\Config;
 use Apine\Core\Error\ErrorHandler;
 use Apine\Core\Http\Response;
 use Apine\Core\Http\Stream;
@@ -61,7 +62,7 @@ class HTMLView extends View
             ));
             
             $loader = new ExtensionLoader($twig);
-            $loader->addFromConfig('config/twig.json');
+            $loader->addFromConfig(new Config('config/twig.json'));
             
             $template = $twig->loadTemplate($this->file);
             $content = $template->render($this->attributes);

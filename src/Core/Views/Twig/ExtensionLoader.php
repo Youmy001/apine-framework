@@ -25,10 +25,8 @@ class ExtensionLoader
         $this->environment = $environment;
     }
     
-    public function addFromConfig(string $filepath) : \Twig_Environment
+    public function addFromConfig(Config $config) : \Twig_Environment
     {
-        $config = new Config($filepath);
-        
         if (!isset($config->extensions)) {
             $config->extensions = [
                 UriExtension::class,
