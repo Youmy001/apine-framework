@@ -68,7 +68,7 @@ final class Application
             executionTime();
             $this->setPaths($projectDirectory);
             
-            ErrorHandler::set(1);
+            ErrorHandler::set(E_ALL, true);
             $this->services= ServiceProvider::registerDefaultServices();
         } catch (\Exception $e) {
             $this->outputException($e);
@@ -109,33 +109,30 @@ final class Application
     public function run() : void
     {
         $config = null;
-        $headers = getallheaders();
-        $isHttp = (isset($headers['HTTPS']) && !empty($headers['HTTPS']));
+        //$headers = getallheaders();
+        //$isHttp = (isset($headers['HTTPS']) && !empty($headers['HTTPS']));
         
         /**
          * Main Execution
          */
         try {
-            // Verify is the protocol is allowed
-            if (!$isHttp && !extension_loaded('xdebug')) {
+            // Verify if the protocol is allowed
+            // TODO Move that to a middleware
+            /*if (!$isHttp && !extension_loaded('xdebug')) {
                 // Remove trailing slash
                 $helper = new URLHelper();
                 $uri = rtrim($_SERVER['REQUEST_URI']);
                 
                 $redirection = new RedirectionView(new Uri($helper->path($uri, PROTOCOL_HTTPS)), 301);
                 $this->output($redirection->respond());
-            }
+            }*/
     
             $config = new Config('config/error.json');
     
             // Make sure application runs with a valid execution mode
-            if ($config->debug !== null) {
-                $bool = $config->debug;
-                if (is_bool($bool) && $bool === true) {
-                    ErrorHandler::set(1);
-                } else {
-                    ErrorHandler::set(0);
-                }
+            if ($config->reporting_level !== null) {
+                $level = eval('return ' . $config->reporting_level . ';');
+                ErrorHandler::set($level, $config->show_trace);
             }
     
             $request = $this->services->get('request');
@@ -199,7 +196,7 @@ final class Application
     
         $result = $e->getMessage() . "\n\r";
     
-        if (ErrorHandler::$reportingLevel === 1) {
+        if (ErrorHandler::$showTrace === true) {
             $trace = explode("\n", $e->getTraceAsString());
         
             foreach ($trace as $step) {

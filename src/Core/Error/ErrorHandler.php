@@ -29,7 +29,12 @@ class ErrorHandler
     /**
      * @var int
      */
-    public static $reportingLevel = 0;
+    public static $reportingLevel;
+    
+    /**
+     * @var bool
+     */
+    public static $showTrace = false;
     
     /**
      * @param int         $errorNumber
@@ -58,7 +63,7 @@ class ErrorHandler
     
         $result = $e->getMessage() . "\n\r";
         
-        if (self::$reportingLevel === 1) {
+        if (self::$showTrace === 1) {
             $trace = explode("\n", $e->getTraceAsString());
     
             foreach ($trace as $step) {
@@ -103,19 +108,23 @@ class ErrorHandler
     /**
      * @param int $reportLevel
      */
-    public static function set(int $reportLevel = 0) : void
+    public static function set(int $reportLevel = 0, bool $showTrace = false) : void
     {
         self::unset();
+        self::$showTrace = $showTrace;
         self::$reportingLevel = $reportLevel;
         
-        error_reporting(E_ALL);
-        set_error_handler([self::class, 'handleError'], E_ALL);
+        error_reporting(self::$reportingLevel);
+        set_error_handler([self::class, 'handleError'], self::$reportingLevel);
         set_exception_handler([self::class, 'handleException']);
     }
     
     
     public static function unset() : void
     {
+        self::$reportingLevel = E_ALL;
+        self::$showTrace = false;
+        
         error_reporting((int) ini_get('error_reporting'));
         restore_error_handler();
         restore_exception_handler();

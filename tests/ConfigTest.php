@@ -45,7 +45,7 @@ class ConfigTest extends TestCase
     
     public function setUp()
     {
-        ErrorHandler::set(); // Set up error handling so that notice in file manipulation convert to Exception
+        ErrorHandler::set(E_ALL); // Set up error handling so that notice in file manipulation convert to Exception
     }
     
     public function tearDown()

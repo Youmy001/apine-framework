@@ -8,6 +8,7 @@
 declare(strict_types=1);
 
 
+use Apine\Core\Config;
 use Apine\Core\Views\Twig\ExtensionLoader;
 use PHPUnit\Framework\TestCase;
 
@@ -60,7 +61,7 @@ class ExtensionLoaderTest extends TestCase
     
         $loader = new ExtensionLoader($observer);
         
-        $twig = $loader->addFromConfig('twig.json');
+        $twig = $loader->addFromConfig(new Config('twig.json'));
         $this->assertInstanceOf(Twig_Environment::class, $twig);
         
         unlink('twig.json');
@@ -80,8 +81,8 @@ class ExtensionLoaderTest extends TestCase
             ->getMock();
     
         $loader = new ExtensionLoader($observer);
-    
-        $loader->addFromConfig('twig.json');
+        
+        $loader->addFromConfig(new Config('twig.json'));
         $this->assertFileExists('twig.json');
     
         unlink('twig.json');
