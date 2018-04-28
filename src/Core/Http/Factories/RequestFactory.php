@@ -10,13 +10,8 @@ declare(strict_types=1);
 namespace Apine\Core\Http\Factories;
 
 use Apine\Core\Http\Request;
-use Apine\Core\Http\Stream;
-use Apine\Core\Http\UploadedFile;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
-
-use const Apine\Core\REQUEST_USER;
-use const Apine\Core\REQUEST_MACHINE;
 
 /**
  * Class RequestFactory
@@ -105,8 +100,6 @@ class RequestFactory
         $method = isset($server['REQUEST_METHOD']) ? $server['REQUEST_METHOD'] : 'GET';
         
         $protocol = isset($server['SERVER_PROTOCOL']) ? str_replace('HTTP/', '', $server['SERVER_PROTOCOL']) : '1.1';
-    
-        unset($get['apine-request']);
         
         $uploadedFiles = $this->fileFactory->createUploadedFileFromArray($files);
         

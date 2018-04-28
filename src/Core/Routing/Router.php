@@ -9,11 +9,9 @@ declare(strict_types=1);
 
 namespace Apine\Core\Routing;
 
+use Apine\Core\Controllers\Controller;
 use Apine\Core\Error\Http\NotFoundException;
 use Apine\Core\Views\View;
-use \ReflectionClass;
-use \ReflectionMethod;
-use Apine\Core\Config;
 use Apine\Core\Container\Container;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -24,11 +22,6 @@ class Router implements RouterInterface
      * @var ServerRequestInterface
      */
     private $request;
-    
-    /**
-     * @var Config
-     */
-    private $config;
     
     /**
      * @var Route[]
@@ -45,40 +38,25 @@ class Router implements RouterInterface
      */
     private $container;
     
-    private static $verbs = [
+    public static $verbs = [
         'GET',
         'POST',
         'PUT',
         'DELETE',
         'HEAD',
         'OPTIONS',
-        'TRACE'
+        'TRACE',
+        'PATCH'
     ];
     
     /**
      * Router constructor.
      *
      * @param Container $container
-     *
-     * @throws \Exception
      */
     public function __construct(Container &$container)
     {
         $this->container = $container;
-    
-        try {
-            $this->config = new Config('config/router.json');
-            
-            if ($this->config->serve->api === true) {
-                $this->loadAPIRoutes();
-            }
-            
-            if ($this->config->serve->web === true)  {
-                $this->loadRoutes();
-            }
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage(), $e->getCode(), $e);
-        }
     }
     
     /**
@@ -198,82 +176,147 @@ class Router implements RouterInterface
     }
     
     /**
-     * @throws \Exception
+     * Add route
+     *
+     * @param string[]      $methods
+     * @param string        $pattern
+     * @param string        $controller
+     * @param null|string   $action
+     * @param string[]      $middlewares
+     *
+     * @throws \Exception If the controller or the action do not exist
      */
-    private function loadRoutes ()
+    public function map(array $methods, string $pattern, string $controller, ?string $action, array $middlewares = [])
     {
-        $routes = json_decode(file_get_contents('config/routes/web.json'), true);
-        $prefix = $this->config->prefixes->web;
-        
-        array_walk($routes, function ($definitions, $pattern) use ($prefix) {
-            
-            $pattern = $this->appendPrefix($pattern, $prefix);
-            $this->routes = array_merge(
-                $this->routes,
-                array_map(function($method, $definition) use ($pattern) {
-                    if(!isset($definition['parameters'])) {
-                        $definition['parameters'] = [];
-                    }
-                    
-                    return new Route(
-                        $method,
-                        $pattern,
-                        $definition['controller'],
-                        $definition['action'],
-                        $definition['parameters']
-                    );
-                }, array_keys($definitions), $definitions)
-            );
-        });
-    }
-    
-    private function loadAPIRoutes()
-    {
-        $routes = json_decode(file_get_contents('config/routes/api.json'), true);
-        $prefix = $this->config->prefixes->api;
-        
-        array_walk($routes, function($definitions, $pattern) use ($prefix, &$computed) {
-            $pattern = $this->appendPrefix($pattern, $prefix);
-            $class= $definitions['controller'];
-            $reflection = new ReflectionClass($definitions['controller']);
-            unset($definitions['controller']);
-            
-            $this->routes = array_merge(
-                $this->routes,
-                array_map(
-                    function(ReflectionMethod $method) use ($pattern, $class, $prefix, $definitions) {
-                        $requestMethod = strtoupper($method->getName());
-                        $parameters = [];
-                        
-                        if (isset($definitions[$requestMethod]['parameters'])) {
-                            $parameters = $definitions[$requestMethod]['parameters'];
-                        }
-                        
-                        return new Route(
-                            $requestMethod,
-                            $pattern,
-                            $class,
-                            $method->getName(),
-                            $parameters,
-                            true
-                        );
-                    }, array_filter(
-                        $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
-                        function (ReflectionMethod $method) {
-                            return in_array(strtoupper($method->getName()), self::$verbs, true);
-                        }
-                    )
-                )
-            );
-        });
-    }
-    
-    private function appendPrefix(string $pattern, string $prefix = "") : string
-    {
-        if (!empty($prefix)) {
-            $pattern = "/$prefix" . $pattern;
+        if (!class_exists($controller) || !is_subclass_of($controller, Controller::class) || !method_exists($controller, $action)) {
+            throw new \Exception('Controller or method not found');
         }
         
-        return $pattern;
+        foreach ($methods as $method) {
+            $this->routes[] = new Route($method, $pattern, $controller, $action);
+        }
+    }
+    
+    /**
+     * Add multiple routes under a prefix
+     *
+     * @param string   $pattern
+     * @param callable $callable
+     */
+    public function group(string $pattern, callable $callable)
+    {
+        // First execute the callable
+        $group = new RouteGroup($pattern, $callable);
+        $group->resolve();
+        
+        $this->routes = array_merge($this->routes, $group->getRoutes());
+    }
+    
+    /**
+     * @param string      $pattern
+     * @param string      $controller
+     * @param null|string $action
+     *
+     * @throws \Exception
+     */
+    public function get(string $pattern, string $controller, ?string $action)
+    {
+        $this->map(['GET'], $pattern, $controller, $action);
+    }
+    
+    /**
+     * @param string      $pattern
+     * @param string      $controller
+     * @param null|string $action
+     *
+     * @throws \Exception
+     */
+    public function post(string $pattern, string $controller, ?string $action)
+    {
+        $this->map(['POST'], $pattern, $controller, $action);
+    }
+    
+    /**
+     * @param string      $pattern
+     * @param string      $controller
+     * @param null|string $action
+     *
+     * @throws \Exception
+     */
+    public function put(string $pattern, string $controller, ?string $action)
+    {
+        $this->map(['PUT'], $pattern, $controller, $action);
+    }
+    
+    /**
+     * @param string      $pattern
+     * @param string      $controller
+     * @param null|string $action
+     *
+     * @throws \Exception
+     */
+    public function delete(string $pattern, string $controller, ?string $action)
+    {
+        $this->map(['DELETE'], $pattern, $controller, $action);
+    }
+    
+    /**
+     * @param string      $pattern
+     * @param string      $controller
+     * @param null|string $action
+     *
+     * @throws \Exception
+     */
+    public function options(string $pattern, string $controller, ?string $action)
+    {
+        $this->map(['OPTIONS'], $pattern, $controller, $action);
+    }
+    
+    /**
+     * @param string      $pattern
+     * @param string      $controller
+     * @param null|string $action
+     *
+     * @throws \Exception
+     */
+    public function head(string $pattern, string $controller, ?string $action)
+    {
+        $this->map(['HEAD'], $pattern, $controller, $action);
+    }
+    
+    /**
+     * @param string      $pattern
+     * @param string      $controller
+     * @param null|string $action
+     *
+     * @throws \Exception
+     */
+    public function trace(string $pattern, string $controller, ?string $action)
+    {
+        $this->map(['TRACE'], $pattern, $controller, $action);
+    }
+    
+    /**
+     * @param string      $pattern
+     * @param string      $controller
+     * @param null|string $action
+     *
+     * @throws \Exception
+     */
+    public function patch(string $pattern, string $controller, ?string $action)
+    {
+        $this->map(['PATCH'], $pattern, $controller, $action);
+    }
+    
+    /**
+     * @param string      $pattern
+     * @param string      $controller
+     * @param null|string $action
+     *
+     * @throws \Exception
+     */
+    public function any(string $pattern, string $controller, ?string $action)
+    {
+        $this->map(self::$verbs, $pattern, $controller, $action);
     }
 }

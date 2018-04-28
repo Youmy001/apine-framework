@@ -83,7 +83,7 @@ class JsonTest extends TestCase
     }
     
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \Apine\Core\Json\JsonInvalidFormatException
      * @expectedExceptionMessage Invalid JSON string
      */
     public function testConstructFromInvalidString()

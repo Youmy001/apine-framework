@@ -14,7 +14,7 @@ namespace Apine\Core\Json;
  *
  * @package Apine\Core\Json
  */
-class JsonStoreFileNotFoundException extends \Exception
+class JsonInvalidFormatException extends \Exception
 {
     
 }

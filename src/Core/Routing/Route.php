@@ -59,11 +59,6 @@ final class Route
     public $actionParameters;
     
     /**
-     * @var bool
-     */
-    public $isAPIRoute;
-    
-    /**
      * Route constructor.
      *
      * @param string $method
@@ -71,22 +66,15 @@ final class Route
      * @param string $controller
      * @param string $action
      * @param array  $parameters
-     * @param boolean $isAPI
      *
      * @throws \Exception
-     * @throws \ReflectionException
      */
-    public function __construct(string $method, string $uri, string $controller, string $action, array $parameters = [], bool $isAPI = false)
+    public function __construct(string $method, string $uri, string $controller, string $action, array $parameters = [])
     {
-        if (!class_exists($controller) || !is_subclass_of($controller, Controller::class) || !method_exists($controller, $action)) {
-            throw new \Exception('Controller or method not found');
-        }
-        
         $this->uri = $uri;
         $this->method = $method;
         $this->controller = $controller;
         $this->action = $action;
-        $this->isAPIRoute = $isAPI;
         
         $this->parameters = $this->parseParameters($parameters);
         $this->actionParameters = $this->resolveAction();
@@ -101,13 +89,13 @@ final class Route
      */
     private function parseParameters(array $definitions)
     {
-        preg_match_all('/\{(\??)(.+?)\}/', $this->uri, $matches, PREG_SET_ORDER);
+        preg_match_all('/\{(\??)(\w+?)(:(\(.+?\)))?\}/', $this->uri, $matches, PREG_SET_ORDER);
         
         return array_map(function ($match) use ($definitions) {
             $parameter = new ParameterDefinition($match[2], '([^\/]+?)');
             
-            if (isset($definitions[$match[2]])) {
-                $parameter->pattern = $definitions[$match[2]];
+            if (isset($match[4])) {
+                $parameter->pattern = $match[4];
             }
             
             if ($match[1] === '?') {
@@ -152,9 +140,10 @@ final class Route
         
         array_walk($this->parameters, function (ParameterDefinition $parameter) use (&$regex) {
             if ($parameter->optional) {
-                $regex = str_ireplace('\/{?' . $parameter->name . '}', '(\/?' . $parameter->pattern . ')?', $regex);
+                $match = '/\\\\\\/\{\?' . $parameter->name . '(:(\(.+?\)))?\}/'; // Five backshashes to match a single backslash, really????? At least it works that way... right?
+                $regex = preg_replace($match, '(\/?' . $parameter->pattern . ')?', $regex);
             } else {
-                $regex = str_ireplace('{' . $parameter->name . '}', $parameter->pattern, $regex);
+                $regex = preg_replace('/\{' . $parameter->name . '(:(\(.+?\)))?\}/', $parameter->pattern, $regex);
             }
         });
         

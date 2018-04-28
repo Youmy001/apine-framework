@@ -48,9 +48,11 @@ class DependencyResolver
         array_walk($route->parameters, function (ParameterDefinition $parameter) use (&$regex) {
             //$regex = str_ireplace('{' . $parameter->name . '}', $parameter->pattern, $regex);
             if($parameter->optional) {
-                $regex = str_ireplace('\/{?' . $parameter->name . '}', '(\/?' . $parameter->pattern . ')?', $regex);
+                //$regex = str_ireplace('\/{?' . $parameter->name . '}', '(\/?' . $parameter->pattern . ')?', $regex);
+                $regex = preg_replace('/\{(\??)' . $parameter->name . '(:(\(.+?\)))?\}/', '(\/?' . $parameter->pattern . ')?', $regex);
             } else {
-                $regex = str_ireplace('{' . $parameter->name . '}', $parameter->pattern, $regex);
+                //$regex = str_ireplace('{' . $parameter->name . '}', $parameter->pattern, $regex);
+                $regex = preg_replace('/\{' . $parameter->name . '(:(\(.+?\)))?\}/', $parameter->pattern, $regex);
             }
         });
     

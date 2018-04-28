@@ -11,16 +11,12 @@ declare(strict_types=1);
 
 namespace Apine\Application;
 
-use Apine\Core\Container\Container;
+use Apine\Application\ServiceAwareTrait;
 use Apine\Core\Error\ErrorHandler;
 use Apine\Core\Error\Http\HttpException;
-use Apine\Core\Http\Uri;
-use Apine\Core\Routing\Router;
 use Apine\Core\Http\Response;
 use Apine\Core\Http\Stream;
 use Apine\Core\Config;
-use Apine\Core\Utility\URLHelper;
-use Apine\Core\Views\RedirectionView;
 use Psr\Http\Message\ResponseInterface;
 
 use const Apine\Core\PROTOCOL_HTTPS;
@@ -35,6 +31,9 @@ use function Apine\Core\Utility\executionTime;
  */
 final class Application
 {
+    use ServiceAwareTrait;
+    //use MiddlewareAwareTrait;
+    
     /**
      * Version number of the framework
      *
@@ -53,11 +52,6 @@ final class Application
      * @var string
      */
     private $includePath;
-    
-    /**
-     * @var Container
-     */
-    private $services;
     
     /**
      * Application constructor.
@@ -136,7 +130,7 @@ final class Application
             }
     
             $request = $this->services->get('request');
-            $router = new Router($this->services);
+            $router = $this->services->get('router');
             $route = $router->find($request);
             $response = $router->run($route, $request);
             
@@ -211,14 +205,5 @@ final class Application
         $response = $response->withBody($content);
         
         $this->output($response);
-    }
-    
-    /**
-     * @param string $className
-     * @param callable|mixed $service
-     */
-    public function registerService(string $className, $service) : void
-    {
-        $this->services->register($className, $service);
     }
 }

@@ -47,4 +47,41 @@ interface RouterInterface
      * @return ResponseInterface
      */
     public function dispatch(Request $request) : ResponseInterface;
+    
+    /**
+     * Add route
+     *
+     * @param string[]    $methods
+     * @param string      $pattern
+     * @param string      $controller
+     * @param null|string $action
+     * @param array|null  $middlewares
+     */
+    public function map(array $methods, string $pattern, string $controller, ?string $action, array $middlewares = []);
+    
+    /**
+     * Add multiple routes under a prefix
+     *
+     * @param string   $patern
+     * @param callable $callable
+     */
+    public function group(string $patern, callable $callable);
+    
+    /*public function get(string $pattern, string $controller, ?string $action);
+    
+    public function post(string $pattern, string $controller, ?string $action);
+    
+    public function put(string $pattern, string $controller, ?string $action);
+    
+    public function delete(string $pattern, string $controller, ?string $action);
+    
+    public function options(string $pattern, string $controller, ?string $action);
+    
+    public function head(string $pattern, string $controller, ?string $action);
+    
+    public function trace(string $pattern, string $controller, ?string $action);
+    
+    public function patch(string $pattern, string $controller, ?string $action);
+    
+    public function any(string $pattern, string $controller, ?string $action);*/
 }

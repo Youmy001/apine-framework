@@ -25,6 +25,8 @@ class Json
      * Json constructor.
      *
      * @param string|array|\StdClass $data
+     *
+     * @throws JsonInvalidFormatException
      */
     public function __construct($data)
     {
@@ -32,7 +34,7 @@ class Json
             $this->data = json_decode($data);
     
             if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new \RuntimeException('Invalid JSON string');
+                throw new JsonInvalidFormatException('Invalid JSON string');
             }
         } else if (is_array($data) || $data instanceof \StdClass) {
             $this->data = (object) $data;
